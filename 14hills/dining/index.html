@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>야마나미 식사·음료 안내 | 메리트투어</title>
+<meta name="description" content="아소 야마나미 리조트 호텔 & 골프클럽 — 저녁 메뉴, Up-Grade, 음료, 주류반입 안내">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  
+  :root {
+    --ivory: #f5f2e8;
+    --paper: #fbf9f0;
+    --ink: #1d2a1f;
+    --ink-soft: #3d4a3e;
+    --ink-mute: #7a8479;
+    
+    --forest: #2d5a3d;
+    --forest-deep: #1e3d28;
+    --moss: #6b8e5a;
+    --moss-soft: #a8bc96;
+    --wood: #8b5e3c;
+    --wood-soft: #c4a484;
+    
+    --line: #dfdbc9;
+    --line-soft: #ebe7d5;
+    --accent: #c65d3e;
+    --accent-soft: #e8a682;
+    --warn-bg: #fdf0d4;
+    --warn-border: #e8c07a;
+    --warn-text: #8a6818;
+    
+    /* 요일 컬러 */
+    --c-sun: #c64a3a;
+    --c-mon: #c98a1a;
+    --c-tue: #d4a020;
+    --c-wed: #4a8a3d;
+    --c-thu: #2a6fb4;
+    --c-fri: #3463a6;
+    --c-sat: #553788;
+  }
+  
+  html { scroll-behavior: smooth; }
+  
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--ivory);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 15px;
+    background-image: 
+      radial-gradient(circle at 20% 10%, rgba(45,90,61,0.04) 0%, transparent 50%),
+      radial-gradient(circle at 80% 90%, rgba(139,94,60,0.03) 0%, transparent 50%);
+    min-height: 100vh;
+  }
+  
+  .wrap { max-width: 720px; margin: 0 auto; background: var(--paper); box-shadow: 0 0 60px rgba(0,0,0,0.05); }
+  
+  /* ===== BREADCRUMB ===== */
+  .breadcrumb {
+    padding: 14px 24px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 12px;
+    color: var(--ink-mute);
+  }
+  .breadcrumb a {
+    color: var(--forest);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb .sep { margin: 0 8px; color: var(--moss-soft); }
+  
+  /* ===== HEADER ===== */
+  header {
+    padding: 44px 24px 34px;
+    text-align: center;
+    background: linear-gradient(180deg, #1e3d28 0%, #2d5a3d 100%);
+    color: #e8dcc4;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(232,220,196,0.08) 0%, transparent 70%),
+      repeating-linear-gradient(60deg, transparent, transparent 40px, rgba(232,220,196,0.02) 40px, rgba(232,220,196,0.02) 41px);
+    pointer-events: none;
+  }
+  .brand-line {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: #c4a484;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .brand-line::before, .brand-line::after { content: '🌿'; margin: 0 12px; font-size: 10px; }
+  
+  h1 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  .h1-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 13px;
+    color: #c4a484;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .header-meta {
+    display: inline-block;
+    padding: 7px 20px;
+    border: 1px solid rgba(196,164,132,0.4);
+    border-radius: 2px;
+    font-size: 12px;
+    color: #d4b898;
+    letter-spacing: 0.08em;
+    position: relative;
+  }
+  
+  /* TOC */
+  .toc {
+    display: flex;
+    gap: 8px;
+    padding: 14px 16px;
+    background: var(--ivory);
+    border-bottom: 1px solid var(--line);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .toc a {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+  .toc a:hover, .toc a:active {
+    background: var(--forest);
+    color: #fff;
+    border-color: var(--forest);
+  }
+  
+  /* ===== SECTIONS ===== */
+  section { padding: 44px 20px 24px; }
+  
+  .section-head {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .section-num {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 11px;
+    color: var(--wood);
+    letter-spacing: 0.3em;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--forest-deep);
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+    display: inline-block;
+  }
+  .section-title::after {
+    content: '';
+    display: block;
+    width: 36px;
+    height: 2px;
+    background: var(--moss);
+    margin: 12px auto 0;
+  }
+  .section-title-sub {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 13px;
+    color: var(--ink-mute);
+    margin-top: 14px;
+    letter-spacing: 0.08em;
+  }
+  
+  /* ===== DINNER (요일별) ===== */
+  .dinner-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .dinner-row {
+    display: flex;
+    align-items: stretch;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .dinner-row:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(45,90,61,0.08);
+  }
+  .dinner-day {
+    flex-shrink: 0;
+    width: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 8px;
+    color: #fff;
+    text-align: center;
+  }
+  .dinner-day.sun { background: linear-gradient(135deg, #c64a3a 0%, #9e3527 100%); }
+  .dinner-day.mon { background: linear-gradient(135deg, #d49a2a 0%, #a87a18 100%); }
+  .dinner-day.tue { background: linear-gradient(135deg, #d4a020 0%, #a67a12 100%); }
+  .dinner-day.wed { background: linear-gradient(135deg, #4a8a3d 0%, #356628 100%); }
+  .dinner-day.thu { background: linear-gradient(135deg, #2a6fb4 0%, #1c528a 100%); }
+  .dinner-day.fri { background: linear-gradient(135deg, #3463a6 0%, #244980 100%); }
+  .dinner-day.sat { background: linear-gradient(135deg, #553788 0%, #3e2864 100%); }
+  
+  .dinner-day-ko {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .dinner-day-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 11px;
+    margin-top: 4px;
+    opacity: 0.9;
+  }
+  .dinner-menu {
+    flex: 1;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .dinner-menu-ko {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .dinner-menu-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 12px;
+    color: var(--ink-mute);
+    margin-top: 3px;
+  }
+  
+  .dinner-note {
+    margin-top: 18px;
+    padding: 12px 14px;
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--warn-text);
+    text-align: center;
+  }
+  .dinner-note strong { color: var(--warn-text); font-weight: 700; }
+  
+  /* ===== 신청안내 (Up-Grade) ===== */
+  .apply-info-section {
+    background: linear-gradient(180deg, var(--forest-deep) 0%, #1a2e1f 100%);
+    color: #e8dcc4;
+    padding: 36px 20px 32px;
+  }
+  .apply-info-section .section-num { color: #c4a484; }
+  .apply-info-section .section-title { color: #e8dcc4; }
+  .apply-info-section .section-title::after { background: #c4a484; }
+  
+  .apply-info-container {
+    background: rgba(232,220,196,0.06);
+    border: 1px solid rgba(196,164,132,0.3);
+    border-left: 3px solid #c4a484;
+    border-radius: 4px;
+    padding: 20px 18px;
+    margin-top: 10px;
+  }
+  .apply-tag {
+    display: inline-block;
+    background: #c4a484;
+    color: var(--forest-deep);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 2px;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+  }
+  .apply-info-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #d4b898;
+    margin-bottom: 14px;
+  }
+  .apply-routes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .apply-route {
+    background: rgba(232,220,196,0.05);
+    border: 1px solid rgba(196,164,132,0.22);
+    border-radius: 4px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+  .apply-route-icon { font-size: 20px; margin-bottom: 4px; }
+  .apply-route-label {
+    display: inline-block;
+    background: rgba(196,164,132,0.15);
+    color: #d4b898;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 10px;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .apply-route-main {
+    font-size: 13px;
+    color: #e8dcc4;
+    line-height: 1.5;
+    margin-bottom: 3px;
+  }
+  .apply-route-main strong {
+    color: #d4b898;
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .apply-route-sub {
+    font-size: 11px;
+    color: rgba(196,164,132,0.8);
+    letter-spacing: 0.02em;
+  }
+  .apply-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 2px 0;
+  }
+  .apply-divider::before, .apply-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(196,164,132,0.2);
+    max-width: 40px;
+  }
+  .apply-divider span {
+    font-size: 10px;
+    color: rgba(196,164,132,0.8);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+  }
+  
+  /* ===== UPGRADE 메뉴 블록 ===== */
+  .upgrade-block {
+    background: rgba(232,220,196,0.04);
+    border: 1px solid rgba(196,164,132,0.25);
+    border-radius: 6px;
+    padding: 18px;
+    margin-top: 14px;
+  }
+  .upgrade-block-head {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 15px;
+    color: #d4b898;
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+  .upgrade-block-sub {
+    font-size: 12px;
+    color: rgba(196,164,132,0.8);
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .upgrade-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px dashed rgba(196,164,132,0.2);
+  }
+  .upgrade-row:last-child { border-bottom: none; }
+  .upgrade-info-block { flex: 1; }
+  .upgrade-name {
+    font-size: 14px;
+    color: #e8dcc4;
+    font-weight: 500;
+  }
+  .upgrade-name-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 11px;
+    color: rgba(196,164,132,0.8);
+    margin-top: 2px;
+  }
+  .upgrade-price {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #d4b898;
+    white-space: nowrap;
+    margin-left: 12px;
+    text-align: right;
+  }
+  .upgrade-price-sub {
+    display: block;
+    font-size: 10px;
+    color: rgba(196,164,132,0.7);
+    font-weight: 400;
+    margin-top: 2px;
+  }
+  .bbq-note {
+    font-size: 11px;
+    color: #e8a682;
+    margin-top: 8px;
+    text-align: right;
+    font-style: italic;
+  }
+  
+  /* ===== 안주 섹션 ===== */
+  .snack-time-notice {
+    background: #fff4ec;
+    border: 1px solid #f0c9a8;
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: var(--accent);
+    text-align: center;
+    font-weight: 600;
+  }
+  .snack-time-notice strong { color: var(--accent); }
+  
+  .snack-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .snack-item {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--moss);
+    border-radius: 4px;
+    padding: 10px 12px;
+  }
+  .snack-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .snack-name-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 10px;
+    color: var(--ink-mute);
+    margin-top: 2px;
+  }
+  .snack-price-all {
+    text-align: center;
+    padding: 10px;
+    background: linear-gradient(135deg, #e8f0e2 0%, #d6e4cc 100%);
+    border-radius: 4px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--forest-deep);
+    font-weight: 700;
+  }
+  .snack-price-all strong { color: var(--accent); font-size: 15px; }
+  
+  /* ===== DRINKS 섹션 ===== */
+  .drinks-wrapper { padding: 0; }
+  
+  .drinks-category {
+    margin-bottom: 20px;
+  }
+  .drinks-category-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--moss);
+  }
+  .drinks-category-icon {
+    font-size: 18px;
+  }
+  .drinks-category-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--forest-deep);
+    letter-spacing: -0.01em;
+  }
+  .drinks-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .drink-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 8px 10px;
+    background: var(--paper);
+    border-radius: 3px;
+  }
+  .drink-item:nth-child(odd) {
+    background: rgba(235,231,213,0.4);
+  }
+  .drink-name {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .drink-name-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 10px;
+    color: var(--ink-mute);
+    margin-top: 1px;
+  }
+  .drink-price {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--forest-deep);
+    white-space: nowrap;
+    margin-left: 10px;
+    text-align: right;
+  }
+  .drink-price .yen { color: var(--wood); font-size: 11px; margin-right: 1px; }
+  
+  /* 맥주 (생맥주 특별 표시) */
+  .beer-sizes {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .beer-size-box {
+    flex: 1;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 6px 4px;
+    text-align: center;
+  }
+  .beer-size-label {
+    font-size: 10px;
+    color: var(--ink-mute);
+    display: block;
+  }
+  .beer-size-price {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--forest-deep);
+    margin-top: 1px;
+  }
+  
+  /* 소프트드링크 */
+  .soft-drinks-note {
+    font-size: 11px;
+    color: var(--ink-mute);
+    margin-top: 6px;
+    text-align: center;
+    font-style: italic;
+  }
+  
+  /* ===== 콜키지 차지 ===== */
+  .corkage-section {
+    background: linear-gradient(180deg, #fef5f0 0%, #fae8dc 100%);
+    padding: 36px 20px 32px;
+    border-top: 1px solid var(--line);
+  }
+  .corkage-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .corkage-title-sub {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 12px;
+    color: var(--ink-mute);
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .corkage-desc {
+    text-align: center;
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 18px;
+    line-height: 1.6;
+  }
+  
+  .corkage-prices {
+    background: #fff;
+    border: 1px solid var(--warn-border);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .corkage-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--line);
+  }
+  .corkage-price-row:last-child { border-bottom: none; }
+  .corkage-price-desc {
+    flex: 1;
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .corkage-price-desc strong { color: var(--accent); font-weight: 700; }
+  .corkage-price-value {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+    margin-left: 12px;
+  }
+  
+  .corkage-notes {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px 16px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.7;
+  }
+  .corkage-notes strong { color: var(--accent); }
+  .corkage-notes .note-item {
+    padding: 4px 0;
+  }
+  .corkage-notes .note-item::before {
+    content: '◆ ';
+    color: var(--wood);
+  }
+  .corkage-notes .warn {
+    background: #fef0e8;
+    padding: 8px 10px;
+    border-radius: 3px;
+    margin-top: 8px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .corkage-notes .warn::before {
+    content: '⚠️ ';
+  }
+  
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--forest-deep);
+    color: #a89a7c;
+    padding: 36px 24px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  footer .footer-brand {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 16px;
+    color: #d4b898;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  footer .footer-contact {
+    margin-top: 14px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(196,164,132,0.15);
+    color: #c4a484;
+  }
+  footer .footer-contact strong { color: #e8dcc4; font-size: 14px; }
+  footer .footer-update {
+    margin-top: 14px;
+    font-size: 10px;
+    color: #5a6e54;
+    letter-spacing: 0.1em;
+  }
+  footer .footer-back {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 6px 16px;
+    border: 1px solid rgba(196,164,132,0.3);
+    border-radius: 18px;
+    font-size: 11px;
+    color: #c4a484;
+    text-decoration: none;
+  }
+  footer .footer-back:hover { background: rgba(196,164,132,0.08); }
+  
+  @media (max-width: 480px) {
+    body { font-size: 14px; }
+    header { padding: 34px 18px 26px; }
+    h1 { font-size: 22px; }
+    section { padding: 32px 14px 18px; }
+    .section-title { font-size: 22px; }
+    .dinner-day { width: 70px; }
+    .dinner-day-ko { font-size: 14px; }
+    .dinner-menu-ko { font-size: 15px; }
+    .snack-grid { grid-template-columns: 1fr; }
+  }
+  
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  header, section, .corkage-section { animation: fadeUp 0.5s ease-out backwards; }
+  section:nth-of-type(1) { animation-delay: 0.1s; }
+  section:nth-of-type(2) { animation-delay: 0.2s; }
+  section:nth-of-type(3) { animation-delay: 0.3s; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav class="breadcrumb">
+  <a href="../">야마나미 리조트 안내</a>
+  <span class="sep">›</span>
+  <span>식사 · 음료 안내</span>
+</nav>
+
+<header>
+  <div class="brand-line">YAMANAMI · DINING</div>
+  <h1>야마나미 리조트<br>식사 · 음료 안내</h1>
+  <div class="h1-jp">阿蘇やまなみリゾート お食事のご案内</div>
+  <div class="header-meta">아소 야마나미 리조트 호텔 &amp; 골프클럽</div>
+</header>
+
+<nav class="toc">
+  <a href="#dinner">🍽 저녁 메뉴</a>
+  <a href="#upgrade">⭐ Up-Grade · 추가</a>
+  <a href="#snack">🍢 안주</a>
+  <a href="#drinks">🍺 음료 · 주류</a>
+  <a href="#corkage">🍾 주류 반입</a>
+</nav>
+
+<!-- DINNER -->
+<section id="dinner">
+  <div class="section-head">
+    <div class="section-num">PART 01</div>
+    <div class="section-title">요일별 저녁 메뉴</div>
+    <div class="section-title-sub">週間 夕食メニュー</div>
+  </div>
+  
+  <div class="dinner-list">
+    <div class="dinner-row">
+      <div class="dinner-day sun">
+        <div class="dinner-day-ko">일요일</div>
+        <div class="dinner-day-jp">日曜日</div>
+      </div>
+      <div class="dinner-menu">
+        <div class="dinner-menu-ko">해물전골</div>
+        <div class="dinner-menu-jp">海鮮鍋</div>
+      </div>
+    </div>
+    
+    <div class="dinner-row">
+      <div class="dinner-day mon">
+        <div class="dinner-day-ko">월요일</div>
+        <div class="dinner-day-jp">月曜日</div>
+      </div>
+      <div class="dinner-menu">
+        <div class="dinner-menu-ko">日本산 흑돼지 삼겹살</div>
+        <div class="dinner-menu-jp">日本産 黒豚サムギョプサル</div>
+      </div>
+    </div>
+    
+    <div class="dinner-row">
+      <div class="dinner-day tue">
+        <div class="dinner-day-ko">화요일</div>
+        <div class="dinner-day-jp">火曜日</div>
+      </div>
+      <div class="dinner-menu">
+        <div class="dinner-menu-ko">매운탕</div>
+        <div class="dinner-menu-jp">メウンタン（辛口魚鍋）</div>
+      </div>
+    </div>
+    
+    <div class="dinner-row">
+      <div class="dinner-day wed">
+        <div class="dinner-day-ko">수요일</div>
+        <div class="dinner-day-jp">水曜日</div>
+      </div>
+      <div class="dinner-menu">
+        <div class="dinner-menu-ko">불고기 코스</div>
+        <div class="dinner-menu-jp">プルコギ コース</div>
+      </div>
+    </div>
+    
+    <div class="dinner-row">
+      <div class="dinner-day thu">
+        <div class="dinner-day-ko">목요일</div>
+        <div class="dinner-day-jp">木曜日</div>
+      </div>
+      <div class="dinner-menu">
+        <div class="dinner-menu-ko">해물 순두부찌개</div>
+        <div class="dinner-menu-jp">海鮮スンドゥブチゲ</div>
+      </div>
+    </div>
+    
+    <div class="dinner-row">
+      <div class="dinner-day fri">
+        <div class="dinner-day-ko">금요일</div>
+        <div class="dinner-day-jp">金曜日</div>
+      </div>
+      <div class="dinner-menu">
+        <div class="dinner-menu-ko">중화요리</div>
+        <div class="dinner-menu-jp">中華料理</div>
+      </div>
+    </div>
+    
+    <div class="dinner-row">
+      <div class="dinner-day sat">
+        <div class="dinner-day-ko">토요일</div>
+        <div class="dinner-day-jp">土曜日</div>
+      </div>
+      <div class="dinner-menu">
+        <div class="dinner-menu-ko">흑돼지 샤브샤브</div>
+        <div class="dinner-menu-jp">黒豚しゃぶしゃぶ</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="dinner-note">
+    ※ <strong>주간 메뉴는 사정에 따라 변경될 수 있습니다.</strong>
+  </div>
+</section>
+
+<!-- UPGRADE (신청 안내 + Up-Grade + 추가) -->
+<section id="upgrade" class="apply-info-section">
+  <div class="section-head">
+    <div class="section-num">PART 02</div>
+    <div class="section-title">Up-Grade · 추가 메뉴</div>
+    <div class="section-title-sub" style="color: rgba(196,164,132,0.7);">アップグレード · 追加メニュー</div>
+  </div>
+  
+  <!-- 신청 안내 -->
+  <div class="apply-info-container">
+    <span class="apply-tag">신청 안내</span>
+    <div class="apply-info-title">Up-Grade · 추가 메뉴 신청 방법</div>
+    <div class="apply-routes">
+      <div class="apply-route">
+        <div class="apply-route-icon">📞</div>
+        <div class="apply-route-label">출발 전</div>
+        <div class="apply-route-main">출발 <strong>3일 전</strong>까지</div>
+        <div class="apply-route-sub">메리트투어 (02-365-9800)</div>
+      </div>
+      <div class="apply-divider"><span>또는</span></div>
+      <div class="apply-route">
+        <div class="apply-route-icon">🏨</div>
+        <div class="apply-route-label">체류 중</div>
+        <div class="apply-route-main">전일 <strong>오후 2시</strong>까지</div>
+        <div class="apply-route-sub">리조트 프런트</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Up-Grade -->
+  <div class="upgrade-block">
+    <div class="upgrade-block-head">Up-Grade MENU</div>
+    <div class="upgrade-block-sub">기본 메뉴는 제공되지 않으며, 전원 같은 메뉴를 신청하셔야 합니다.</div>
+    
+    <div class="upgrade-row">
+      <div class="upgrade-info-block">
+        <div class="upgrade-name">카이세키 요리</div>
+        <div class="upgrade-name-jp">会席料理</div>
+      </div>
+      <div class="upgrade-price">
+        +¥3,000
+        <span class="upgrade-price-sub">1인당</span>
+      </div>
+    </div>
+    <div class="upgrade-row">
+      <div class="upgrade-info-block">
+        <div class="upgrade-name">스키야키</div>
+        <div class="upgrade-name-jp">すき焼き</div>
+      </div>
+      <div class="upgrade-price">
+        +¥3,000
+        <span class="upgrade-price-sub">1인당</span>
+      </div>
+    </div>
+    <div class="upgrade-row">
+      <div class="upgrade-info-block">
+        <div class="upgrade-name">소고기 샤브샤브</div>
+        <div class="upgrade-name-jp">牛しゃぶしゃぶ</div>
+      </div>
+      <div class="upgrade-price">
+        +¥3,000
+        <span class="upgrade-price-sub">1인당</span>
+      </div>
+    </div>
+    <div class="upgrade-row">
+      <div class="upgrade-info-block">
+        <div class="upgrade-name">바비큐</div>
+        <div class="upgrade-name-jp">バーベキュー</div>
+      </div>
+      <div class="upgrade-price">
+        +¥3,000
+        <span class="upgrade-price-sub">1인당</span>
+      </div>
+    </div>
+    <div class="bbq-note">※ 바비큐는 4인 이상 신청 가능</div>
+  </div>
+  
+  <!-- 추가 MENU -->
+  <div class="upgrade-block">
+    <div class="upgrade-block-head">추가 MENU</div>
+    <div class="upgrade-block-sub">기본 메뉴가 제공되며, 신청하신 메뉴가 추가됩니다.</div>
+    
+    <div class="upgrade-row">
+      <div class="upgrade-info-block">
+        <div class="upgrade-name">도미 스가타츠쿠리 (회 · 모듬)</div>
+        <div class="upgrade-name-jp">鯛の姿造り · 刺身 (船盛)</div>
+      </div>
+      <div class="upgrade-price">¥15,000</div>
+    </div>
+    <div class="upgrade-row">
+      <div class="upgrade-info-block">
+        <div class="upgrade-name">기본 + 왕새우 (이세에비)</div>
+        <div class="upgrade-name-jp">基本 + 伊勢えび</div>
+      </div>
+      <div class="upgrade-price">¥20,000</div>
+    </div>
+    <div class="upgrade-row">
+      <div class="upgrade-info-block">
+        <div class="upgrade-name">말고기 육회</div>
+        <div class="upgrade-name-jp">馬刺し</div>
+      </div>
+      <div class="upgrade-price">
+        ¥5,000
+        <span class="upgrade-price-sub">1인분</span>
+      </div>
+    </div>
+    <div class="upgrade-row">
+      <div class="upgrade-info-block">
+        <div class="upgrade-name">와규 스테이크</div>
+        <div class="upgrade-name-jp">和牛ステーキ · 1枚</div>
+      </div>
+      <div class="upgrade-price">
+        ¥5,000
+        <span class="upgrade-price-sub">1인분</span>
+      </div>
+    </div>
+    <div class="bbq-note">※ 신청은 2명 이상부터 가능 (BBQ는 4명 이상)</div>
+  </div>
+</section>
+
+<!-- SNACK -->
+<section id="snack">
+  <div class="section-head">
+    <div class="section-num">PART 03</div>
+    <div class="section-title">안주 메뉴</div>
+    <div class="section-title-sub">おつまみ</div>
+  </div>
+  
+  <div class="snack-time-notice">
+    ⏰ 안주는 <strong>19:30까지만</strong> 주문 가능합니다
+  </div>
+  
+  <div class="snack-grid">
+    <div class="snack-item">
+      <div class="snack-name">낙지 튀김</div>
+      <div class="snack-name-jp">タコの唐揚げ</div>
+    </div>
+    <div class="snack-item">
+      <div class="snack-name">사츠마아게 (어묵)</div>
+      <div class="snack-name-jp">さつま揚げ</div>
+    </div>
+    <div class="snack-item">
+      <div class="snack-name">닭 튀김</div>
+      <div class="snack-name-jp">鶏の竜田揚げ</div>
+    </div>
+    <div class="snack-item">
+      <div class="snack-name">우엉 튀김</div>
+      <div class="snack-name-jp">スティックごぼう唐揚げ</div>
+    </div>
+  </div>
+  
+  <div class="snack-price-all">
+    모든 안주 <strong>각 ¥800</strong>
+  </div>
+</section>
+
+<!-- DRINKS -->
+<section id="drinks">
+  <div class="section-head">
+    <div class="section-num">PART 04</div>
+    <div class="section-title">음료 · 주류</div>
+    <div class="section-title-sub">飲料 · お酒</div>
+  </div>
+  
+  <div class="drinks-wrapper">
+    
+    <!-- 생맥주 -->
+    <div class="drinks-category">
+      <div class="drinks-category-head">
+        <div class="drinks-category-icon">🍺</div>
+        <div class="drinks-category-title">생맥주 (프리미엄 몰츠)</div>
+      </div>
+      <div class="beer-sizes">
+        <div class="beer-size-box">
+          <span class="beer-size-label">小 (소)</span>
+          <div class="beer-size-price">¥600</div>
+        </div>
+        <div class="beer-size-box">
+          <span class="beer-size-label">中 (중)</span>
+          <div class="beer-size-price">¥700</div>
+        </div>
+        <div class="beer-size-box">
+          <span class="beer-size-label">大 (대)</span>
+          <div class="beer-size-price">¥950</div>
+        </div>
+        <div class="beer-size-box">
+          <span class="beer-size-label">피처</span>
+          <div class="beer-size-price">¥1,800</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 기타 맥주 -->
+    <div class="drinks-category">
+      <div class="drinks-category-head">
+        <div class="drinks-category-icon">🍻</div>
+        <div class="drinks-category-title">기타 맥주 · 하이볼</div>
+      </div>
+      <div class="drinks-list">
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">병맥주 (아사히 · 기린)</div>
+            <div class="drink-name-jp">瓶ビール</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>700</div>
+        </div>
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">무알콜 맥주</div>
+            <div class="drink-name-jp">ノンアルコールビール</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>500</div>
+        </div>
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">하이볼</div>
+            <div class="drink-name-jp">ハイボール</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>600</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 소주 -->
+    <div class="drinks-category">
+      <div class="drinks-category-head">
+        <div class="drinks-category-icon">🍶</div>
+        <div class="drinks-category-title">소주</div>
+      </div>
+      <div class="drinks-list">
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">한국 소주 (참이슬)</div>
+            <div class="drink-name-jp">韓国焼酎 (チャミスル)</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>700</div>
+        </div>
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">일본 소주 (잔) — 고구마 · 보리 · 쌀</div>
+            <div class="drink-name-jp">焼酎グラス (芋・麦・米)</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>600</div>
+        </div>
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">일본 소주 (병)</div>
+            <div class="drink-name-jp">焼酎ボトル</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>3,300</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 니혼슈 -->
+    <div class="drinks-category">
+      <div class="drinks-category-head">
+        <div class="drinks-category-icon">🍾</div>
+        <div class="drinks-category-title">니혼슈 (정종) · 매실주</div>
+      </div>
+      <div class="drinks-list">
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">니혼슈 1合 (180ml)</div>
+            <div class="drink-name-jp">日本酒 1合</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>600</div>
+        </div>
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">니혼슈 2合 (360ml)</div>
+            <div class="drink-name-jp">日本酒 2合</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>1,200</div>
+        </div>
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">원컵 (1컵)</div>
+            <div class="drink-name-jp">ワンカップ</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>500</div>
+        </div>
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">레이잔 (찬 술)</div>
+            <div class="drink-name-jp">レイザン (冷酒)</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>1,200</div>
+        </div>
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">준마이 다이긴조</div>
+            <div class="drink-name-jp">純米大吟醸</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>2,800</div>
+        </div>
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">매실주 (1잔)</div>
+            <div class="drink-name-jp">梅酒グラス</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>600</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 양주 · 와인 -->
+    <div class="drinks-category">
+      <div class="drinks-category-head">
+        <div class="drinks-category-icon">🥃</div>
+        <div class="drinks-category-title">위스키 · 와인</div>
+      </div>
+      <div class="drinks-list">
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">위스키 1병 (SUNTORY 가쿠빙)</div>
+            <div class="drink-name-jp">ウイスキー (角瓶)</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>6,500</div>
+        </div>
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">와인 (병)</div>
+            <div class="drink-name-jp">ワイン (ボトル)</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>1,500 / 2,500 / 3,000</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 소프트드링크 -->
+    <div class="drinks-category">
+      <div class="drinks-category-head">
+        <div class="drinks-category-icon">🥤</div>
+        <div class="drinks-category-title">소프트 드링크</div>
+      </div>
+      <div class="drinks-list">
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">콜라 · 우롱차 · 사이다 · 레몬스쿼시 · 매실 스파클링</div>
+            <div class="drink-name-jp">コーラ · ウーロン茶 · サイダー · レモンスカッシュ · 梅スパークリング</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>350</div>
+        </div>
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">사와 (소주 칵테일)</div>
+            <div class="drink-name-jp">サワー</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>600</div>
+        </div>
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">탄산수 (500ml)</div>
+            <div class="drink-name-jp">炭酸水 500cc</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>300</div>
+        </div>
+        <div class="drink-item">
+          <div>
+            <div class="drink-name">탄산수 (1L)</div>
+            <div class="drink-name-jp">炭酸水 1L</div>
+          </div>
+          <div class="drink-price"><span class="yen">¥</span>500</div>
+        </div>
+      </div>
+      <div class="soft-drinks-note">※ 소프트드링크는 소주 칵테일(소주 割)용으로도 가능</div>
+    </div>
+    
+  </div>
+</section>
+
+<!-- CORKAGE -->
+<section id="corkage" class="corkage-section">
+  <div class="section-head">
+    <div class="section-num">PART 05</div>
+    <div class="corkage-title">주류 반입비 안내</div>
+    <div class="corkage-title-sub">酒類持込料 · Corkage Charge</div>
+  </div>
+  
+  <div class="corkage-desc">
+    술잔 · 얼음 등을 제공해드리며,<br>
+    1병당 반입비는 아래와 같습니다.
+  </div>
+  
+  <div class="corkage-prices">
+    <div class="corkage-price-row">
+      <div class="corkage-price-desc">
+        <strong>양주를 제외한 주류</strong><br>
+        1병 (또는 1팩 · 1캔)
+      </div>
+      <div class="corkage-price-value">¥1,000</div>
+    </div>
+    <div class="corkage-price-row">
+      <div class="corkage-price-desc">
+        <strong>양주</strong> 혹은 <strong>1,000ml 이상</strong><br>
+        또는 一升瓶 (1.8L)
+      </div>
+      <div class="corkage-price-value">¥2,000</div>
+    </div>
+    <div class="corkage-price-row">
+      <div class="corkage-price-desc">
+        <strong>보관했던 개인 술</strong>을<br>
+        (반입비를 낸 것) 드시는 경우
+      </div>
+      <div class="corkage-price-value">¥1,000</div>
+    </div>
+  </div>
+  
+  <div class="corkage-notes">
+    <div class="note-item">병, 팩, 캔 등 종류에 관계없으며, <strong>페트병 등(술병이 아닌 다른 용기)을 이용해 반입한 경우에도 부과</strong>됩니다.</div>
+    <div class="note-item">1층 매장에서 구입한 주류도 반입비를 부과합니다.</div>
+    <div class="note-item warn">직원분들이 오해하지 않도록 <strong>페트병 반입은 자제</strong>해 주시기 바랍니다.</div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">MERIT TOUR · 메리트투어</div>
+  <div>아소 야마나미 리조트 호텔 &amp; 골프클럽</div>
+  <div>회원예약센터</div>
+  
+  <div class="footer-contact">
+    <strong>02 · 365 · 9800</strong><br>
+    예약 및 문의 안내
+  </div>
+  
+  <a href="../" class="footer-back">← 야마나미 안내 메인으로</a>
+  
+  <div class="footer-update">UPDATED · 2026.04</div>
+</footer>
+
+</div>
+</body>
+</html>
