@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>나고야 포틴힐즈 CC 안내 | 메리트투어</title>
+<meta name="description" content="나고야 포틴힐즈 컨트리클럽 — 회원 종합 안내">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  
+  :root {
+    /* 포틴힐즈 럭셔리 테마 */
+    --cream: #faf6f0;
+    --paper: #fffdf8;
+    --ink: #1a1612;
+    --ink-soft: #4a4239;
+    --ink-mute: #857c70;
+    
+    --gold: #b8893d;
+    --gold-deep: #8a6526;
+    --gold-light: #d4a85a;
+    --accent: #c14a26;
+    --accent-soft: #e8825c;
+    --brown: #3a2a1c;
+    --brown-deep: #2a1f15;
+    
+    --line: #e8dfd0;
+    --line-soft: #f0e9dc;
+  }
+  
+  html { scroll-behavior: smooth; }
+  
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 15px;
+    background-image: 
+      radial-gradient(circle at 10% 0%, rgba(184,137,61,0.05) 0%, transparent 40%),
+      radial-gradient(circle at 90% 100%, rgba(193,74,38,0.03) 0%, transparent 40%);
+    min-height: 100vh;
+  }
+  
+  .wrap { max-width: 720px; margin: 0 auto; background: var(--paper); box-shadow: 0 0 60px rgba(0,0,0,0.05); min-height: 100vh; }
+  
+  /* ===== HEADER ===== */
+  header {
+    padding: 56px 24px 40px;
+    text-align: center;
+    background: linear-gradient(180deg, #2a1f15 0%, #3a2a1c 100%);
+    color: #f5ebd6;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(245,235,214,0.08) 0%, transparent 70%),
+      repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(245,235,214,0.025) 35px, rgba(245,235,214,0.025) 36px);
+    pointer-events: none;
+  }
+  
+  /* 골프 티 장식 */
+  .golf-deco {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background-image: 
+      linear-gradient(to right, transparent 45%, rgba(212,168,90,0.15) 48%, rgba(212,168,90,0.15) 52%, transparent 55%);
+    background-size: 80px 20px;
+    background-repeat: repeat-x;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  
+  .brand-line {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: #c9a76a;
+    margin-bottom: 20px;
+    font-weight: 400;
+    position: relative;
+  }
+  .brand-line::before, .brand-line::after { 
+    content: '◆'; 
+    margin: 0 14px; 
+    font-size: 8px; 
+    opacity: 0.7; 
+  }
+  
+  h1 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 34px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .h1-sub {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 15px;
+    color: #d4a85a;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin-bottom: 22px;
+    position: relative;
+  }
+  .h1-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 12px;
+    color: rgba(201,167,106,0.75);
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    margin-bottom: 26px;
+    position: relative;
+  }
+  .header-meta {
+    display: inline-block;
+    padding: 9px 22px;
+    border: 1px solid rgba(201,167,106,0.4);
+    border-radius: 2px;
+    font-size: 12px;
+    color: #d4b87a;
+    letter-spacing: 0.1em;
+    position: relative;
+  }
+  
+  /* ===== WELCOME ===== */
+  .welcome {
+    padding: 44px 24px 20px;
+    text-align: center;
+  }
+  .welcome-tag {
+    display: inline-block;
+    font-family: 'Noto Serif KR', serif;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.3em;
+    margin-bottom: 14px;
+  }
+  .welcome-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--brown-deep);
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+    line-height: 1.4;
+  }
+  .welcome-desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.8;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  
+  .divider-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 28px 0 0;
+    color: var(--gold-light);
+  }
+  .divider-ornament .line {
+    width: 50px;
+    height: 1px;
+    background: var(--gold-light);
+  }
+  .divider-ornament .sym { font-size: 10px; opacity: 0.8; }
+  
+  /* ===== MENU GRID ===== */
+  .menu-section {
+    padding: 20px 20px 40px;
+  }
+  .menu-section-head {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .menu-section-num {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.3em;
+    margin-bottom: 6px;
+  }
+  .menu-section-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--brown-deep);
+    letter-spacing: -0.01em;
+  }
+  
+  .menu-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .menu-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 20px 22px;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .menu-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--gold);
+    transition: width 0.25s ease;
+  }
+  .menu-card:hover, .menu-card:active {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(184,137,61,0.12);
+    border-color: var(--gold);
+  }
+  .menu-card:hover::before { width: 6px; }
+  
+  .menu-card.available::before { background: var(--gold); }
+  .menu-card.coming::before { background: var(--line); }
+  .menu-card.coming { opacity: 0.72; }
+  
+  .menu-card-inner {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .menu-card-icon {
+    flex-shrink: 0;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f5ead4 0%, #ede0c4 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+  }
+  .menu-card.coming .menu-card-icon {
+    background: linear-gradient(135deg, #f0ece0 0%, #e4ddc9 100%);
+    filter: grayscale(0.3);
+  }
+  
+  .menu-card-body { flex: 1; min-width: 0; }
+  .menu-card-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--brown-deep);
+    margin-bottom: 3px;
+    letter-spacing: -0.01em;
+  }
+  .menu-card-desc {
+    font-size: 12px;
+    color: var(--ink-mute);
+    line-height: 1.5;
+  }
+  
+  .menu-card-arrow {
+    flex-shrink: 0;
+    font-size: 16px;
+    color: var(--gold);
+    opacity: 0.7;
+    transition: transform 0.25s ease;
+  }
+  .menu-card:hover .menu-card-arrow { transform: translateX(4px); opacity: 1; }
+  
+  .menu-card-badge {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.05em;
+    margin-top: 5px;
+  }
+  .menu-card-badge.new {
+    background: var(--accent);
+    color: #fff;
+  }
+  .menu-card-badge.soon {
+    background: var(--line);
+    color: var(--ink-mute);
+  }
+  
+  /* ===== HIGHLIGHT BOX ===== */
+  .highlight-box {
+    margin: 0 20px 32px;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, #fff4ec 0%, #ffe0c5 100%);
+    border: 1px solid #f0c9a8;
+    border-left: 4px solid var(--accent);
+    border-radius: 4px;
+    position: relative;
+  }
+  .highlight-box-tag {
+    position: absolute;
+    top: -10px;
+    left: 16px;
+    background: var(--accent);
+    color: #fff;
+    padding: 3px 11px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    border-radius: 2px;
+  }
+  .highlight-box-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 4px 0 6px;
+  }
+  .highlight-box-desc {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .highlight-box-desc strong { color: var(--accent); font-weight: 700; }
+  
+  /* ===== INFO BLOCK ===== */
+  .info-block {
+    background: linear-gradient(180deg, #f5ead4 0%, #ede0c4 100%);
+    padding: 32px 24px 36px;
+    border-top: 1px solid var(--line);
+  }
+  .info-block-head {
+    text-align: center;
+    margin-bottom: 22px;
+  }
+  .info-block-tag {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 11px;
+    color: var(--gold-deep);
+    letter-spacing: 0.3em;
+  }
+  .info-block-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--brown-deep);
+    margin-top: 4px;
+  }
+  
+  .info-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .info-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .info-card-label {
+    font-size: 10px;
+    color: var(--gold-deep);
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+  .info-card-value {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--brown-deep);
+    line-height: 1.4;
+  }
+  
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--brown-deep);
+    color: #a89070;
+    padding: 36px 24px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  footer .footer-brand {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 16px;
+    color: #d4a85a;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  footer .footer-contact {
+    margin-top: 14px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(212,168,90,0.15);
+    color: #c9a76a;
+  }
+  footer .footer-contact strong { color: #f5ebd6; font-size: 14px; }
+  footer .footer-update {
+    margin-top: 14px;
+    font-size: 10px;
+    color: #6e604c;
+    letter-spacing: 0.1em;
+  }
+  
+  /* Responsive */
+  @media (max-width: 480px) {
+    body { font-size: 14px; }
+    header { padding: 44px 18px 34px; }
+    h1 { font-size: 28px; }
+    .h1-sub { font-size: 14px; }
+    .welcome { padding: 36px 18px 14px; }
+    .welcome-title { font-size: 19px; }
+    .menu-section { padding: 14px 16px 28px; }
+    .highlight-box { margin-left: 14px; margin-right: 14px; }
+    .info-cards { grid-template-columns: 1fr; }
+    .menu-card { padding: 16px 18px; }
+    .menu-card-icon { width: 46px; height: 46px; font-size: 22px; }
+    .menu-card-title { font-size: 16px; }
+  }
+  
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  header, .welcome, .highlight-box, .menu-section, .info-block { animation: fadeUp 0.5s ease-out backwards; }
+  .welcome { animation-delay: 0.1s; }
+  .highlight-box { animation-delay: 0.18s; }
+  .menu-section { animation-delay: 0.25s; }
+  .info-block { animation-delay: 0.35s; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brand-line">MERIT TOUR · FORTIN HILLS</div>
+  <h1>나고야 포틴힐즈 CC</h1>
+  <div class="h1-sub">Fortin Hills Country Club</div>
+  <div class="h1-jp">フォーティーンヒルズ カントリークラブ</div>
+  <div class="header-meta">회원 종합 안내</div>
+  <div class="golf-deco"></div>
+</header>
+
+<!-- WELCOME -->
+<section class="welcome">
+  <div class="welcome-tag">WELCOME</div>
+  <div class="welcome-title">나고야 근교의 명문 컨트리 클럽<br>품격 있는 골프 &amp; 리조트 체험</div>
+  <div class="welcome-desc">
+    회원 여러분을 위한<br>
+    포틴힐즈 컨트리클럽 이용 안내를 제공해 드립니다.
+  </div>
+  <div class="divider-ornament">
+    <div class="line"></div>
+    <span class="sym">◆</span>
+    <div class="line"></div>
+  </div>
+</section>
+
+<!-- HIGHLIGHT: 최근 변경 안내 -->
+<div class="highlight-box">
+  <span class="highlight-box-tag">NEW</span>
+  <div class="highlight-box-title">점심 메뉴 변경 안내</div>
+  <div class="highlight-box-desc">
+    도착일 중식은 <strong>간편식(샌드위치)</strong>로,
+    체류일 중식은 <strong>화·목·일 단품메뉴</strong>
+    (그 외 요일 뷔페식)로 변경되었습니다.
+    <br><br>
+    <span style="font-size:11px; color:var(--ink-mute);">
+      ※ 자세한 내용은 아래 「식사 안내」에서 확인하실 수 있습니다.
+    </span>
+  </div>
+</div>
+
+<!-- MENU GRID -->
+<section class="menu-section">
+  <div class="menu-section-head">
+    <div class="menu-section-num">GUIDE · 안내 메뉴</div>
+    <div class="menu-section-title">이용 안내 바로가기</div>
+  </div>
+  
+  <div class="menu-grid">
+    
+    <a href="dining/" class="menu-card available">
+      <div class="menu-card-inner">
+        <div class="menu-card-icon">🍽️</div>
+        <div class="menu-card-body">
+          <div class="menu-card-title">식사 안내</div>
+          <div class="menu-card-desc">점심 · 저녁 · Up-Grade · 추가 · 안주 메뉴</div>
+          <span class="menu-card-badge new">UPDATED</span>
+        </div>
+        <div class="menu-card-arrow">→</div>
+      </div>
+    </a>
+    
+    <div class="menu-card coming">
+      <div class="menu-card-inner">
+        <div class="menu-card-icon">⛳</div>
+        <div class="menu-card-body">
+          <div class="menu-card-title">골프 코스 안내</div>
+          <div class="menu-card-desc">코스 정보 · 티타임 · 클럽하우스</div>
+          <span class="menu-card-badge soon">준비 중</span>
+        </div>
+        <div class="menu-card-arrow">→</div>
+      </div>
+    </div>
+    
+    <div class="menu-card coming">
+      <div class="menu-card-inner">
+        <div class="menu-card-icon">🏨</div>
+        <div class="menu-card-body">
+          <div class="menu-card-title">객실 안내</div>
+          <div class="menu-card-desc">객실 타입 · 시설 · 편의용품</div>
+          <span class="menu-card-badge soon">준비 중</span>
+        </div>
+        <div class="menu-card-arrow">→</div>
+      </div>
+    </div>
+    
+    <div class="menu-card coming">
+      <div class="menu-card-inner">
+        <div class="menu-card-icon">🚌</div>
+        <div class="menu-card-body">
+          <div class="menu-card-title">공항 · 교통 안내</div>
+          <div class="menu-card-desc">공항 픽업 · 셔틀 · 주요 일정</div>
+          <span class="menu-card-badge soon">준비 중</span>
+        </div>
+        <div class="menu-card-arrow">→</div>
+      </div>
+    </div>
+    
+    <div class="menu-card coming">
+      <div class="menu-card-inner">
+        <div class="menu-card-icon">📋</div>
+        <div class="menu-card-body">
+          <div class="menu-card-title">이용 안내 · FAQ</div>
+          <div class="menu-card-desc">체크인/아웃 · 자주 묻는 질문</div>
+          <span class="menu-card-badge soon">준비 중</span>
+        </div>
+        <div class="menu-card-arrow">→</div>
+      </div>
+    </div>
+    
+  </div>
+</section>
+
+<!-- INFO BLOCK -->
+<div class="info-block">
+  <div class="info-block-head">
+    <div class="info-block-tag">CONTACT · 문의</div>
+    <div class="info-block-title">예약 · 문의</div>
+  </div>
+  
+  <div class="info-cards">
+    <div class="info-card">
+      <div class="info-card-label">㈜ 메리트투어</div>
+      <div class="info-card-value">02-365-9800</div>
+    </div>
+    <div class="info-card">
+      <div class="info-card-label">운영 시간</div>
+      <div class="info-card-value">평일 09:00 ~ 18:00</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-brand">MERIT TOUR · 메리트투어</div>
+  <div>나고야 포틴힐즈 컨트리클럽</div>
+  <div>회원예약센터</div>
+  
+  <div class="footer-contact">
+    <strong>02 · 365 · 9800</strong><br>
+    예약 및 문의 안내
+  </div>
+  
+  <div class="footer-update">UPDATED · 2026.04</div>
+</footer>
+
+</div>
+</body>
+</html>
