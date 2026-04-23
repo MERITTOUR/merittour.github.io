@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>메리트투어 리조트 안내</title>
+<meta name="description" content="메리트투어 — 프리미엄 일본 골프 투어 전문, 회원 종합 안내 센터">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  
+  :root {
+    /* 메리트투어 브랜드 테마 — 깊은 네이비 + 골드 */
+    --cream: #f8f4ea;
+    --paper: #fffdf8;
+    --ink: #1a1612;
+    --ink-soft: #4a4239;
+    --ink-mute: #857c70;
+    
+    --navy: #1e2a3d;
+    --navy-deep: #141c2a;
+    --gold: #b8893d;
+    --gold-light: #d4a85a;
+    --gold-deep: #8a6526;
+    --brown: #3a2a1c;
+    
+    --line: #e8dfd0;
+    --line-soft: #f0e9dc;
+  }
+  
+  html { scroll-behavior: smooth; }
+  
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.7;
+    font-size: 15px;
+    background-image: 
+      radial-gradient(circle at 5% 0%, rgba(30,42,61,0.04) 0%, transparent 45%),
+      radial-gradient(circle at 95% 100%, rgba(184,137,61,0.04) 0%, transparent 45%);
+    min-height: 100vh;
+  }
+  
+  .wrap { max-width: 720px; margin: 0 auto; background: var(--paper); box-shadow: 0 0 60px rgba(0,0,0,0.06); min-height: 100vh; }
+  
+  /* ===== HEADER ===== */
+  header {
+    padding: 64px 24px 48px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--navy-deep) 0%, var(--navy) 100%);
+    color: #f5ebd6;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      radial-gradient(ellipse 70% 40% at 50% 0%, rgba(212,168,90,0.12) 0%, transparent 70%),
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(212,168,90,0.015) 2px, rgba(212,168,90,0.015) 3px);
+    pointer-events: none;
+  }
+  
+  /* 장식적 골드 라인 */
+  .header-deco {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212,168,90,0.5), transparent);
+  }
+  .header-deco.bottom {
+    top: auto;
+    bottom: 24px;
+  }
+  
+  .logo-mark {
+    display: inline-block;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .logo-mark-inner {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 11px;
+    letter-spacing: 0.5em;
+    color: var(--gold-light);
+    padding: 0 18px;
+    position: relative;
+  }
+  .logo-mark-inner::before, .logo-mark-inner::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 28px;
+    height: 1px;
+    background: var(--gold-light);
+    opacity: 0.6;
+  }
+  .logo-mark-inner::before { right: 100%; }
+  .logo-mark-inner::after { left: 100%; }
+  
+  h1 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 44px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  h1 .gold-accent { color: var(--gold-light); }
+  
+  .h1-en {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 13px;
+    color: var(--gold-light);
+    font-weight: 400;
+    letter-spacing: 0.3em;
+    margin-bottom: 20px;
+    position: relative;
+    opacity: 0.9;
+  }
+  
+  .h1-tagline {
+    font-size: 13px;
+    color: rgba(245,235,214,0.75);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin-bottom: 28px;
+    position: relative;
+  }
+  
+  .header-meta {
+    display: inline-block;
+    padding: 9px 22px;
+    border: 1px solid rgba(212,168,90,0.35);
+    border-radius: 2px;
+    font-size: 11px;
+    color: var(--gold-light);
+    letter-spacing: 0.15em;
+    position: relative;
+  }
+  
+  /* ===== WELCOME ===== */
+  .welcome {
+    padding: 50px 24px 20px;
+    text-align: center;
+  }
+  .welcome-tag {
+    display: inline-block;
+    font-family: 'Noto Serif KR', serif;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.35em;
+    margin-bottom: 16px;
+  }
+  .welcome-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 23px;
+    font-weight: 700;
+    color: var(--navy-deep);
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+    line-height: 1.45;
+  }
+  .welcome-desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.8;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .welcome-desc strong { color: var(--navy); font-weight: 600; }
+  
+  .divider-ornament {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 30px 0 0;
+    color: var(--gold-light);
+  }
+  .divider-ornament .line {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+  }
+  .divider-ornament .sym { font-size: 10px; opacity: 0.9; }
+  
+  /* ===== RESORTS ===== */
+  .resorts-section {
+    padding: 24px 20px 44px;
+  }
+  .resorts-section-head {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .resorts-section-num {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 0.35em;
+    margin-bottom: 8px;
+  }
+  .resorts-section-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy-deep);
+    letter-spacing: -0.01em;
+  }
+  
+  .resort-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .resort-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .resort-card:hover, .resort-card:active {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 28px rgba(30,42,61,0.12);
+    border-color: var(--gold);
+  }
+  
+  /* 카드 상단 색상 배너 */
+  .resort-banner {
+    padding: 28px 24px 18px;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .resort-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.03) 20px, rgba(255,255,255,0.03) 21px);
+    pointer-events: none;
+  }
+  .resort-card.fortinhills .resort-banner {
+    background: linear-gradient(135deg, #2a1f15 0%, #3a2a1c 60%, #4a3624 100%);
+  }
+  .resort-card.yamanami .resort-banner {
+    background: linear-gradient(135deg, #1e3d28 0%, #2d5a3d 60%, #3a7050 100%);
+  }
+  
+  .resort-number {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    margin-bottom: 12px;
+    opacity: 0.8;
+    position: relative;
+  }
+  .resort-card.fortinhills .resort-number { color: var(--gold-light); }
+  .resort-card.yamanami .resort-number { color: #c4a484; }
+  
+  .resort-icon {
+    font-size: 32px;
+    margin-bottom: 8px;
+    position: relative;
+  }
+  
+  .resort-name-ko {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+    position: relative;
+  }
+  .resort-name-en {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    opacity: 0.85;
+    position: relative;
+  }
+  .resort-card.fortinhills .resort-name-en { color: var(--gold-light); }
+  .resort-card.yamanami .resort-name-en { color: #c4a484; }
+  
+  .resort-body {
+    padding: 18px 22px 22px;
+  }
+  .resort-desc {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.65;
+    margin-bottom: 14px;
+  }
+  
+  .resort-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .resort-tag {
+    font-size: 10px;
+    padding: 3px 9px;
+    background: var(--line-soft);
+    color: var(--ink-soft);
+    border-radius: 10px;
+    letter-spacing: 0.02em;
+  }
+  
+  .resort-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+    border-top: 1px dashed var(--line);
+  }
+  .resort-cta {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: -0.01em;
+  }
+  .resort-arrow {
+    font-size: 18px;
+    color: var(--gold);
+    transition: transform 0.25s ease;
+  }
+  .resort-card:hover .resort-arrow { transform: translateX(6px); }
+  
+  /* ===== CONTACT ===== */
+  .contact-section {
+    background: linear-gradient(180deg, #f0e6d2 0%, #e8dcc0 100%);
+    padding: 36px 24px 40px;
+    border-top: 1px solid var(--line);
+  }
+  .contact-head {
+    text-align: center;
+    margin-bottom: 22px;
+  }
+  .contact-tag {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 11px;
+    color: var(--gold-deep);
+    letter-spacing: 0.3em;
+  }
+  .contact-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--navy-deep);
+    margin-top: 6px;
+  }
+  
+  .contact-card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 22px;
+    text-align: center;
+  }
+  .contact-brand {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 13px;
+    color: var(--gold-deep);
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+  .contact-phone {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--navy-deep);
+    letter-spacing: 0.02em;
+    margin-bottom: 6px;
+  }
+  .contact-hours {
+    font-size: 12px;
+    color: var(--ink-mute);
+  }
+  
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--navy-deep);
+    color: #8a95a8;
+    padding: 36px 24px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  footer .footer-brand {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 16px;
+    color: var(--gold-light);
+    margin-bottom: 10px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+  footer .footer-tagline {
+    font-size: 11px;
+    color: rgba(212,168,90,0.6);
+    letter-spacing: 0.15em;
+  }
+  footer .footer-update {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(212,168,90,0.1);
+    font-size: 10px;
+    color: rgba(138,149,168,0.6);
+    letter-spacing: 0.1em;
+  }
+  
+  /* Responsive */
+  @media (max-width: 480px) {
+    body { font-size: 14px; }
+    header { padding: 50px 18px 40px; }
+    h1 { font-size: 34px; }
+    .h1-en { font-size: 11px; letter-spacing: 0.25em; }
+    .h1-tagline { font-size: 12px; }
+    .welcome { padding: 40px 18px 12px; }
+    .welcome-title { font-size: 19px; }
+    .resorts-section { padding: 14px 16px 32px; }
+    .resort-banner { padding: 24px 20px 16px; }
+    .resort-name-ko { font-size: 20px; }
+    .resort-body { padding: 16px 18px 20px; }
+    .contact-phone { font-size: 24px; }
+  }
+  
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  header, .welcome, .resorts-section, .contact-section { animation: fadeUp 0.5s ease-out backwards; }
+  .welcome { animation-delay: 0.12s; }
+  .resorts-section { animation-delay: 0.22s; }
+  .contact-section { animation-delay: 0.34s; }
+  
+  .resort-card {
+    animation: fadeUp 0.5s ease-out backwards;
+  }
+  .resort-card:nth-child(1) { animation-delay: 0.3s; }
+  .resort-card:nth-child(2) { animation-delay: 0.4s; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="header-deco"></div>
+  
+  <div class="logo-mark">
+    <span class="logo-mark-inner">MERIT TOUR</span>
+  </div>
+  
+  <h1>메리트투어<br><span class="gold-accent">리조트 안내</span></h1>
+  <div class="h1-en">PREMIUM JAPAN GOLF TOUR</div>
+  <div class="h1-tagline">회원 여러분을 위한 종합 안내 센터</div>
+  <div class="header-meta">OFFICIAL GUIDE</div>
+  
+  <div class="header-deco bottom"></div>
+</header>
+
+<!-- WELCOME -->
+<section class="welcome">
+  <div class="welcome-tag">WELCOME</div>
+  <div class="welcome-title">일본의 명문 리조트에서<br>잊지 못할 순간을</div>
+  <div class="welcome-desc">
+    메리트투어가 엄선한 <strong>프리미엄 일본 골프 리조트</strong>를 안내드립니다.<br>
+    아래 시설을 선택하시면 상세 정보를 확인하실 수 있습니다.
+  </div>
+  <div class="divider-ornament">
+    <div class="line"></div>
+    <span class="sym">◆</span>
+    <div class="line"></div>
+  </div>
+</section>
+
+<!-- RESORTS -->
+<section class="resorts-section">
+  <div class="resorts-section-head">
+    <div class="resorts-section-num">RESORTS · 시설 안내</div>
+    <div class="resorts-section-title">리조트 선택</div>
+  </div>
+  
+  <div class="resort-grid">
+    
+    <!-- 포틴힐즈 -->
+    <a href="14hills/" class="resort-card fortinhills">
+      <div class="resort-banner">
+        <div class="resort-number">RESORT · 01</div>
+        <div class="resort-icon">🏌️</div>
+        <div class="resort-name-ko">나고야 포틴힐즈 CC</div>
+        <div class="resort-name-en">Fortin Hills Country Club</div>
+      </div>
+      <div class="resort-body">
+        <div class="resort-desc">
+          나고야 근교의 명문 컨트리 클럽으로,
+          품격 있는 클럽하우스와 전통 요리, 정식 코스를 제공합니다.
+        </div>
+        <div class="resort-tags">
+          <span class="resort-tag">🏌️ 골프</span>
+          <span class="resort-tag">🍽️ 식사</span>
+          <span class="resort-tag">🏨 숙박</span>
+          <span class="resort-tag">🏯 나고야</span>
+        </div>
+        <div class="resort-footer">
+          <span class="resort-cta">안내 보기</span>
+          <span class="resort-arrow">→</span>
+        </div>
+      </div>
+    </a>
+    
+    <!-- 야마나미 -->
+    <a href="yamanami/" class="resort-card yamanami">
+      <div class="resort-banner">
+        <div class="resort-number">RESORT · 02</div>
+        <div class="resort-icon">🌿</div>
+        <div class="resort-name-ko">아소 야마나미 리조트</div>
+        <div class="resort-name-en">Aso Yamanami Resort &amp; Golf Club</div>
+      </div>
+      <div class="resort-body">
+        <div class="resort-desc">
+          규슈 아소 국립공원 인근의 자연 친화적 리조트.
+          산속 힐링과 프리미엄 골프를 함께 즐기실 수 있습니다.
+        </div>
+        <div class="resort-tags">
+          <span class="resort-tag">⛳ 골프</span>
+          <span class="resort-tag">🍽️ 식사</span>
+          <span class="resort-tag">🏨 숙박</span>
+          <span class="resort-tag">🏔️ 규슈 · 아소</span>
+        </div>
+        <div class="resort-footer">
+          <span class="resort-cta">안내 보기</span>
+          <span class="resort-arrow">→</span>
+        </div>
+      </div>
+    </a>
+    
+  </div>
+</section>
+
+<!-- CONTACT -->
+<div class="contact-section">
+  <div class="contact-head">
+    <div class="contact-tag">CONTACT · 예약 문의</div>
+    <div class="contact-title">㈜ 메리트투어 회원예약센터</div>
+  </div>
+  
+  <div class="contact-card">
+    <div class="contact-brand">MERIT TOUR · RESERVATION</div>
+    <div class="contact-phone">02-365-9800</div>
+    <div class="contact-hours">평일 09:00 ~ 18:00</div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-brand">MERIT TOUR</div>
+  <div class="footer-tagline">PREMIUM JAPAN GOLF TOUR</div>
+  
+  <div class="footer-update">UPDATED · 2026.04</div>
+</footer>
+
+</div>
+</body>
+</html>
