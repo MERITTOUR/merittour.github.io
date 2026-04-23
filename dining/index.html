@@ -454,13 +454,12 @@
   .upgrade-section .section-title-jp { color: #a89070; }
   
   .upgrade-info {
-    background: rgba(212,168,90,0.1);
+    background: rgba(212,168,90,0.08);
     border: 1px solid rgba(212,168,90,0.3);
     border-left: 3px solid #d4a85a;
     border-radius: 4px;
-    padding: 14px 16px;
+    padding: 16px 18px;
     margin-bottom: 22px;
-    text-align: center;
   }
   .upgrade-info .tag {
     display: inline-block;
@@ -471,16 +470,79 @@
     padding: 3px 10px;
     border-radius: 2px;
     letter-spacing: 0.1em;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
-  .upgrade-info-text {
+  .upgrade-info-title {
+    font-family: 'Noto Serif KR', serif;
     font-size: 14px;
-    color: #f5ebd6;
-    line-height: 1.6;
+    font-weight: 700;
+    color: #f4d78a;
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
   }
-  .upgrade-info-text strong {
+  
+  .apply-routes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .apply-route {
+    background: rgba(255,253,248,0.05);
+    border: 1px solid rgba(212,168,90,0.2);
+    border-radius: 4px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+  .apply-route-icon {
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+  .apply-route-label {
+    display: inline-block;
+    background: rgba(212,168,90,0.15);
+    color: #d4a85a;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 10px;
+    letter-spacing: 0.05em;
+    margin-bottom: 6px;
+  }
+  .apply-route-main {
+    font-size: 13px;
+    color: #f5ebd6;
+    line-height: 1.5;
+    margin-bottom: 3px;
+  }
+  .apply-route-main strong {
     color: #f4d78a;
     font-weight: 700;
+    font-size: 14px;
+  }
+  .apply-route-sub {
+    font-size: 11px;
+    color: #a89070;
+    letter-spacing: 0.02em;
+  }
+  .apply-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 2px 0;
+  }
+  .apply-divider::before, .apply-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(212,168,90,0.2);
+    max-width: 40px;
+  }
+  .apply-divider span {
+    font-size: 10px;
+    color: #a89070;
+    font-weight: 500;
+    letter-spacing: 0.1em;
   }
   
   .upgrade-block {
@@ -661,9 +723,9 @@
     <span class="change-label">점심 ②</span>
     <strong>체류일 중식</strong> <span style="color:var(--ink-mute);font-size:12px;">(인천·부산 동일)</span>
     <span class="change-flow">
-      <span class="from">매일 클럽식</span>
+      <span class="from">매일 뷔페식</span>
       <span class="arrow">→</span>
-      <span class="to">화·목·일 단품메뉴 / 그 외 클럽식</span>
+      <span class="to">화·목·일 단품메뉴 / 그 외 뷔페식</span>
     </span>
   </div>
 </div>
@@ -687,16 +749,16 @@
   <div class="lunch-stay-box">
     <h4>체류일 중식</h4>
     <div class="sub">滞在日 ランチ · 仁川/釜山 共通</div>
-    <p><strong>화·목·일</strong>은 단품메뉴, 그 외 요일은 <strong>클럽식</strong>으로 제공됩니다.</p>
+    <p><strong>화·목·일</strong>은 단품메뉴, 그 외 요일은 <strong>뷔페식</strong>으로 제공됩니다.</p>
     
     <div class="week-grid">
       <div class="week-day highlight"><div class="week-day-name">일</div><div class="week-day-menu">단품</div></div>
-      <div class="week-day"><div class="week-day-name">월</div><div class="week-day-menu">클럽식</div></div>
+      <div class="week-day"><div class="week-day-name">월</div><div class="week-day-menu">뷔페식</div></div>
       <div class="week-day highlight"><div class="week-day-name">화</div><div class="week-day-menu">단품</div></div>
-      <div class="week-day"><div class="week-day-name">수</div><div class="week-day-menu">클럽식</div></div>
+      <div class="week-day"><div class="week-day-name">수</div><div class="week-day-menu">뷔페식</div></div>
       <div class="week-day highlight"><div class="week-day-name">목</div><div class="week-day-menu">단품</div></div>
-      <div class="week-day"><div class="week-day-name">금</div><div class="week-day-menu">클럽식</div></div>
-      <div class="week-day"><div class="week-day-name">토</div><div class="week-day-menu">클럽식</div></div>
+      <div class="week-day"><div class="week-day-name">금</div><div class="week-day-menu">뷔페식</div></div>
+      <div class="week-day"><div class="week-day-name">토</div><div class="week-day-menu">뷔페식</div></div>
     </div>
     <div class="legend-note"><span class="dot"></span>단품메뉴 운영일 (화·목·일)</div>
   </div>
@@ -832,10 +894,21 @@
   
   <div class="upgrade-info">
     <span class="tag">신청 안내</span>
-    <div class="upgrade-info-text">
-      모든 Up-Grade / 추가 메뉴는<br>
-      <strong>출발 2일 전 오후 2시까지</strong><br>
-      프런트에서 신청 가능합니다.
+    <div class="upgrade-info-title">Up-Grade · 추가 메뉴 신청 방법</div>
+    <div class="apply-routes">
+      <div class="apply-route">
+        <div class="apply-route-icon">📞</div>
+        <div class="apply-route-label">출발 전</div>
+        <div class="apply-route-main">출발 <strong>3일 전</strong>까지</div>
+        <div class="apply-route-sub">메리트투어 (02-365-9800)</div>
+      </div>
+      <div class="apply-divider"><span>또는</span></div>
+      <div class="apply-route">
+        <div class="apply-route-icon">🏨</div>
+        <div class="apply-route-label">체류 중</div>
+        <div class="apply-route-main">출발 <strong>2일 전 오후 2시</strong>까지</div>
+        <div class="apply-route-sub">리조트 프런트</div>
+      </div>
     </div>
   </div>
   
