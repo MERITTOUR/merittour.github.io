@@ -47,6 +47,35 @@
   
   .wrap { max-width: 720px; margin: 0 auto; background: var(--paper); box-shadow: 0 0 60px rgba(0,0,0,0.05); min-height: 100vh; }
   
+  /* ===== BREADCRUMB ===== */
+  .breadcrumb {
+    padding: 14px 24px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 12px;
+    color: var(--ink-mute);
+  }
+  .breadcrumb a {
+    color: var(--forest);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb .sep { margin: 0 8px; color: var(--moss-soft); }
+  
+  /* footer-back 버튼 */
+  footer .footer-back {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 6px 16px;
+    border: 1px solid rgba(196,164,132,0.3);
+    border-radius: 18px;
+    font-size: 11px;
+    color: #c4a484;
+    text-decoration: none;
+  }
+  footer .footer-back:hover { background: rgba(196,164,132,0.08); }
+  
   /* ===== HEADER ===== */
   header {
     padding: 56px 24px 40px;
@@ -451,6 +480,12 @@
 <body>
 <div class="wrap">
 
+<nav class="breadcrumb">
+  <a href="../">🏠 메리트투어</a>
+  <span class="sep">›</span>
+  <span>야마나미 리조트 안내</span>
+</nav>
+
 <header>
   <div class="brand-line">MERIT TOUR · ASO YAMANAMI</div>
   <h1>아소 야마나미 리조트</h1>
@@ -590,6 +625,8 @@
     <strong>02 · 365 · 9800</strong><br>
     예약 및 문의 안내
   </div>
+  
+  <a href="../" class="footer-back">← 메리트투어 메인으로</a>
   
   <div class="footer-update">UPDATED · 2026.04</div>
 </footer>
