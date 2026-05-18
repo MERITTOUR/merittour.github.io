@@ -476,6 +476,128 @@
     flex-shrink: 0;
   }
 
+  /* === 투어 공통 안내 박스 === */
+  .tour-common-info {
+    margin: 18px 0 26px;
+    background: #ffffff;
+    border: 1px solid #e0e4ec;
+    border-radius: 14px;
+    padding: 20px 22px;
+  }
+  .tour-common-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a2740;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1.5px solid #1a2740;
+  }
+  .tour-common-row {
+    display: flex;
+    gap: 14px;
+    padding: 7px 0;
+    font-size: 13.5px;
+    color: #3a4a63;
+    line-height: 1.65;
+    align-items: flex-start;
+  }
+  .tour-common-row + .tour-common-row {
+    border-top: 1px solid #f0f2f5;
+  }
+  .tour-common-row .ci-label {
+    flex-shrink: 0;
+    width: 78px;
+    color: #1a2740;
+    font-weight: 700;
+    font-size: 12.5px;
+  }
+  .tour-common-row .ci-value {
+    flex: 1;
+  }
+  .tour-common-row .ci-value strong { color: #1a2740; font-weight: 600; }
+  .tour-common-note {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: #fff8f0;
+    border-left: 3px solid #B8935A;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #7a5520;
+    line-height: 1.7;
+  }
+
+  /* === 시설 카드 하단 투어 박스 === */
+  .tour-schedule-box {
+    margin-top: -8px;
+    margin-bottom: 18px;
+    background: #f7f8fa;
+    border: 1px solid #e8ebf0;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    padding: 14px 18px 16px;
+  }
+  .tour-schedule-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #B8935A;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .tour-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 0;
+    font-size: 13px;
+    color: #3a4a63;
+    line-height: 1.55;
+  }
+  .tour-row + .tour-row {
+    border-top: 1px dashed #e0e4ec;
+  }
+  .tour-row .tr-period {
+    flex-shrink: 0;
+    width: 110px;
+    color: #1a2740;
+    font-weight: 600;
+  }
+  .tour-row .tr-price {
+    flex: 1;
+    text-align: right;
+    color: #1a2740;
+    font-weight: 700;
+    font-size: 13.5px;
+  }
+  .tour-row .tr-price .pr-label {
+    font-size: 10.5px;
+    color: #8a96ab;
+    font-weight: 500;
+    margin-right: 4px;
+    letter-spacing: 0.5px;
+  }
+  .tour-rounding {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e0e4ec;
+    font-size: 12px;
+    color: #6a7a92;
+    line-height: 1.6;
+  }
+  .tour-rounding .tr-icon {
+    color: #B8935A;
+    font-weight: 700;
+    margin-right: 4px;
+  }
+  /* facility-card 라운딩 조정 (투어 박스가 붙을 때) */
+  .facility-card.has-tour {
+    border-radius: 10px 10px 0 0;
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
   /* === 이용 안내 === */
   .guide {
     background: #f7f8fa;
@@ -1627,6 +1749,31 @@
   <div class="section-title">DESTINATIONS</div>
   <h2 class="section-heading">주요 운영 지역</h2>
   <p class="dest-intro">메리트투어는 <strong>일본 주요 골프 리조트</strong>를 중심으로 회원 예약과 골프여행 상품을 운영하고 있습니다.</p>
+
+  <!-- 투어 공통 안내 -->
+  <div class="tour-common-info">
+    <div class="tour-common-title">📋 2026 투어 안내</div>
+    <div class="tour-common-row">
+      <span class="ci-label">운영 기간</span>
+      <span class="ci-value">3월 ~ 12월</span>
+    </div>
+    <div class="tour-common-row">
+      <span class="ci-label">출발 공항</span>
+      <span class="ci-value">인천 · 김해 <span style="font-size:12px; color:#8a96ab;">(예상가는 인천 출발 기준)</span></span>
+    </div>
+    <div class="tour-common-row">
+      <span class="ci-label">인원 기준</span>
+      <span class="ci-value">2 ~ 4인 구성 (전 시설 공통)</span>
+    </div>
+    <div class="tour-common-row">
+      <span class="ci-label">포함 사항</span>
+      <span class="ci-value">항공 · 숙박 · 라운딩 · 송영<br><span style="font-size:12px; color:#6a7a92;">조·중·석식 포함, 카트피·캐디피 포함</span></span>
+    </div>
+    <div class="tour-common-note">
+      ℹ️ 표기된 예상가는 환율, 유류할증료, 시즌, 항공 운임 등에 따라 변동될 수 있습니다. 정확한 금액은 예약 문의 시 안내드립니다.
+    </div>
+  </div>
+
   <div class="facility-list">
 
     <div class="region-group">
@@ -1634,17 +1781,38 @@
         <span class="region-en">KUMAMOTO</span>
         <span class="region-ko">구마모토</span>
       </div>
-      <div class="facility-card">
+      <div class="facility-card has-tour">
         <div class="name-en">Aso Yamanami Resort Hotel &amp; Golf Club</div>
         <div class="name-ko">아소 야마나미 리조트</div>
       </div>
-      <div class="facility-card">
+      <div class="tour-schedule-box">
+        <div class="tour-schedule-title">📅 일정 · 예상가</div>
+        <div class="tour-row"><span class="tr-period">3박 4일 (목→일)</span><span class="tr-price"><span class="pr-label">예상가</span>110만원</span></div>
+        <div class="tour-row"><span class="tr-period">4박 5일 (일→목)</span><span class="tr-price"><span class="pr-label">예상가</span>115만원</span></div>
+        <div class="tour-row"><span class="tr-period">7박 8일 (수→수)</span><span class="tr-price"><span class="pr-label">예상가</span>170만원</span></div>
+        <div class="tour-rounding"><span class="tr-icon">⛳</span>야마나미CC 27홀 (주말·공휴일 18홀)</div>
+      </div>
+      <div class="facility-card has-tour">
         <div class="name-en">The Guernsey Hotel &amp; Resort</div>
         <div class="name-ko">더 간지 호텔 &amp; 리조트</div>
       </div>
-      <div class="facility-card">
+      <div class="tour-schedule-box">
+        <div class="tour-schedule-title">📅 일정 · 예상가</div>
+        <div class="tour-row"><span class="tr-period">3박 4일 (목→일)</span><span class="tr-price"><span class="pr-label">예상가</span>115만원</span></div>
+        <div class="tour-row"><span class="tr-period">4박 5일 (일→목)</span><span class="tr-price"><span class="pr-label">예상가</span>120만원</span></div>
+        <div class="tour-row"><span class="tr-period">7박 8일 (수→수)</span><span class="tr-price"><span class="pr-label">예상가</span>175만원</span></div>
+        <div class="tour-rounding"><span class="tr-icon">⛳</span>구주고원GC · 야마나미CC (2색 골프)</div>
+      </div>
+      <div class="facility-card has-tour">
         <div class="name-en">Shizunoyado Ryokan</div>
         <div class="name-ko">시즈노야도 료칸</div>
+      </div>
+      <div class="tour-schedule-box">
+        <div class="tour-schedule-title">📅 일정 · 예상가</div>
+        <div class="tour-row"><span class="tr-period">3박 4일 (목→일)</span><span class="tr-price"><span class="pr-label">예상가</span>115만원</span></div>
+        <div class="tour-row"><span class="tr-period">4박 5일 (일→목)</span><span class="tr-price"><span class="pr-label">예상가</span>125만원</span></div>
+        <div class="tour-row"><span class="tr-period">7박 8일 (수→수)</span><span class="tr-price"><span class="pr-label">예상가</span>180만원</span></div>
+        <div class="tour-rounding"><span class="tr-icon">⛳</span>야마나미CC 27홀 (주말·공휴일 18홀)</div>
       </div>
     </div>
 
@@ -1653,9 +1821,18 @@
         <span class="region-en">NAGANO</span>
         <span class="region-ko">나가노</span>
       </div>
-      <div class="facility-card">
+      <div class="facility-card has-tour">
         <div class="name-en">Sugadaira Green CC</div>
         <div class="name-ko">스가다이라 그린 컨트리클럽</div>
+      </div>
+      <div class="tour-schedule-box">
+        <div class="tour-schedule-title">📅 일정 · 예상가</div>
+        <div class="tour-row"><span class="tr-period">5박 6일 (목→화)</span><span class="tr-price"><span class="pr-label">예상가</span>160만원</span></div>
+        <div class="tour-row"><span class="tr-period">7박 8일 (화→화)</span><span class="tr-price"><span class="pr-label">예상가</span>210만원</span></div>
+        <div class="tour-row"><span class="tr-period">7박 8일 (목→목)</span><span class="tr-price"><span class="pr-label">예상가</span>210만원</span></div>
+        <div class="tour-row"><span class="tr-period">14박 15일 (화→화)</span><span class="tr-price"><span class="pr-label">예상가</span>310만원</span></div>
+        <div class="tour-row"><span class="tr-period">14박 15일 (목→목)</span><span class="tr-price"><span class="pr-label">예상가</span>310만원</span></div>
+        <div class="tour-rounding"><span class="tr-icon">⛳</span>스가다이라 그린CC 27홀 · 해발 1,600m 고원</div>
       </div>
     </div>
 
@@ -1664,9 +1841,16 @@
         <span class="region-en">NAGOYA</span>
         <span class="region-ko">나고야</span>
       </div>
-      <div class="facility-card">
+      <div class="facility-card has-tour">
         <div class="name-en">14hill's Country Club</div>
         <div class="name-ko">포틴힐즈 컨트리클럽</div>
+      </div>
+      <div class="tour-schedule-box">
+        <div class="tour-schedule-title">📅 일정 · 예상가</div>
+        <div class="tour-row"><span class="tr-period">3박 4일 (목→일)</span><span class="tr-price"><span class="pr-label">예상가</span>115만원</span></div>
+        <div class="tour-row"><span class="tr-period">4박 5일 (일→목)</span><span class="tr-price"><span class="pr-label">예상가</span>125만원</span></div>
+        <div class="tour-row"><span class="tr-period">7박 8일 (화→화)</span><span class="tr-price"><span class="pr-label">예상가</span>170만원</span></div>
+        <div class="tour-rounding"><span class="tr-icon">⛳</span>포틴힐즈CC 27홀 (주말·공휴일 18홀)</div>
       </div>
     </div>
 
@@ -1675,13 +1859,23 @@
         <span class="region-en">IBARAKI</span>
         <span class="region-ko">이바라키</span>
       </div>
-      <div class="facility-card">
+      <div class="facility-card has-tour">
         <div class="name-en">Shirosato Country Club</div>
         <div class="name-ko">시로사토 컨트리클럽</div>
       </div>
-      <div class="facility-card">
+      <div class="tour-schedule-box">
+        <div class="tour-schedule-title">📅 일정 · 예상가</div>
+        <div class="tour-row"><span class="tr-period">6박 7일 (일→토)</span><span class="tr-price"><span class="pr-label">예상가</span>160만원</span></div>
+        <div class="tour-rounding"><span class="tr-icon">⛳</span>시로사토CC 27홀 (주말·공휴일 18홀)</div>
+      </div>
+      <div class="facility-card has-tour">
         <div class="name-en">Fukurodanotaki Country Club</div>
         <div class="name-ko">후쿠로다노타키 컨트리클럽</div>
+      </div>
+      <div class="tour-schedule-box">
+        <div class="tour-schedule-title">📅 일정 · 예상가</div>
+        <div class="tour-row"><span class="tr-period">7박 8일 (월→월)</span><span class="tr-price"><span class="pr-label">예상가</span>180만원</span></div>
+        <div class="tour-rounding"><span class="tr-icon">⛳</span>후쿠로다노타키CC 27홀 (주말·공휴일 18홀)</div>
       </div>
     </div>
 
@@ -1690,13 +1884,25 @@
         <span class="region-en">BEPPU</span>
         <span class="region-ko">벳푸</span>
       </div>
-      <div class="facility-card">
+      <div class="facility-card has-tour">
         <div class="name-en">Akiba Resort</div>
         <div class="name-ko">아키바 리조트</div>
       </div>
-      <div class="facility-card">
+      <div class="tour-schedule-box">
+        <div class="tour-schedule-title">📅 일정 · 예상가</div>
+        <div class="tour-row"><span class="tr-period">3박 4일 (금→월)</span><span class="tr-price"><span class="pr-label">예상가</span>105만원</span></div>
+        <div class="tour-row"><span class="tr-period">4박 5일 (월→금)</span><span class="tr-price"><span class="pr-label">예상가</span>115만원</span></div>
+        <div class="tour-rounding"><span class="tr-icon">⛳</span>벳푸CC · 오기야마CC (2색 골프, 18홀)</div>
+      </div>
+      <div class="facility-card has-tour">
         <div class="name-en">Mutsuki Ryokan</div>
         <div class="name-ko">무츠키 료칸</div>
+      </div>
+      <div class="tour-schedule-box">
+        <div class="tour-schedule-title">📅 일정 · 예상가 <span style="color:#8a96ab; font-weight:500; letter-spacing:0.5px;">· 토탈 패키지</span></div>
+        <div class="tour-row"><span class="tr-period">3박 4일 (금→월) · 2색</span><span class="tr-price"><span class="pr-label">예상가</span>160만원</span></div>
+        <div class="tour-row"><span class="tr-period">4박 5일 (월→금) · 3색</span><span class="tr-price"><span class="pr-label">예상가</span>185만원</span></div>
+        <div class="tour-rounding"><span class="tr-icon">⛳</span>벳푸CC · 오기야마CC (18홀)</div>
       </div>
       <div class="region-note-small">
         <span class="rn-label">⛳ 라운딩</span>
@@ -1709,9 +1915,14 @@
         <span class="region-en">MIYAZAKI</span>
         <span class="region-ko">미야자키</span>
       </div>
-      <div class="facility-card">
+      <div class="facility-card has-tour">
         <div class="name-en">Kokusai Kuko Country Club</div>
         <div class="name-ko">국제공항 컨트리클럽</div>
+      </div>
+      <div class="tour-schedule-box">
+        <div class="tour-schedule-title">📅 일정 · 예상가</div>
+        <div class="tour-row"><span class="tr-period">5박 6일 (일→금)</span><span class="tr-price"><span class="pr-label">예상가</span>145만원</span></div>
+        <div class="tour-rounding"><span class="tr-icon">⛳</span>미야자키 국제공항CC 27홀 (월~목)</div>
       </div>
     </div>
 
