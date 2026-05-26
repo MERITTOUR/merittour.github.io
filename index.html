@@ -259,6 +259,9 @@
   .resort-card.yamanami .resort-banner {
     background: linear-gradient(135deg, #1e3d28 0%, #2d5a3d 60%, #3a7050 100%);
   }
+  .resort-card.about .resort-banner {
+    background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 55%, #2a3a52 100%);
+  }
   
   .resort-number {
     font-family: 'Noto Serif KR', serif;
@@ -270,6 +273,7 @@
   }
   .resort-card.fortinhills .resort-number { color: var(--gold-light); }
   .resort-card.yamanami .resort-number { color: #c4a484; }
+  .resort-card.about .resort-number { color: var(--gold-light); }
   
   .resort-icon {
     font-size: 32px;
@@ -295,6 +299,7 @@
   }
   .resort-card.fortinhills .resort-name-en { color: var(--gold-light); }
   .resort-card.yamanami .resort-name-en { color: #c4a484; }
+  .resort-card.about .resort-name-en { color: var(--gold-light); }
   
   .resort-body {
     padding: 18px 22px 22px;
@@ -341,6 +346,11 @@
     transition: transform 0.25s ease;
   }
   .resort-card:hover .resort-arrow { transform: translateX(6px); }
+  
+  /* ===== ABOUT / 회사 안내 ===== */
+  .about-section {
+    padding: 6px 20px 44px;
+  }
   
   /* ===== CONTACT ===== */
   .contact-section {
@@ -434,6 +444,7 @@
     .welcome { padding: 40px 18px 12px; }
     .welcome-title { font-size: 19px; }
     .resorts-section { padding: 14px 16px 32px; }
+    .about-section { padding: 4px 16px 32px; }
     .resort-banner { padding: 24px 20px 16px; }
     .resort-name-ko { font-size: 20px; }
     .resort-body { padding: 16px 18px 20px; }
@@ -444,9 +455,10 @@
     from { opacity: 0; transform: translateY(14px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  header, .welcome, .resorts-section, .contact-section { animation: fadeUp 0.5s ease-out backwards; }
+  header, .welcome, .resorts-section, .about-section, .contact-section { animation: fadeUp 0.5s ease-out backwards; }
   .welcome { animation-delay: 0.12s; }
   .resorts-section { animation-delay: 0.22s; }
+  .about-section { animation-delay: 0.3s; }
   .contact-section { animation-delay: 0.34s; }
   
   .resort-card {
@@ -553,6 +565,43 @@
   </div>
 </section>
 
+<!-- ABOUT / 회사 안내 -->
+<section class="about-section">
+  <div class="resorts-section-head">
+    <div class="resorts-section-num">ABOUT · 회원 안내</div>
+    <div class="resorts-section-title">회사소개</div>
+  </div>
+
+  <div class="resort-grid">
+
+    <!-- 회사소개 -->
+    <a href="about/" class="resort-card about">
+      <div class="resort-banner">
+        <div class="resort-number">MERIT TOUR · COMPANY</div>
+        <div class="resort-icon">🏢</div>
+        <div class="resort-name-ko">회사소개</div>
+        <div class="resort-name-en">About MERIT TOUR &amp; Membership</div>
+      </div>
+      <div class="resort-body">
+        <div class="resort-desc">
+          메리트투어 회사 소개와 회원권 안내, 명함·연락처 정보를
+          한 곳에서 확인하실 수 있습니다.
+        </div>
+        <div class="resort-tags">
+          <span class="resort-tag">🏢 회사소개</span>
+          <span class="resort-tag">💳 회원권 안내</span>
+          <span class="resort-tag">📇 명함 · 연락처</span>
+        </div>
+        <div class="resort-footer">
+          <span class="resort-cta">안내 보기</span>
+          <span class="resort-arrow">→</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</section>
+
 <!-- CONTACT -->
 <div class="contact-section">
   <div class="contact-head">
@@ -571,7 +620,7 @@
   <div class="footer-brand">MERIT TOUR</div>
   <div class="footer-tagline">PREMIUM JAPAN GOLF TOUR</div>
   
-  <div class="footer-update">UPDATED · 2026.04</div>
+  <div class="footer-update">UPDATED · 2026.05</div>
 </footer>
 
 </div>
