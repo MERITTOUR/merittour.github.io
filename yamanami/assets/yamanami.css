@@ -1,53 +1,44 @@
 /* ============================================================
-   YAMANAMI RESORT — 라이트 테마 (공유 스타일시트)
+   YAMANAMI RESORT — 다크 골드/포레스트 테마 (공유 스타일시트)
    index.html · lunch/ · dining/ 공통 사용
-   가독성 우선: 밝은 화면 + 진한 잉크 본문, 그린·골드 포인트
+   가독성 우선: 50~70대 고객층 대상 — 큰 글씨 · 높은 대비
    ============================================================ */
 
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
 :root {
-  /* 배경 (밝은 화이트 계열) */
-  --page-bg: #e7eae2;       /* 바깥 여백 */
-  --paper: #ffffff;         /* 페이지 / 카드 기본 */
-  --paper-soft: #f4f6f0;    /* alt 섹션 / 줄무늬 */
-  --paper-line: #eef1e8;
+  /* 포레스트 그린 */
+  --forest: #0d1f15;        /* 메인 배경 */
+  --forest-mid: #16301f;    /* 섹션 alt / 카드 (대비 위해 살짝 밝게) */
+  --forest-light: #1f4029;  /* 활성 셀 */
+  --black-tone: #081410;    /* 가장 어두운 톤 */
+  --page-bg: #060d09;       /* 바깥 여백 */
 
-  /* 텍스트 (진한 잉크) */
-  --ink: #1b2a20;           /* 본문 — 진한 포레스트 잉크 */
-  --ink-soft: #36473a;      /* 보조 */
-  --ink-mute: #586a5a;      /* 흐린 텍스트 (대비 확보) */
-
-  /* 그린 포인트 */
-  --forest: #1f5130;
-  --forest-deep: #143d24;
-  --moss: #3d7a4c;
-
-  /* 골드 포인트 (화이트 위 가독 가능한 진한 골드) */
-  --gold: #8a6a2e;          /* 텍스트용 골드 */
-  --gold-deep: #6d531f;
-  --gold-soft: #c6a564;     /* 장식/보더용 */
+  /* 골드 */
+  --gold: #D8B981;          /* 메인 골드 (가독성 위해 밝게) */
+  --gold-bright: #F0D7A4;   /* 강조 골드 */
+  --gold-dim: #A0824D;      /* 보더/디바이더 (또렷하게) */
 
   /* 와인레드 (강조) */
-  --wine: #9d3324;
-  --wine-light: #b9442f;
+  --wine: #A04438;
+  --wine-light: #E07A66;    /* 본문 강조 — 밝게 */
 
-  /* 그린 배경(헤더/푸터/신청) 위의 밝은 텍스트 */
-  --on-green: #f3eedd;
-  --on-green-dim: #d6c8a2;
-  --on-green-gold: #ecd29a;
+  /* 텍스트 (대비 강화) */
+  --cream: #F6F1E0;         /* 본문 — 거의 흰빛 크림 */
+  --cream-dim: #E0D9C2;     /* 보조 텍스트 — 충분히 밝게 */
+  --cream-mute: #C2C4B0;    /* 가장 흐린 텍스트도 또렷하게 */
 
-  /* 요일 컬러 */
-  --c-sun: #c4453a;
-  --c-mon: #c2861c;
-  --c-tue: #c89a1e;
-  --c-wed: #3f8a3c;
-  --c-thu: #2a6fb0;
-  --c-fri: #34589e;
-  --c-sat: #6a4a92;
+  /* 요일 컬러 (다크 대응 채도) */
+  --c-sun: #d0604f;
+  --c-mon: #d3a440;
+  --c-tue: #d4ad44;
+  --c-wed: #62a455;
+  --c-thu: #4f8cc9;
+  --c-fri: #5a7fbb;
+  --c-sat: #8665ad;
 
-  --line: #d9ddcd;
-  --line-soft: #e7ebdd;
+  --line: rgba(216,185,129,0.42);
+  --line-soft: rgba(216,185,129,0.26);
 }
 
 html { scroll-behavior: smooth; }
@@ -55,14 +46,14 @@ html { scroll-behavior: smooth; }
 body {
   font-family: 'Pretendard', 'Noto Sans KR', -apple-system, sans-serif;
   background: var(--page-bg);
-  color: var(--ink);
+  color: var(--cream);
   line-height: 1.8;
   font-size: 17px;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   background-image:
-    radial-gradient(circle at 12% 0%, rgba(31,81,48,0.05) 0%, transparent 42%),
-    radial-gradient(circle at 88% 100%, rgba(138,106,46,0.05) 0%, transparent 42%);
+    radial-gradient(circle at 12% 0%, rgba(216,185,129,0.06) 0%, transparent 42%),
+    radial-gradient(circle at 88% 100%, rgba(160,68,56,0.06) 0%, transparent 42%);
   min-height: 100vh;
   padding: 18px 12px;
 }
@@ -70,8 +61,8 @@ body {
 .wrap {
   max-width: 760px;
   margin: 0 auto;
-  background: var(--paper);
-  box-shadow: 0 10px 50px rgba(20,40,28,0.12);
+  background: var(--forest);
+  box-shadow: 0 10px 50px rgba(0,0,0,0.55);
   position: relative;
   overflow: hidden;
 }
@@ -79,7 +70,7 @@ body {
   content: '';
   position: absolute;
   inset: 8px;
-  border: 1px solid var(--gold-soft);
+  border: 1px solid var(--gold-dim);
   pointer-events: none;
   z-index: 30;
 }
@@ -89,21 +80,21 @@ body {
   position: relative;
   z-index: 20;
   padding: 15px 26px;
-  background: var(--paper-soft);
-  border-bottom: 1px solid var(--line);
+  background: var(--black-tone);
+  border-bottom: 1px solid var(--line-soft);
   font-size: 14px;
-  color: var(--ink-mute);
+  color: var(--cream-dim);
 }
-.breadcrumb a { color: var(--forest); text-decoration: none; font-weight: 600; }
+.breadcrumb a { color: var(--gold-bright); text-decoration: none; font-weight: 600; }
 .breadcrumb a:hover { text-decoration: underline; }
-.breadcrumb .sep { margin: 0 8px; color: var(--gold-soft); }
+.breadcrumb .sep { margin: 0 8px; color: var(--gold-dim); }
 
-/* ===== HEADER (딥 그린 배경) ===== */
+/* ===== HEADER ===== */
 header {
   padding: 54px 24px 42px;
   text-align: center;
-  background: linear-gradient(180deg, var(--forest-deep) 0%, var(--forest) 100%);
-  color: var(--on-green);
+  background: linear-gradient(180deg, var(--black-tone) 0%, var(--forest-mid) 100%);
+  color: var(--cream);
   position: relative;
   overflow: hidden;
 }
@@ -112,19 +103,19 @@ header::before {
   position: absolute;
   inset: 0;
   background-image:
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(243,238,221,0.10) 0%, transparent 70%),
-    repeating-linear-gradient(60deg, transparent, transparent 40px, rgba(243,238,221,0.03) 40px, rgba(243,238,221,0.03) 41px);
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(240,215,164,0.12) 0%, transparent 70%),
+    repeating-linear-gradient(60deg, transparent, transparent 40px, rgba(240,215,164,0.03) 40px, rgba(240,215,164,0.03) 41px);
   pointer-events: none;
 }
 .brand-line {
   font-family: 'Noto Serif KR', serif;
   font-size: 13px;
   letter-spacing: 0.36em;
-  color: var(--on-green-gold);
+  color: var(--gold-bright);
   margin-bottom: 18px;
   position: relative;
 }
-.brand-line::before, .brand-line::after { content: '✿'; margin: 0 13px; font-size: 11px; color: var(--gold-soft); }
+.brand-line::before, .brand-line::after { content: '✿'; margin: 0 13px; font-size: 11px; color: var(--gold); }
 
 h1 {
   font-family: 'Noto Serif KR', serif;
@@ -133,13 +124,13 @@ h1 {
   letter-spacing: -0.01em;
   line-height: 1.25;
   margin-bottom: 12px;
-  color: var(--on-green-gold);
+  color: var(--gold-bright);
   position: relative;
 }
 .h1-sub {
   font-family: 'Noto Serif KR', serif;
   font-size: 17px;
-  color: var(--on-green);
+  color: var(--cream);
   font-weight: 500;
   letter-spacing: 0.02em;
   margin-bottom: 14px;
@@ -148,7 +139,7 @@ h1 {
 .h1-jp {
   font-family: 'Noto Serif JP', serif;
   font-size: 14px;
-  color: var(--on-green-gold);
+  color: var(--gold-bright);
   font-weight: 400;
   letter-spacing: 0.08em;
   margin-bottom: 24px;
@@ -157,10 +148,10 @@ h1 {
 .header-meta {
   display: inline-block;
   padding: 9px 24px;
-  border: 1px solid var(--on-green-gold);
+  border: 1px solid var(--gold);
   border-radius: 2px;
   font-size: 14px;
-  color: var(--on-green-gold);
+  color: var(--gold-bright);
   letter-spacing: 0.08em;
   position: relative;
 }
@@ -169,11 +160,11 @@ h1 {
   bottom: -1px; left: 0; right: 0;
   height: 40px;
   background:
-    linear-gradient(135deg, transparent 48%, rgba(243,238,221,0.16) 50%, transparent 52%),
-    linear-gradient(-135deg, transparent 48%, rgba(243,238,221,0.16) 50%, transparent 52%);
+    linear-gradient(135deg, transparent 48%, rgba(216,185,129,0.16) 50%, transparent 52%),
+    linear-gradient(-135deg, transparent 48%, rgba(216,185,129,0.16) 50%, transparent 52%);
   background-size: 60px 40px;
   background-repeat: repeat-x;
-  opacity: 0.55;
+  opacity: 0.6;
   pointer-events: none;
 }
 
@@ -184,7 +175,7 @@ h1 {
   display: flex;
   gap: 8px;
   padding: 14px 16px;
-  background: var(--paper-soft);
+  background: var(--black-tone);
   border-bottom: 1px solid var(--line);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -192,19 +183,19 @@ h1 {
 .toc a {
   flex-shrink: 0;
   padding: 9px 16px;
-  background: var(--paper);
-  border: 1px solid var(--line);
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
   border-radius: 20px;
   font-size: 14px;
-  color: var(--ink-soft);
+  color: var(--cream);
   text-decoration: none;
   font-weight: 600;
   transition: all 0.2s;
 }
 .toc a:hover, .toc a:active {
-  background: var(--forest);
-  color: #fff;
-  border-color: var(--forest);
+  background: var(--gold-bright);
+  color: var(--forest);
+  border-color: var(--gold-bright);
 }
 
 /* ===== WELCOME (랜딩) ===== */
@@ -213,7 +204,7 @@ h1 {
   display: inline-block;
   font-family: 'Noto Serif KR', serif;
   font-size: 13px;
-  color: var(--gold);
+  color: var(--gold-bright);
   letter-spacing: 0.28em;
   margin-bottom: 14px;
 }
@@ -221,32 +212,32 @@ h1 {
   font-family: 'Noto Serif KR', serif;
   font-size: 24px;
   font-weight: 700;
-  color: var(--forest-deep);
+  color: var(--gold-bright);
   letter-spacing: -0.01em;
   margin-bottom: 16px;
   line-height: 1.5;
 }
-.welcome-desc { font-size: 16px; color: var(--ink-soft); line-height: 1.9; max-width: 480px; margin: 0 auto; }
+.welcome-desc { font-size: 16px; color: var(--cream-dim); line-height: 1.9; max-width: 480px; margin: 0 auto; }
 
 .divider-ornament {
   display: flex; align-items: center; justify-content: center;
-  gap: 12px; margin: 28px 0 0; color: var(--gold-soft);
+  gap: 12px; margin: 28px 0 0; color: var(--gold-dim);
 }
-.divider-ornament .line { width: 50px; height: 1px; background: var(--gold-soft); }
-.divider-ornament .leaf { font-size: 14px; color: var(--moss); opacity: 0.95; }
+.divider-ornament .line { width: 50px; height: 1px; background: var(--gold-dim); }
+.divider-ornament .leaf { font-size: 14px; color: var(--gold); opacity: 0.9; }
 
 /* ===== SECTIONS ===== */
 section { position: relative; padding: 46px 22px 30px; }
-section.alt { background: var(--paper-soft); }
+section.alt { background: var(--forest-mid); }
 
 .section-head { text-align: center; margin-bottom: 28px; }
 .section-num {
   display: inline-block;
   font-family: 'Noto Serif JP', serif;
   font-size: 13px;
-  color: var(--gold-deep);
+  color: var(--gold-bright);
   letter-spacing: 0.36em;
-  border: 1px solid var(--gold-soft);
+  border: 1px solid var(--gold);
   padding: 5px 14px 5px 18px;
   margin-bottom: 14px;
 }
@@ -254,7 +245,7 @@ section.alt { background: var(--paper-soft); }
   font-family: 'Noto Serif KR', serif;
   font-size: 28px;
   font-weight: 700;
-  color: var(--forest-deep);
+  color: var(--gold-bright);
   letter-spacing: -0.01em;
   margin-bottom: 4px;
   display: inline-block;
@@ -264,13 +255,13 @@ section.alt { background: var(--paper-soft); }
   display: block;
   width: 40px;
   height: 2px;
-  background: var(--gold-soft);
+  background: var(--gold);
   margin: 12px auto 0;
 }
 .section-title-sub {
   font-family: 'Noto Serif JP', serif;
   font-size: 15px;
-  color: var(--ink-mute);
+  color: var(--cream-dim);
   margin-top: 14px;
   letter-spacing: 0.06em;
 }
@@ -281,7 +272,7 @@ section.alt { background: var(--paper-soft); }
 .menu-section-num {
   font-family: 'Noto Serif JP', serif;
   font-size: 13px;
-  color: var(--gold);
+  color: var(--gold-bright);
   letter-spacing: 0.28em;
   margin-bottom: 8px;
 }
@@ -289,7 +280,7 @@ section.alt { background: var(--paper-soft); }
   font-family: 'Noto Serif KR', serif;
   font-size: 22px;
   font-weight: 700;
-  color: var(--forest-deep);
+  color: var(--gold-bright);
 }
 .menu-grid { display: grid; grid-template-columns: 1fr; gap: 13px; }
 
@@ -297,8 +288,8 @@ section.alt { background: var(--paper-soft); }
   display: block;
   text-decoration: none;
   color: inherit;
-  background: var(--paper);
-  border: 1px solid var(--line);
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
   border-radius: 6px;
   padding: 22px 24px;
   transition: all 0.25s ease;
@@ -310,43 +301,43 @@ section.alt { background: var(--paper-soft); }
   position: absolute;
   left: 0; top: 0; bottom: 0;
   width: 5px;
-  background: var(--moss);
+  background: var(--gold);
   transition: width 0.25s ease;
 }
 .menu-card:hover, .menu-card:active {
   transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(31,81,48,0.12);
-  border-color: var(--moss);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+  border-color: var(--gold-bright);
 }
 .menu-card:hover::before { width: 7px; }
-.menu-card.available::before { background: var(--forest); }
-.menu-card.coming::before { background: var(--gold-soft); }
-.menu-card.coming { opacity: 0.62; }
+.menu-card.available::before { background: var(--gold-bright); }
+.menu-card.coming::before { background: var(--gold-dim); }
+.menu-card.coming { opacity: 0.66; }
 
 .menu-card-inner { display: flex; align-items: center; gap: 18px; }
 .menu-card-icon {
   flex-shrink: 0;
   width: 56px; height: 56px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #e8f0e2 0%, #d6e4cc 100%);
-  border: 1px solid var(--line);
+  background: linear-gradient(135deg, var(--forest-light) 0%, var(--black-tone) 100%);
+  border: 1px solid var(--gold);
   display: flex; align-items: center; justify-content: center;
   font-size: 27px;
 }
-.menu-card.coming .menu-card-icon { filter: grayscale(0.35); }
+.menu-card.coming .menu-card-icon { filter: grayscale(0.4); }
 .menu-card-body { flex: 1; min-width: 0; }
 .menu-card-title {
   font-family: 'Noto Serif KR', serif;
   font-size: 19px;
   font-weight: 700;
-  color: var(--forest-deep);
+  color: var(--gold-bright);
   margin-bottom: 4px;
 }
-.menu-card-desc { font-size: 14.5px; color: var(--ink-mute); line-height: 1.6; }
+.menu-card-desc { font-size: 14.5px; color: var(--cream-dim); line-height: 1.6; }
 .menu-card-arrow {
   flex-shrink: 0;
   font-size: 19px;
-  color: var(--moss);
+  color: var(--gold-bright);
   opacity: 0.85;
   transition: transform 0.25s ease;
 }
@@ -361,14 +352,14 @@ section.alt { background: var(--paper-soft); }
   margin-top: 8px;
 }
 .menu-card-badge.new { background: var(--wine); color: #fff; }
-.menu-card-badge.soon { background: var(--line); color: var(--ink-mute); }
+.menu-card-badge.soon { background: rgba(216,185,129,0.22); color: var(--cream); }
 
 /* ===== HIGHLIGHT BOX ===== */
 .highlight-box {
   margin: 0 22px 32px;
   padding: 20px 22px;
-  background: linear-gradient(135deg, #fdeee9 0%, #fbe3da 100%);
-  border: 1px solid #e9b9a8;
+  background: linear-gradient(135deg, rgba(160,68,56,0.22) 0%, rgba(160,68,56,0.10) 100%);
+  border: 1px solid var(--wine-light);
   border-left: 5px solid var(--wine-light);
   border-radius: 4px;
   position: relative;
@@ -388,15 +379,15 @@ section.alt { background: var(--paper-soft); }
   font-family: 'Noto Serif KR', serif;
   font-size: 17px;
   font-weight: 700;
-  color: var(--wine);
+  color: var(--gold-bright);
   margin: 5px 0 8px;
 }
-.highlight-box-desc { font-size: 15px; color: var(--ink-soft); line-height: 1.75; }
-.highlight-box-desc strong { color: var(--wine); font-weight: 700; }
+.highlight-box-desc { font-size: 15px; color: var(--cream); line-height: 1.75; }
+.highlight-box-desc strong { color: var(--wine-light); font-weight: 700; }
 
 /* ===== INFO BLOCK (랜딩 연락처) ===== */
 .info-block {
-  background: var(--paper-soft);
+  background: var(--black-tone);
   padding: 34px 24px 38px;
   border-top: 1px solid var(--line);
 }
@@ -404,30 +395,30 @@ section.alt { background: var(--paper-soft); }
 .info-block-tag {
   font-family: 'Noto Serif JP', serif;
   font-size: 13px;
-  color: var(--gold);
+  color: var(--gold-bright);
   letter-spacing: 0.28em;
 }
 .info-block-title {
   font-family: 'Noto Serif KR', serif;
   font-size: 20px;
   font-weight: 700;
-  color: var(--forest-deep);
+  color: var(--gold-bright);
   margin-top: 4px;
 }
 .info-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .info-card {
-  background: var(--paper);
-  border: 1px solid var(--line);
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
   border-radius: 6px;
   padding: 16px 12px;
   text-align: center;
 }
-.info-card-label { font-size: 12.5px; color: var(--gold-deep); letter-spacing: 0.06em; margin-bottom: 6px; }
+.info-card-label { font-size: 12.5px; color: var(--gold-bright); letter-spacing: 0.06em; margin-bottom: 6px; }
 .info-card-value {
   font-family: 'Noto Serif KR', serif;
   font-size: 15px;
   font-weight: 700;
-  color: var(--forest-deep);
+  color: var(--cream);
   line-height: 1.4;
 }
 
@@ -436,13 +427,13 @@ section.alt { background: var(--paper-soft); }
 .dinner-row {
   display: flex;
   align-items: stretch;
-  background: var(--paper);
-  border: 1px solid var(--line);
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
   border-radius: 6px;
   overflow: hidden;
   transition: transform 0.2s, box-shadow 0.2s;
 }
-.dinner-row:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(31,81,48,0.1); }
+.dinner-row:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
 .dinner-day {
   flex-shrink: 0;
   width: 90px;
@@ -453,50 +444,50 @@ section.alt { background: var(--paper-soft); }
   text-align: center;
 }
 .dinner-day.sun { background: linear-gradient(135deg, var(--c-sun) 0%, #9e3527 100%); }
-.dinner-day.mon { background: linear-gradient(135deg, var(--c-mon) 0%, #8a6210 100%); }
-.dinner-day.tue { background: linear-gradient(135deg, var(--c-tue) 0%, #8a6c12 100%); }
-.dinner-day.wed { background: linear-gradient(135deg, var(--c-wed) 0%, #2e6628 100%); }
-.dinner-day.thu { background: linear-gradient(135deg, var(--c-thu) 0%, #1f5286 100%); }
-.dinner-day.fri { background: linear-gradient(135deg, var(--c-fri) 0%, #24407a 100%); }
-.dinner-day.sat { background: linear-gradient(135deg, var(--c-sat) 0%, #4a3470 100%); }
-.dinner-day-ko { font-family: 'Noto Serif KR', serif; font-size: 18px; font-weight: 700; line-height: 1.1; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+.dinner-day.mon { background: linear-gradient(135deg, var(--c-mon) 0%, #8a6a1a 100%); }
+.dinner-day.tue { background: linear-gradient(135deg, var(--c-tue) 0%, #8a7016 100%); }
+.dinner-day.wed { background: linear-gradient(135deg, var(--c-wed) 0%, #3a6630 100%); }
+.dinner-day.thu { background: linear-gradient(135deg, var(--c-thu) 0%, #2f5784 100%); }
+.dinner-day.fri { background: linear-gradient(135deg, var(--c-fri) 0%, #344f80 100%); }
+.dinner-day.sat { background: linear-gradient(135deg, var(--c-sat) 0%, #4f3a6e 100%); }
+.dinner-day-ko { font-family: 'Noto Serif KR', serif; font-size: 18px; font-weight: 700; line-height: 1.1; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
 .dinner-day-jp { font-family: 'Noto Serif JP', serif; font-size: 12px; margin-top: 4px; opacity: 0.95; }
 .dinner-menu { flex: 1; padding: 16px 20px; display: flex; flex-direction: column; justify-content: center; }
-.dinner-menu-ko { font-family: 'Noto Serif KR', serif; font-size: 19px; font-weight: 700; color: var(--forest-deep); letter-spacing: -0.01em; }
-.dinner-menu-jp { font-family: 'Noto Serif JP', serif; font-size: 13.5px; color: var(--ink-mute); margin-top: 4px; }
+.dinner-menu-ko { font-family: 'Noto Serif KR', serif; font-size: 19px; font-weight: 700; color: var(--gold-bright); letter-spacing: -0.01em; }
+.dinner-menu-jp { font-family: 'Noto Serif JP', serif; font-size: 13.5px; color: var(--cream-dim); margin-top: 4px; }
 .dinner-note {
   margin-top: 18px;
   padding: 14px 16px;
-  background: #fbf3df;
-  border: 1px solid #e6cf8f;
+  background: var(--black-tone);
+  border: 1px solid var(--gold);
   border-radius: 4px;
   font-size: 14.5px;
-  color: #856518;
+  color: var(--gold-bright);
   text-align: center;
 }
-.dinner-note strong { color: #6f5410; font-weight: 700; }
+.dinner-note strong { color: var(--gold-bright); font-weight: 700; }
 
-/* ===== 신청안내 (Up-Grade) — 딥 그린 강조 블록 ===== */
+/* ===== 신청안내 (Up-Grade) ===== */
 .apply-info-section {
-  background: linear-gradient(180deg, var(--forest-deep) 0%, #1a4329 100%);
-  color: var(--on-green);
+  background: var(--black-tone);
+  color: var(--cream);
   padding: 46px 22px 32px;
 }
-.apply-info-section .section-num { color: var(--on-green-gold); border-color: var(--on-green-gold); }
-.apply-info-section .section-title { color: var(--on-green-gold); }
-.apply-info-section .section-title::after { background: var(--on-green-gold); }
+.apply-info-section .section-num { color: var(--gold-bright); }
+.apply-info-section .section-title { color: var(--gold-bright); }
+.apply-info-section .section-title::after { background: var(--gold); }
 .apply-info-container {
-  background: rgba(243,238,221,0.08);
-  border: 1px solid rgba(236,210,154,0.4);
-  border-left: 4px solid var(--on-green-gold);
+  background: var(--forest-mid);
+  border: 1px solid var(--gold);
+  border-left: 4px solid var(--gold);
   border-radius: 4px;
   padding: 22px 20px;
   margin-top: 10px;
 }
 .apply-tag {
   display: inline-block;
-  background: var(--on-green-gold);
-  color: var(--forest-deep);
+  background: var(--gold-bright);
+  color: var(--forest);
   font-size: 12px; font-weight: 700;
   padding: 4px 11px;
   border-radius: 2px;
@@ -506,13 +497,13 @@ section.alt { background: var(--paper-soft); }
 .apply-info-title {
   font-family: 'Noto Serif KR', serif;
   font-size: 17px; font-weight: 700;
-  color: var(--on-green-gold);
+  color: var(--gold-bright);
   margin-bottom: 14px;
 }
 .apply-routes { display: flex; flex-direction: column; gap: 10px; }
 .apply-route {
-  background: rgba(243,238,221,0.06);
-  border: 1px solid rgba(236,210,154,0.28);
+  background: var(--black-tone);
+  border: 1px solid var(--gold-dim);
   border-radius: 4px;
   padding: 14px 16px;
   text-align: center;
@@ -520,43 +511,43 @@ section.alt { background: var(--paper-soft); }
 .apply-route-icon { font-size: 22px; margin-bottom: 5px; }
 .apply-route-label {
   display: inline-block;
-  background: rgba(236,210,154,0.2);
-  color: var(--on-green-gold);
+  background: rgba(216,185,129,0.2);
+  color: var(--gold-bright);
   font-size: 12px; font-weight: 700;
   padding: 3px 11px;
   border-radius: 10px;
   letter-spacing: 0.04em;
   margin-bottom: 7px;
 }
-.apply-route-main { font-size: 15px; color: var(--on-green); line-height: 1.5; margin-bottom: 3px; }
-.apply-route-main strong { color: var(--on-green-gold); font-weight: 700; font-size: 16px; }
-.apply-route-sub { font-size: 13px; color: var(--on-green-dim); letter-spacing: 0.01em; }
+.apply-route-main { font-size: 15px; color: var(--cream); line-height: 1.5; margin-bottom: 3px; }
+.apply-route-main strong { color: var(--gold-bright); font-weight: 700; font-size: 16px; }
+.apply-route-sub { font-size: 13px; color: var(--cream-dim); letter-spacing: 0.01em; }
 .apply-divider { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 2px 0; }
-.apply-divider::before, .apply-divider::after { content: ''; flex: 1; height: 1px; background: rgba(236,210,154,0.3); max-width: 40px; }
-.apply-divider span { font-size: 12px; color: var(--on-green-gold); font-weight: 600; letter-spacing: 0.08em; }
+.apply-divider::before, .apply-divider::after { content: ''; flex: 1; height: 1px; background: var(--gold-dim); max-width: 40px; opacity: 0.6; }
+.apply-divider span { font-size: 12px; color: var(--gold-bright); font-weight: 600; letter-spacing: 0.08em; }
 
-/* ===== UPGRADE 메뉴 블록 (그린 섹션 위) ===== */
+/* ===== UPGRADE 메뉴 블록 ===== */
 .upgrade-block {
-  background: rgba(243,238,221,0.06);
-  border: 1px solid rgba(236,210,154,0.3);
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
   border-radius: 6px;
   padding: 20px;
   margin-top: 14px;
 }
-.upgrade-block-head { font-family: 'Noto Serif KR', serif; font-size: 16px; color: var(--on-green-gold); margin-bottom: 5px; font-weight: 700; }
-.upgrade-block-sub { font-size: 13.5px; color: var(--on-green-dim); margin-bottom: 14px; line-height: 1.55; }
+.upgrade-block-head { font-family: 'Noto Serif KR', serif; font-size: 16px; color: var(--gold-bright); margin-bottom: 5px; font-weight: 700; }
+.upgrade-block-sub { font-size: 13.5px; color: var(--cream-dim); margin-bottom: 14px; line-height: 1.55; }
 .upgrade-row {
   display: flex; justify-content: space-between; align-items: flex-start;
   padding: 12px 0;
-  border-bottom: 1px dashed rgba(236,210,154,0.28);
+  border-bottom: 1px dashed var(--gold-dim);
 }
 .upgrade-row:last-child { border-bottom: none; }
 .upgrade-info-block { flex: 1; }
-.upgrade-name { font-size: 15.5px; color: var(--on-green); font-weight: 600; }
-.upgrade-name-jp { font-family: 'Noto Serif JP', serif; font-size: 12.5px; color: var(--on-green-dim); margin-top: 3px; }
-.upgrade-price { font-family: 'Noto Serif KR', serif; font-size: 15.5px; font-weight: 700; color: var(--on-green-gold); white-space: nowrap; margin-left: 12px; text-align: right; }
-.upgrade-price-sub { display: block; font-size: 11.5px; color: var(--on-green-dim); font-weight: 400; margin-top: 2px; }
-.bbq-note { font-size: 12.5px; color: #f0a98f; margin-top: 8px; text-align: right; font-style: italic; }
+.upgrade-name { font-size: 15.5px; color: var(--cream); font-weight: 600; }
+.upgrade-name-jp { font-family: 'Noto Serif JP', serif; font-size: 12.5px; color: var(--cream-dim); margin-top: 3px; }
+.upgrade-price { font-family: 'Noto Serif KR', serif; font-size: 15.5px; font-weight: 700; color: var(--gold-bright); white-space: nowrap; margin-left: 12px; text-align: right; }
+.upgrade-price-sub { display: block; font-size: 11.5px; color: var(--cream-dim); font-weight: 400; margin-top: 2px; }
+.bbq-note { font-size: 12.5px; color: var(--wine-light); margin-top: 8px; text-align: right; font-style: italic; }
 
 /* 와인레드 대인기 배지 (공통) */
 .hot-badge {
@@ -573,52 +564,53 @@ section.alt { background: var(--paper-soft); }
 
 /* ===== 안주 섹션 ===== */
 .snack-time-notice {
-  background: #fdeee9;
-  border: 1px solid #e9b9a8;
+  background: rgba(160,68,56,0.2);
+  border: 1px solid var(--wine-light);
   border-left: 4px solid var(--wine-light);
   border-radius: 4px;
   padding: 12px 16px;
   margin-bottom: 16px;
   font-size: 14.5px;
-  color: var(--wine);
+  color: var(--wine-light);
   text-align: center;
   font-weight: 600;
 }
-.snack-time-notice strong { color: var(--wine); }
+.snack-time-notice strong { color: var(--gold-bright); }
 .snack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .snack-item {
-  background: var(--paper);
-  border: 1px solid var(--line);
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
   border-radius: 6px;
   padding: 0;
   overflow: hidden;
 }
-.snack-photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; background: var(--paper-soft); }
-.snack-body { padding: 11px 13px; border-left: 3px solid var(--moss); }
-.snack-name { font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.35; }
-.snack-name-jp { font-family: 'Noto Serif JP', serif; font-size: 12px; color: var(--ink-mute); margin-top: 3px; }
+.snack-photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; background: var(--black-tone); }
+.snack-body { padding: 11px 13px; border-left: 3px solid var(--gold); }
+.snack-name { font-size: 15px; font-weight: 700; color: var(--cream); line-height: 1.35; }
+.snack-name-jp { font-family: 'Noto Serif JP', serif; font-size: 12px; color: var(--cream-dim); margin-top: 3px; }
 
 /* 사진이 있는 메뉴 카드 (추가 메뉴) */
 .dish-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
-.dish-card { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
-.dish-photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; background: var(--paper-soft); }
+.dish-card { background: var(--forest-mid); border: 1px solid var(--gold-dim); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+.dish-photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; background: var(--black-tone); }
 .dish-body { padding: 13px 15px 15px; display: flex; flex-direction: column; flex: 1; }
-.dish-name { font-family: 'Noto Serif KR', serif; font-size: 16.5px; font-weight: 700; color: var(--forest-deep); line-height: 1.3; }
-.dish-name-jp { font-family: 'Noto Serif JP', serif; font-size: 12.5px; color: var(--ink-mute); margin-top: 3px; }
-.dish-price { margin-top: auto; padding-top: 10px; font-family: 'Noto Serif KR', serif; font-weight: 700; color: var(--wine); font-size: 16px; }
-.dish-price .sub { font-size: 11.5px; color: var(--ink-mute); font-weight: 400; margin-left: 2px; }
-.dish-price .alt { display: block; font-size: 13px; color: var(--ink-soft); font-weight: 600; margin-top: 3px; }
+.dish-name { font-family: 'Noto Serif KR', serif; font-size: 16.5px; font-weight: 700; color: var(--gold-bright); line-height: 1.3; }
+.dish-name-jp { font-family: 'Noto Serif JP', serif; font-size: 12.5px; color: var(--cream-dim); margin-top: 3px; }
+.dish-price { margin-top: auto; padding-top: 10px; font-family: 'Noto Serif KR', serif; font-weight: 700; color: var(--gold-bright); font-size: 16px; }
+.dish-price .sub { font-size: 11.5px; color: var(--cream-dim); font-weight: 400; margin-left: 2px; }
+.dish-price .alt { display: block; font-size: 13px; color: var(--cream); font-weight: 600; margin-top: 3px; }
 .snack-price-all {
   text-align: center;
   padding: 12px;
-  background: linear-gradient(135deg, #e8f0e2 0%, #d6e4cc 100%);
+  background: var(--black-tone);
+  border: 1px solid var(--gold);
   border-radius: 4px;
   margin-top: 10px;
   font-size: 14.5px;
-  color: var(--forest-deep);
+  color: var(--cream);
   font-weight: 700;
 }
-.snack-price-all strong { color: var(--wine); font-size: 17px; }
+.snack-price-all strong { color: var(--gold-bright); font-size: 17px; }
 
 /* ===== DRINKS 섹션 ===== */
 .drinks-wrapper { padding: 0; }
@@ -626,74 +618,74 @@ section.alt { background: var(--paper-soft); }
 .drinks-category-head {
   display: flex; align-items: center; gap: 10px;
   margin-bottom: 12px; padding-bottom: 9px;
-  border-bottom: 2px solid var(--moss);
+  border-bottom: 2px solid var(--gold);
 }
 .drinks-category-icon { font-size: 20px; }
-.drinks-category-title { font-family: 'Noto Serif KR', serif; font-size: 18px; font-weight: 700; color: var(--forest-deep); letter-spacing: -0.01em; }
+.drinks-category-title { font-family: 'Noto Serif KR', serif; font-size: 18px; font-weight: 700; color: var(--gold-bright); letter-spacing: -0.01em; }
 .drinks-list { display: flex; flex-direction: column; gap: 6px; }
 .drink-item {
   display: flex; justify-content: space-between; align-items: flex-start;
   padding: 10px 13px;
-  background: var(--paper);
+  background: var(--forest-mid);
   border-radius: 3px;
 }
-.drink-item:nth-child(odd) { background: var(--paper-soft); }
-.drink-name { font-size: 15px; color: var(--ink); font-weight: 500; line-height: 1.4; }
-.drink-name-jp { font-family: 'Noto Serif JP', serif; font-size: 12px; color: var(--ink-mute); margin-top: 2px; }
-.drink-price { font-family: 'Noto Serif KR', serif; font-size: 15.5px; font-weight: 700; color: var(--forest-deep); white-space: nowrap; margin-left: 10px; text-align: right; }
-.drink-price .yen { color: var(--gold-deep); font-size: 12px; margin-right: 1px; }
+.drink-item:nth-child(odd) { background: var(--black-tone); }
+.drink-name { font-size: 15px; color: var(--cream); font-weight: 500; line-height: 1.4; }
+.drink-name-jp { font-family: 'Noto Serif JP', serif; font-size: 12px; color: var(--cream-dim); margin-top: 2px; }
+.drink-price { font-family: 'Noto Serif KR', serif; font-size: 15.5px; font-weight: 700; color: var(--gold-bright); white-space: nowrap; margin-left: 10px; text-align: right; }
+.drink-price .yen { color: var(--gold); font-size: 12px; margin-right: 1px; }
 .beer-sizes { display: flex; gap: 6px; margin-top: 7px; }
 .beer-size-box {
   flex: 1;
-  background: var(--paper-soft);
-  border: 1px solid var(--line);
+  background: var(--black-tone);
+  border: 1px solid var(--gold-dim);
   border-radius: 3px;
   padding: 7px 4px;
   text-align: center;
 }
-.beer-size-label { font-size: 11.5px; color: var(--ink-mute); display: block; }
-.beer-size-price { font-family: 'Noto Serif KR', serif; font-size: 13.5px; font-weight: 700; color: var(--forest-deep); margin-top: 2px; }
-.soft-drinks-note { font-size: 12.5px; color: var(--ink-mute); margin-top: 7px; text-align: center; font-style: italic; }
+.beer-size-label { font-size: 11.5px; color: var(--cream-dim); display: block; }
+.beer-size-price { font-family: 'Noto Serif KR', serif; font-size: 13.5px; font-weight: 700; color: var(--gold-bright); margin-top: 2px; }
+.soft-drinks-note { font-size: 12.5px; color: var(--cream-dim); margin-top: 7px; text-align: center; font-style: italic; }
 
 /* ===== 콜키지 차지 ===== */
 .corkage-section {
-  background: var(--paper-soft);
+  background: var(--forest-mid);
   padding: 46px 22px 32px;
   border-top: 1px solid var(--line);
 }
-.corkage-title { font-family: 'Noto Serif KR', serif; font-size: 24px; font-weight: 700; color: var(--wine); text-align: center; margin-bottom: 4px; }
-.corkage-title-sub { font-family: 'Noto Serif JP', serif; font-size: 14px; color: var(--ink-mute); text-align: center; margin-bottom: 20px; }
-.corkage-desc { text-align: center; font-size: 14.5px; color: var(--ink-soft); margin-bottom: 18px; line-height: 1.65; }
+.corkage-title { font-family: 'Noto Serif KR', serif; font-size: 24px; font-weight: 700; color: var(--gold-bright); text-align: center; margin-bottom: 4px; }
+.corkage-title-sub { font-family: 'Noto Serif JP', serif; font-size: 14px; color: var(--cream-dim); text-align: center; margin-bottom: 20px; }
+.corkage-desc { text-align: center; font-size: 14.5px; color: var(--cream-dim); margin-bottom: 18px; line-height: 1.65; }
 .corkage-prices {
-  background: var(--paper);
-  border: 1px solid #e6cf8f;
+  background: var(--black-tone);
+  border: 1px solid var(--gold);
   border-radius: 6px;
   padding: 18px;
   margin-bottom: 16px;
 }
-.corkage-price-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); }
+.corkage-price-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--gold-dim); }
 .corkage-price-row:last-child { border-bottom: none; }
-.corkage-price-desc { flex: 1; font-size: 14.5px; color: var(--ink-soft); line-height: 1.55; }
-.corkage-price-desc strong { color: var(--wine); font-weight: 700; }
-.corkage-price-value { font-family: 'Noto Serif KR', serif; font-size: 17px; font-weight: 700; color: var(--wine); white-space: nowrap; margin-left: 12px; }
+.corkage-price-desc { flex: 1; font-size: 14.5px; color: var(--cream); line-height: 1.55; }
+.corkage-price-desc strong { color: var(--gold-bright); font-weight: 700; }
+.corkage-price-value { font-family: 'Noto Serif KR', serif; font-size: 17px; font-weight: 700; color: var(--gold-bright); white-space: nowrap; margin-left: 12px; }
 .corkage-notes {
-  background: var(--paper);
-  border: 1px solid var(--line);
+  background: var(--black-tone);
+  border: 1px solid var(--gold-dim);
   border-radius: 6px;
   padding: 16px 18px;
   font-size: 13.5px;
-  color: var(--ink-soft);
+  color: var(--cream-dim);
   line-height: 1.75;
 }
-.corkage-notes strong { color: var(--wine); }
+.corkage-notes strong { color: var(--gold-bright); }
 .corkage-notes .note-item { padding: 5px 0; }
 .corkage-notes .note-item::before { content: '◆ '; color: var(--gold); }
 .corkage-notes .warn {
-  background: #fdeee9;
+  background: rgba(160,68,56,0.22);
   padding: 9px 12px;
   border-radius: 3px;
   margin-top: 8px;
-  color: var(--wine);
+  color: var(--wine-light);
   font-weight: 600;
 }
 .corkage-notes .warn::before { content: '⚠️ '; }
@@ -712,9 +704,9 @@ section.alt { background: var(--paper-soft); }
 .resto-intro {
   text-align: center;
   font-size: 14.5px;
-  color: #856518;
-  background: #fbf3df;
-  border: 1px solid #e6cf8f;
+  color: var(--gold-bright);
+  background: var(--black-tone);
+  border: 1px solid var(--gold-dim);
   border-radius: 8px;
   padding: 14px 18px;
   margin-bottom: 22px;
@@ -723,45 +715,45 @@ section.alt { background: var(--paper-soft); }
 .resto-list { display: flex; flex-direction: column; gap: 14px; }
 .resto-card {
   display: flex; gap: 14px; align-items: flex-start;
-  background: var(--paper);
-  border: 1px solid var(--line);
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
   border-radius: 10px;
   padding: 16px;
   transition: all 0.2s;
 }
-.resto-card:hover, .resto-card:active { box-shadow: 0 8px 20px rgba(31,81,48,0.12); border-color: var(--moss); }
+.resto-card:hover, .resto-card:active { box-shadow: 0 8px 20px rgba(0,0,0,0.4); border-color: var(--gold-bright); }
 .resto-photo {
   width: 180px; height: 135px;
   flex-shrink: 0;
   object-fit: cover; object-position: center;
   border-radius: 8px;
   align-self: flex-start;
-  background: var(--paper-soft);
+  background: var(--black-tone);
 }
 .resto-body { flex: 1; min-width: 0; }
 .resto-type {
   display: inline-block;
   font-size: 12.5px;
-  color: var(--gold-deep);
-  background: #f1ead8;
+  color: var(--gold-bright);
+  background: rgba(216,185,129,0.18);
   padding: 4px 11px;
   border-radius: 12px;
   margin-bottom: 9px;
   letter-spacing: 0.02em;
 }
-.resto-name { font-family: 'Noto Serif KR', serif; font-size: 21px; font-weight: 700; color: var(--forest-deep); line-height: 1.3; }
-.resto-name-jp { font-family: 'Noto Serif JP', serif; font-size: 14px; color: var(--moss); margin-bottom: 11px; }
-.resto-desc { font-size: 15px; color: var(--ink-soft); line-height: 1.8; margin-bottom: 9px; }
-.resto-highlight { font-size: 14.5px; color: var(--wine); font-weight: 600; line-height: 1.6; margin-bottom: 11px; }
-.resto-meta { display: flex; flex-wrap: wrap; gap: 7px; padding-top: 12px; border-top: 1px dashed var(--line); }
-.resto-chip { font-size: 13.5px; color: var(--ink-soft); background: var(--paper-soft); padding: 5px 12px; border-radius: 14px; letter-spacing: 0.01em; }
-.resto-chip.card { color: var(--forest); background: rgba(31,81,48,0.1); font-weight: 700; }
-.resto-chip.cash { color: var(--wine); background: rgba(157,51,36,0.1); font-weight: 700; }
-.resto-chip.off  { color: var(--ink-mute); background: transparent; border: 1px solid var(--line); }
+.resto-name { font-family: 'Noto Serif KR', serif; font-size: 21px; font-weight: 700; color: var(--gold-bright); line-height: 1.3; }
+.resto-name-jp { font-family: 'Noto Serif JP', serif; font-size: 14px; color: var(--gold); margin-bottom: 11px; }
+.resto-desc { font-size: 15px; color: var(--cream-dim); line-height: 1.8; margin-bottom: 9px; }
+.resto-highlight { font-size: 14.5px; color: var(--wine-light); font-weight: 600; line-height: 1.6; margin-bottom: 11px; }
+.resto-meta { display: flex; flex-wrap: wrap; gap: 7px; padding-top: 12px; border-top: 1px dashed var(--gold-dim); }
+.resto-chip { font-size: 13.5px; color: var(--cream); background: rgba(216,185,129,0.15); padding: 5px 12px; border-radius: 14px; letter-spacing: 0.01em; }
+.resto-chip.card { color: var(--gold-bright); background: rgba(216,185,129,0.24); font-weight: 700; }
+.resto-chip.cash { color: var(--wine-light); background: rgba(160,68,56,0.26); font-weight: 700; }
+.resto-chip.off  { color: var(--cream-mute); background: transparent; border: 1px solid var(--gold-dim); }
 .resto-common {
   margin-top: 24px;
-  background: linear-gradient(180deg, #eef3e8 0%, #e3ecda 100%);
-  border: 1px solid var(--line);
+  background: var(--black-tone);
+  border: 1px solid var(--gold-dim);
   border-radius: 10px;
   padding: 20px 18px 18px;
 }
@@ -769,23 +761,23 @@ section.alt { background: var(--paper-soft); }
   display: inline-block;
   font-family: 'Noto Serif KR', serif;
   font-size: 14px; font-weight: 700;
-  color: #fff;
-  background: var(--forest);
+  color: var(--forest);
+  background: var(--gold-bright);
   padding: 5px 15px;
   border-radius: 6px;
   margin-bottom: 14px;
   letter-spacing: 0.04em;
 }
 .resto-common ul { list-style: none; padding: 0; margin: 0; }
-.resto-common li { font-size: 14.5px; color: var(--ink-soft); line-height: 1.8; padding-left: 18px; position: relative; margin-bottom: 11px; }
+.resto-common li { font-size: 14.5px; color: var(--cream-dim); line-height: 1.8; padding-left: 18px; position: relative; margin-bottom: 11px; }
 .resto-common li:last-child { margin-bottom: 0; }
-.resto-common li::before { content: '·'; position: absolute; left: 5px; color: var(--moss); font-weight: 700; }
-.resto-common strong { color: var(--wine); }
+.resto-common li::before { content: '·'; position: absolute; left: 5px; color: var(--gold-bright); font-weight: 700; }
+.resto-common strong { color: var(--gold-bright); }
 
 /* ===== 점심(LUNCH) 전용 ===== */
 .info-box {
-  background: var(--paper);
-  border: 1px solid var(--line);
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
   border-radius: 4px;
   padding: 24px 26px;
   margin-bottom: 18px;
@@ -795,52 +787,52 @@ section.alt { background: var(--paper-soft); }
   display: inline-block;
   font-family: 'Noto Serif KR', serif;
   font-size: 13.5px; font-weight: 700;
-  color: var(--gold-deep);
+  color: var(--gold-bright);
   padding: 4px 13px;
-  border: 1px solid var(--gold-soft);
+  border: 1px solid var(--gold);
   margin-bottom: 14px;
   letter-spacing: 0.04em;
 }
-.info-title { font-family: 'Noto Serif KR', serif; font-size: 19px; font-weight: 700; color: var(--forest-deep); margin-bottom: 6px; }
-.info-jp { font-family: 'Noto Serif JP', serif; font-size: 14px; color: var(--ink-mute); margin-bottom: 16px; letter-spacing: 0.02em; }
-.info-desc { font-size: 16px; color: var(--ink); line-height: 1.85; }
-.info-desc .em { color: var(--wine); font-weight: 700; }
+.info-title { font-family: 'Noto Serif KR', serif; font-size: 19px; font-weight: 700; color: var(--gold-bright); margin-bottom: 6px; }
+.info-jp { font-family: 'Noto Serif JP', serif; font-size: 14px; color: var(--cream-dim); margin-bottom: 16px; letter-spacing: 0.02em; }
+.info-desc { font-size: 16px; color: var(--cream); line-height: 1.85; }
+.info-desc .em { color: var(--gold-bright); font-weight: 700; }
 
 .depart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
-.depart-card { background: var(--paper-soft); border-left: 4px solid var(--moss); padding: 18px 20px; }
+.depart-card { background: var(--black-tone); border-left: 4px solid var(--gold); padding: 18px 20px; }
 .depart-tag {
   display: inline-block;
   font-family: 'Noto Serif KR', serif;
   font-size: 12.5px; font-weight: 700;
-  color: var(--wine);
+  color: var(--wine-light);
   padding: 3px 10px;
-  background: #fff;
-  border: 1px solid #e3b6ac;
+  background: var(--forest-mid);
+  border: 1px solid var(--wine-light);
   margin-bottom: 11px;
   letter-spacing: 0.02em;
 }
-.depart-name { font-family: 'Noto Serif KR', serif; font-size: 17px; font-weight: 700; color: var(--forest-deep); margin-bottom: 7px; }
-.depart-sub { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+.depart-name { font-family: 'Noto Serif KR', serif; font-size: 17px; font-weight: 700; color: var(--gold-bright); margin-bottom: 7px; }
+.depart-sub { font-size: 14px; color: var(--cream-dim); line-height: 1.6; }
 
 .buffet-box {
-  background: linear-gradient(180deg, #eef3e8 0%, #e6efdd 100%);
-  border: 1px solid var(--moss);
+  background: var(--forest-mid);
+  border: 1px solid var(--gold);
   border-radius: 4px;
   padding: 38px 28px 32px;
   text-align: center;
 }
 .buffet-deco { color: var(--gold); font-size: 12px; letter-spacing: 1.4em; margin-bottom: 16px; padding-left: 1.4em; }
-.buffet-title { font-family: 'Noto Serif JP', serif; font-size: 30px; font-weight: 700; color: var(--forest-deep); margin-bottom: 6px; letter-spacing: 0.04em; }
-.buffet-ko { font-family: 'Noto Serif KR', serif; font-size: 19px; color: var(--ink); margin-bottom: 18px; letter-spacing: 0.06em; }
-.buffet-desc { font-size: 15px; color: var(--ink-soft); line-height: 1.85; }
-.buffet-desc .em { color: var(--wine); font-weight: 700; }
+.buffet-title { font-family: 'Noto Serif JP', serif; font-size: 30px; font-weight: 700; color: var(--gold-bright); margin-bottom: 6px; letter-spacing: 0.04em; }
+.buffet-ko { font-family: 'Noto Serif KR', serif; font-size: 19px; color: var(--cream); margin-bottom: 18px; letter-spacing: 0.06em; }
+.buffet-desc { font-size: 15px; color: var(--cream-dim); line-height: 1.85; }
+.buffet-desc .em { color: var(--gold-bright); font-weight: 700; }
 .buffet-days {
   display: inline-block;
   margin-top: 18px;
   padding: 10px 26px;
-  background: var(--forest);
-  color: #fff;
-  border: 1px solid var(--forest-deep);
+  background: var(--black-tone);
+  color: var(--gold-bright);
+  border: 1px solid var(--gold);
   font-family: 'Noto Serif JP', serif;
   font-size: 14.5px; font-weight: 700;
   letter-spacing: 0.14em;
@@ -851,54 +843,54 @@ section.alt { background: var(--paper-soft); }
   gap: 10px;
   margin-top: 18px;
   padding: 14px 20px;
-  background: var(--paper-soft);
-  border-left: 4px solid var(--moss);
+  background: var(--black-tone);
+  border-left: 4px solid var(--gold);
   font-size: 14.5px;
-  color: var(--ink);
+  color: var(--cream);
 }
-.sub-info .icon { color: var(--moss); }
-.sub-info .em { font-weight: 700; color: var(--forest-deep); }
+.sub-info .icon { color: var(--gold-bright); }
+.sub-info .em { font-weight: 700; color: var(--gold-bright); }
 
 .notice-band {
-  background: var(--paper-soft);
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  background: var(--black-tone);
+  border-top: 1px solid var(--gold-dim);
+  border-bottom: 1px solid var(--gold-dim);
   padding: 15px 24px;
   text-align: center;
   font-family: 'Noto Serif KR', serif;
   font-size: 14px;
-  color: var(--ink-soft);
+  color: var(--gold-bright);
   letter-spacing: 0.03em;
 }
-.notice-band .deco { color: var(--gold-soft); margin: 0 10px; }
+.notice-band .deco { color: var(--gold); margin: 0 10px; }
 
-/* ===== FOOTER (딥 그린) ===== */
+/* ===== FOOTER ===== */
 footer {
   position: relative;
   z-index: 20;
-  background: var(--forest-deep);
-  color: var(--on-green-dim);
+  background: var(--black-tone);
+  color: var(--cream-dim);
   padding: 38px 24px;
   text-align: center;
   font-size: 14px;
   line-height: 1.85;
-  border-top: 1px solid var(--gold-soft);
+  border-top: 1px solid var(--gold);
 }
-footer .footer-brand { font-family: 'Noto Serif KR', serif; font-size: 17px; color: var(--on-green-gold); margin-bottom: 12px; font-weight: 700; letter-spacing: 0.06em; }
-footer .footer-contact { margin-top: 14px; padding-top: 16px; border-top: 1px solid rgba(236,210,154,0.2); color: var(--on-green-gold); }
-footer .footer-contact strong { color: var(--on-green); font-size: 16px; }
-footer .footer-update { margin-top: 14px; font-size: 11.5px; color: rgba(214,200,162,0.6); letter-spacing: 0.1em; }
+footer .footer-brand { font-family: 'Noto Serif KR', serif; font-size: 17px; color: var(--gold-bright); margin-bottom: 12px; font-weight: 700; letter-spacing: 0.06em; }
+footer .footer-contact { margin-top: 14px; padding-top: 16px; border-top: 1px solid var(--line-soft); color: var(--gold-bright); }
+footer .footer-contact strong { color: var(--cream); font-size: 16px; }
+footer .footer-update { margin-top: 14px; font-size: 11.5px; color: var(--cream-mute); letter-spacing: 0.1em; }
 footer .footer-back {
   display: inline-block;
   margin-top: 14px;
   padding: 7px 18px;
-  border: 1px solid rgba(236,210,154,0.4);
+  border: 1px solid var(--gold);
   border-radius: 18px;
   font-size: 13px;
-  color: var(--on-green-gold);
+  color: var(--gold-bright);
   text-decoration: none;
 }
-footer .footer-back:hover { background: rgba(236,210,154,0.12); }
+footer .footer-back:hover { background: rgba(216,185,129,0.12); }
 
 /* ===== 애니메이션 ===== */
 @keyframes fadeUp {
