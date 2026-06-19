@@ -7,25 +7,26 @@
 <meta name="description" content="아소 야마나미 리조트호텔 & EWRC 회원예약센터 - 나고야 포틴힐즈 컨트리클럽 식사 메뉴 안내">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   
   :root {
-    --cream: #faf6f0;
-    --paper: #fffdf8;
-    --ink: #1a1612;
-    --ink-soft: #4a4239;
-    --ink-mute: #857c70;
-    --gold: #b8893d;
-    --gold-deep: #8a6526;
-    --accent: #c14a26;
-    --accent-soft: #e8825c;
-    --line: #e8dfd0;
-    --line-soft: #f0e9dc;
-    --notice: #fff4ec;
-    --notice-border: #f4a574;
-    --notice-deep: #b8460e;
+    --cream: #0d1f15;
+    --paper: #16301f;
+    --ink: #F6F1E0;
+    --ink-soft: #E0D9C2;
+    --ink-mute: #BFC1AD;
+    --gold: #D8B981;
+    --gold-deep: #E0C896;
+    --accent: #E07A66;
+    --accent-soft: #C45A4A;
+    --line: rgba(216,185,129,0.35);
+    --line-soft: rgba(216,185,129,0.22);
+    --notice: rgba(160,68,56,0.18);
+    --notice-border: #A04438;
+    --notice-deep: #E07A66;
     
     --c-sun: #d63b2c;
     --c-mon: #c98a1a;
@@ -39,7 +40,7 @@
   html { scroll-behavior: smooth; }
   
   body {
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
     background: var(--cream);
     color: var(--ink);
     line-height: 1.7;
@@ -85,7 +86,7 @@
   header {
     padding: 48px 24px 36px;
     text-align: center;
-    background: linear-gradient(180deg, #2a1f15 0%, #3a2a1c 100%);
+    background: linear-gradient(180deg, #081410 0%, #16301f 100%);
     color: #f5ebd6;
     position: relative;
     overflow: hidden;
@@ -166,7 +167,7 @@
     font-weight: 700;
   }
   .change-item {
-    background: rgba(255,255,255,0.7);
+    background: rgba(216,185,129,0.1);
     padding: 12px 14px;
     border-radius: 3px;
     margin-bottom: 8px;
@@ -237,7 +238,7 @@
   
   /* 빠른 카드 */
   .quick-card {
-    background: linear-gradient(135deg, #fff9ef 0%, #fef0db 100%);
+    background: var(--paper);
     border: 1px solid var(--line);
     border-left: 4px solid var(--gold);
     border-radius: 6px;
@@ -250,7 +251,7 @@
     font-size: 12px;
     font-weight: 700;
     color: var(--gold-deep);
-    background: #fff;
+    background: var(--paper);
     padding: 3px 10px;
     border-radius: 10px;
     margin-bottom: 8px;
@@ -307,7 +308,7 @@
     border: 1px solid var(--line);
   }
   .week-day.highlight {
-    background: linear-gradient(180deg, #fff2e3 0%, #ffe0c5 100%);
+    background: linear-gradient(180deg, rgba(160,68,56,0.16) 0%, rgba(160,68,56,0.08) 100%);
     border-color: var(--accent-soft);
     box-shadow: 0 2px 8px rgba(193,74,38,0.12);
   }
@@ -634,7 +635,7 @@
   
   /* ===== FOOTER ===== */
   footer {
-    background: #1a1612;
+    background: #081410;
     color: #a89070;
     padding: 36px 24px;
     text-align: center;
@@ -686,7 +687,7 @@
   }
   .toc a:hover, .toc a:active {
     background: var(--gold);
-    color: #fff;
+    color: #0d1f15;
     border-color: var(--gold);
   }
   
