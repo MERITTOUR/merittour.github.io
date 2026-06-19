@@ -24,18 +24,24 @@
 ## 사이트 구조 (주요)
 
 ```
-/                       메리트투어 메인
-/yamanami/              아소 야마나미 리조트 회원 종합 안내 (랜딩)
-  index.html           랜딩 — 안내 메뉴 바로가기
-  assets/yamanami.css  공유 다크 테마 스타일시트 (랜딩·식사 공통)
-  assets/photos/       메뉴 사진 (추가·안주 사진, 주간 저녁 포스터 등)
-  dining/index.html    식사 안내 — 조식·중식·석식 순서 (조·중 뷔페 / 석식: 주간 저녁·Up-Grade·안주·음료·주류반입·외부식당)
+/                          게이트 (메리트투어 진입 페이지 — 네이비/골드 브랜드 톤)
+/guide/                    리조트 안내 허브 (야마나미·포틴힐즈·회사소개 목록)
+  index.html               허브 — 리조트 선택
+  yamanami/                아소 야마나미 리조트 안내
+    index.html             랜딩 — 안내 메뉴 바로가기
+    assets/yamanami.css    공유 다크 테마 스타일시트 (랜딩·식사 공통)
+    assets/photos/         메뉴 사진 (추가·안주 사진, 주간 저녁 포스터 등)
+    dining/index.html      식사 안내 — 조식·중식·석식 순서
+  14hills/                 나고야 포틴힐즈 CC 안내 (랜딩 + dining)
+  about/                   회사소개
 ```
+- 계층: **게이트(`/`) → 리조트 안내(`/guide/`) → 각 리조트(`/guide/yamanami/`, `/guide/14hills/`)**.
 - 식사 안내는 **점심·저녁 분리 없이 한 페이지**(`dining/`)에서 **조식 → 중식 → 석식** 순서로 안내한다.
+- 모든 하위 페이지 좌측 하단에 플로팅 **뒤로가기 버튼**(`.top-back`, 상위 폴더로 이동).
 
 ## 야마나미 디자인 시스템 (다크 골드/포레스트 톤)
 
-- 공통 스타일은 `yamanami/assets/yamanami.css` 한 곳에서 관리한다. 페이지별 인라인 `<style>`을 늘리지 말 것.
+- 공통 스타일은 `guide/yamanami/assets/yamanami.css` 한 곳에서 관리한다. 페이지별 인라인 `<style>`을 늘리지 말 것. (14hills 랜딩도 이 파일을 참조)
 - 컬러: 딥 포레스트 그린(`#0d1f15`/`#142c1f`) + 골드(`#C9A876`/`#E0C896`) + 와인레드 강조(`#8B3A2F`/`#C45A4A`) + 크림 텍스트(`#F2EBD5`)
 - 폰트: Noto Serif JP / Noto Serif KR / Pretendard
 - 페이지 컨테이너 `.wrap` 폭 760px, 골드 인셋 보더(`.wrap::before`)
