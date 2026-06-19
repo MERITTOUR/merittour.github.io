@@ -1,0 +1,927 @@
+/* ============================================================
+   YAMANAMI RESORT — 다크 골드/포레스트 테마 (공유 스타일시트)
+   index.html · lunch/ · dining/ 공통 사용
+   ============================================================ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  /* 포레스트 그린 */
+  --forest: #0d1f15;        /* 메인 배경 */
+  --forest-mid: #142c1f;    /* 섹션 alt / 카드 */
+  --forest-light: #1a3826;  /* 활성 셀 */
+  --black-tone: #0a1810;    /* 가장 어두운 톤 */
+  --page-bg: #060d09;       /* 바깥 여백 */
+
+  /* 골드 */
+  --gold: #C9A876;
+  --gold-bright: #E0C896;
+  --gold-dim: #8B7041;
+
+  /* 와인레드 (강조) */
+  --wine: #8B3A2F;
+  --wine-light: #C45A4A;
+
+  /* 텍스트 */
+  --cream: #F2EBD5;
+  --cream-dim: #C9C0A8;
+  --cream-mute: #9aa089;
+
+  /* 요일 컬러 (다크 대응 채도) */
+  --c-sun: #c4564a;
+  --c-mon: #c89a3a;
+  --c-tue: #cBA640;
+  --c-wed: #5a9a4d;
+  --c-thu: #4a82bf;
+  --c-fri: #4f74b0;
+  --c-sat: #7a5aa0;
+
+  --line: rgba(201,168,118,0.28);
+  --line-soft: rgba(201,168,118,0.16);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Pretendard', 'Noto Sans KR', -apple-system, sans-serif;
+  background: var(--page-bg);
+  color: var(--cream);
+  line-height: 1.7;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(circle at 12% 0%, rgba(201,168,118,0.05) 0%, transparent 42%),
+    radial-gradient(circle at 88% 100%, rgba(139,58,47,0.05) 0%, transparent 42%);
+  min-height: 100vh;
+  padding: 18px 12px;
+}
+
+.wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  background: var(--forest);
+  box-shadow: 0 10px 50px rgba(0,0,0,0.55);
+  position: relative;
+  overflow: hidden;
+}
+.wrap::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px solid var(--gold-dim);
+  pointer-events: none;
+  z-index: 30;
+}
+
+/* ===== BREADCRUMB ===== */
+.breadcrumb {
+  position: relative;
+  z-index: 20;
+  padding: 14px 26px;
+  background: var(--black-tone);
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 12px;
+  color: var(--cream-mute);
+}
+.breadcrumb a { color: var(--gold); text-decoration: none; font-weight: 500; }
+.breadcrumb a:hover { text-decoration: underline; }
+.breadcrumb .sep { margin: 0 8px; color: var(--gold-dim); }
+
+/* ===== HEADER ===== */
+header {
+  padding: 52px 24px 40px;
+  text-align: center;
+  background: linear-gradient(180deg, var(--black-tone) 0%, var(--forest-mid) 100%);
+  color: var(--cream);
+  position: relative;
+  overflow: hidden;
+}
+header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(224,200,150,0.10) 0%, transparent 70%),
+    repeating-linear-gradient(60deg, transparent, transparent 40px, rgba(224,200,150,0.025) 40px, rgba(224,200,150,0.025) 41px);
+  pointer-events: none;
+}
+.brand-line {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 11px;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  margin-bottom: 18px;
+  position: relative;
+}
+.brand-line::before, .brand-line::after { content: '✿'; margin: 0 13px; font-size: 10px; color: var(--gold-dim); }
+
+h1 {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  margin-bottom: 10px;
+  color: var(--gold-bright);
+  position: relative;
+}
+.h1-sub {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 15px;
+  color: var(--cream-dim);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  margin-bottom: 14px;
+  position: relative;
+}
+.h1-jp {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 12.5px;
+  color: var(--gold);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  margin-bottom: 22px;
+  position: relative;
+}
+.header-meta {
+  display: inline-block;
+  padding: 8px 22px;
+  border: 1px solid var(--gold-dim);
+  border-radius: 2px;
+  font-size: 12px;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  position: relative;
+}
+.mountain-deco {
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 40px;
+  background:
+    linear-gradient(135deg, transparent 48%, rgba(201,168,118,0.12) 50%, transparent 52%),
+    linear-gradient(-135deg, transparent 48%, rgba(201,168,118,0.12) 50%, transparent 52%);
+  background-size: 60px 40px;
+  background-repeat: repeat-x;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ===== TOC ===== */
+.toc {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  gap: 8px;
+  padding: 14px 16px;
+  background: var(--black-tone);
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.toc a {
+  flex-shrink: 0;
+  padding: 8px 15px;
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--cream-dim);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.toc a:hover, .toc a:active {
+  background: var(--gold);
+  color: var(--forest);
+  border-color: var(--gold);
+}
+
+/* ===== WELCOME (랜딩) ===== */
+.welcome { padding: 44px 24px 20px; text-align: center; }
+.welcome-tag {
+  display: inline-block;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 0.3em;
+  margin-bottom: 14px;
+}
+.welcome-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gold-bright);
+  letter-spacing: -0.01em;
+  margin-bottom: 14px;
+  line-height: 1.45;
+}
+.welcome-desc { font-size: 14px; color: var(--cream-dim); line-height: 1.85; max-width: 480px; margin: 0 auto; }
+
+.divider-ornament {
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px; margin: 28px 0 0; color: var(--gold-dim);
+}
+.divider-ornament .line { width: 50px; height: 1px; background: var(--gold-dim); }
+.divider-ornament .leaf { font-size: 13px; color: var(--gold); opacity: 0.85; }
+
+/* ===== SECTIONS ===== */
+section { position: relative; padding: 44px 22px 28px; }
+section.alt { background: var(--forest-mid); }
+
+.section-head { text-align: center; margin-bottom: 28px; }
+.section-num {
+  display: inline-block;
+  font-family: 'Noto Serif JP', serif;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 0.4em;
+  border: 1px solid var(--gold-dim);
+  padding: 4px 12px 4px 16px;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--gold-bright);
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+  display: inline-block;
+}
+.section-title::after {
+  content: '';
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: var(--gold);
+  margin: 12px auto 0;
+}
+.section-title-sub {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 13px;
+  color: var(--cream-dim);
+  margin-top: 14px;
+  letter-spacing: 0.08em;
+}
+
+/* ===== 랜딩: 메뉴 그리드 ===== */
+.menu-section { padding: 24px 22px 44px; }
+.menu-section-head { text-align: center; margin-bottom: 24px; }
+.menu-section-num {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 0.3em;
+  margin-bottom: 8px;
+}
+.menu-section-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold-bright);
+}
+.menu-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+
+.menu-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
+  border-radius: 6px;
+  padding: 20px 22px;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+.menu-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: var(--gold);
+  transition: width 0.25s ease;
+}
+.menu-card:hover, .menu-card:active {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+  border-color: var(--gold);
+}
+.menu-card:hover::before { width: 6px; }
+.menu-card.available::before { background: var(--gold-bright); }
+.menu-card.coming::before { background: var(--gold-dim); }
+.menu-card.coming { opacity: 0.6; }
+
+.menu-card-inner { display: flex; align-items: center; gap: 18px; }
+.menu-card-icon {
+  flex-shrink: 0;
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--forest-light) 0%, var(--black-tone) 100%);
+  border: 1px solid var(--gold-dim);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+}
+.menu-card.coming .menu-card-icon { filter: grayscale(0.4); }
+.menu-card-body { flex: 1; min-width: 0; }
+.menu-card-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--gold-bright);
+  margin-bottom: 3px;
+}
+.menu-card-desc { font-size: 12px; color: var(--cream-dim); line-height: 1.55; }
+.menu-card-arrow {
+  flex-shrink: 0;
+  font-size: 16px;
+  color: var(--gold);
+  opacity: 0.7;
+  transition: transform 0.25s ease;
+}
+.menu-card:hover .menu-card-arrow { transform: translateX(4px); opacity: 1; }
+.menu-card-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  letter-spacing: 0.05em;
+  margin-top: 6px;
+}
+.menu-card-badge.new { background: var(--wine); color: #fff; }
+.menu-card-badge.soon { background: rgba(201,168,118,0.15); color: var(--cream-mute); }
+
+/* ===== HIGHLIGHT BOX ===== */
+.highlight-box {
+  margin: 0 22px 32px;
+  padding: 18px 20px;
+  background: linear-gradient(135deg, rgba(139,58,47,0.18) 0%, rgba(139,58,47,0.08) 100%);
+  border: 1px solid var(--wine);
+  border-left: 4px solid var(--wine-light);
+  border-radius: 4px;
+  position: relative;
+}
+.highlight-box-tag {
+  position: absolute;
+  top: -10px; left: 16px;
+  background: var(--wine);
+  color: #fff;
+  padding: 3px 11px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  border-radius: 2px;
+}
+.highlight-box-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gold-bright);
+  margin: 4px 0 6px;
+}
+.highlight-box-desc { font-size: 13px; color: var(--cream-dim); line-height: 1.65; }
+.highlight-box-desc strong { color: var(--wine-light); font-weight: 700; }
+
+/* ===== INFO BLOCK (랜딩 연락처) ===== */
+.info-block {
+  background: var(--black-tone);
+  padding: 32px 24px 36px;
+  border-top: 1px solid var(--line);
+}
+.info-block-head { text-align: center; margin-bottom: 22px; }
+.info-block-tag {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 11px;
+  color: var(--gold);
+  letter-spacing: 0.3em;
+}
+.info-block-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold-bright);
+  margin-top: 4px;
+}
+.info-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.info-card {
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
+  border-radius: 6px;
+  padding: 14px 12px;
+  text-align: center;
+}
+.info-card-label { font-size: 10px; color: var(--gold); letter-spacing: 0.1em; margin-bottom: 4px; }
+.info-card-value {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1.4;
+}
+
+/* ===== DINNER (요일별) ===== */
+.dinner-list { display: flex; flex-direction: column; gap: 10px; }
+.dinner-row {
+  display: flex;
+  align-items: stretch;
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.dinner-row:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
+.dinner-day {
+  flex-shrink: 0;
+  width: 84px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 14px 8px;
+  color: #fff;
+  text-align: center;
+}
+.dinner-day.sun { background: linear-gradient(135deg, var(--c-sun) 0%, #8e362c 100%); }
+.dinner-day.mon { background: linear-gradient(135deg, var(--c-mon) 0%, #8a6a1a 100%); }
+.dinner-day.tue { background: linear-gradient(135deg, var(--c-tue) 0%, #8a7016 100%); }
+.dinner-day.wed { background: linear-gradient(135deg, var(--c-wed) 0%, #3a6630 100%); }
+.dinner-day.thu { background: linear-gradient(135deg, var(--c-thu) 0%, #2f5784 100%); }
+.dinner-day.fri { background: linear-gradient(135deg, var(--c-fri) 0%, #344f80 100%); }
+.dinner-day.sat { background: linear-gradient(135deg, var(--c-sat) 0%, #4f3a6e 100%); }
+.dinner-day-ko { font-family: 'Noto Serif KR', serif; font-size: 16px; font-weight: 700; line-height: 1.1; }
+.dinner-day-jp { font-family: 'Noto Serif JP', serif; font-size: 11px; margin-top: 4px; opacity: 0.9; }
+.dinner-menu { flex: 1; padding: 14px 18px; display: flex; flex-direction: column; justify-content: center; }
+.dinner-menu-ko { font-family: 'Noto Serif KR', serif; font-size: 17px; font-weight: 700; color: var(--gold-bright); letter-spacing: -0.01em; }
+.dinner-menu-jp { font-family: 'Noto Serif JP', serif; font-size: 12px; color: var(--cream-dim); margin-top: 3px; }
+.dinner-note {
+  margin-top: 18px;
+  padding: 12px 14px;
+  background: var(--black-tone);
+  border: 1px solid var(--gold-dim);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--gold);
+  text-align: center;
+}
+.dinner-note strong { color: var(--gold-bright); font-weight: 700; }
+
+/* ===== 신청안내 (Up-Grade) ===== */
+.apply-info-section {
+  background: var(--black-tone);
+  color: var(--cream);
+  padding: 44px 22px 32px;
+}
+.apply-info-section .section-num { color: var(--gold); }
+.apply-info-section .section-title { color: var(--gold-bright); }
+.apply-info-section .section-title::after { background: var(--gold); }
+.apply-info-container {
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
+  border-left: 3px solid var(--gold);
+  border-radius: 4px;
+  padding: 20px 18px;
+  margin-top: 10px;
+}
+.apply-tag {
+  display: inline-block;
+  background: var(--gold);
+  color: var(--forest);
+  font-size: 10px; font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 2px;
+  letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+.apply-info-title {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 15px; font-weight: 700;
+  color: var(--gold-bright);
+  margin-bottom: 14px;
+}
+.apply-routes { display: flex; flex-direction: column; gap: 10px; }
+.apply-route {
+  background: var(--black-tone);
+  border: 1px solid var(--gold-dim);
+  border-radius: 4px;
+  padding: 12px 14px;
+  text-align: center;
+}
+.apply-route-icon { font-size: 20px; margin-bottom: 4px; }
+.apply-route-label {
+  display: inline-block;
+  background: rgba(201,168,118,0.16);
+  color: var(--gold);
+  font-size: 10px; font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 10px;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+.apply-route-main { font-size: 13px; color: var(--cream); line-height: 1.5; margin-bottom: 3px; }
+.apply-route-main strong { color: var(--gold-bright); font-weight: 700; font-size: 14px; }
+.apply-route-sub { font-size: 11px; color: var(--cream-dim); letter-spacing: 0.02em; }
+.apply-divider { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 2px 0; }
+.apply-divider::before, .apply-divider::after { content: ''; flex: 1; height: 1px; background: var(--gold-dim); max-width: 40px; opacity: 0.5; }
+.apply-divider span { font-size: 10px; color: var(--gold); font-weight: 500; letter-spacing: 0.1em; }
+
+/* ===== UPGRADE 메뉴 블록 ===== */
+.upgrade-block {
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
+  border-radius: 6px;
+  padding: 18px;
+  margin-top: 14px;
+}
+.upgrade-block-head { font-family: 'Noto Serif KR', serif; font-size: 15px; color: var(--gold-bright); margin-bottom: 4px; font-weight: 700; }
+.upgrade-block-sub { font-size: 12px; color: var(--cream-dim); margin-bottom: 14px; line-height: 1.5; }
+.upgrade-row {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--gold-dim);
+}
+.upgrade-row:last-child { border-bottom: none; }
+.upgrade-info-block { flex: 1; }
+.upgrade-name { font-size: 14px; color: var(--cream); font-weight: 500; }
+.upgrade-name-jp { font-family: 'Noto Serif JP', serif; font-size: 11px; color: var(--cream-dim); margin-top: 2px; }
+.upgrade-price { font-family: 'Noto Serif KR', serif; font-size: 14px; font-weight: 700; color: var(--gold-bright); white-space: nowrap; margin-left: 12px; text-align: right; }
+.upgrade-price-sub { display: block; font-size: 10px; color: var(--cream-dim); font-weight: 400; margin-top: 2px; }
+.bbq-note { font-size: 11px; color: var(--wine-light); margin-top: 8px; text-align: right; font-style: italic; }
+
+/* 와인레드 대인기 배지 (공통) */
+.hot-badge {
+  display: inline-block;
+  font-size: 10px; font-weight: 700;
+  color: #fff;
+  background: var(--wine);
+  padding: 2px 8px;
+  border-radius: 2px;
+  letter-spacing: 0.04em;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* ===== 안주 섹션 ===== */
+.snack-time-notice {
+  background: rgba(139,58,47,0.15);
+  border: 1px solid var(--wine);
+  border-left: 3px solid var(--wine-light);
+  border-radius: 4px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--wine-light);
+  text-align: center;
+  font-weight: 600;
+}
+.snack-time-notice strong { color: var(--gold-bright); }
+.snack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.snack-item {
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
+  border-left: 3px solid var(--gold);
+  border-radius: 4px;
+  padding: 10px 12px;
+}
+.snack-name { font-size: 13px; font-weight: 700; color: var(--cream); line-height: 1.3; }
+.snack-name-jp { font-family: 'Noto Serif JP', serif; font-size: 10px; color: var(--cream-dim); margin-top: 2px; }
+.snack-price-all {
+  text-align: center;
+  padding: 10px;
+  background: var(--black-tone);
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--cream);
+  font-weight: 700;
+}
+.snack-price-all strong { color: var(--gold-bright); font-size: 15px; }
+
+/* ===== DRINKS 섹션 ===== */
+.drinks-wrapper { padding: 0; }
+.drinks-category { margin-bottom: 20px; }
+.drinks-category-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 12px; padding-bottom: 8px;
+  border-bottom: 2px solid var(--gold);
+}
+.drinks-category-icon { font-size: 18px; }
+.drinks-category-title { font-family: 'Noto Serif KR', serif; font-size: 16px; font-weight: 700; color: var(--gold-bright); letter-spacing: -0.01em; }
+.drinks-list { display: flex; flex-direction: column; gap: 6px; }
+.drink-item {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 8px 12px;
+  background: var(--forest-mid);
+  border-radius: 3px;
+}
+.drink-item:nth-child(odd) { background: var(--black-tone); }
+.drink-name { font-size: 13px; color: var(--cream); font-weight: 500; line-height: 1.4; }
+.drink-name-jp { font-family: 'Noto Serif JP', serif; font-size: 10px; color: var(--cream-dim); margin-top: 1px; }
+.drink-price { font-family: 'Noto Serif KR', serif; font-size: 13px; font-weight: 700; color: var(--gold-bright); white-space: nowrap; margin-left: 10px; text-align: right; }
+.drink-price .yen { color: var(--gold); font-size: 11px; margin-right: 1px; }
+.beer-sizes { display: flex; gap: 6px; margin-top: 6px; }
+.beer-size-box {
+  flex: 1;
+  background: var(--black-tone);
+  border: 1px solid var(--gold-dim);
+  border-radius: 3px;
+  padding: 6px 4px;
+  text-align: center;
+}
+.beer-size-label { font-size: 10px; color: var(--cream-dim); display: block; }
+.beer-size-price { font-family: 'Noto Serif KR', serif; font-size: 12px; font-weight: 700; color: var(--gold-bright); margin-top: 1px; }
+.soft-drinks-note { font-size: 11px; color: var(--cream-dim); margin-top: 6px; text-align: center; font-style: italic; }
+
+/* ===== 콜키지 차지 ===== */
+.corkage-section {
+  background: var(--forest-mid);
+  padding: 44px 22px 32px;
+  border-top: 1px solid var(--line);
+}
+.corkage-title { font-family: 'Noto Serif KR', serif; font-size: 22px; font-weight: 700; color: var(--gold-bright); text-align: center; margin-bottom: 4px; }
+.corkage-title-sub { font-family: 'Noto Serif JP', serif; font-size: 12px; color: var(--cream-dim); text-align: center; margin-bottom: 20px; }
+.corkage-desc { text-align: center; font-size: 13px; color: var(--cream-dim); margin-bottom: 18px; line-height: 1.6; }
+.corkage-prices {
+  background: var(--black-tone);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.corkage-price-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--gold-dim); }
+.corkage-price-row:last-child { border-bottom: none; }
+.corkage-price-desc { flex: 1; font-size: 13px; color: var(--cream); line-height: 1.5; }
+.corkage-price-desc strong { color: var(--gold-bright); font-weight: 700; }
+.corkage-price-value { font-family: 'Noto Serif KR', serif; font-size: 15px; font-weight: 700; color: var(--gold-bright); white-space: nowrap; margin-left: 12px; }
+.corkage-notes {
+  background: var(--black-tone);
+  border: 1px solid var(--gold-dim);
+  border-radius: 6px;
+  padding: 14px 16px;
+  font-size: 12px;
+  color: var(--cream-dim);
+  line-height: 1.7;
+}
+.corkage-notes strong { color: var(--gold-bright); }
+.corkage-notes .note-item { padding: 4px 0; }
+.corkage-notes .note-item::before { content: '◆ '; color: var(--gold); }
+.corkage-notes .warn {
+  background: rgba(139,58,47,0.18);
+  padding: 8px 10px;
+  border-radius: 3px;
+  margin-top: 8px;
+  color: var(--wine-light);
+  font-weight: 500;
+}
+.corkage-notes .warn::before { content: '⚠️ '; }
+
+/* ===== 외부 식당 (석식) ===== */
+.resto-only {
+  display: inline-block;
+  margin-top: 13px;
+  font-size: 12px; font-weight: 700;
+  color: #fff;
+  background: var(--wine);
+  padding: 5px 15px;
+  border-radius: 16px;
+  letter-spacing: 0.02em;
+}
+.resto-intro {
+  text-align: center;
+  font-size: 13px;
+  color: var(--gold);
+  background: var(--black-tone);
+  border: 1px solid var(--gold-dim);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 22px;
+  line-height: 1.6;
+}
+.resto-list { display: flex; flex-direction: column; gap: 14px; }
+.resto-card {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
+  border-radius: 10px;
+  padding: 16px;
+  transition: all 0.2s;
+}
+.resto-card:hover, .resto-card:active { box-shadow: 0 8px 20px rgba(0,0,0,0.4); border-color: var(--gold); }
+.resto-photo {
+  width: 180px; height: 135px;
+  flex-shrink: 0;
+  object-fit: cover; object-position: center;
+  border-radius: 8px;
+  align-self: flex-start;
+  background: var(--black-tone);
+}
+.resto-body { flex: 1; min-width: 0; }
+.resto-type {
+  display: inline-block;
+  font-size: 11px;
+  color: var(--gold);
+  background: rgba(201,168,118,0.14);
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-bottom: 9px;
+  letter-spacing: 0.02em;
+}
+.resto-name { font-family: 'Noto Serif KR', serif; font-size: 19px; font-weight: 700; color: var(--gold-bright); line-height: 1.3; }
+.resto-name-jp { font-family: 'Noto Serif JP', serif; font-size: 13px; color: var(--gold); margin-bottom: 11px; }
+.resto-desc { font-size: 13.5px; color: var(--cream-dim); line-height: 1.75; margin-bottom: 9px; }
+.resto-highlight { font-size: 13px; color: var(--wine-light); font-weight: 600; line-height: 1.6; margin-bottom: 11px; }
+.resto-meta { display: flex; flex-wrap: wrap; gap: 6px; padding-top: 12px; border-top: 1px dashed var(--gold-dim); }
+.resto-chip { font-size: 12px; color: var(--cream-dim); background: rgba(201,168,118,0.12); padding: 4px 11px; border-radius: 14px; letter-spacing: 0.01em; }
+.resto-chip.card { color: var(--gold-bright); background: rgba(201,168,118,0.2); font-weight: 700; }
+.resto-chip.cash { color: var(--wine-light); background: rgba(139,58,47,0.22); font-weight: 700; }
+.resto-chip.off  { color: var(--cream-mute); background: transparent; border: 1px solid var(--gold-dim); }
+.resto-common {
+  margin-top: 24px;
+  background: var(--black-tone);
+  border: 1px solid var(--gold-dim);
+  border-radius: 10px;
+  padding: 18px 18px 16px;
+}
+.resto-common-head {
+  display: inline-block;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 13px; font-weight: 700;
+  color: var(--forest);
+  background: var(--gold);
+  padding: 4px 14px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+  letter-spacing: 0.06em;
+}
+.resto-common ul { list-style: none; padding: 0; margin: 0; }
+.resto-common li { font-size: 13px; color: var(--cream-dim); line-height: 1.75; padding-left: 17px; position: relative; margin-bottom: 10px; }
+.resto-common li:last-child { margin-bottom: 0; }
+.resto-common li::before { content: '·'; position: absolute; left: 5px; color: var(--gold); font-weight: 700; }
+.resto-common strong { color: var(--gold-bright); }
+
+/* ===== 점심(LUNCH) 전용 ===== */
+.info-box {
+  background: var(--forest-mid);
+  border: 1px solid var(--gold-dim);
+  border-radius: 4px;
+  padding: 22px 24px;
+  margin-bottom: 18px;
+}
+.info-box:last-child { margin-bottom: 0; }
+.info-label {
+  display: inline-block;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 12px; font-weight: 700;
+  color: var(--gold);
+  padding: 4px 12px;
+  border: 1px solid var(--gold);
+  margin-bottom: 14px;
+  letter-spacing: 0.06em;
+}
+.info-title { font-family: 'Noto Serif KR', serif; font-size: 17px; font-weight: 700; color: var(--gold-bright); margin-bottom: 6px; }
+.info-jp { font-family: 'Noto Serif JP', serif; font-size: 12.5px; color: var(--cream-dim); margin-bottom: 16px; letter-spacing: 0.02em; }
+.info-desc { font-size: 14px; color: var(--cream); line-height: 1.75; }
+.info-desc .em { color: var(--gold-bright); font-weight: 700; }
+
+.depart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.depart-card { background: var(--black-tone); border-left: 3px solid var(--gold); padding: 16px 18px; }
+.depart-tag {
+  display: inline-block;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 11px; font-weight: 700;
+  color: var(--wine-light);
+  padding: 2px 9px;
+  background: var(--forest-mid);
+  border: 1px solid var(--wine);
+  margin-bottom: 10px;
+  letter-spacing: 0.04em;
+}
+.depart-name { font-family: 'Noto Serif KR', serif; font-size: 15.5px; font-weight: 700; color: var(--gold-bright); margin-bottom: 6px; }
+.depart-sub { font-size: 12px; color: var(--cream-dim); line-height: 1.55; }
+
+.buffet-box {
+  background: var(--forest-mid);
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  padding: 36px 28px 30px;
+  text-align: center;
+}
+.buffet-deco { color: var(--gold); font-size: 11px; letter-spacing: 1.4em; margin-bottom: 16px; padding-left: 1.4em; }
+.buffet-title { font-family: 'Noto Serif JP', serif; font-size: 28px; font-weight: 700; color: var(--gold-bright); margin-bottom: 4px; letter-spacing: 0.04em; }
+.buffet-ko { font-family: 'Noto Serif KR', serif; font-size: 17px; color: var(--cream); margin-bottom: 18px; letter-spacing: 0.06em; }
+.buffet-desc { font-size: 13.5px; color: var(--cream-dim); line-height: 1.8; }
+.buffet-desc .em { color: var(--gold-bright); font-weight: 700; }
+.buffet-days {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 9px 24px;
+  background: var(--black-tone);
+  color: var(--gold-bright);
+  border: 1px solid var(--gold);
+  font-family: 'Noto Serif JP', serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.sub-info {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 12px 18px;
+  background: var(--black-tone);
+  border-left: 3px solid var(--gold);
+  font-size: 13px;
+  color: var(--cream);
+}
+.sub-info .icon { color: var(--gold); }
+.sub-info .em { font-weight: 700; color: var(--gold-bright); }
+
+.notice-band {
+  background: var(--black-tone);
+  border-top: 1px solid var(--gold-dim);
+  border-bottom: 1px solid var(--gold-dim);
+  padding: 13px 24px;
+  text-align: center;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 12.5px;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+}
+.notice-band .deco { color: var(--gold-dim); margin: 0 10px; }
+
+/* ===== FOOTER ===== */
+footer {
+  position: relative;
+  z-index: 20;
+  background: var(--black-tone);
+  color: var(--cream-dim);
+  padding: 36px 24px;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.8;
+  border-top: 1px solid var(--gold);
+}
+footer .footer-brand { font-family: 'Noto Serif KR', serif; font-size: 16px; color: var(--gold-bright); margin-bottom: 12px; font-weight: 700; letter-spacing: 0.06em; }
+footer .footer-contact { margin-top: 14px; padding-top: 16px; border-top: 1px solid var(--line-soft); color: var(--gold); }
+footer .footer-contact strong { color: var(--cream); font-size: 14px; }
+footer .footer-update { margin-top: 14px; font-size: 10px; color: var(--cream-mute); letter-spacing: 0.1em; }
+footer .footer-back {
+  display: inline-block;
+  margin-top: 14px;
+  padding: 6px 16px;
+  border: 1px solid var(--gold-dim);
+  border-radius: 18px;
+  font-size: 11px;
+  color: var(--gold);
+  text-decoration: none;
+}
+footer .footer-back:hover { background: rgba(201,168,118,0.1); }
+
+/* ===== 애니메이션 ===== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+header, section, .corkage-section, .welcome, .highlight-box, .menu-section, .info-block {
+  animation: fadeUp 0.5s ease-out backwards;
+}
+.welcome { animation-delay: 0.1s; }
+.highlight-box { animation-delay: 0.18s; }
+.menu-section { animation-delay: 0.25s; }
+.info-block { animation-delay: 0.35s; }
+section:nth-of-type(1) { animation-delay: 0.1s; }
+section:nth-of-type(2) { animation-delay: 0.2s; }
+section:nth-of-type(3) { animation-delay: 0.3s; }
+section:nth-of-type(4) { animation-delay: 0.4s; }
+section:nth-of-type(5) { animation-delay: 0.45s; }
+
+/* ===== 반응형 ===== */
+@media (max-width: 480px) {
+  body { font-size: 14px; padding: 8px 6px; }
+  header { padding: 38px 18px 30px; }
+  h1 { font-size: 25px; }
+  .h1-sub { font-size: 14px; }
+  .welcome { padding: 36px 18px 14px; }
+  .welcome-title { font-size: 19px; }
+  section { padding: 34px 16px 20px; }
+  .menu-section { padding: 18px 16px 32px; }
+  .section-title { font-size: 22px; }
+  .highlight-box { margin-left: 16px; margin-right: 16px; }
+  .info-cards { grid-template-columns: 1fr; }
+  .menu-card { padding: 16px 18px; }
+  .menu-card-icon { width: 46px; height: 46px; font-size: 22px; }
+  .menu-card-title { font-size: 16px; }
+  .dinner-day { width: 72px; }
+  .dinner-day-ko { font-size: 14px; }
+  .dinner-menu-ko { font-size: 15px; }
+  .snack-grid { grid-template-columns: 1fr; }
+  .depart-grid { grid-template-columns: 1fr; }
+  .resto-card { flex-direction: column; padding: 13px; gap: 11px; }
+  .resto-photo { width: 100%; height: 170px; }
+  .buffet-title { font-size: 23px; }
+}
+
+@media print {
+  body { background: #fff; padding: 0; }
+  .wrap { box-shadow: none; max-width: 100%; }
+}
