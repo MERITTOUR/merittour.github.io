@@ -585,16 +585,29 @@ section.alt { background: var(--paper-soft); }
   font-weight: 600;
 }
 .snack-time-notice strong { color: var(--wine); }
-.snack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.snack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .snack-item {
   background: var(--paper);
   border: 1px solid var(--line);
-  border-left: 3px solid var(--moss);
-  border-radius: 4px;
-  padding: 12px 14px;
+  border-radius: 6px;
+  padding: 0;
+  overflow: hidden;
 }
+.snack-photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; background: var(--paper-soft); }
+.snack-body { padding: 11px 13px; border-left: 3px solid var(--moss); }
 .snack-name { font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.35; }
 .snack-name-jp { font-family: 'Noto Serif JP', serif; font-size: 12px; color: var(--ink-mute); margin-top: 3px; }
+
+/* 사진이 있는 메뉴 카드 (추가 메뉴) */
+.dish-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.dish-card { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; }
+.dish-photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; background: var(--paper-soft); }
+.dish-body { padding: 13px 15px 15px; display: flex; flex-direction: column; flex: 1; }
+.dish-name { font-family: 'Noto Serif KR', serif; font-size: 16.5px; font-weight: 700; color: var(--forest-deep); line-height: 1.3; }
+.dish-name-jp { font-family: 'Noto Serif JP', serif; font-size: 12.5px; color: var(--ink-mute); margin-top: 3px; }
+.dish-price { margin-top: auto; padding-top: 10px; font-family: 'Noto Serif KR', serif; font-weight: 700; color: var(--wine); font-size: 16px; }
+.dish-price .sub { font-size: 11.5px; color: var(--ink-mute); font-weight: 400; margin-left: 2px; }
+.dish-price .alt { display: block; font-size: 13px; color: var(--ink-soft); font-weight: 600; margin-top: 3px; }
 .snack-price-all {
   text-align: center;
   padding: 12px;
@@ -929,7 +942,7 @@ section:nth-of-type(5) { animation-delay: 0.45s; }
   .dinner-day { width: 78px; }
   .dinner-day-ko { font-size: 16px; }
   .dinner-menu-ko { font-size: 17px; }
-  .snack-grid { grid-template-columns: 1fr; }
+  .snack-grid { grid-template-columns: 1fr 1fr; }
   .depart-grid { grid-template-columns: 1fr; }
   .resto-card { flex-direction: column; padding: 13px; gap: 11px; }
   .resto-photo { width: 100%; height: 180px; }
