@@ -75,6 +75,21 @@ body {
   z-index: 30;
 }
 
+.top-back {
+  position: relative;
+  z-index: 20;
+  display: block;
+  padding: 13px 22px;
+  background: var(--black-tone);
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold-bright);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.top-back:hover, .top-back:active { background: var(--forest-mid); }
+
 /* ===== BREADCRUMB ===== */
 .breadcrumb {
   position: relative;
