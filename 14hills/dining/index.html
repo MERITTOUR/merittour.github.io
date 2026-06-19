@@ -53,6 +53,19 @@
   
   .wrap { max-width: 720px; margin: 0 auto; background: var(--paper); box-shadow: 0 0 60px rgba(0,0,0,0.04); }
   
+  .top-back {
+    position: relative; z-index: 20;
+    display: block;
+    padding: 13px 22px;
+    background: #081410;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 14px; font-weight: 700;
+    color: var(--gold-deep);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .top-back:hover, .top-back:active { background: var(--paper); }
+
   /* ===== BREADCRUMB ===== */
   .breadcrumb {
     padding: 14px 24px;
@@ -720,6 +733,8 @@
 <body>
 <div class="wrap">
 
+<a href="../" class="top-back">← 뒤로</a>
+
 <nav class="breadcrumb">
   <a href="../">포틴힐즈 안내</a>
   <span class="sep">›</span>
@@ -730,11 +745,12 @@
   <div class="brand-line">MERIT TOUR · FORTIN HILLS</div>
   <h1>나고야 포틴힐즈<br>식사 안내</h1>
   <div class="h1-jp">フォーティーンヒルズ お食事のご案内</div>
-  <div class="header-meta">아소 야마나미 리조트호텔 &amp; EWRC</div>
+  <div class="header-meta">나고야 포틴힐즈 컨트리클럽</div>
 </header>
 
 <nav class="toc">
   <a href="#notice">🔔 변경사항</a>
+  <a href="#breakfast">🥣 조식</a>
   <a href="#lunch">🍱 점심</a>
   <a href="#dinner">🍽 저녁</a>
   <a href="#upgrade">⭐ 업그레이드</a>
@@ -766,10 +782,25 @@
   </div>
 </div>
 
+<!-- BREAKFAST -->
+<section id="breakfast">
+  <div class="section-head">
+    <div class="section-num">PART 01</div>
+    <div class="section-title">조식 메뉴</div>
+    <div class="section-title-jp">朝食 · ブレックファースト</div>
+  </div>
+
+  <div class="quick-card">
+    <span class="quick-card-label">조식</span>
+    <div class="quick-card-title">매일 뷔페식</div>
+    <div class="quick-card-desc">朝食 · 매일 뷔페식으로 제공됩니다 (한식 위주)</div>
+  </div>
+</section>
+
 <!-- LUNCH -->
 <section id="lunch">
   <div class="section-head">
-    <div class="section-num">PART 01</div>
+    <div class="section-num">PART 02</div>
     <div class="section-title">점심 메뉴</div>
     <div class="section-title-jp">ランチメニュー</div>
   </div>
@@ -827,9 +858,9 @@
 </section>
 
 <!-- DINNER -->
-<section id="dinner" style="background:linear-gradient(180deg, var(--paper) 0%, #fbf6ec 100%);">
+<section id="dinner" style="background:linear-gradient(180deg, var(--paper) 0%, #122618 100%);">
   <div class="section-head">
-    <div class="section-num">PART 02</div>
+    <div class="section-num">PART 03</div>
     <div class="section-title">저녁 메뉴</div>
     <div class="section-title-jp">夕食メニュー · 요일별 제공</div>
   </div>
@@ -923,7 +954,7 @@
 <!-- UPGRADE -->
 <section id="upgrade" class="upgrade-section">
   <div class="section-head">
-    <div class="section-num">PART 03</div>
+    <div class="section-num">PART 04</div>
     <div class="section-title">Up-Grade · 추가 · 안주</div>
     <div class="section-title-jp">アップグレード · 追加 · おつまみ</div>
   </div>
