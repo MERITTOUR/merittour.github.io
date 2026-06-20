@@ -1565,6 +1565,114 @@
     color: rgba(255,255,255,0.65);
     line-height: 1.65;
   }
+
+  /* ===== 디자인 보강: 골드 그라데이션 포인트 (2026.06) ===== */
+  .hero {
+    background: linear-gradient(135deg, #22334f 0%, #14223d 50%, #0c1730 100%);
+    border-bottom: 1px solid rgba(199,154,78,0.28);
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    left: -22%;
+    bottom: -42%;
+    width: 360px;
+    height: 360px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(199,154,78,0.20) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* 섹션 헤딩 그라데이션 언더라인 */
+  .section-heading { position: relative; padding-bottom: 20px; }
+  .section-heading::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: 56px;
+    height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, #1a2740 0%, #c79a4e 100%);
+  }
+  .cta .section-heading::after,
+  .membership .section-heading::after {
+    background: linear-gradient(90deg, #c79a4e 0%, #e7c789 100%);
+  }
+
+  /* 슬로건 그라데이션 텍스트 */
+  .about-slogan {
+    background: linear-gradient(120deg, #1a2740 35%, #b5893c 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .about-divider {
+    width: 60px;
+    height: 2.5px;
+    background: linear-gradient(90deg, transparent, #1a2740, #c79a4e, transparent);
+  }
+
+  /* 섹션 배경 미세 그라데이션 */
+  .values { background: linear-gradient(180deg, #f7f8fa 0%, #eef1f7 100%); }
+  .facilities { background: linear-gradient(180deg, #ffffff 0%, #f6f8fb 100%); }
+
+  /* 가치 카드: 골드 액센트 + 호버 */
+  .value-card {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .value-card::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0;
+    width: 4px; height: 100%;
+    background: linear-gradient(180deg, #1a2740, #c79a4e);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .value-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(26,39,64,0.12);
+    border-color: #dce1ea;
+  }
+  .value-card:hover::before { opacity: 1; }
+  .value-num {
+    background: linear-gradient(135deg, #1a2740 0%, #b5893c 165%);
+    box-shadow: 0 6px 14px rgba(26,39,64,0.22);
+  }
+
+  /* 시설 카드 호버 */
+  .facility-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .facility-card:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(26,39,64,0.10); }
+
+  /* CTA / 멤버십 카드: 깊은 그라데이션 + 골드 테두리 */
+  .cta { background: linear-gradient(135deg, #22334f 0%, #122039 55%, #0a1426 100%); }
+  .membership-card {
+    background:
+      linear-gradient(135deg, #1a2740 0%, #0f1b33 100%) padding-box,
+      linear-gradient(135deg, #c79a4e 0%, #1a2740 60%) border-box;
+    border: 1.5px solid transparent;
+    box-shadow: 0 16px 38px rgba(15,27,51,0.28);
+  }
+
+  /* CTA 버튼 호버 + 기본 버튼 골드 그라데이션 */
+  .btn { transition: all 0.25s ease; }
+  .btn:hover {
+    background: rgba(255,255,255,0.14);
+    border-color: rgba(255,255,255,0.35);
+    transform: translateY(-2px);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #ffffff 0%, #f3ecdb 100%);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 12px 26px rgba(199,154,78,0.28);
+    transform: translateY(-2px);
+  }
+
 </style>
 </head>
 <body>
