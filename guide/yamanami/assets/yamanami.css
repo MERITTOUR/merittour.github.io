@@ -770,15 +770,27 @@ section.alt { background: var(--forest-mid); }
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
 .resto-card:hover, .resto-card:active { box-shadow: 0 8px 20px rgba(0,0,0,0.4); border-color: var(--gold-bright); }
-.resto-photo {
+.resto-photo-wrap {
   width: 132px; height: 132px;
   flex-shrink: 0;
-  object-fit: cover;
-  object-position: left center; /* 오른쪽 흰 여백 잘라냄 */
   border-radius: 8px;
-  display: block;
+  overflow: hidden;
   background: var(--black-tone);
 }
+.resto-photo {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transform: scale(1.06);
+  transform-origin: center;
+}
+/* 사진별 흰 여백 크롭: 흰 가장자리 쪽을 키워서 잘라냄 */
+.resto-card.c-top   .resto-photo { transform: scale(1.18); transform-origin: 50% 100%; }
+.resto-card.c-lt    .resto-photo { transform: scale(1.18); transform-origin: 100% 100%; }
+.resto-card.c-tr    .resto-photo { transform: scale(1.18); transform-origin: 0% 100%; }
+.resto-card.c-left  .resto-photo { transform: scale(1.18); transform-origin: 100% 50%; }
+.resto-card.c-right .resto-photo { transform: scale(1.18); transform-origin: 0% 50%; }
 .resto-body { flex: 1; min-width: 0; }
 .resto-type {
   display: inline-block;
@@ -986,7 +998,7 @@ section:nth-of-type(5) { animation-delay: 0.45s; }
   .snack-grid { grid-template-columns: 1fr 1fr; }
   .depart-grid { grid-template-columns: 1fr; }
   .resto-card { padding: 12px; gap: 12px; }
-  .resto-photo { width: 112px; height: 112px; }
+  .resto-photo-wrap { width: 112px; height: 112px; }
   .buffet-title { font-size: 25px; }
 }
 
