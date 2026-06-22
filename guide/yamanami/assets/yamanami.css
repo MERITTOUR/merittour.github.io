@@ -472,22 +472,16 @@ section.alt { background: var(--forest-mid); }
 .dinner-row:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.4); }
 .dinner-day {
   flex-shrink: 0;
-  width: 90px;
+  width: 86px;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   padding: 14px 8px;
-  color: #fff;
+  background: var(--black-tone);
+  border-right: 1px solid var(--gold-dim);
   text-align: center;
 }
-.dinner-day.sun { background: linear-gradient(135deg, var(--c-sun) 0%, #9e3527 100%); }
-.dinner-day.mon { background: linear-gradient(135deg, var(--c-mon) 0%, #8a6a1a 100%); }
-.dinner-day.tue { background: linear-gradient(135deg, var(--c-tue) 0%, #8a7016 100%); }
-.dinner-day.wed { background: linear-gradient(135deg, var(--c-wed) 0%, #3a6630 100%); }
-.dinner-day.thu { background: linear-gradient(135deg, var(--c-thu) 0%, #2f5784 100%); }
-.dinner-day.fri { background: linear-gradient(135deg, var(--c-fri) 0%, #344f80 100%); }
-.dinner-day.sat { background: linear-gradient(135deg, var(--c-sat) 0%, #4f3a6e 100%); }
-.dinner-day-ko { font-family: 'Noto Serif KR', serif; font-size: 18px; font-weight: 700; line-height: 1.1; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
-.dinner-day-jp { font-family: 'Noto Serif JP', serif; font-size: 12px; margin-top: 4px; opacity: 0.95; }
+.dinner-day-en { font-family: 'Noto Serif JP', serif; font-size: 11px; font-weight: 600; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 6px; padding-left: 0.2em; }
+.dinner-day-ko { font-family: 'Noto Serif KR', serif; font-size: 26px; font-weight: 700; color: var(--gold-bright); line-height: 1; }
 .dinner-menu { flex: 1; padding: 16px 20px; display: flex; flex-direction: column; justify-content: center; }
 .dinner-photo { width: 150px; flex-shrink: 0; object-fit: cover; align-self: stretch; display: block; background: var(--black-tone); }
 .dinner-menu-ko { font-family: 'Noto Serif KR', serif; font-size: 19px; font-weight: 700; color: var(--gold-bright); letter-spacing: -0.01em; }
@@ -995,7 +989,7 @@ section:nth-of-type(5) { animation-delay: 0.45s; }
   .menu-card-desc { font-size: 14px; }
   .dinner-day { width: 70px; }
   .dinner-photo { width: 104px; }
-  .dinner-day-ko { font-size: 16px; }
+  .dinner-day-ko { font-size: 22px; }
   .dinner-menu-ko { font-size: 17px; }
   .snack-grid { grid-template-columns: 1fr 1fr; }
   .depart-grid { grid-template-columns: 1fr; }
