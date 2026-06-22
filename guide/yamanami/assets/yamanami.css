@@ -489,6 +489,7 @@ section.alt { background: var(--forest-mid); }
 .dinner-day-ko { font-family: 'Noto Serif KR', serif; font-size: 18px; font-weight: 700; line-height: 1.1; text-shadow: 0 1px 2px rgba(0,0,0,0.35); }
 .dinner-day-jp { font-family: 'Noto Serif JP', serif; font-size: 12px; margin-top: 4px; opacity: 0.95; }
 .dinner-menu { flex: 1; padding: 16px 20px; display: flex; flex-direction: column; justify-content: center; }
+.dinner-photo { width: 150px; flex-shrink: 0; object-fit: cover; align-self: stretch; display: block; background: var(--black-tone); }
 .dinner-menu-ko { font-family: 'Noto Serif KR', serif; font-size: 19px; font-weight: 700; color: var(--gold-bright); letter-spacing: -0.01em; }
 .dinner-menu-jp { font-family: 'Noto Serif JP', serif; font-size: 13.5px; color: var(--cream-dim); margin-top: 4px; }
 .dinner-note {
@@ -992,7 +993,8 @@ section:nth-of-type(5) { animation-delay: 0.45s; }
   .menu-card-icon { width: 48px; height: 48px; font-size: 23px; }
   .menu-card-title { font-size: 17px; }
   .menu-card-desc { font-size: 14px; }
-  .dinner-day { width: 78px; }
+  .dinner-day { width: 70px; }
+  .dinner-photo { width: 104px; }
   .dinner-day-ko { font-size: 16px; }
   .dinner-menu-ko { font-size: 17px; }
   .snack-grid { grid-template-columns: 1fr 1fr; }
