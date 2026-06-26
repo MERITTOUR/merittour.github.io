@@ -1,0 +1,3140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<meta name="robots" content="noindex" />
+<meta name="description" content="메리트투어 회원 간편 예약 — 골프투어 우선예약·자유예약 (프로토타입)" />
+<title>메리트투어 간편 예약 | MERITTOUR</title>
+<style>
+  /* ============================================================
+     v11 — Step 5 락 + 10분 카운트다운 + 충돌 시뮬레이션 (시연용)
+          · Step 5 진입 시 자동 카운트다운 시작 (sticky bar)
+          · 만료 시 Step 4 자동 복귀 + 날짜 초기화
+          · 5분+/1~5분/<1분 색상 단계 변경
+          · 확정 버튼 → 처리중 → 90% 성공 / 10% 충돌 (시뮬)
+          · 충돌 모달: 다른 객실/다른 날짜 옵션
+          · 자유예약 기간에도 락 동일 적용
+     v10 — 자유예약 기간 추가 · 회원권 복수 보유 모델 (인원·횟수 합산)
+          · v9 기능 모두 유지 (박수×요일 / 별장형 / 자유일정 / 싱글차지 / 공휴일)
+          · Step 0(우선예약 + 자유예약 게이트 통합)
+          · LOGIN_USER.memberships[] 배열 → maxPeople/priorityQuota 자동 합산
+          · phase: pre-open / active / between / free (자유예약)
+          · 회원 DB 예약가능값 직접 사용 (Step 3 회원권 토글 제거)
+          · 3~7박 자유 선택 (무츠키 3/4박 / 스가다이라 패키지 분기)
+          · 공지사항 #30000030 기준 최신 요금 (아키바 주중/주말, 무츠키 원화)
+          · 삿포로 셰익스피어 판매중단 · 제외
+          · 지정회원 용어 전면 교체 / 회원번호 고객 비노출
+     v7 기능 포함 (로그인 배너 · 필수/선택 동의 · 하단 고정 확정 버튼)
+     시니어 친화 디자인 (평균 66세 / 70+ 30%)
+     ============================================================ */
+  :root {
+    --brand: #0A3D62;
+    --brand-deep: #062740;
+    --brand-soft: #E8F1F9;
+    --accent: #E67E22;
+    --accent-deep: #C05A0A;
+    --ok: #15803D;
+    --ok-soft: #DCFCE7;
+    --warn: #D97706;
+    --warn-soft: #FEF3C7;
+    --peak: #7C3AED;
+    --peak-soft: #EDE9FE;
+    --danger: #B91C1C;
+    --text: #111827;
+    --muted: #4B5563;
+    --line: #D1D5DB;
+    --line-soft: #E5E7EB;
+    --bg: #F3F4F6;
+    --card: #FFFFFF;
+    --f-base: 19px;
+    --f-lg: 22px;
+    --f-xl: 26px;
+    --f-2xl: 32px;
+    --f-sm: 16px;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", "Noto Sans KR", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: var(--f-base);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    max-width: 560px;
+    margin: 0 auto;
+    background: var(--card);
+    min-height: 100vh;
+    padding-bottom: 40px;
+    box-shadow: 0 0 0 1px var(--line-soft);
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-deep) 100%);
+    color: #fff;
+    padding: 18px 22px 22px;
+    position: sticky; top: 0; z-index: 20;
+  }
+  /* v9.1 — 실제 로고 헤더 */
+  .brand-bar {
+    background: #fff; padding: 14px 22px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .brand-bar .logo-svg { height: 42px; width: auto; display: block; }
+  .proto-badge {
+    background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D;
+    padding: 4px 12px; border-radius: 999px;
+    font-size: 12px; font-weight: 800; letter-spacing: 0.5px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .proto-badge::before { content: '⚙'; font-size: 14px; }
+  /* 워터마크 — 우상단 고정 */
+  .proto-watermark {
+    position: fixed; top: 8px; right: 8px; z-index: 100;
+    background: rgba(220, 38, 38, 0.92); color: #fff;
+    padding: 5px 12px; border-radius: 999px;
+    font-size: 11px; font-weight: 800; letter-spacing: 0.6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    pointer-events: none;
+  }
+  .brand-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 10px; }
+  .logo { font-weight: 900; letter-spacing: 0.3px; font-size: 22px; }
+  .logo em { color: #F5B041; font-style: normal; }
+  .progress-label {
+    display: inline-block; background: rgba(255,255,255,0.18);
+    padding: 6px 14px; border-radius: 18px; font-size: 15px; font-weight: 700;
+  }
+  .progress-bar { height: 6px; background: rgba(255,255,255,0.25); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+  .progress-bar .fill { height: 100%; background: #F5B041; transition: width 0.3s; width: 0%; }
+  .page-title { margin-top: 14px; font-size: var(--f-xl); font-weight: 800; }
+  .page-sub { font-size: var(--f-base); opacity: 0.92; margin-top: 4px; }
+  .header-quota {
+    margin-top: 8px; padding: 8px 12px;
+    background: rgba(245,176,65,0.22); border: 1px solid rgba(245,176,65,0.55);
+    border-radius: 10px; display: inline-flex; align-items: center; gap: 8px;
+    font-size: 14px; font-weight: 700;
+  }
+  .header-quota strong { color: #F5B041; font-size: 16px; font-weight: 900; }
+  .header-quota .sep { opacity: 0.5; }
+
+  /* SECTIONS */
+  section { padding: 22px; display: none; }
+  section.active { display: block; }
+
+  h2.q { font-size: var(--f-xl); margin: 0 0 6px; font-weight: 800; }
+  .q-sub { font-size: var(--f-base); color: var(--muted); margin: 0 0 22px; }
+
+  /* REGION GROUP HEADER */
+  .region-head {
+    margin: 22px 0 10px;
+    font-size: var(--f-base);
+    font-weight: 800;
+    color: var(--brand);
+    letter-spacing: 0.3px;
+    padding-left: 10px;
+    border-left: 4px solid var(--brand);
+  }
+  .region-head:first-child { margin-top: 0; }
+  .region-head small { color: var(--muted); font-weight: 600; margin-left: 6px; font-size: 14px; }
+
+  /* BIG SELECT CARDS */
+  .big-list { display: flex; flex-direction: column; gap: 12px; }
+  .big-card {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px; border: 3px solid var(--line);
+    border-radius: 16px; background: #fff; cursor: pointer;
+    min-height: 92px; transition: border-color 0.15s, background 0.15s;
+  }
+  .big-card:active { transform: scale(0.99); }
+  .big-card.selected { border-color: var(--brand); background: var(--brand-soft); }
+  .big-card .img {
+    width: 68px; height: 68px; flex-shrink: 0; border-radius: 12px;
+    background: linear-gradient(135deg, #86B4D1 0%, #4A8DB8 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 34px; color: #fff;
+  }
+  .big-card .img.v2 { background: linear-gradient(135deg, #A5D6A7 0%, #2E7D32 100%); }
+  .big-card .img.v3 { background: linear-gradient(135deg, #F5CBA7 0%, #D2691E 100%); }
+  .big-card .img.v4 { background: linear-gradient(135deg, #FDE68A 0%, #CA8A04 100%); }
+  .big-card .img.v5 { background: linear-gradient(135deg, #C4B5FD 0%, #6D28D9 100%); }
+  .big-card .img.v6 { background: linear-gradient(135deg, #FCA5A5 0%, #B91C1C 100%); }
+  .big-card .info { flex: 1; min-width: 0; }
+  .big-card .name { font-size: var(--f-lg); font-weight: 800; margin-bottom: 4px; }
+  .big-card .meta { font-size: var(--f-sm); color: var(--muted); line-height: 1.4; }
+  .badges { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+  .badge {
+    display: inline-block; padding: 3px 8px;
+    border-radius: 6px; font-size: 12px; font-weight: 800; letter-spacing: 0.2px;
+  }
+  .badge-member { background: #E0F2FE; color: #075985; border: 1px solid #7DD3FC; }
+  .badge-open { background: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
+  .badge-pkg { background: #FDE68A; color: #78350F; border: 1px solid #FCD34D; }
+  .badge-krw { background: #FCE7F3; color: #9D174D; border: 1px solid #F9A8D4; }
+  .big-card .check {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 2px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    color: transparent; font-size: 20px; font-weight: 900; flex-shrink: 0;
+  }
+  .big-card.selected .check { background: var(--brand); border-color: var(--brand); color: #fff; }
+
+  /* DURATION BUTTONS (v8 — 3~7박 자유 선택) */
+  .duration-group { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 8px; }
+  .duration-group.narrow { grid-template-columns: 1fr 1fr; } /* 무츠키 3/4박만 */
+  .duration-btn {
+    padding: 20px 6px; border: 3px solid var(--line);
+    border-radius: 14px; background: #fff;
+    font-size: var(--f-lg); font-weight: 800;
+    cursor: pointer; text-align: center; transition: all 0.15s;
+    font-family: inherit;
+  }
+  .duration-btn.selected { border-color: var(--brand); background: var(--brand-soft); color: var(--brand); }
+  .duration-btn:disabled, .duration-btn.disabled { opacity: 0.35; cursor: not-allowed; background: #f9fafb; }
+  .duration-btn .day { display: block; font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 3px; }
+
+  /* ROOM CARDS */
+  .room-card {
+    padding: 18px; border: 3px solid var(--line);
+    border-radius: 14px; background: #fff; margin-bottom: 14px;
+  }
+  .room-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+  .room-title { font-size: var(--f-lg); font-weight: 800; }
+  .room-price { color: var(--accent-deep); font-weight: 800; font-size: var(--f-base); margin-top: 4px; }
+  .room-price small { color: var(--muted); font-weight: 600; font-size: 14px; }
+  .room-cap { font-size: var(--f-sm); color: var(--muted); margin-top: 4px; }
+  .room-counter { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+  .room-counter button {
+    width: 60px; height: 60px; border: 2px solid var(--brand);
+    background: #fff; color: var(--brand); border-radius: 50%;
+    font-size: 28px; font-weight: 800; cursor: pointer;
+    font-family: inherit;
+  }
+  .room-counter button:disabled { opacity: 0.25; cursor: not-allowed; }
+  .room-counter .n { flex: 1; text-align: center; font-size: 30px; font-weight: 800; }
+  .room-counter .n small { display: block; font-size: 14px; color: var(--muted); font-weight: 600; margin-top: -2px; }
+  .people-total {
+    margin-top: 14px; padding: 14px; background: var(--brand-soft);
+    border-radius: 12px; font-size: var(--f-lg); font-weight: 700; text-align: center;
+  }
+  .member-hint {
+    margin: 0 0 14px; padding: 12px 14px;
+    background: #F0F9FF; border: 2px solid #7DD3FC; border-radius: 12px;
+    font-size: var(--f-sm); color: #075985; line-height: 1.55;
+  }
+  .member-hint strong { color: #0C4A6E; }
+
+  /* CALENDAR */
+  .cal-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .cal-nav button {
+    width: 56px; height: 56px; border: 2px solid var(--line);
+    background: #fff; border-radius: 12px; font-size: 22px; font-weight: 800;
+    cursor: pointer; font-family: inherit;
+  }
+  .cal-nav button:disabled { opacity: 0.3; cursor: not-allowed; }
+  .cal-nav .m { font-size: var(--f-xl); font-weight: 800; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-head { text-align: center; font-size: var(--f-sm); font-weight: 700; color: var(--muted); padding: 8px 0; }
+  .cal-head.sun { color: #DC2626; }
+  .cal-head.sat { color: #2563EB; }
+  .cal-cell {
+    aspect-ratio: 1; min-height: 64px; border-radius: 10px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: var(--f-lg); font-weight: 700; padding: 4px;
+    background: #fff; border: 2px solid transparent; position: relative;
+  }
+  .cal-cell.empty { visibility: hidden; }
+  .cal-cell.inactive { color: #9CA3AF; background: #F9FAFB; }
+  .cal-cell.available { background: var(--ok-soft); color: var(--text); cursor: pointer; border-color: #86EFAC; }
+  .cal-cell.available:hover { border-color: var(--ok); }
+  .cal-cell.low { background: var(--warn-soft); color: var(--text); cursor: pointer; border-color: #FCD34D; }
+  .cal-cell.full { background: #FEE2E2; color: var(--danger); cursor: not-allowed; border-color: #FCA5A5; text-decoration: line-through; }
+  .cal-cell.selected { background: var(--brand); color: #fff !important; border-color: var(--brand-deep); }
+  .cal-cell.peak::before {
+    content: '성수기'; position: absolute; top: 2px; right: 2px;
+    background: var(--peak); color: #fff; font-size: 9px; font-weight: 800;
+    padding: 1px 4px; border-radius: 3px; letter-spacing: 0.2px;
+  }
+  .cal-cell.selected.peak::before { background: #fff; color: var(--peak); }
+  .cal-cell .rem { font-size: 11px; font-weight: 600; margin-top: 2px; opacity: 0.85; }
+  .cal-cell.selected .rem { opacity: 1; }
+  /* v9: 요일·공휴일·우부야마 표시 */
+  .cal-cell.dow-sun:not(.selected):not(.full) { color: #DC2626; }
+  .cal-cell.dow-sat:not(.selected):not(.full) { color: #2563EB; }
+  .cal-badge {
+    display: inline-block; font-size: 9px; font-weight: 800;
+    padding: 1px 4px; border-radius: 4px; margin-left: 3px; vertical-align: top;
+  }
+  .cal-badge.cal-holiday { background: #FEF3C7; color: #92400E; border: 1px solid #FCD34D; }
+  .cal-badge.cal-ubuyama { background: #FEE2E2; color: #B91C1C; border: 1px solid #FCA5A5; }
+  .cal-cell.ubuyama { box-shadow: inset 0 0 0 2px #B91C1C; }
+  .cal-cell.selected.ubuyama { box-shadow: inset 0 0 0 2px #fff; }
+  .cal-legend { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; font-size: var(--f-sm); }
+  .cal-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .cal-legend i { display: inline-block; width: 18px; height: 18px; border-radius: 4px; border: 2px solid; }
+  .cal-legend .ok i { background: var(--ok-soft); border-color: #86EFAC; }
+  .cal-legend .low i { background: var(--warn-soft); border-color: #FCD34D; }
+  .cal-legend .ft i { background: #FEE2E2; border-color: #FCA5A5; }
+  .cal-legend .pk i { background: var(--peak); border-color: var(--peak); }
+
+  .sched-info {
+    margin-top: 16px; padding: 16px; background: var(--brand-soft);
+    border-radius: 12px; border-left: 5px solid var(--brand);
+  }
+  .sched-info .d { font-size: var(--f-lg); font-weight: 800; color: var(--brand); }
+  .sched-info .t { font-size: var(--f-base); color: var(--muted); margin-top: 4px; }
+  .sched-info .peak-alert {
+    margin-top: 10px; padding: 10px; background: var(--peak-soft);
+    border-radius: 8px; color: var(--peak); font-size: var(--f-sm); font-weight: 700;
+  }
+
+  /* ESTIMATE BOX */
+  .estimate {
+    margin-top: 18px; padding: 18px;
+    background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%);
+    border: 3px solid var(--accent); border-radius: 14px;
+  }
+  .estimate .lbl { font-size: var(--f-base); color: var(--accent-deep); font-weight: 700; margin-bottom: 4px; }
+  .estimate .amt { font-size: var(--f-2xl); font-weight: 900; color: var(--accent-deep); }
+  .estimate .amt small { font-size: var(--f-base); font-weight: 700; color: var(--muted); margin-left: 4px; }
+  .estimate .detail { margin-top: 8px; font-size: var(--f-sm); color: var(--muted); line-height: 1.6; }
+  .estimate .detail strong { color: var(--text); }
+
+  /* INFO ACCORDION */
+  .info-box {
+    margin-top: 22px; border: 2px solid var(--line);
+    border-radius: 12px; background: #fff; overflow: hidden;
+  }
+  .info-toggle {
+    width: 100%; padding: 14px 16px; background: #F9FAFB;
+    border: none; display: flex; justify-content: space-between; align-items: center;
+    font-size: var(--f-base); font-weight: 800; color: var(--brand);
+    cursor: pointer; font-family: inherit; text-align: left;
+  }
+  .info-toggle .caret { font-size: 18px; transition: transform 0.2s; }
+  .info-toggle[aria-expanded="true"] .caret { transform: rotate(180deg); }
+  .info-body { padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s, padding 0.3s; font-size: var(--f-sm); line-height: 1.7; color: var(--muted); }
+  .info-body.open { padding: 14px 16px 16px; max-height: 800px; }
+  .info-body p { margin: 0 0 10px; }
+  .info-body strong { color: var(--text); }
+
+  /* FORM */
+  .field { margin-bottom: 22px; }
+  label { display: block; font-size: var(--f-base); font-weight: 700; margin-bottom: 8px; color: #1F2937; }
+  label .req { color: var(--danger); margin-left: 4px; }
+  input[type="text"], input[type="tel"], input[type="number"], textarea, select {
+    width: 100%; padding: 18px; border: 3px solid var(--line);
+    border-radius: 12px; font-size: var(--f-lg); font-family: inherit;
+    background: #fff; min-height: 60px;
+  }
+  input:focus, textarea:focus, select:focus { outline: none; border-color: var(--brand); }
+  textarea { resize: vertical; min-height: 100px; }
+
+  /* SUMMARY */
+  .summary-big { padding: 20px; background: var(--brand-soft); border: 3px solid var(--brand); border-radius: 16px; margin-bottom: 22px; }
+  .summary-big h3 { font-size: var(--f-base); margin: 0 0 12px; color: var(--brand); font-weight: 800; }
+  .summary-row { display: flex; padding: 8px 0; border-bottom: 1px dashed rgba(10,61,98,0.2); font-size: var(--f-base); }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row .k { color: var(--muted); width: 110px; flex-shrink: 0; font-weight: 600; }
+  .summary-row .v { flex: 1; font-weight: 700; }
+
+  /* BUTTONS */
+  .btn-row { display: flex; gap: 12px; margin-top: 24px; }
+  /* v9.1 — sticky 다음 버튼 */
+  .btn-row.sticky-nav {
+    position: sticky; bottom: 0; left: 0; right: 0;
+    margin: 24px -22px 0; padding: 14px 22px 18px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.0), rgba(255,255,255,0.96) 25%, #fff 50%);
+    z-index: 15;
+  }
+  .btn-row.sticky-nav.has-selection .btn-primary {
+    animation: nav-pulse 1.6s ease-out 1;
+  }
+  @keyframes nav-pulse {
+    0% { transform: translateY(8px); opacity: 0.6; }
+    50% { transform: translateY(0); opacity: 1; box-shadow: 0 0 0 12px rgba(46,125,50,0.18); }
+    100% { transform: translateY(0); box-shadow: 0 0 0 0 rgba(46,125,50,0); }
+  }
+  .btn {
+    flex: 1; padding: 20px; border: none; border-radius: 14px;
+    font-size: var(--f-lg); font-weight: 800; cursor: pointer;
+    font-family: inherit; min-height: 66px;
+  }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-primary:hover { background: var(--brand-deep); }
+  .btn-primary:disabled { background: #9CA3AF; cursor: not-allowed; }
+  .btn-secondary { background: #fff; color: var(--brand); border: 3px solid var(--line); }
+  .btn-big-confirm { background: var(--accent); color: #fff; font-size: var(--f-xl); min-height: 80px; }
+  .btn-big-confirm:hover { background: var(--accent-deep); }
+  .btn-big-confirm:disabled { background: #9CA3AF; cursor: not-allowed; }
+
+  /* DEPOSIT BOX */
+  .deposit-box {
+    margin: 18px 0 0; padding: 18px;
+    background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+    border: 3px solid var(--ok); border-radius: 14px;
+  }
+  .deposit-box .lbl { font-size: var(--f-base); color: #166534; font-weight: 800; margin-bottom: 4px; }
+  .deposit-box .amt { font-size: var(--f-2xl); font-weight: 900; color: #166534; }
+  .deposit-box .amt small { font-size: var(--f-base); font-weight: 700; color: var(--muted); margin-left: 4px; }
+  .deposit-box .detail { margin-top: 10px; font-size: var(--f-sm); color: #166534; line-height: 1.6; }
+  .deposit-box .bank {
+    margin-top: 10px; padding: 12px 14px;
+    background: #fff; border: 2px solid var(--ok); border-radius: 10px;
+    font-size: var(--f-base); font-weight: 800; color: var(--text);
+  }
+  .deposit-box .bank small { display: block; font-size: 14px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+  /* v11 — 입금 확인용 카카오톡 안내 */
+  .deposit-box .kakao-confirm-note {
+    margin-top: 10px; padding: 12px 14px;
+    background: #FEF9C3; border: 2px solid #FDE047; border-radius: 10px;
+    font-size: var(--f-sm); color: #713F12; line-height: 1.55;
+    font-weight: 700;
+  }
+  .deposit-box .kakao-confirm-note strong { color: #854D0E; }
+  .deposit-box .kakao-confirm-note small {
+    display: block; margin-top: 4px; font-size: 13px; color: #854D0E; font-weight: 600;
+  }
+
+  /* CONFIRM */
+  .confirm-icon {
+    width: 100px; height: 100px; background: var(--ok); border-radius: 50%;
+    margin: 20px auto 18px; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 54px;
+  }
+  .confirm-title { text-align: center; font-size: var(--f-2xl); font-weight: 800; margin-bottom: 8px; }
+  .confirm-desc { text-align: center; color: var(--muted); font-size: var(--f-lg); margin-bottom: 24px; line-height: 1.5; }
+  .reservation-no {
+    text-align: center; padding: 16px; background: var(--ok-soft);
+    border: 3px solid var(--ok); border-radius: 14px; margin-bottom: 22px;
+  }
+  .reservation-no .lbl { font-size: var(--f-base); color: var(--muted); font-weight: 600; }
+  .reservation-no .no { font-size: var(--f-2xl); color: var(--ok); font-weight: 900; letter-spacing: 1px; }
+
+  /* NOTICES */
+  .notice {
+    margin-top: 16px; padding: 16px;
+    background: var(--warn-soft); border-left: 5px solid var(--warn);
+    border-radius: 10px; font-size: var(--f-base); color: #78350F;
+  }
+  .notice strong { color: var(--warn); }
+  .error {
+    padding: 14px; background: #FEE2E2; border-left: 5px solid var(--danger);
+    border-radius: 8px; color: #991B1B; font-size: var(--f-base); font-weight: 700;
+    margin-top: 12px; display: none;
+  }
+  .error.show { display: block; }
+
+  footer {
+    padding: 20px; text-align: center; color: var(--muted); font-size: 13px;
+    border-top: 1px solid var(--line-soft); line-height: 1.6;
+  }
+
+  /* v7 — LOGIN BANNER */
+  .login-banner {
+    margin: 0 0 18px; padding: 14px 16px;
+    background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%);
+    border: 2px solid #A5B4FC; border-radius: 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .login-banner .avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--brand); color: #fff; font-weight: 900; font-size: 18px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .login-banner .who { font-size: var(--f-base); font-weight: 800; color: #312E81; }
+  .login-banner .who small { display: block; font-size: 13px; color: #4338CA; font-weight: 600; margin-top: 2px; }
+
+  /* v7 — CONSENT LIST */
+  .consent-list { margin: 14px 0 100px; display: flex; flex-direction: column; gap: 10px; }
+  .consent-item {
+    border: 2px solid var(--line); border-radius: 14px; background: #fff;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+  }
+  .consent-item.highlight {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 4px rgba(185,28,28,0.18);
+    animation: shake 0.4s ease-out;
+  }
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    50% { transform: translateX(6px); }
+    75% { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+  }
+  .consent-head {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 16px; cursor: pointer;
+  }
+  .consent-head input[type="checkbox"] {
+    width: 28px; height: 28px; accent-color: var(--brand);
+    flex-shrink: 0; margin: 0;
+  }
+  .consent-head .label { flex: 1; font-size: var(--f-base); font-weight: 700; color: var(--text); }
+  .consent-head .label .req { color: var(--danger); margin-right: 4px; }
+  .consent-head .label .opt { color: var(--muted); font-size: 14px; margin-right: 4px; }
+  .consent-head .toggle {
+    background: none; border: none; color: var(--muted); font-size: 16px;
+    cursor: pointer; padding: 6px 10px; font-family: inherit;
+  }
+  .consent-body {
+    display: none; padding: 0 16px 14px 56px;
+    font-size: var(--f-sm); color: var(--muted); line-height: 1.6;
+  }
+  .consent-body.open { display: block; }
+  .consent-body table { width: 100%; border-collapse: collapse; margin-top: 6px; }
+  .consent-body th, .consent-body td {
+    border: 1px solid var(--line-soft); padding: 6px 8px;
+    font-size: 13px; text-align: left;
+  }
+  .consent-body th { background: #F9FAFB; color: var(--text); font-weight: 700; }
+  .consent-body ul { padding-left: 18px; margin: 6px 0; }
+  .consent-body ul li { margin-bottom: 4px; }
+
+  /* v7 — STICKY CONFIRM BAR */
+  .sticky-confirm {
+    position: sticky; bottom: 0; left: 0; right: 0; z-index: 15;
+    background: #fff; border-top: 2px solid var(--line-soft);
+    padding: 14px 18px 16px;
+    margin: 0 -22px -40px;
+    box-shadow: 0 -6px 14px rgba(0,0,0,0.06);
+  }
+  .sticky-confirm .btn-big-confirm {
+    width: 100%; min-height: 72px;
+    font-size: var(--f-xl); font-weight: 900;
+    border-radius: 14px; border: none;
+    background: var(--accent); color: #fff;
+    cursor: pointer; font-family: inherit;
+    transition: background 0.15s;
+  }
+  .sticky-confirm .btn-big-confirm.disabled {
+    background: #9CA3AF; cursor: pointer;
+  }
+  .sticky-confirm .hint {
+    margin-top: 8px; font-size: 14px; color: var(--muted); text-align: center;
+  }
+  .sticky-confirm .hint.warn { color: var(--danger); font-weight: 700; }
+
+  /* v11 — 락 카운트다운 활성 시 sticky-confirm을 락 바 위로 올림 */
+  body.lock-active .sticky-confirm {
+    bottom: 78px;
+  }
+
+  /* v8 — PRIORITY BOOKING GATE (Step 0) */
+  .gate-card {
+    padding: 26px 22px; background: #fff;
+    border: 3px solid var(--brand); border-radius: 18px;
+    text-align: center; margin: 0 0 18px;
+  }
+  .gate-phase {
+    display: inline-block; padding: 5px 14px;
+    border-radius: 14px; font-size: 13px; font-weight: 800;
+    background: var(--brand-soft); color: var(--brand); margin-bottom: 12px;
+    letter-spacing: 0.3px;
+  }
+  .gate-phase.live { background: var(--danger); color: #fff; animation: pulse 2.4s ease-in-out infinite; }
+  .gate-phase.realtime, .gate-phase.free { background: var(--ok); color: #fff; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+  /* v10 — 자유예약 게이트 보유 회원권 카드 */
+  .free-gate-wrap { margin: 18px 0 8px; }
+  .free-membership-list {
+    display: flex; flex-direction: column; gap: 10px;
+    text-align: left; margin: 12px 0 16px;
+  }
+  .free-membership-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 16px; background: #ECFDF5; border: 2px solid #6EE7B7;
+    border-radius: 12px;
+  }
+  .free-membership-row .mtype {
+    font-size: var(--f-base); font-weight: 800; color: #065F46;
+  }
+  .free-membership-row .mppl {
+    font-size: var(--f-base); font-weight: 800; color: #047857;
+    font-variant-numeric: tabular-nums;
+  }
+  .free-total-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 14px 18px; background: var(--ok); color: #fff;
+    border-radius: 12px; margin-top: 4px;
+  }
+  .free-total-row .lbl { font-size: var(--f-base); font-weight: 800; }
+  .free-total-row .val { font-size: var(--f-2xl); font-weight: 900; font-variant-numeric: tabular-nums; }
+  .free-info-note {
+    margin-top: 10px; padding: 10px 14px;
+    background: #F0FDF4; border-left: 4px solid var(--ok); border-radius: 6px;
+    font-size: 13px; color: #065F46; text-align: left;
+  }
+  .gate-title {
+    font-size: var(--f-2xl); font-weight: 900; color: var(--brand-deep);
+    margin: 0 0 8px; line-height: 1.25;
+  }
+  .gate-sub { color: var(--muted); font-size: var(--f-base); margin: 0 0 18px; line-height: 1.5; }
+  .countdown {
+    display: flex; justify-content: center; gap: 8px; margin: 20px 0;
+    flex-wrap: wrap;
+  }
+  .cd-unit {
+    min-width: 68px; padding: 12px 6px;
+    background: var(--brand-deep); color: #fff; border-radius: 12px;
+  }
+  .cd-unit .n {
+    font-size: 32px; font-weight: 900; line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .cd-unit .l {
+    font-size: 11px; font-weight: 700; margin-top: 4px; opacity: 0.75;
+  }
+  /* v9.1 — 임박 시 카운트다운 강조 */
+  .countdown.imminent .cd-unit { background: #DC2626; animation: cd-pulse 2s ease-in-out infinite; }
+  @keyframes cd-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); box-shadow: 0 0 18px rgba(220,38,38,0.6); }
+  }
+  /* v9.1 — 정각 오픈 순간 플래시 */
+  .gate-card.open-flash {
+    animation: open-flash 1.4s ease-out;
+  }
+  @keyframes open-flash {
+    0%   { background: #FEF3C7; box-shadow: 0 0 0 0 rgba(251,191,36,0.9); transform: scale(1); }
+    20%  { background: #FDE68A; box-shadow: 0 0 0 30px rgba(251,191,36,0.4); transform: scale(1.02); }
+    40%  { background: #FEF3C7; box-shadow: 0 0 0 60px rgba(251,191,36,0.0); transform: scale(1); }
+    100% { background: #fff; box-shadow: none; transform: scale(1); }
+  }
+  .gate-cta {
+    width: 100%; padding: 22px; border: none; border-radius: 14px;
+    background: var(--accent); color: #fff;
+    font-size: var(--f-xl); font-weight: 900; cursor: pointer;
+    font-family: inherit; min-height: 82px; margin-top: 8px;
+    transition: background 0.15s;
+  }
+  .gate-cta:hover { background: var(--accent-deep); }
+  .gate-cta:disabled, .gate-cta.disabled { background: #9CA3AF; cursor: not-allowed; }
+  .gate-cta.realtime { background: var(--ok); }
+  .gate-cta.realtime:hover { background: #0F6B30; }
+  .gate-quota {
+    display: inline-flex; align-items: baseline; gap: 6px;
+    padding: 10px 16px; background: #FFFBEB; border: 2px solid #FCD34D;
+    border-radius: 12px; margin: 4px 0 12px;
+    font-size: var(--f-base); color: #78350F; font-weight: 700;
+  }
+  .gate-quota strong { color: var(--danger); font-size: var(--f-xl); font-weight: 900; }
+  .gate-rounds {
+    margin-top: 18px; padding: 14px 16px;
+    background: #F9FAFB; border-radius: 12px;
+    text-align: left;
+  }
+  .gate-rounds .title { font-size: var(--f-sm); font-weight: 800; color: var(--brand); margin-bottom: 8px; }
+  .gate-round-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 6px 0; font-size: 14px; color: var(--muted);
+    border-top: 1px dashed var(--line-soft);
+  }
+  .gate-round-row:first-of-type { border-top: none; }
+  .gate-round-row.active { color: var(--brand); font-weight: 800; }
+  .gate-round-row.done { color: #9CA3AF; }
+  .gate-round-row .phase-dot {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: #D1D5DB; margin-right: 6px;
+  }
+  .gate-round-row.active .phase-dot { background: var(--danger); animation: pulse 2.4s ease-in-out infinite; }
+  .gate-round-row.done .phase-dot { background: #9CA3AF; }
+  .dev-toggle {
+    margin: 12px 0 0; padding: 10px; background: #EFF6FF;
+    border: 1px dashed #93C5FD; border-radius: 10px;
+    font-size: 12px; color: #1E40AF;
+  }
+  .dev-toggle select { width: auto; min-height: 36px; padding: 6px 10px; font-size: 13px; margin-left: 8px; }
+
+  /* v11 — Step 5 락 카운트다운 (화면 하단 fixed) */
+  .lock-bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 90;
+    padding: 14px 18px;
+    display: none; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
+    background: #ECFDF5; border-top: 4px solid #10B981;
+    font-weight: 800; color: #065F46;
+    box-shadow: 0 -6px 18px rgba(0,0,0,0.08);
+    transition: background 0.3s, border-color 0.3s, color 0.3s;
+  }
+  .lock-bar.show { display: flex; }
+  .lock-bar.warn  { background: #FFFBEB; border-top-color: #F59E0B; color: #78350F; }
+  .lock-bar.danger {
+    background: #FEF2F2; border-top-color: #DC2626; color: #7F1D1D;
+    animation: lock-blink 2s ease-in-out infinite;
+  }
+  @keyframes lock-blink { 0%, 100% { background: #FEF2F2; } 50% { background: #FECACA; } }
+  .lock-bar .lb-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+  .lock-bar .lb-icon { font-size: 22px; flex-shrink: 0; }
+  .lock-bar .lb-text { font-size: var(--f-base); line-height: 1.3; }
+  .lock-bar .lb-text small { font-size: 12px; font-weight: 600; opacity: 0.75; display: block; margin-top: 2px; }
+  .lock-bar .lb-time {
+    font-size: 28px; font-weight: 900; font-variant-numeric: tabular-nums;
+    padding: 6px 14px; background: rgba(255,255,255,0.85); border-radius: 10px;
+    flex-shrink: 0; letter-spacing: 1px;
+  }
+  .lock-bar.danger .lb-time { color: #DC2626; }
+  /* 락 활성 시 sec5 페이지 하단에 lock-bar 가리지 않게 여백 */
+  body.lock-active #sec5 { padding-bottom: 100px; }
+
+  /* v11 — 모달 (락 시작/만료/충돌 공용) */
+  .modal-mask {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+    display: none; align-items: center; justify-content: center;
+    z-index: 1000; padding: 20px;
+  }
+  .modal-mask.show { display: flex; animation: modal-fade 0.2s ease-out; }
+  @keyframes modal-fade { from { opacity: 0; } to { opacity: 1; } }
+  .modal-card {
+    background: #fff; border-radius: 18px; max-width: 460px; width: 100%;
+    padding: 28px 24px; text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .modal-card.start  { border-top: 8px solid var(--ok); }
+  .modal-card.expire { border-top: 8px solid var(--danger); }
+  .modal-card.collide { border-top: 8px solid #F59E0B; }
+  .modal-card .m-icon { font-size: 48px; margin-bottom: 8px; }
+  .modal-card .m-title {
+    font-size: var(--f-2xl); font-weight: 900; color: var(--brand-deep);
+    margin: 6px 0 10px; line-height: 1.3;
+  }
+  .modal-card .m-body {
+    font-size: var(--f-base); color: var(--text); line-height: 1.55;
+    margin: 0 0 20px;
+  }
+  .modal-card .m-body strong { color: var(--accent-deep); }
+  .modal-card .m-phone {
+    margin-top: 12px; padding: 12px; background: #F0FDF4;
+    border: 2px solid #6EE7B7; border-radius: 10px;
+    font-size: var(--f-base); font-weight: 700; color: #065F46;
+  }
+  .modal-card .m-phone strong { color: var(--ok); font-size: var(--f-lg); }
+  .modal-card .m-actions {
+    display: flex; gap: 8px; flex-direction: column;
+  }
+  .modal-card .m-btn {
+    width: 100%; padding: 16px; border: none; border-radius: 12px;
+    font-size: var(--f-base); font-weight: 800; cursor: pointer;
+    font-family: inherit; min-height: 60px;
+    transition: opacity 0.15s;
+  }
+  .modal-card .m-btn:hover { opacity: 0.88; }
+  .modal-card .m-btn.primary  { background: var(--accent); color: #fff; }
+  .modal-card .m-btn.ok       { background: var(--ok); color: #fff; }
+  .modal-card .m-btn.danger   { background: var(--danger); color: #fff; }
+  .modal-card .m-btn.outline  { background: #fff; color: var(--text); border: 2px solid var(--line); }
+
+  /* v11 — 처리중 오버레이 */
+  .submit-overlay {
+    position: fixed; inset: 0; background: rgba(255,255,255,0.85);
+    display: none; align-items: center; justify-content: center;
+    z-index: 1100; flex-direction: column; gap: 16px;
+  }
+  .submit-overlay.show { display: flex; }
+  .submit-overlay .spinner {
+    width: 56px; height: 56px; border: 6px solid #E5E7EB;
+    border-top-color: var(--brand); border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .submit-overlay .label {
+    font-size: var(--f-lg); font-weight: 800; color: var(--brand-deep);
+  }
+
+  /* v8 — SUGADAIRA / PACKAGE CARDS */
+  .pkg-list { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+  .pkg-card {
+    padding: 18px; border: 3px solid var(--line); border-radius: 14px; background: #fff;
+  }
+  .pkg-card .code { font-size: 12px; color: var(--muted); font-weight: 700; letter-spacing: 0.3px; }
+  .pkg-card .name { font-size: var(--f-lg); font-weight: 800; margin-top: 4px; line-height: 1.35; }
+  .pkg-card .meta { font-size: var(--f-sm); color: var(--muted); margin-top: 4px; line-height: 1.5; }
+  .pkg-card .price { margin-top: 10px; font-size: var(--f-xl); font-weight: 900; color: var(--accent-deep); }
+  .pkg-card .price.inquiry { color: var(--warn); font-size: var(--f-lg); }
+  .pkg-card .cta {
+    display: block; width: 100%; margin-top: 12px; padding: 14px;
+    background: var(--brand); color: #fff; border: none; border-radius: 12px;
+    font-size: var(--f-base); font-weight: 800; cursor: pointer; font-family: inherit;
+    min-height: 56px;
+  }
+  .pkg-card .cta.inquiry { background: var(--warn); }
+
+  /* v8 — PROBLEM FLAG GUARD */
+  .problem-gate {
+    padding: 22px; background: #FEE2E2;
+    border: 3px solid var(--danger); border-radius: 14px;
+    margin: 18px 0;
+  }
+  .problem-gate h3 { margin: 0 0 10px; font-size: var(--f-xl); color: var(--danger); font-weight: 900; }
+  .problem-gate p { font-size: var(--f-base); color: #7F1D1D; margin: 0 0 8px; line-height: 1.6; }
+  .problem-gate .cta-row { display: flex; gap: 10px; margin-top: 14px; }
+  .problem-gate .cta-row button { flex: 1; }
+</style>
+</head>
+<body>
+<!-- 우상단 워터마크 (모든 페이지에서 보임) -->
+<div class="proto-watermark">PROTOTYPE · 시연용</div>
+
+<div class="wrap">
+  <!-- 실제 MERITTOUR 로고 (vector SVG · 인라인) -->
+  <div class="brand-bar">
+    <svg class="logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1683.78 595.28" aria-label="MERITTOUR">
+      <polygon points="540.15 341.14 539.77 341.14 511.06 239.37 470.37 239.37 470.37 357.89 492.8 357.89 492.03 248.79 492.42 248.79 525.92 357.89 552.86 357.89 586.55 248.09 586.93 248.09 586.17 357.89 609.37 357.89 609.37 239.37 569.44 239.37 540.15 341.14" fill="#373f4a"/>
+      <polygon points="662.88 302.13 707.38 302.13 707.38 291.3 662.88 291.3 662.88 250.37 713.49 250.37 713.49 239.37 639.1 239.37 639.1 357.89 717.3 357.89 717.3 346.89 662.88 346.89 662.88 302.13" fill="#373f4a"/>
+      <rect x="860.93" y="239.37" width="23.77" height="118.52" fill="#373f4a"/>
+      <polygon points="906.53 250.59 943.34 250.59 943.34 357.89 967.12 357.89 967.12 250.59 1004.12 250.59 1004.12 239.37 906.53 239.37 906.53 250.59" fill="#373f4a"/>
+      <polygon points="1023.82 250.66 1060.63 250.66 1060.63 357.89 1084.4 357.89 1084.4 250.66 1121.4 250.66 1121.4 239.37 1023.82 239.37 1023.82 250.66" fill="#373f4a"/>
+      <path d="M1245.24,254a64.61,64.61,0,0,0-21.66-12.9,70.13,70.13,0,0,0-25.7-4.54,68.44,68.44,0,0,0-25.52,4.62,65,65,0,0,0-21.65,13.08,59.32,59.32,0,0,0-14.29,19.87,60.73,60.73,0,0,0-5.08,25q0,18.14,8.72,32a59.9,59.9,0,0,0,24.26,21.7,70.16,70.16,0,0,0,33.56,7.84,68.91,68.91,0,0,0,25.7-4.62,66.47,66.47,0,0,0,21.66-12.9,58,58,0,0,0,14.29-19.61,63.78,63.78,0,0,0,0-49.84A58.86,58.86,0,0,0,1245.24,254ZM1234,324.73a41.11,41.11,0,0,1-15.24,16.9,36.32,36.32,0,0,1-20.91,6.06c-8.44,0-14.2-2.05-20.72-6.15a41.48,41.48,0,0,1-15.24-17.3q-5.46-11.14-5.46-25.61,0-14.65,5.46-25.7a41.57,41.57,0,0,1,15.24-17.2,35.87,35.87,0,0,1,20.91-6.16c8.44,0,14.16,2.08,20.62,6.26a42.94,42.94,0,0,1,15.24,17.49q5.57,11.24,5.56,25.9T1234,324.73Z" fill="#373f4a"/>
+      <path d="M1360.46,322.84q0,11-6.13,18t-20.14,7.06q-13.8,0-20-7.32t-6.23-18.3V239.37h-23.77v77.91q0,13.07,5.65,22.83a37.93,37.93,0,0,0,16.78,15.17q11.12,5.4,27.6,5.4t27.61-5.58a38.75,38.75,0,0,0,16.78-15.43q5.65-9.84,5.65-22.91V239.37h-23.77Z" fill="#373f4a"/>
+      <path d="M810.87,306.13q10.74-4.2,16.78-12.12a30.33,30.33,0,0,0,6-18.91,31.42,31.42,0,0,0-5.76-18.82,37.29,37.29,0,0,0-16.2-12.46q-10.44-4.45-24.25-4.45H743.39V357.89h23.77V250h19c6.77,0,12.15.57,16.62,3.94s9.44,8.21,8.14,21.9a20.19,20.19,0,0,1-5.68,12.23,25.14,25.14,0,0,1-11.7,6.27,62.39,62.39,0,0,1-15.43,1.83h-8.82L803.06,345h0l1.06,1.54a29.66,29.66,0,0,0,7.71,7.37,34.44,34.44,0,0,0,6.38,2.37c5.33,1.42,15.7,1.62,19.73,1.64h1.68L803,308.44A56.1,56.1,0,0,0,810.87,306.13Z" fill="#373f4a"/>
+      <path d="M387.49,215.11s-61.35-.55-103.58,46.11a43.74,43.74,0,0,0-4.25,5.79l0-.14C262.47,290.93,260,311.17,260,319.38c0,21.42,5.62,29.94,5.62,29.94.07-3.83.22-7.5.39-10.89.8-9.07,3.06-22.44,9.24-34.84,1.81-3.28,3.66-6.4,5.54-9.32.54-.8,1.1-1.63,1.51-2.3,34.5-51.42,79.45-46.81,79.45-46.81s7.35,46.48-10,80.75-59.67,54.25-59.67,54.25h3.46c40.26-3.11,62.93-32.76,64.8-35.3C400.51,288.64,387.49,215.11,387.49,215.11Z" fill="#373f4a"/>
+      <path d="M218.17,325.91c-17.3-34.27-9.95-80.75-9.95-80.75s29.85-3.06,59.56,23.63a73.39,73.39,0,0,1,11.08-14.87c-41.65-39.28-96.39-38.81-96.39-38.81s-13,73.53,27.11,129.75c1.87,2.54,24.54,32.19,64.81,35.3h3.45S235.48,360.19,218.17,325.91Z" fill="#373f4a"/>
+      <path d="M1474.57,306.13q10.73-4.2,16.77-12.12a30.27,30.27,0,0,0,6-18.91,31.41,31.41,0,0,0-5.75-18.82,37.29,37.29,0,0,0-16.2-12.46q-10.46-4.45-24.25-4.45h-44.1V357.89h23.78V250h19c6.77,0,12.15.57,16.62,3.94s9.44,8.21,8.14,21.9a20.15,20.15,0,0,1-5.69,12.23,25.05,25.05,0,0,1-11.69,6.27,62.39,62.39,0,0,1-15.43,1.83H1433L1466.76,345h0l1.06,1.54a29.66,29.66,0,0,0,7.71,7.37,34.44,34.44,0,0,0,6.38,2.37c5.33,1.42,15.69,1.62,19.73,1.64h1.68l-36.64-49.45A56.1,56.1,0,0,0,1474.57,306.13Z" fill="#373f4a"/>
+    </svg>
+    <span class="proto-badge">PROTOTYPE</span>
+  </div>
+
+  <header>
+    <div class="brand-row">
+      <div class="logo">2026 <em>EWRC</em></div>
+      <span class="progress-label" id="progLabel">우선예약</span>
+    </div>
+    <div class="progress-bar"><div class="fill" id="progFill"></div></div>
+    <div class="page-title" id="pageTitle">2026 EWRC 우선예약</div>
+    <div class="page-sub" id="pageSub">회원권별 사전 예약 기간입니다</div>
+    <div class="header-quota" id="headerQuota" style="display:none;">
+      <span>남은 우선예약 횟수</span>
+      <strong id="hqLeft">0</strong>
+      <span class="sep">/</span>
+      <span>총 <span id="hqTotal">0</span>회</span>
+    </div>
+  </header>
+
+  <!-- STEP 0 — 우선예약 게이팅 (콘서트 예매식) -->
+  <section id="sec0" class="active">
+    <!-- 문제플래그 회원 가드 -->
+    <div class="problem-gate" id="problemGate" style="display:none;">
+      <h3>회원정보 확인이 필요합니다</h3>
+      <p id="problemGateDesc">회원권 또는 등급 정보에 수정이 필요한 상태로 확인되었습니다. 고객센터로 연락 주시면 빠르게 처리해 드립니다.</p>
+      <div class="cta-row">
+        <button class="btn btn-primary" id="problemCallBtn">전화 문의 02-365-9800</button>
+      </div>
+    </div>
+
+    <div class="gate-card" id="gateCard">
+      <div class="gate-phase" id="gatePhase">상태 확인중…</div>
+      <div class="gate-title" id="gateTitle">잠시만 기다려 주세요</div>
+      <div class="gate-sub" id="gateSub">우선예약 일정을 확인하고 있습니다</div>
+      <div id="gateBody"></div>
+      <button class="gate-cta disabled" id="gateCta" disabled>예약 시작하기</button>
+    </div>
+
+    <div class="gate-rounds">
+      <div class="title">📅 2026 EWRC 우선예약 일정 <small style="color:var(--muted);font-size:13px;font-weight:600;">(한국시간 KST · UTC+9)</small></div>
+      <div id="gateRoundsList"></div>
+    </div>
+
+    <!-- 개발 테스트용: 시간 오버라이드 -->
+    <div class="dev-toggle">
+      🧪 <strong>테스트 모드</strong> — 현재 시간 시뮬레이션
+      <select id="devTime">
+        <option value="">실시간 (오늘)</option>
+        <option value="2026-09-07T15:00:00">① 1차 오픈 전 (9/7 15시)</option>
+        <option value="2026-09-08T09:59:30">② 1차 오픈 30초 전</option>
+        <option value="2026-09-08T10:30:00">③ 1차 진행중 (9/8 10:30)</option>
+        <option value="2026-09-09T15:00:00">④ 1차↔2차 사이 (9/9 15시)</option>
+        <option value="2026-09-10T11:00:00">⑤ 2차 진행중</option>
+        <option value="2026-09-12T14:00:00">⑥ 3차 진행중</option>
+        <option value="2026-09-13T10:00:30">⑦ 자유예약 시작 직후</option>
+        <option value="2026-09-20T14:00:00">⑧ 자유예약 일주일 뒤 (9/20)</option>
+      </select>
+      &nbsp;&nbsp;로그인:
+      <select id="devLogin">
+        <option value="primary">기명회원 (홍길동 · EWRC이용권 4명)</option>
+        <option value="designated">지정회원 (김영희 · 홍길동 그룹)</option>
+        <option value="multi2">회원권 2개 (박정민 · 다이아+골드 = 6명)</option>
+        <option value="multi3">회원권 3개 (이정훈 · 다이아+다이아II+골드 = 10명)</option>
+        <option value="problem">문제플래그 회원 (권혁진)</option>
+      </select>
+      <br/>
+      <label style="display:inline-block;margin-top:8px;">
+        <input type="checkbox" id="devCollideSim" /> 충돌 시뮬레이션 (확정 시 10% 확률로 매진 모달)
+      </label>
+      &nbsp;&nbsp;
+      <label style="display:inline-block;margin-top:8px;">
+        락 시간: <select id="devLockSec">
+          <option value="600">10분 (운영값)</option>
+          <option value="60">1분 (시연용)</option>
+          <option value="20">20초 (빠른 데모)</option>
+        </select>
+      </label>
+    </div>
+  </section>
+
+  <!-- STEP 1 — 리조트 선택 -->
+  <section id="sec1">
+    <h2 class="q">골프장을 선택하세요</h2>
+    <p class="q-sub">지역별로 골프장과 별장형 상품을 고르실 수 있습니다</p>
+    <div id="regionList" style="padding-bottom:90px;"></div>
+    <div class="btn-row sticky-nav" id="step1Nav">
+      <button class="btn btn-secondary" onclick="goStep(0)">이전</button>
+      <button class="btn btn-primary" id="toStep2" disabled>다음으로</button>
+    </div>
+  </section>
+
+  <!-- STEP 2 — 기간 선택 (3~7박 자유 / 무츠키 3·4박 / 스가다이라 패키지) -->
+  <section id="sec2">
+    <h2 class="q">며칠간 머무르실까요?</h2>
+    <p class="q-sub" id="durSub"></p>
+
+    <div class="duration-group" id="durationGroup"></div>
+
+    <!-- 무츠키/스가다이라 패키지 카드 -->
+    <div class="pkg-list" id="pkgList" style="display:none;"></div>
+
+    <div class="info-box" style="margin-top:22px;">
+      <button class="info-toggle" id="durInfoBtn" aria-expanded="false">
+        <span>📅 숙박 일수 안내</span>
+        <span class="caret">▼</span>
+      </button>
+      <div class="info-body" id="durInfoBody">
+        <p><strong>3박부터 7박까지 자유롭게 선택</strong>하실 수 있습니다. 7박 초과 예약은 불가하며, 연박(다른 리조트로 이동) 예약도 지원되지 않습니다.</p>
+        <p><strong>무츠키 료칸</strong>은 항공·숙박·골프 포함 원화 패키지 상품으로 <strong>3박4일 · 4박5일</strong>만 제공됩니다.</p>
+        <p><strong>스가다이라 그린CC</strong>는 별도 패키지 상품(5박6일·7박8일·14박15일)으로 운영되며 일부 상품은 요금 문의로 진행됩니다.</p>
+      </div>
+    </div>
+
+    <div class="btn-row sticky-nav" id="step2Nav">
+      <button class="btn btn-secondary" onclick="goStep(1)">이전</button>
+      <button class="btn btn-primary" id="toStep3" disabled>다음으로</button>
+    </div>
+  </section>
+
+  <!-- STEP 3 — 객실 선택 (회원권 UI 완전 제거) -->
+  <section id="sec3">
+    <h2 class="q">몇 분이 어떤 방에서 주무실까요?</h2>
+    <p class="q-sub">방 종류와 개수를 골라주세요</p>
+
+    <!-- 회원 예약 가능 안내 (DB 예약가능 값 직접 표시) -->
+    <div class="member-hint" id="memberHint">
+      회원권 기준 <strong id="memberHintCount">-</strong>명까지 예약 가능하며, 같은 회원권의 기명회원·지정회원 간 예약 횟수가 공유됩니다.
+    </div>
+
+    <div id="roomList"></div>
+
+    <div class="people-total" id="peopleTotal">총 인원 0명 · 객실 0실</div>
+
+    <div class="error" id="roomError"></div>
+
+    <div class="info-box">
+      <button class="info-toggle" id="priceInfoBtn" aria-expanded="false">
+        <span>💰 요금 기준 안내 (꼭 읽어주세요)</span>
+        <span class="caret">▼</span>
+      </button>
+      <div class="info-body" id="priceInfoBody">
+        <p><strong>표시된 요금</strong>은 체재비(객실) + 송영비의 1팀 · 1박 환산 예상 금액입니다. 모두 <strong>회원가</strong>이며 회원권 종류별 차이는 없습니다.</p>
+        <p><strong>항공료는 별도</strong>입니다. 국제선 운임은 발권 시점에 따라 실시간 변동되므로, 예약 확정 후 담당자가 발권 시점에 안내드립니다.</p>
+        <p><strong>환율 적용</strong>: 엔화 기준 요금에 <strong>출발월의 두 달 전 1일 하나은행 '현찰 살 때'</strong> 최초 회차 환율이 적용되어 원화 금액이 확정됩니다. 이 화면의 원화 금액은 참고용 예상값입니다.</p>
+        <p><strong>성수기 안내</strong>: 일본 공휴일 · 골든위크(4/29~5/10) · 오봉(8/8~8/16) 기간은 수요가 집중되어 항공 발권이 조기에 마감될 수 있습니다.</p>
+        <p><strong>예약금 안내</strong>: 예약 확정을 위해 1인당 30만원의 예약금을 예약일 기준 7일 이내 KEB하나은행 109-890042-62004 (주식회사 메리트투어) 계좌로 입금해 주셔야 합니다. 잔금은 출발 전 정산됩니다.</p>
+      </div>
+    </div>
+
+    <div class="btn-row sticky-nav" id="step3Nav">
+      <button class="btn btn-secondary" onclick="goStep(2)">이전</button>
+      <button class="btn btn-primary" id="toStep4" disabled>다음으로</button>
+    </div>
+  </section>
+
+  <!-- STEP 4 — 출발일 (달력) -->
+  <section id="sec4">
+    <h2 class="q">출발일을 선택하세요</h2>
+    <p class="q-sub" id="calSub"></p>
+
+    <div class="cal-nav">
+      <button id="calPrev">‹</button>
+      <div class="m" id="calMonth">2026년 5월</div>
+      <button id="calNext">›</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+
+    <div class="cal-legend">
+      <span class="ok"><i></i> 여유</span>
+      <span class="low"><i></i> 거의 마감</span>
+      <span class="ft"><i></i> 마감</span>
+      <span class="pk"><i></i> 일본 성수기</span>
+    </div>
+
+    <div class="sched-info" id="schedInfo" style="display:none;">
+      <div class="d" id="schedDate"></div>
+      <div class="t" id="schedTime"></div>
+      <div class="peak-alert" id="peakAlert" style="display:none;"></div>
+    </div>
+
+    <div class="estimate" id="estimateBox" style="display:none;">
+      <div class="lbl">예상 총 요금 (1팀 기준 · 참고값)</div>
+      <div class="amt" id="estAmt">-</div>
+      <div class="detail" id="estDetail"></div>
+    </div>
+
+    <div class="deposit-box" id="depositBox" style="display:none;">
+      <div class="lbl">📥 예약 확정 예약금 (입금 필요)</div>
+      <div class="amt" id="depAmt">-</div>
+      <div class="detail" id="depDetail"></div>
+      <div class="bank">
+        KEB하나은행 <strong>109-890042-62004</strong>
+        <small>예금주: 주식회사 메리트투어</small>
+      </div>
+      <div class="kakao-confirm-note">
+        💬 입금 후 <strong>카카오톡 채널 '메리트투어'</strong>로 알려주시면 빠르게 확인해 드립니다
+      </div>
+    </div>
+
+    <div class="btn-row sticky-nav" id="step4Nav">
+      <button class="btn btn-secondary" onclick="goStep(3)">이전</button>
+      <button class="btn btn-primary" id="toStep5" disabled>다음으로</button>
+    </div>
+  </section>
+
+  <!-- STEP 5 — 확정 (회원 로그인 전제) -->
+  <section id="sec5">
+    <h2 class="q">예약 내용 확인 후 확정해 주세요</h2>
+    <p class="q-sub">로그인 정보로 바로 예약이 진행됩니다</p>
+
+    <!-- 로그인 배너 -->
+    <div class="login-banner" id="loginBanner">
+      <div class="avatar" id="loginAvatar">홍</div>
+      <div>
+        <div class="who" id="loginWho">홍길동 회원님</div>
+        <small id="loginSub">로그인 세션으로 예약을 진행합니다</small>
+      </div>
+    </div>
+
+    <!-- 예약 요약 -->
+    <div class="summary-big">
+      <h3>📋 예약 내용</h3>
+      <div id="summaryAll"></div>
+    </div>
+
+    <!-- 예약금 입금 안내 -->
+    <div class="deposit-box" id="step5Deposit">
+      <div class="lbl">📥 예약금 입금 안내</div>
+      <div class="amt" id="step5DepAmt">-</div>
+      <div class="detail" id="step5DepDetail"></div>
+      <div class="bank">
+        KEB하나은행 <strong>109-890042-62004</strong>
+        <small>예금주: 주식회사 메리트투어</small>
+      </div>
+      <div class="kakao-confirm-note">
+        💬 입금 후 <strong>카카오톡 채널 '메리트투어'</strong>로 알려주시면 빠르게 확인해 드립니다
+      </div>
+    </div>
+
+    <!-- 동의 리스트 -->
+    <div class="consent-list">
+      <div class="consent-item" id="consentPrivacy" data-key="agreePrivacy">
+        <div class="consent-head">
+          <input type="checkbox" id="agreePrivacy" />
+          <div class="label"><span class="req">[필수]</span> 개인정보 수집·이용 동의</div>
+          <button type="button" class="toggle" data-target="bodyPrivacy" aria-expanded="false">보기 ▼</button>
+        </div>
+        <div class="consent-body" id="bodyPrivacy">
+          <p>메리트투어는 예약 확정 및 여행 진행을 위해 아래와 같이 개인정보를 수집·이용합니다.</p>
+          <table>
+            <tr><th>수집 항목</th><td>성함 · 생년월일 · 연락처 · 이메일 · 여권 사본(출국 시)</td></tr>
+            <tr><th>이용 목적</th><td>예약 확정 · 항공 발권 · 현지 송영 수배 · 안내 연락</td></tr>
+            <tr><th>보관 기간</th><td>행사 종료 후 5년 (관계 법령에 따른 보관)</td></tr>
+          </table>
+          <p style="margin-top:8px;">동의를 거부할 수 있으나, 거부 시 예약이 제한될 수 있습니다.</p>
+        </div>
+      </div>
+
+      <div class="consent-item" id="consentTerms" data-key="agreeTerms">
+        <div class="consent-head">
+          <input type="checkbox" id="agreeTerms" />
+          <div class="label"><span class="req">[필수]</span> 예약 · 결제 · 취소 약관 동의</div>
+          <button type="button" class="toggle" data-target="bodyTerms" aria-expanded="false">보기 ▼</button>
+        </div>
+        <div class="consent-body" id="bodyTerms">
+          <p><strong>숙박·이용</strong></p>
+          <ul>
+            <li>최대 7박까지 가능, <strong>7박 초과 예약 불가</strong></li>
+            <li>연박(타 리조트로의 연결 숙박) 예약 불가, 복수 회원권 연결 예약 불가</li>
+            <li>기명회원과 해당 지정회원만 예약 가능, 같은 회원권 내에서 예약 횟수가 공유됩니다</li>
+          </ul>
+          <p><strong>예약금</strong></p>
+          <ul>
+            <li>1인당 30만원을 <strong>예약일 기준 7일 이내</strong> 입금해 주셔야 최종 확정됩니다. 미입금 시 자동 취소됩니다.</li>
+            <li>입금 계좌: KEB하나은행 109-890042-62004 (주식회사 메리트투어)</li>
+          </ul>
+          <p><strong>요금·환율·항공료</strong></p>
+          <ul>
+            <li>환율은 <strong>출발월의 두 달 전 1일 하나은행 '현찰 살 때'</strong> 최초 회차 기준으로 확정됩니다. 이 화면의 원화 금액은 참고값입니다.</li>
+            <li>항공료는 별도이며 발권 시점에 확정됩니다. 발권 후 취소 시 항공사 규정이 적용됩니다.</li>
+          </ul>
+          <p><strong>취소 수수료</strong>: 출발 30일 전까지 무료 · 15~29일 전 30% · 7~14일 전 50% · 6일 이내 100%</p>
+          <p><strong>성수기</strong>(골든위크·오봉·일본 공휴일)는 항공 발권이 조기 마감될 수 있습니다.</p>
+          <p><strong>문의</strong>: 카카오톡 채널 '메리트투어' 또는 02-365-9800</p>
+        </div>
+      </div>
+
+      <div class="consent-item" id="consentMkt" data-key="agreeMarketing">
+        <div class="consent-head">
+          <input type="checkbox" id="agreeMarketing" />
+          <div class="label"><span class="opt">[선택]</span> 마케팅 정보 수신 동의 (이벤트 · 특가)</div>
+          <button type="button" class="toggle" data-target="bodyMkt" aria-expanded="false">보기 ▼</button>
+        </div>
+        <div class="consent-body" id="bodyMkt">
+          <p>메리트투어 신규 상품 · 회원 전용 특가 · 조기 예약 이벤트 등의 정보를 문자·이메일로 받아보실 수 있습니다. 거부해도 예약에는 영향이 없으며, 언제든 수신 거부 가능합니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 하단 고정 확정 바 -->
+    <div class="sticky-confirm">
+      <button class="btn-big-confirm disabled" id="submitBtn">예약 확정하기</button>
+      <div class="hint" id="submitHint">필수 동의 2개를 체크하시면 확정할 수 있어요</div>
+    </div>
+
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="btn btn-secondary" onclick="goStep(4)">이전</button>
+    </div>
+  </section>
+
+  <!-- STEP 6 — 완료 -->
+  <section id="sec6">
+    <div style="background:#FEF3C7;border:1px dashed #FCD34D;color:#92400E;padding:12px 16px;border-radius:10px;margin-bottom:18px;font-size:13px;font-weight:700;text-align:center;">
+      ⚙ <strong>이 화면은 시연용 프로토타입입니다</strong> — 실제 예약은 처리되지 않았습니다
+    </div>
+    <div class="confirm-icon">✓</div>
+    <div class="confirm-title">예약이 접수되었습니다</div>
+    <div class="confirm-desc">
+      예약금 입금 확인 후 최종 확정됩니다.<br/>
+      24시간 이내 담당자가 안내드립니다.
+    </div>
+
+    <div class="reservation-no">
+      <div class="lbl">예약번호</div>
+      <div class="no" id="confirmNo">MT26000000</div>
+    </div>
+
+    <div class="deposit-box" id="confirmDeposit"></div>
+
+    <div class="summary-big" style="margin-top:18px;">
+      <h3>📋 예약 내용</h3>
+      <div id="confirmAll"></div>
+    </div>
+
+    <div class="notice">
+      <strong>안내</strong><br/>
+      표시된 요금은 <strong>참고 예상값</strong>입니다. 항공료는 별도이며 발권 시점에 확정됩니다. 환율은 출발월의 두 달 전 1일 하나은행 '현찰 살 때' 기준으로 적용됩니다. 예약금 미입금 시 예약이 취소될 수 있습니다.
+    </div>
+
+    <div class="btn-row" style="margin-top:20px;">
+      <button class="btn btn-secondary" onclick="restart()">처음으로</button>
+      <a class="btn btn-primary" href="confirm/" style="text-decoration:none;display:flex;align-items:center;justify-content:center;">확정서 예시 보기</a>
+    </div>
+  </section>
+
+  <footer>
+    <div><strong>메리트투어 (MERITTOUR)</strong></div>
+    <div>서울특별시 · 02-365-9800 · 카카오톡 채널 '메리트투어'</div>
+    <div style="margin-top:6px;">© 2026 MERITTOUR</div>
+  </footer>
+</div>
+
+<!-- v11 — 락 카운트다운 (Step 5 활성 시에만 show) -->
+<div class="lock-bar" id="lockBar">
+  <div class="lb-left">
+    <div class="lb-icon">⏱</div>
+    <div class="lb-text">
+      예약 보류 중 — 시간 안에 완료해 주세요
+      <small>이 단계에서 객실이 임시로 보류됩니다</small>
+    </div>
+  </div>
+  <div class="lb-time" id="lockTime">10:00</div>
+</div>
+
+<!-- v11 — 모달 (락 시작 / 만료 / 충돌) -->
+<div class="modal-mask" id="modalMask">
+  <div class="modal-card" id="modalCard">
+    <div class="m-icon" id="modalIcon">⏱</div>
+    <div class="m-title" id="modalTitle"></div>
+    <div class="m-body" id="modalBody"></div>
+    <div class="m-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<!-- v11 — 처리중 오버레이 -->
+<div class="submit-overlay" id="submitOverlay">
+  <div class="spinner"></div>
+  <div class="label">예약을 처리하고 있습니다…</div>
+</div>
+
+<script>
+// ============================================================
+// 2026 일본 공휴일 + 성수기 (골든위크 · 오봉)
+// ============================================================
+const JAPAN_HOLIDAYS_2026 = {
+  '2026-03-20': '춘분의 날',
+  '2026-04-29': '쇼와의 날',
+  '2026-05-03': '헌법기념일',
+  '2026-05-04': '녹색의 날',
+  '2026-05-05': '어린이날',
+  '2026-05-06': '대체 공휴일',
+  '2026-07-20': '바다의 날',
+  '2026-08-11': '산의 날',
+  '2026-09-21': '경로의 날',
+  '2026-09-22': '국민의 휴일',
+  '2026-09-23': '추분의 날',
+  '2026-10-12': '스포츠의 날',
+  '2026-11-03': '문화의 날',
+  '2026-11-23': '근로감사의 날'
+};
+const PEAK_RANGES_2026 = [
+  { from: '2026-04-29', to: '2026-05-10', name: '골든위크' },
+  { from: '2026-08-08', to: '2026-08-16', name: '오봉(お盆)' }
+];
+function isPeakDate(dateStr) {
+  if (JAPAN_HOLIDAYS_2026[dateStr]) return { peak: true, name: JAPAN_HOLIDAYS_2026[dateStr] };
+  for (const r of PEAK_RANGES_2026) {
+    if (dateStr >= r.from && dateStr <= r.to) return { peak: true, name: r.name };
+  }
+  return { peak: false };
+}
+
+// ============================================================
+// v8 — 우선예약 일정 (2026 EWRC)
+// ※ 실운영: 서버 시간 기준으로 판정. Mock에서는 devTime으로 시뮬레이션 가능
+// ============================================================
+const PRIORITY_ROUNDS = [
+  { id: 1, start: '2026-09-08T10:00:00', end: '2026-09-09T10:00:00', quota: 1, label: '1차 우선예약', eligibility: '정회원' },
+  { id: 2, start: '2026-09-10T10:00:00', end: '2026-09-11T10:00:00', quota: 2, label: '2차 우선예약', eligibility: '정회원 (1차 이월)', carryFrom: 1 },
+  { id: 3, start: '2026-09-12T10:00:00', end: '2026-09-13T10:00:00', quota: 2, label: '3차 우선예약', eligibility: '정회원·특별회원 (2차 이월)', carryFrom: 2 }
+];
+const REALTIME_START = '2026-09-13T10:00:00';
+
+// v9.1 — 시뮬레이션 시간이 실시간으로 흐르도록 anchor 방식 적용
+// 사용자가 "30초 전" 옵션을 고르면 그 시점부터 실제 시간이 흐르며 정각 → LIVE로 자연 전환
+let _devTimeAnchor = null; // { simulated: Date, real: number(ms) }
+function nowServerTime() {
+  if (_devTimeAnchor) {
+    const elapsed = Date.now() - _devTimeAnchor.real;
+    return new Date(_devTimeAnchor.simulated.getTime() + elapsed);
+  }
+  return new Date();
+}
+// (테스트 호환) 외부에서 정적 override를 원할 때 즉시 고정 가능
+let _devTimeOverride = null;
+const _origNowServerTime = nowServerTime;
+nowServerTime = function() {
+  if (_devTimeOverride) return new Date(_devTimeOverride);
+  return _origNowServerTime();
+};
+
+function getPhase() {
+  const now = nowServerTime();
+  for (let i = 0; i < PRIORITY_ROUNDS.length; i++) {
+    const r = PRIORITY_ROUNDS[i];
+    const start = new Date(r.start), end = new Date(r.end);
+    if (now < start) {
+      const prev = i > 0 ? new Date(PRIORITY_ROUNDS[i-1].end) : null;
+      return { type: prev && now >= prev ? 'between' : 'pre-open', round: r, prevEnd: prev };
+    }
+    if (now >= start && now < end) return { type: 'active', round: r };
+  }
+  if (now >= new Date(REALTIME_START)) return { type: 'free' };
+  return { type: 'pre-open', round: PRIORITY_ROUNDS[0] };
+}
+
+// ============================================================
+// 환율 Mock
+// 실운영: 출발월의 두 달 전 1일 하나은행 '현찰 살 때' 최초 회차 환율
+// ============================================================
+const FX_JPY_KRW = 9.5; // 100엔 = 950원 Mock
+const FX_REFERENCE_DATE = '출발월의 두 달 전 1일 하나은행 현찰 살 때 (Mock: 100엔=950원)';
+
+// ============================================================
+// 예약금 (1인당)
+// ============================================================
+const DEPOSIT_PER_PERSON = 300000;
+
+// ============================================================
+// v8 — RESORTS (공지사항 #30000030 기준, 2026-04 확정값)
+// pricingMode:
+//   'jpy'        — 체재비(1인/1박/엔) + 송영비(왕복/1인/엔) 엔화 합산 후 환율 적용
+//   'jpy_split'  — 주중/주말 체재비 분리 (벳푸 아키바)
+//   'krw_package'— 원화 고정 패키지 (무츠키)
+//   'sugadaira_pkg' — 스가다이라 패키지 리스트 (일부는 문의)
+// ※ 삿포로 셰익스피어: 판매 중단 (완전 제외)
+// ============================================================
+// v9 — REGIONS: 별장형 분리, 닐라이스프링스 신규
+const REGIONS = [
+  { id: 'kumamoto', name: '구마모토 · 아소', subtitle: '규슈 내륙 · 온천 + 골프',
+    resorts: ['yamanami', 'aso_villa', 'sobo_villa', 'dome_house', 'sobo5', 'kanji', 'shizunoyado'] },
+  { id: 'nagoya',   name: '나고야',          subtitle: '주부 지역 · 챔피언십 코스', resorts: ['fourteen'] },
+  { id: 'beppu',    name: '벳푸',            subtitle: '규슈 온천 휴양지', resorts: ['akiba', 'mutsuki'] },
+  { id: 'ibaraki',  name: '이바라키',         subtitle: '관동 북부 · 자연 속 코스',
+    resorts: ['shirosato_seoul', 'shirosato_busan', 'fukuroda_seoul', 'fukuroda_busan'] },
+  { id: 'miyazaki', name: '미야자키',         subtitle: '규슈 남부 · 온난한 기후', resorts: ['miyazaki_kuko'] },
+  { id: 'nagano',   name: '나가노',           subtitle: '고원 리조트 (별도 패키지)', resorts: ['sugadaira'] },
+  { id: 'malaysia', name: '말레이시아',        subtitle: '쿠알라룸푸르 · 자유 일정', resorts: ['nilai'] }
+];
+
+// v9 — 박수×출발요일 패턴 모델
+// dow: 0=일 1=월 2=화 3=수 4=목 5=금 6=토
+const RESORTS = {
+  // ====== 구마모토 — 야마나미 골프텔 (본체) ======
+  yamanami: {
+    name: '아소 야마나미 리조트 (골프텔)', icon: '⛳', variant: '',
+    meta: '아소 야마나미CC · 주중 18+9, 주말·공휴일 18', regionId: 'kumamoto',
+    pricingMode: 'jpy', taizaiJpy: 15000, soyouJpy: 6000,
+    patterns: [
+      { nights: 3, dow: 4, label: '3박 4일', dowLabel: '목요일 출발' },
+      { nights: 4, dow: 0, label: '4박 5일', dowLabel: '일요일 출발' },
+      { nights: 7, dow: 3, label: '7박 8일', dowLabel: '수요일 출발' }
+    ],
+    airport: '인천 / 부산',
+    roomMode: 'with_single', // 트윈/소형트윈 + 싱글차지 옵션
+    rooms: [
+      { id: 'twin',  name: '트윈',     cap: 2, total: 90, supportSingle: true },
+      { id: 'small', name: '소형트윈', cap: 2, total: 60, supportSingle: true }
+    ],
+    singleChargeJpy: 2200, singleChargeMaxPerDay: 18
+  },
+
+  // ====== 구마모토 — 별장형 4종 (분리) ======
+  aso_villa: {
+    name: '아소별장', icon: '⛺', variant: '',
+    meta: '아소 산자락 · 8인 1동 · 단체 전용', regionId: 'kumamoto',
+    pricingMode: 'jpy', taizaiJpy: 17000, soyouJpy: 6000,
+    patterns: [
+      { nights: 7, dow: 4, label: '7박 8일', dowLabel: '목요일 출발' },
+      { nights: 7, dow: 0, label: '7박 8일', dowLabel: '일요일 출발' }
+    ],
+    airport: '인천 / 부산',
+    roomMode: 'single', // 단일 룸타입
+    rooms: [{ id: 'std', name: '아소별장 1동', cap: 8, total: 1 }],
+    villa: true
+  },
+  sobo_villa: {
+    name: '소보별장', icon: '⛺', variant: 'v2',
+    meta: '소보별장 (트윈 2동 + 트리플 1동) · 가족·소그룹', regionId: 'kumamoto',
+    pricingMode: 'jpy', taizaiJpy: 15000, soyouJpy: 6000,
+    patterns: [
+      { nights: 3, dow: 4, label: '3박 4일', dowLabel: '목요일 출발' },
+      { nights: 4, dow: 0, label: '4박 5일', dowLabel: '일요일 출발' }
+    ],
+    airport: '인천 / 부산',
+    roomMode: 'multi', // 트윈/트리플 카드 선택
+    rooms: [
+      { id: 'twin',    name: '트윈',     cap: 2, total: 2 },
+      { id: 'triple',  name: '트리플',   cap: 3, total: 1 }
+    ],
+    villa: true
+  },
+  dome_house: {
+    name: '돔하우스', icon: '⛺', variant: 'v3',
+    meta: '돔하우스 4동 · 4인 1동 · 독채형 별장', regionId: 'kumamoto',
+    pricingMode: 'jpy', taizaiJpy: 15000, soyouJpy: 6000,
+    patterns: [
+      { nights: 3, dow: 4, label: '3박 4일', dowLabel: '목요일 출발' },
+      { nights: 4, dow: 0, label: '4박 5일', dowLabel: '일요일 출발' }
+    ],
+    airport: '인천 / 부산',
+    roomMode: 'single',
+    rooms: [{ id: 'std', name: '돔하우스 1동', cap: 4, total: 4 }],
+    villa: true
+  },
+  sobo5: {
+    name: '소보5동', icon: '⛺', variant: 'v4',
+    meta: '소보5동 (구 라쿠엔나미노별장) · 4인 1동', regionId: 'kumamoto',
+    pricingMode: 'jpy', taizaiJpy: 17000, soyouJpy: 6000,
+    patterns: [
+      { nights: 7, dow: 4, label: '7박 8일', dowLabel: '목요일 출발' },
+      { nights: 7, dow: 0, label: '7박 8일', dowLabel: '일요일 출발' }
+    ],
+    airport: '인천 / 부산',
+    roomMode: 'single',
+    rooms: [{ id: 'std', name: '소보5동 1동', cap: 4, total: 1 }],
+    villa: true
+  },
+
+  // ====== 구마모토 — 간지호텔 / 시즈노야도 ======
+  kanji: {
+    name: '간지호텔 2색 골프투어', icon: '♨', variant: 'v2',
+    meta: '구주고원GC · 야마나미GC · 2색 골프', regionId: 'kumamoto',
+    pricingMode: 'jpy', taizaiJpy: 17000, soyouJpy: 6000,
+    patterns: [
+      { nights: 3, dow: 4, label: '3박 4일', dowLabel: '목요일 출발' },
+      { nights: 4, dow: 0, label: '4박 5일', dowLabel: '일요일 출발' },
+      { nights: 7, dow: 3, label: '7박 8일', dowLabel: '수요일 출발' }
+    ],
+    airport: '인천 / 부산',
+    roomMode: 'single',
+    rooms: [{ id: 'std', name: '표준 객실', cap: 2, total: 30 }]
+  },
+  shizunoyado: {
+    name: '시즈노야도 료칸', icon: '🍵', variant: 'v3',
+    meta: '야마나미GC · 조용한 힐링 료칸', regionId: 'kumamoto',
+    pricingMode: 'jpy', taizaiJpy: 17000, soyouJpy: 6000,
+    patterns: [
+      { nights: 3, dow: 4, label: '3박 4일', dowLabel: '목요일 출발' },
+      { nights: 4, dow: 0, label: '4박 5일', dowLabel: '일요일 출발' },
+      { nights: 7, dow: 4, label: '7박 8일', dowLabel: '목요일 출발' },
+      { nights: 7, dow: 0, label: '7박 8일', dowLabel: '일요일 출발' }
+    ],
+    airport: '인천 / 부산',
+    roomMode: 'single',
+    rooms: [{ id: 'std', name: '일본식 객실', cap: 2, total: 14 }]
+  },
+
+  // ====== 나고야 ======
+  fourteen: {
+    name: '포틴힐즈CC', icon: '🏌', variant: 'v2',
+    meta: '포틴힐즈CC · 챔피언십 코스', regionId: 'nagoya',
+    pricingMode: 'jpy', taizaiJpy: 15000, soyouJpy: 12000,
+    patterns: [
+      { nights: 3, dow: 4, label: '3박 4일', dowLabel: '목요일 출발' },
+      { nights: 4, dow: 0, label: '4박 5일', dowLabel: '일요일 출발' },
+      { nights: 7, dow: 2, label: '7박 8일', dowLabel: '화요일 출발' }
+    ],
+    airport: '김해',
+    roomMode: 'single',
+    rooms: [{ id: 'std', name: '표준 객실', cap: 2, total: 26 }]
+  },
+
+  // ====== 벳푸 ======
+  akiba: {
+    name: '아키바 리조트 2색', icon: '♨', variant: 'v3',
+    meta: '벳푸CC · 오기야마CC · 주중/주말 요금 분리 · 석식 미포함', regionId: 'beppu',
+    pricingMode: 'jpy_split', taizaiJpyWeekday: 15000, taizaiJpyWeekend: 17000, soyouJpy: 12000,
+    patterns: [
+      { nights: 3, dow: 5, label: '3박 4일', dowLabel: '금요일 출발' },
+      { nights: 4, dow: 1, label: '4박 5일', dowLabel: '월요일 출발' }
+    ],
+    airport: '인천 / 대구 / 부산',
+    roomMode: 'single',
+    rooms: [{ id: 'std', name: '표준 객실', cap: 2, total: 30 }],
+    note: '석식은 포함되어 있지 않습니다.'
+  },
+  mutsuki: {
+    name: '무츠키 료칸 (원화 패키지)', icon: '🏯', variant: 'v3',
+    meta: '항공+숙박+골프 포함 · 벳푸CC·오기야마CC', regionId: 'beppu',
+    pricingMode: 'krw_package', packages: { 3: 1450000, 4: 1660000 },
+    patterns: [
+      { nights: 3, dow: 5, label: '3박 4일', dowLabel: '금요일 출발' },
+      { nights: 4, dow: 1, label: '4박 5일', dowLabel: '월요일 출발' }
+    ],
+    airport: '인천',
+    roomMode: 'single',
+    rooms: [{ id: 'std', name: '료칸 객실 (패키지)', cap: 2, total: 12 }]
+  },
+
+  // ====== 이바라키 — 서울/부산 분리 ======
+  shirosato_seoul: {
+    name: '시로사토CC (서울 출발)', icon: '🌲', variant: 'v4',
+    meta: '시로사토CC · 인천 출발 · 주중 18+9, 주말·공휴일 18', regionId: 'ibaraki',
+    pricingMode: 'jpy', taizaiJpy: 16000, soyouJpy: 12000,
+    patterns: [{ nights: 6, dow: 0, label: '6박 7일', dowLabel: '일요일 출발' }],
+    airport: '인천',
+    roomMode: 'single',
+    rooms: [{ id: 'std', name: '트윈 객실', cap: 2, total: 40 }]
+  },
+  shirosato_busan: {
+    name: '시로사토CC (부산 출발)', icon: '🌲', variant: 'v4',
+    meta: '시로사토CC · 부산 출발 · 주중 18+9, 주말·공휴일 18', regionId: 'ibaraki',
+    pricingMode: 'jpy', taizaiJpy: 16000, soyouJpy: 12000,
+    patterns: [{ nights: 6, dow: 0, label: '6박 7일', dowLabel: '일요일 출발' }],
+    airport: '부산',
+    roomMode: 'single',
+    rooms: [{ id: 'std', name: '트윈 객실', cap: 2, total: 40 }]
+  },
+  fukuroda_seoul: {
+    name: '후쿠로다노타키CC (서울 출발)', icon: '💧', variant: 'v4',
+    meta: '후쿠로다노타키CC · 인천 출발', regionId: 'ibaraki',
+    pricingMode: 'jpy', taizaiJpy: 16000, soyouJpy: 12000,
+    patterns: [{ nights: 7, dow: 1, label: '7박 8일', dowLabel: '월요일 출발' }],
+    airport: '인천',
+    roomMode: 'single',
+    rooms: [{ id: 'std', name: '트윈 객실', cap: 2, total: 40 }]
+  },
+  fukuroda_busan: {
+    name: '후쿠로다노타키CC (부산 출발)', icon: '💧', variant: 'v4',
+    meta: '후쿠로다노타키CC · 부산 출발', regionId: 'ibaraki',
+    pricingMode: 'jpy', taizaiJpy: 16000, soyouJpy: 12000,
+    patterns: [{ nights: 7, dow: 1, label: '7박 8일', dowLabel: '월요일 출발' }],
+    airport: '부산',
+    roomMode: 'single',
+    rooms: [{ id: 'std', name: '트윈 객실', cap: 2, total: 40 }]
+  },
+
+  // ====== 미야자키 ======
+  miyazaki_kuko: {
+    name: '미야자키 국제공항CC', icon: '✈', variant: 'v5',
+    meta: '미야자키 국제공항CC · 5박 6일 · 중식 미포함', regionId: 'miyazaki',
+    pricingMode: 'jpy', taizaiJpy: 17000, soyouJpy: 5000,
+    patterns: [{ nights: 5, dow: 0, label: '5박 6일', dowLabel: '일요일 출발' }],
+    airport: '인천',
+    roomMode: 'single',
+    rooms: [{ id: 'std', name: '트윈 객실', cap: 2, total: 20 }],
+    note: '출·귀국일 라운드 없음 · 체재일 중식 미포함'
+  },
+
+  // ====== 나가노 — 스가다이라 별도 패키지 ======
+  sugadaira: {
+    name: '스가다이라 그린CC (별도 패키지)', icon: '🏔', variant: 'v6',
+    meta: '해발 1,700m 고원 · 니가타공항', regionId: 'nagano',
+    pricingMode: 'sugadaira_pkg',
+    airport: '인천 (니가타)',
+    packages: [
+      { code: 'GJKE5', nights: 5,  krw: 1450000, dows: [4],   name: '[5박6일] 스가다이라 그린CC 골프투어',                period: '2026.05.07 ~ 06.25', dowLabel: '목요일 출발' },
+      { code: 'GJKE2', nights: 7,  krw: 1850000, dows: [2,4], name: '[7박8일] 스가다이라 그린CC 골프투어',                period: '2026.05.07 ~ 10.20', dowLabel: '화·목요일 출발' },
+      { code: 'GJKE3', nights: 7,  krw: null,    dows: [4],   name: '[7박8일] 스가다이라 그린CC 골프투어 "맨션형 숙소"', period: '2026.07.23 ~ 07.30', dowLabel: '목요일 출발' },
+      { code: 'GJKE4', nights: 14, krw: null,    dows: [2,4], name: '[14박15일] 스가다이라 그린CC 골프투어',             period: '2026.05.05 ~ 10.13', dowLabel: '화·목요일 출발' }
+    ]
+  },
+
+  // ====== 말레이시아 — 닐라이스프링스 자유일정 ======
+  nilai: {
+    name: '닐라이스프링스 골프&CC', icon: '🌴', variant: 'v6',
+    meta: '쿠알라룸푸르 · 자유 일정 · 100실/일', regionId: 'malaysia',
+    pricingMode: 'krw_free', krwPerNightPerPerson: 140000,
+    freeNights: { min: 3, max: 30 }, // 자유 박수
+    patterns: null, // 모든 요일 출발 가능
+    airport: '인천',
+    roomMode: 'single',
+    rooms: [{ id: 'std', name: '트윈 객실', cap: 2, total: 100 }],
+    note: '카트비 1박 ₩16,000/실 별도. 홀수 인원 시 싱글룸 추가 요금 발생'
+  }
+};
+
+// v9 — 객실은 RESORTS[id].rooms에 직접 정의됨
+function buildDefaultRooms(resortId) {
+  const r = RESORTS[resortId];
+  if (r && r.rooms) return r.rooms;
+  // 스가다이라 패키지: 가상 단일 객실
+  if (r && r.pricingMode === 'sugadaira_pkg') return [{ id: 'std', name: '패키지 포함 숙소', cap: 2, total: 15 }];
+  return [];
+}
+
+// v9 — 일본 공휴일 2026 (16일)
+const JP_HOLIDAYS_2026 = {
+  '2026-01-01': '신정',
+  '2026-01-12': '성년의 날',
+  '2026-02-11': '건국기념일',
+  '2026-02-23': '천황 탄생일',
+  '2026-03-20': '춘분의 날',
+  '2026-04-29': '쇼와의 날',
+  '2026-05-03': '헌법기념일',
+  '2026-05-04': '미도리의 날',
+  '2026-05-05': '어린이날',
+  '2026-05-06': '대체공휴일',
+  '2026-07-20': '바다의 날',
+  '2026-08-11': '산의 날',
+  '2026-09-21': '경로의 날',
+  '2026-09-23': '추분의 날',
+  '2026-10-12': '체육의 날',
+  '2026-11-03': '문화의 날',
+  '2026-11-23': '근로감사의 날'
+};
+function isJpHoliday(dateStr) { return JP_HOLIDAYS_2026[dateStr] || null; }
+
+// v9 — 우부야마 자선대회 (10/7 라운드 불가)
+const UBUYAMA_DATE = '2026-10-07';
+function isUbuyamaInRange(startDateStr, nights) {
+  const [y, m, d] = startDateStr.split('-').map(Number);
+  for (let i = 0; i <= nights; i++) {
+    const dt = new Date(y, m - 1, d + i);
+    const ds = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`;
+    if (ds === UBUYAMA_DATE) return true;
+  }
+  return false;
+}
+
+// Mock 재고
+function mockRemain(resortId, roomId, dateStr) {
+  const key = resortId + roomId + dateStr;
+  let h = 0;
+  for (let i = 0; i < key.length; i++) h = ((h << 5) - h) + key.charCodeAt(i) | 0;
+  const rooms = buildDefaultRooms(resortId);
+  const room = rooms.find(r => r.id === roomId);
+  if (!room) return 0;
+  const pseudo = Math.abs(h) % 100;
+  const ratio = 0.15 + (pseudo / 100) * 0.75;
+  return Math.max(0, Math.round(room.total * ratio));
+}
+
+// ============================================================
+// v10 — LOGIN_USER Mock (5종 시나리오, 개발 토글로 전환)
+// 실운영: 서버 세션에서 주입 · maxPeople는 기명/지정 resolve 완료 상태
+//
+// memberships[] 배열 모델:
+//   각 회원권마다 maxPeople + priorityQuota 보유
+//   refreshLoginUserDerived() 호출 시 합산값이 LOGIN_USER.maxPeople / priorityQuota 에 자동 반영
+//   → 기존 코드는 그대로 maxPeople / priorityQuota 만 참조하면 됨
+// ============================================================
+const LOGIN_USERS = {
+  primary: {
+    memberId: 'SONG0104434',
+    name: '홍길동',
+    role: 'primary',
+    groupCode: 'GC-0001',    // 회원번호 (내부용 · 고객 비노출)
+    memberGrade: '회원권',
+    memberships: [
+      { type: 'EWRC이용권', maxPeople: 4,
+        priorityQuota: { round1: { total: 1, used: 0 }, round2: { total: 2, used: 0 }, round3: { total: 2, used: 0 } } }
+    ],
+    problemFlags: []
+  },
+  designated: {
+    memberId: 'KIM0205441',
+    name: '김영희',
+    role: 'designated',
+    groupCode: 'GC-0001',   // 같은 그룹
+    memberGrade: '일반고객',
+    memberships: [
+      { type: 'EWRC이용권', maxPeople: 4,  // 기명회원 예약가능 값 상속 (서버에서 resolve)
+        priorityQuota: { round1: { total: 1, used: 0 }, round2: { total: 2, used: 0 }, round3: { total: 2, used: 0 } } }
+    ],
+    problemFlags: []
+  },
+  problem: {
+    memberId: 'KWON010386',
+    name: '권혁진',
+    role: 'primary',
+    groupCode: 'GC-0099',
+    memberGrade: '',
+    memberships: [],
+    problemFlags: ['회원권구분공란', '정회원명공란']
+  },
+  // v10 신규 — 회원권 2개 보유 (다이아 4 + 골드 2 = 6명 / 1차 2회·2차 4회·3차 4회)
+  multi2: {
+    memberId: 'PARK0301220',
+    name: '박정민',
+    role: 'primary',
+    groupCode: 'GC-0007',
+    memberGrade: '회원권',
+    memberships: [
+      { type: '다이아몬드', maxPeople: 4,
+        priorityQuota: { round1: { total: 1, used: 0 }, round2: { total: 2, used: 0 }, round3: { total: 2, used: 0 } } },
+      { type: '골드',       maxPeople: 2,
+        priorityQuota: { round1: { total: 1, used: 0 }, round2: { total: 2, used: 0 }, round3: { total: 2, used: 0 } } }
+    ],
+    problemFlags: []
+  },
+  // v10 신규 — 회원권 3개 보유 (다이아 4 + 다이아II 4 + 골드 2 = 10명 / 1차 3회·2차 6회·3차 6회)
+  multi3: {
+    memberId: 'LEE0405112',
+    name: '이정훈',
+    role: 'primary',
+    groupCode: 'GC-0012',
+    memberGrade: '회원권',
+    memberships: [
+      { type: '다이아몬드',   maxPeople: 4,
+        priorityQuota: { round1: { total: 1, used: 0 }, round2: { total: 2, used: 0 }, round3: { total: 2, used: 0 } } },
+      { type: '다이아몬드II', maxPeople: 4,
+        priorityQuota: { round1: { total: 1, used: 0 }, round2: { total: 2, used: 0 }, round3: { total: 2, used: 0 } } },
+      { type: '골드',         maxPeople: 2,
+        priorityQuota: { round1: { total: 1, used: 0 }, round2: { total: 2, used: 0 }, round3: { total: 2, used: 0 } } }
+    ],
+    problemFlags: []
+  }
+};
+
+let LOGIN_USER = LOGIN_USERS.primary;
+
+// ============================================================
+// v10 — memberships[] → LOGIN_USER.maxPeople / priorityQuota / membershipType 합산 갱신
+// 기존 코드는 LOGIN_USER.maxPeople / priorityQuota / membershipType 를 그대로 참조
+// ============================================================
+function refreshLoginUserDerived() {
+  const u = LOGIN_USER;
+  const ms = Array.isArray(u.memberships) ? u.memberships : [];
+  if (ms.length === 0) {
+    u.maxPeople = 0;
+    u.priorityQuota = null;
+    u.membershipType = '';
+    return;
+  }
+  // 합산 maxPeople
+  u.maxPeople = ms.reduce((sum, m) => sum + (m.maxPeople || 0), 0);
+  // 합산 priorityQuota
+  const agg = {
+    round1: { total: 0, used: 0 },
+    round2: { total: 0, used: 0 },
+    round3: { total: 0, used: 0 }
+  };
+  for (const m of ms) {
+    if (!m.priorityQuota) continue;
+    for (const k of ['round1', 'round2', 'round3']) {
+      agg[k].total += m.priorityQuota[k].total;
+      agg[k].used  += m.priorityQuota[k].used;
+    }
+  }
+  u.priorityQuota = agg;
+  // 화면용 회원권 표시명 (단일=그대로, 복수='다이아몬드 + 골드')
+  u.membershipType = ms.map(m => m.type).join(' + ');
+}
+// 초기 로그인(primary) 상태에서 한 번 갱신
+refreshLoginUserDerived();
+
+// ============================================================
+// STATE
+// ============================================================
+// v9 state
+// roomSelection: { roomId: { pair: N, single: M } }   // 야마나미는 pair/single 분리
+//                or { roomId: N }                      // 단일 인원 룸
+const state = {
+  step: 0,
+  resort: null,
+  patternIdx: null, // 선택된 patterns 인덱스
+  nights: null,
+  startDow: null,   // 출발 요일 (0~6)
+  freeNights: null, // 닐라이 자유박수
+  roomSelection: {},
+  calMonth: { y: 2026, m: 5 },
+  date: null,
+  sugadairaPkgCode: null,
+  agreePrivacy: false,
+  agreeTerms: false,
+  agreeMarketing: false
+};
+
+// ============================================================
+// STEP 0 — 우선예약 게이팅 렌더
+// ============================================================
+function totalQuotaLeft(u = LOGIN_USER) {
+  if (!u.priorityQuota) return { left: 0, total: 0 };
+  const q = u.priorityQuota;
+  const left = (q.round1.total - q.round1.used) + (q.round2.total - q.round2.used) + (q.round3.total - q.round3.used);
+  const total = q.round1.total + q.round2.total + q.round3.total;
+  return { left, total };
+}
+
+function fmtDateKo(iso, withTime = true) {
+  const d = new Date(iso);
+  const m = d.getMonth() + 1, day = d.getDate();
+  const dow = ['일','월','화','수','목','금','토'][d.getDay()];
+  const base = `${m}/${day}(${dow})`;
+  if (!withTime) return base;
+  const hh = String(d.getHours()).padStart(2,'0');
+  const mm = String(d.getMinutes()).padStart(2,'0');
+  return `${base} ${hh}:${mm}`;
+}
+
+function diffParts(futureIso) {
+  const ms = new Date(futureIso) - nowServerTime();
+  if (ms <= 0) return { d: 0, h: 0, m: 0, s: 0, ms: 0 };
+  const d = Math.floor(ms / 86400000);
+  const h = Math.floor((ms % 86400000) / 3600000);
+  const m = Math.floor((ms % 3600000) / 60000);
+  const s = Math.floor((ms % 60000) / 1000);
+  return { d, h, m, s, ms };
+}
+
+let _gateTimer = null;
+let _lastPhaseType = null;
+let _lastRoundId = null;
+function _flashOpenEffect() {
+  // 정각 오픈 순간 화면 플래시 + 진동 + 알림
+  const card = document.getElementById('gateCard');
+  if (!card) return;
+  card.classList.add('open-flash');
+  setTimeout(() => card.classList.remove('open-flash'), 1500);
+  // (선택) 부드러운 사운드 효과 — 짧은 비프
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.setValueAtTime(880, ctx.currentTime);
+    g.gain.setValueAtTime(0.001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.15, ctx.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    o.start(); o.stop(ctx.currentTime + 0.45);
+  } catch(e) {}
+}
+
+function renderGate() {
+  // 문제플래그 가드 우선
+  if (LOGIN_USER.problemFlags && LOGIN_USER.problemFlags.length > 0) {
+    document.getElementById('problemGate').style.display = 'block';
+    document.getElementById('gateCard').style.display = 'none';
+    document.querySelector('.gate-rounds').style.display = 'none';
+    document.getElementById('problemGateDesc').textContent =
+      `회원 DB에 수정이 필요한 항목이 있습니다: ${LOGIN_USER.problemFlags.join(' · ')}. 고객센터로 연락 주시면 확인 후 처리해 드립니다.`;
+    return;
+  }
+  document.getElementById('problemGate').style.display = 'none';
+  document.getElementById('gateCard').style.display = 'block';
+  document.querySelector('.gate-rounds').style.display = 'block';
+
+  const phase = getPhase();
+  // v10 — Step 0 머무는 동안 phase 전환 시 페이지 타이틀/라벨 동적 갱신
+  if (state.step === 0) {
+    const label = document.getElementById('progLabel');
+    const titleEl2 = document.getElementById('pageTitle');
+    const subEl2 = document.getElementById('pageSub');
+    if (phase.type === 'free') {
+      if (label) label.textContent = '자유예약';
+      if (titleEl2) titleEl2.textContent = '2026 EWRC 자유예약';
+      if (subEl2) subEl2.textContent = '횟수 제한 없이 자유롭게 예약하실 수 있습니다';
+    } else {
+      if (label) label.textContent = '우선예약';
+      if (titleEl2) titleEl2.textContent = stepTitles[0].t;
+      if (subEl2) subEl2.textContent = stepTitles[0].s;
+    }
+  }
+  // v9.1 — phase 전환 감지: pre-open/between → active 전환 시 플래시
+  const phaseRoundId = phase.round ? phase.round.id : null;
+  if (_lastPhaseType !== null && phase.type === 'active' &&
+      (_lastPhaseType === 'pre-open' || _lastPhaseType === 'between') &&
+      _lastRoundId !== phaseRoundId) {
+    _flashOpenEffect();
+  }
+  _lastPhaseType = phase.type;
+  _lastRoundId = phaseRoundId;
+
+  const cta = document.getElementById('gateCta');
+  const phaseEl = document.getElementById('gatePhase');
+  const titleEl = document.getElementById('gateTitle');
+  const subEl = document.getElementById('gateSub');
+  const bodyEl = document.getElementById('gateBody');
+  const hq = totalQuotaLeft();
+
+  // 헤더 배지 (자유예약 기간엔 숨김)
+  const hqEl = document.getElementById('headerQuota');
+  if (hq.total > 0 && phase.type !== 'free') {
+    hqEl.style.display = 'inline-flex';
+    document.getElementById('hqLeft').textContent = hq.left;
+    document.getElementById('hqTotal').textContent = hq.total;
+  } else {
+    hqEl.style.display = 'none';
+  }
+
+  phaseEl.className = 'gate-phase';
+  cta.className = 'gate-cta';
+
+  if (phase.type === 'pre-open') {
+    const p = diffParts(phase.round.start);
+    const totalSec = p.d * 86400 + p.h * 3600 + p.m * 60 + p.s;
+    const imminent = totalSec <= 60; // 60초 이하 임박
+    phaseEl.textContent = imminent ? '곧 우선예약이 오픈됩니다' : '우선예약 오픈 예정';
+    if (imminent) phaseEl.classList.add('live');
+    titleEl.textContent = `${phase.round.label} 오픈까지`;
+    subEl.textContent = `${fmtDateKo(phase.round.start)} 정각에 시작합니다 · ${phase.round.eligibility}`;
+    bodyEl.innerHTML = `
+      <div class="countdown ${imminent ? 'imminent' : ''}">
+        <div class="cd-unit"><div class="n">${String(p.d).padStart(2,'0')}</div><div class="l">일</div></div>
+        <div class="cd-unit"><div class="n">${String(p.h).padStart(2,'0')}</div><div class="l">시간</div></div>
+        <div class="cd-unit"><div class="n">${String(p.m).padStart(2,'0')}</div><div class="l">분</div></div>
+        <div class="cd-unit"><div class="n">${String(p.s).padStart(2,'0')}</div><div class="l">초</div></div>
+      </div>
+      ${imminent ? '<div style="color:#DC2626;font-weight:800;font-size:15px;margin-top:6px;">⚠ 정각에 자동으로 예약 버튼이 활성화됩니다</div>' : ''}
+    `;
+    cta.classList.add('disabled');
+    cta.disabled = true;
+    cta.textContent = imminent ? `${totalSec}초 후 오픈` : '아직 예약할 수 없어요';
+  } else if (phase.type === 'active') {
+    const p = diffParts(phase.round.end);
+    const q = LOGIN_USER.priorityQuota ? LOGIN_USER.priorityQuota[`round${phase.round.id}`] : { total: 0, used: 0 };
+    const leftInRound = Math.max(0, q.total - q.used);
+    phaseEl.textContent = `${phase.round.label} 진행중 · LIVE`;
+    phaseEl.classList.add('live');
+    titleEl.textContent = `지금 ${phase.round.label}이 열렸습니다`;
+    subEl.textContent = `${phase.round.eligibility} · ${fmtDateKo(phase.round.start)}~${fmtDateKo(phase.round.end)}`;
+    bodyEl.innerHTML = `
+      <div class="gate-quota">이번 차수 사용 가능 <strong>${leftInRound}회</strong> <span style="color:var(--muted);font-weight:600;font-size:13px;">(남은 시간 ${String(p.h).padStart(2,'0')}:${String(p.m).padStart(2,'0')}:${String(p.s).padStart(2,'0')})</span></div>
+    `;
+    if (leftInRound > 0) {
+      cta.disabled = false;
+      cta.textContent = '예약 시작하기';
+    } else {
+      cta.classList.add('disabled');
+      cta.disabled = true;
+      cta.textContent = '이번 차수 사용 횟수 소진';
+    }
+  } else if (phase.type === 'between') {
+    phaseEl.textContent = '다음 차수 대기중';
+    titleEl.textContent = `${phase.round.label} 시작 대기중`;
+    const p = diffParts(phase.round.start);
+    subEl.textContent = `${fmtDateKo(phase.round.start)} 정각에 다시 시작합니다`;
+    bodyEl.innerHTML = `
+      <div class="countdown">
+        <div class="cd-unit"><div class="n">${String(p.d).padStart(2,'0')}</div><div class="l">일</div></div>
+        <div class="cd-unit"><div class="n">${String(p.h).padStart(2,'0')}</div><div class="l">시간</div></div>
+        <div class="cd-unit"><div class="n">${String(p.m).padStart(2,'0')}</div><div class="l">분</div></div>
+        <div class="cd-unit"><div class="n">${String(p.s).padStart(2,'0')}</div><div class="l">초</div></div>
+      </div>
+      <div style="font-size:13px;color:var(--muted);">※ 이전 차수 미사용분은 다음 차수로 이월됩니다</div>
+    `;
+    cta.classList.add('disabled');
+    cta.disabled = true;
+    cta.textContent = '다음 차수 오픈까지 대기';
+  } else if (phase.type === 'free') {
+    // v10 — 자유예약 게이트
+    phaseEl.textContent = '자유예약 기간';
+    phaseEl.classList.add('free');
+    titleEl.textContent = '자유예약 기간입니다';
+    subEl.textContent = '우선예약 기간이 종료되어 횟수 제한 없이 자유롭게 예약하실 수 있습니다';
+    // 보유 회원권 카드 + 합산 인원 표시
+    const ms = LOGIN_USER.memberships || [];
+    const total = LOGIN_USER.maxPeople || 0;
+    const rows = ms.map(m => `
+      <div class="free-membership-row">
+        <div class="mtype">${m.type}</div>
+        <div class="mppl">예약가능 ${m.maxPeople}명</div>
+      </div>
+    `).join('');
+    const totalRow = ms.length > 1
+      ? `<div class="free-total-row"><div class="lbl">보유 회원권 합계</div><div class="val">${total}명</div></div>`
+      : '';
+    bodyEl.innerHTML = `
+      <div class="free-gate-wrap">
+        <div class="free-membership-list">
+          ${rows}
+          ${totalRow}
+        </div>
+        <div class="free-info-note">※ 자유예약 기간에는 회원권별 예약 횟수 제한이 적용되지 않습니다. 회원권당 정해진 인원 한도 내에서 자유롭게 예약하세요.</div>
+      </div>
+    `;
+    cta.classList.add('realtime');
+    cta.disabled = false;
+    cta.textContent = '예약 시작하기';
+  }
+
+  renderGateRounds(phase);
+}
+
+function renderGateRounds(phase) {
+  const host = document.getElementById('gateRoundsList');
+  const now = nowServerTime();
+  const rows = PRIORITY_ROUNDS.map(r => {
+    const start = new Date(r.start), end = new Date(r.end);
+    let cls = '', dotLabel = '대기';
+    if (now >= end) { cls = 'done'; dotLabel = '종료'; }
+    else if (now >= start && now < end) { cls = 'active'; dotLabel = 'LIVE'; }
+    const q = LOGIN_USER.priorityQuota ? LOGIN_USER.priorityQuota[`round${r.id}`] : { total: 0, used: 0 };
+    const left = Math.max(0, q.total - q.used);
+    return `
+      <div class="gate-round-row ${cls}">
+        <div><span class="phase-dot"></span><strong>${r.label}</strong> ${fmtDateKo(r.start,false)} 10:00 ~ ${fmtDateKo(r.end,false)} 10:00</div>
+        <div>${left}/${q.total}회 · ${dotLabel}</div>
+      </div>
+    `;
+  }).join('');
+  host.innerHTML = rows + `
+    <div class="gate-round-row ${now >= new Date(REALTIME_START) ? 'active' : ''}">
+      <div><span class="phase-dot"></span><strong>자유예약 기간</strong> ${fmtDateKo(REALTIME_START,false)} 10:00 이후</div>
+      <div>상시 · 횟수제한 없음</div>
+    </div>
+  `;
+}
+
+function startGateTimer() {
+  if (_gateTimer) clearInterval(_gateTimer);
+  // v9.1 — 200ms 주기로 갱신: 정각 phase 전환을 1초 이내 정확히 감지
+  _gateTimer = setInterval(() => { if (state.step === 0) renderGate(); }, 200);
+}
+
+// ============================================================
+// STEP 1 — 리조트 선택
+// ============================================================
+function renderRegions() {
+  const host = document.getElementById('regionList');
+  host.innerHTML = '';
+  REGIONS.forEach(region => {
+    const h = document.createElement('div');
+    h.className = 'region-head';
+    h.innerHTML = `${region.name} <small>${region.subtitle}</small>`;
+    host.appendChild(h);
+    const list = document.createElement('div');
+    list.className = 'big-list';
+    region.resorts.forEach(rid => {
+      const r = RESORTS[rid];
+      const card = document.createElement('div');
+      card.className = 'big-card' + (state.resort === rid ? ' selected' : '');
+      const badges = [];
+      if (r.villa) badges.push(`<span class="badge badge-pkg" style="background:#ECFCCB;color:#3F6212;border-color:#A3E635;">⛺ 별장형</span>`);
+      if (r.pricingMode === 'krw_package') badges.push(`<span class="badge badge-krw">원화 패키지</span>`);
+      if (r.pricingMode === 'krw_free') badges.push(`<span class="badge badge-krw">자유 일정</span>`);
+      if (r.pricingMode === 'sugadaira_pkg') badges.push(`<span class="badge badge-pkg">별도 패키지</span>`);
+      if (r.pricingMode === 'jpy_split') badges.push(`<span class="badge badge-bulk" style="background:#FEF3C7;color:#92400E;border-color:#FCD34D;">주중/주말 분리</span>`);
+      // 패턴 요약 배지
+      if (r.patterns && r.patterns.length > 0) {
+        const dows = ['일','월','화','수','목','금','토'];
+        const sum = r.patterns.map(p => `${p.nights}박 ${dows[p.dow]}`).join(' · ');
+        badges.push(`<span class="badge" style="background:#EFF6FF;color:#1E40AF;border:1px solid #93C5FD;">${sum} 출발</span>`);
+      }
+      badges.push(`<span class="badge badge-member">회원 전용</span>`);
+      card.innerHTML = `
+        <div class="img ${r.variant}">${r.icon}</div>
+        <div class="info">
+          <div class="name">${r.name}</div>
+          <div class="meta">${r.meta}</div>
+          <div class="badges">${badges.join('')}</div>
+        </div>
+        <div class="check">✓</div>
+      `;
+      card.onclick = () => {
+        state.resort = rid;
+        state.patternIdx = null;
+        state.nights = null;
+        state.startDow = null;
+        state.freeNights = null;
+        state.roomSelection = {};
+        state.date = null;
+        state.sugadairaPkgCode = null;
+        renderRegions();
+        document.getElementById('toStep2').disabled = false;
+        // v9.1 — sticky 다음 버튼에 펄스 효과로 시선 유도
+        const nav = document.getElementById('step1Nav');
+        if (nav) {
+          nav.classList.remove('has-selection');
+          void nav.offsetWidth; // 애니메이션 재시작
+          nav.classList.add('has-selection');
+        }
+      };
+      list.appendChild(card);
+    });
+    host.appendChild(list);
+  });
+}
+
+// ============================================================
+// STEP 2 — 기간 선택 (3~7박 자유 / 무츠키 3·4박 / 스가다이라 패키지)
+// ============================================================
+function renderDurations() {
+  const resort = RESORTS[state.resort];
+  document.getElementById('durSub').textContent = `${resort.name} · 숙박 일수를 선택해 주세요`;
+
+  const group = document.getElementById('durationGroup');
+  const pkgList = document.getElementById('pkgList');
+  group.innerHTML = '';
+  pkgList.innerHTML = '';
+
+  // 스가다이라: 패키지 카드
+  if (resort.pricingMode === 'sugadaira_pkg') {
+    group.style.display = 'none';
+    pkgList.style.display = 'flex';
+    resort.packages.forEach(p => {
+      const card = document.createElement('div');
+      card.className = 'pkg-card';
+      const isInquiry = !p.krw;
+      card.innerHTML = `
+        <div class="code">상품번호 ${p.code}</div>
+        <div class="name">${p.name}</div>
+        <div class="meta">여행기간 ${p.nights}박 ${p.nights+1}일 · ${p.dowLabel}<br>출발기간 ${p.period}</div>
+        <div class="price ${isInquiry ? 'inquiry' : ''}">
+          ${isInquiry ? '요금 문의' : p.krw.toLocaleString() + '원~'}
+        </div>
+        <button class="cta ${isInquiry ? 'inquiry' : ''}" data-code="${p.code}">
+          ${isInquiry ? '💬 카카오톡 문의하기' : '이 상품으로 예약하기'}
+        </button>
+      `;
+      pkgList.appendChild(card);
+    });
+    pkgList.querySelectorAll('.cta').forEach(btn => {
+      btn.onclick = () => {
+        const pkg = resort.packages.find(p => p.code === btn.dataset.code);
+        if (!pkg.krw) {
+          alert('카카오톡 채널 "메리트투어"로 연결됩니다.\n(실제 운영에서는 카톡 채널 URL로 이동)');
+          return;
+        }
+        state.nights = pkg.nights;
+        state.sugadairaPkgCode = pkg.code;
+        state.roomSelection = { std: 1 };
+        document.getElementById('toStep3').disabled = false;
+        pkgList.querySelectorAll('.pkg-card').forEach(c => c.style.borderColor = '');
+        btn.closest('.pkg-card').style.borderColor = 'var(--brand)';
+      };
+    });
+    document.getElementById('toStep3').disabled = !state.sugadairaPkgCode;
+    return;
+  }
+
+  // 닐라이스프링스: 자유 박수 input
+  if (resort.pricingMode === 'krw_free') {
+    group.style.display = 'block';
+    pkgList.style.display = 'none';
+    group.classList.remove('narrow');
+    const fn = resort.freeNights;
+    const cur = state.nights || fn.min;
+    group.innerHTML = `
+      <div style="background:var(--brand-soft);border-radius:14px;padding:20px;margin-bottom:14px;">
+        <div style="font-weight:800;font-size:18px;margin-bottom:8px;">자유 일정 선택</div>
+        <div style="color:var(--muted);font-size:14px;line-height:1.5;">
+          ${fn.min}박 ~ ${fn.max}박까지 자유롭게 선택 · 출발 요일 제한 없음<br>
+          1박 1인당 ₩${resort.krwPerNightPerPerson.toLocaleString()} (트윈 기준)
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;justify-content:center;padding:18px;background:#fff;border:2px solid var(--line);border-radius:14px;">
+        <button class="dur-step-btn" id="freeMinus" style="width:60px;height:60px;font-size:28px;font-weight:800;border:2px solid var(--line);background:#fff;border-radius:12px;cursor:pointer;">−</button>
+        <div style="text-align:center;min-width:120px;">
+          <div style="font-size:36px;font-weight:900;color:var(--brand-dark);" id="freeNightsDisp">${cur}</div>
+          <div style="color:var(--muted);font-size:13px;">박 ${cur+1}일</div>
+        </div>
+        <button class="dur-step-btn" id="freePlus" style="width:60px;height:60px;font-size:28px;font-weight:800;border:2px solid var(--line);background:#fff;border-radius:12px;cursor:pointer;">＋</button>
+      </div>
+    `;
+    state.nights = cur;
+    state.startDow = null; // 자유 출발일
+    const updateDisp = () => {
+      document.getElementById('freeNightsDisp').textContent = state.nights;
+      document.getElementById('freeNightsDisp').nextElementSibling.textContent = `박 ${state.nights+1}일`;
+    };
+    document.getElementById('freeMinus').onclick = () => {
+      if (state.nights > fn.min) { state.nights--; updateDisp(); }
+    };
+    document.getElementById('freePlus').onclick = () => {
+      if (state.nights < fn.max) { state.nights++; updateDisp(); }
+    };
+    document.getElementById('toStep3').disabled = false;
+    return;
+  }
+
+  // 일반/별장형/무츠키/아키바: 박수+요일 카드
+  group.style.display = 'grid';
+  pkgList.style.display = 'none';
+  const patterns = resort.patterns || [];
+  group.classList.toggle('narrow', patterns.length === 2);
+  patterns.forEach((p, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'duration-btn';
+    if (state.patternIdx === idx) btn.classList.add('selected');
+    let extra = '';
+    if (resort.pricingMode === 'krw_package') {
+      extra = `<span class="day">${(resort.packages[p.nights]/10000).toLocaleString()}만원~</span>`;
+    }
+    btn.innerHTML = `${p.label}<span class="day" style="font-size:14px;color:var(--muted);">${p.dowLabel}</span>${extra}`;
+    btn.onclick = () => {
+      state.patternIdx = idx;
+      state.nights = p.nights;
+      state.startDow = p.dow;
+      state.roomSelection = {};
+      state.date = null;
+      renderDurations();
+      document.getElementById('toStep3').disabled = false;
+    };
+    group.appendChild(btn);
+  });
+}
+
+// ============================================================
+// STEP 3 — 객실 렌더 + 요금 표시
+// ============================================================
+function roomEstJpyPer1Night(resort, room, useWeekend) {
+  if (resort.pricingMode === 'jpy_split') {
+    const ta = useWeekend ? resort.taizaiJpyWeekend : resort.taizaiJpyWeekday;
+    return ta * room.cap; // 1인/1박 × cap = 1실/1박
+  }
+  if (resort.pricingMode === 'jpy') {
+    return resort.taizaiJpy * room.cap;
+  }
+  return 0; // 패키지는 별도
+}
+
+// v9 — roomSelection 정규화: 항상 { roomId: { pair: N, single: M } }
+function normalizeSel(rid, sel) {
+  const norm = {};
+  buildDefaultRooms(rid).forEach(r => {
+    const v = sel[r.id];
+    if (v == null) norm[r.id] = { pair: 0, single: 0 };
+    else if (typeof v === 'number') norm[r.id] = { pair: v, single: 0 };
+    else norm[r.id] = { pair: v.pair || 0, single: v.single || 0 };
+  });
+  return norm;
+}
+
+function renderRooms() {
+  const host = document.getElementById('roomList');
+  host.innerHTML = '';
+  const resort = RESORTS[state.resort];
+  const rooms = buildDefaultRooms(state.resort);
+
+  // 회원 안내 (v10 — 회원권 복수 보유 + 자유예약 phase 반영)
+  const hintEl = document.getElementById('memberHint');
+  if (hintEl) {
+    const ms = LOGIN_USER.memberships || [];
+    const _ph = getPhase();
+    const isFree = _ph.type === 'free';
+    let breakdownHtml = '';
+    if (ms.length > 1) {
+      const parts = ms.map(m => `${m.type} ${m.maxPeople}명`).join(' + ');
+      breakdownHtml = ` <span style="color:var(--muted);font-weight:600;">(${parts})</span>`;
+    }
+    const phaseBadge = isFree
+      ? ' <span style="display:inline-block;padding:2px 8px;background:var(--ok);color:#fff;border-radius:8px;font-size:12px;font-weight:800;margin-left:4px;">자유예약 · 횟수제한 없음</span>'
+      : '';
+    hintEl.innerHTML = `회원권 기준 <strong>${LOGIN_USER.maxPeople}</strong>명까지 예약 가능합니다.${breakdownHtml}${phaseBadge}<br><span style="font-size:13px;color:var(--muted);">같은 회원권의 기명회원·지정회원 간 예약 횟수가 공유됩니다.</span>`;
+  }
+
+  state.roomSelection = normalizeSel(state.resort, state.roomSelection);
+
+  const isPkg = resort.pricingMode === 'krw_package' || resort.pricingMode === 'sugadaira_pkg';
+  const withSingle = resort.roomMode === 'with_single';
+  const maxPpl = LOGIN_USER.maxPeople;
+  const scLimit = resort.singleChargeMaxPerDay || Infinity;
+
+  // 전체 누적 카운트 (한도 검증용)
+  const totals = totalPeople();
+
+  rooms.forEach(room => {
+    const sel = state.roomSelection[room.id];
+    const pair = sel.pair, single = sel.single;
+    const usedRooms = pair + single;
+    const capText = `${room.cap}인 1실`;
+    // + 버튼 가능 여부
+    const stockLeft = room.total != null ? (room.total - usedRooms) : Infinity;
+    const pairAddable = (totals.people + room.cap <= maxPpl) && (stockLeft > 0);
+    const singleAddable = (totals.people + 1 <= maxPpl) && (stockLeft > 0) && (totals.singleCharge + 1 <= scLimit);
+    const pkgPairBlocked = isPkg && pair >= 1; // 패키지: 1실 고정
+    const finalPairDisabled = !pairAddable || pkgPairBlocked;
+    let priceHtml = '';
+    if (resort.pricingMode === 'krw_package') {
+      const krw = resort.packages[state.nights];
+      priceHtml = `<div class="room-price">${krw.toLocaleString()}원 <small>/ 1인 (항공+숙박+골프 패키지)</small></div>`;
+    } else if (resort.pricingMode === 'sugadaira_pkg') {
+      const pkg = resort.packages.find(p => p.code === state.sugadairaPkgCode);
+      priceHtml = pkg && pkg.krw
+        ? `<div class="room-price">${pkg.krw.toLocaleString()}원 <small>/ 1인 (패키지 ${pkg.code})</small></div>`
+        : `<div class="room-price" style="color:var(--warn);">요금 문의 상품</div>`;
+    } else if (resort.pricingMode === 'krw_free') {
+      const fn = state.nights || resort.freeNights.min;
+      priceHtml = `<div class="room-price">₩${resort.krwPerNightPerPerson.toLocaleString()} <small>/ 1박 1인 (트윈 기준 · 카트비 별도)</small></div>`;
+    } else {
+      // jpy/jpy_split: 1실 ≈ 1인×cap×박×환율 (대략값)
+      const taizai = resort.pricingMode === 'jpy_split' ? resort.taizaiJpyWeekday : resort.taizaiJpy;
+      const jpy = taizai * room.cap;
+      const priceMan = Math.round(jpy * state.nights * FX_JPY_KRW / 10000);
+      const weekendNote = resort.pricingMode === 'jpy_split' ? ' (주말 출발 시 추가)' : '';
+      priceHtml = `<div class="room-price">약 ${priceMan}만원 부터 <small>/ 1실 · ${state.nights}박 · 항공료 별도${weekendNote}</small></div>`;
+    }
+
+    const card = document.createElement('div');
+    card.className = 'room-card';
+    card.style.cssText = 'background:#fff;border:2px solid var(--line);border-radius:14px;padding:20px;margin-bottom:14px;';
+
+    let counterHtml = '';
+    if (withSingle) {
+      // 야마나미 골프텔: 2인 사용 + 1인 사용 (싱글차지)
+      counterHtml = `
+        <div style="display:flex;flex-direction:column;gap:14px;margin-top:10px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:#F8FAFC;border-radius:10px;">
+            <div>
+              <div style="font-weight:800;font-size:17px;">2인 사용</div>
+              <div style="color:var(--muted);font-size:13px;">2명이 1실 이용</div>
+            </div>
+            <div class="room-counter" style="display:flex;gap:8px;align-items:center;">
+              <button class="minus" data-room="${room.id}" data-mode="pair" ${pair === 0 ? 'disabled' : ''}>−</button>
+              <div class="n">${pair}<small>실</small></div>
+              <button class="plus" data-room="${room.id}" data-mode="pair" ${!pairAddable ? 'disabled' : ''}>＋</button>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:#FEF3C7;border-radius:10px;border:1px dashed #FCD34D;">
+            <div>
+              <div style="font-weight:800;font-size:17px;">1인 사용 <small style="color:#B45309;">+¥${resort.singleChargeJpy.toLocaleString()}/박/인</small></div>
+              <div style="color:var(--muted);font-size:13px;">싱글차지 — 1일 최대 ${resort.singleChargeMaxPerDay}실</div>
+            </div>
+            <div class="room-counter" style="display:flex;gap:8px;align-items:center;">
+              <button class="minus" data-room="${room.id}" data-mode="single" ${single === 0 ? 'disabled' : ''}>−</button>
+              <div class="n">${single}<small>실</small></div>
+              <button class="plus" data-room="${room.id}" data-mode="single" ${!singleAddable ? 'disabled' : ''}>＋</button>
+            </div>
+          </div>
+        </div>
+      `;
+    } else {
+      // 단일 카운터 (기본 cap 인원)
+      counterHtml = `
+        <div class="room-counter">
+          <button class="minus" data-room="${room.id}" data-mode="pair" ${pair === 0 ? 'disabled' : ''} ${isPkg ? 'disabled' : ''}>−</button>
+          <div class="n">${pair}<small>실</small></div>
+          <button class="plus" data-room="${room.id}" data-mode="pair" ${finalPairDisabled ? 'disabled' : ''}>＋</button>
+        </div>
+      `;
+    }
+
+    // 한도 도달 안내
+    let limitNote = '';
+    if (totals.people >= maxPpl) {
+      limitNote = `<div style="margin-top:10px;padding:10px;background:#FEF2F2;border:1px dashed #FCA5A5;border-radius:8px;color:#B91C1C;font-size:13px;font-weight:700;">⓵ 회원권 예약 가능 인원 ${maxPpl}명에 도달했습니다 — 추가 예약은 불가합니다</div>`;
+    } else if (stockLeft === 0) {
+      limitNote = `<div style="margin-top:10px;padding:10px;background:#FEF2F2;border:1px dashed #FCA5A5;border-radius:8px;color:#B91C1C;font-size:13px;font-weight:700;">⓵ 이 객실 잔여실을 모두 사용했습니다</div>`;
+    } else if (withSingle && totals.singleCharge >= scLimit) {
+      limitNote = `<div style="margin-top:10px;padding:10px;background:#FEF3C7;border:1px dashed #FCD34D;border-radius:8px;color:#92400E;font-size:13px;font-weight:700;">⚠ 싱글차지 1일 한도 ${scLimit}실에 도달 (1인 사용 추가 불가)</div>`;
+    }
+
+    card.innerHTML = `
+      <div class="room-head">
+        <div>
+          <div class="room-title">${room.name}</div>
+          <div class="room-cap">1실 ${capText}${room.total ? ` · 잔여 ${room.total}실` : ''}</div>
+          ${priceHtml}
+        </div>
+      </div>
+      ${counterHtml}
+      ${limitNote}
+    `;
+    host.appendChild(card);
+  });
+
+  host.querySelectorAll('.minus').forEach(b => b.onclick = () => {
+    const id = b.dataset.room, mode = b.dataset.mode;
+    state.roomSelection[id][mode] = Math.max(0, state.roomSelection[id][mode] - 1);
+    renderRooms();
+  });
+  host.querySelectorAll('.plus').forEach(b => b.onclick = () => {
+    const id = b.dataset.room, mode = b.dataset.mode;
+    state.roomSelection[id][mode] = state.roomSelection[id][mode] + 1;
+    renderRooms();
+  });
+  validateStep3();
+}
+
+function totalPeople() {
+  const rooms = buildDefaultRooms(state.resort);
+  let p = 0, r = 0, singleCharge = 0;
+  Object.entries(state.roomSelection).forEach(([id, sel]) => {
+    if (!sel || typeof sel !== 'object') return;
+    const room = rooms.find(x => x.id === id);
+    if (!room) return;
+    p += room.cap * sel.pair + sel.single;
+    r += sel.pair + sel.single;
+    singleCharge += sel.single;
+  });
+  return { people: p, rooms: r, singleCharge };
+}
+
+function validateStep3() {
+  const resort = RESORTS[state.resort];
+  const { people, rooms, singleCharge } = totalPeople();
+  const max = LOGIN_USER.maxPeople;
+  const scInfo = (resort.roomMode === 'with_single') ? ` · 싱글차지 ${singleCharge}실` : '';
+  document.getElementById('peopleTotal').textContent =
+    `총 인원 ${people}명 · 객실 ${rooms}실${scInfo} · 회원권 예약 가능 ${max}명`;
+
+  const err = document.getElementById('roomError');
+  let blocked = false;
+  err.classList.remove('show');
+  err.textContent = '';
+
+  if (people > 0 && people < 2) {
+    err.textContent = '⚠ 골프 투어는 2명 이상부터 예약 가능합니다';
+    err.classList.add('show');
+    blocked = true;
+  } else if (people > max) {
+    err.textContent = `⚠ 회원권 예약 가능 인원(${max}명)을 초과했습니다`;
+    err.classList.add('show');
+    blocked = true;
+  } else if (resort.singleChargeMaxPerDay && singleCharge > resort.singleChargeMaxPerDay) {
+    err.textContent = `⚠ 싱글차지(1인 사용)는 1일 최대 ${resort.singleChargeMaxPerDay}실까지 가능합니다`;
+    err.classList.add('show');
+    blocked = true;
+  }
+  document.getElementById('toStep4').disabled = blocked || people < 2;
+}
+
+// ============================================================
+// STEP 4 — 달력 + 요금 계산
+// ============================================================
+function isWeekendDeparture(dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dow = new Date(y, m - 1, d).getDay();
+  return dow === 5 || dow === 6;
+}
+function isWeekdayOnlyBlock(resort, dateStr) {
+  if (!resort.weekdayOnly) return false;
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dow = new Date(y, m - 1, d).getDay();
+  return dow === 5 || dow === 6 || dow === 0; // 금·토·일 막음 (월~목만 허용)
+}
+
+function computeEstimate(dateStr) {
+  const resort = RESORTS[state.resort];
+  const { people, singleCharge } = totalPeople();
+
+  if (resort.pricingMode === 'krw_package') {
+    const krwPer = resort.packages[state.nights];
+    const wonTotal = krwPer * people;
+    return {
+      mode: 'krw', useWeekend: false,
+      krwPer, wonTotal, people,
+      wonManTotal: Math.round(wonTotal / 10000),
+      wonManPer: Math.round(krwPer / 10000),
+      taizaiJpy: 0, soyouJpy: 0, singleChargeJpy: 0
+    };
+  }
+  if (resort.pricingMode === 'sugadaira_pkg') {
+    const pkg = resort.packages.find(p => p.code === state.sugadairaPkgCode);
+    if (!pkg || !pkg.krw) return { mode: 'inquiry', people };
+    const wonTotal = pkg.krw * people;
+    return {
+      mode: 'krw', useWeekend: false,
+      krwPer: pkg.krw, wonTotal, people,
+      wonManTotal: Math.round(wonTotal / 10000),
+      wonManPer: Math.round(pkg.krw / 10000),
+      taizaiJpy: 0, soyouJpy: 0, singleChargeJpy: 0
+    };
+  }
+  if (resort.pricingMode === 'krw_free') {
+    const krwPer = resort.krwPerNightPerPerson * state.nights;
+    const wonTotal = krwPer * people;
+    return {
+      mode: 'krw_free', useWeekend: false,
+      krwPer, wonTotal, people, nights: state.nights,
+      wonManTotal: Math.round(wonTotal / 10000),
+      wonManPer: Math.round(krwPer / 10000),
+      taizaiJpy: 0, soyouJpy: 0, singleChargeJpy: 0
+    };
+  }
+
+  // jpy / jpy_split — 싱글차지 별도 계산
+  const useWeekend = resort.pricingMode === 'jpy_split' && isWeekendDeparture(dateStr);
+  const taizaiPer = resort.pricingMode === 'jpy_split'
+    ? (useWeekend ? resort.taizaiJpyWeekend : resort.taizaiJpyWeekday)
+    : resort.taizaiJpy;
+  const taizaiJpy = taizaiPer * state.nights * people;
+  const singleChargeJpy = (resort.singleChargeJpy || 0) * (singleCharge || 0) * state.nights;
+  const soyouJpy = resort.soyouJpy * people;
+  const totalJpy = taizaiJpy + soyouJpy + singleChargeJpy;
+  const wonTotal = Math.round(totalJpy * FX_JPY_KRW);
+  return {
+    mode: 'jpy', useWeekend, taizaiJpy, soyouJpy, singleChargeJpy, totalJpy,
+    wonTotal, wonManTotal: Math.round(wonTotal / 10000),
+    wonManPer: people ? Math.round(wonTotal / people / 10000) : 0,
+    people
+  };
+}
+
+// v9 — 패턴 기반 출발 요일 허용 검사
+function isValidDepartureDow(resort, dateStr) {
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dow = new Date(y, m - 1, d).getDay();
+  // 자유일정 (닐라이) → 모든 요일 허용
+  if (resort.pricingMode === 'krw_free') return true;
+  // 스가다이라: 패키지의 dows 사용
+  if (resort.pricingMode === 'sugadaira_pkg') {
+    const pkg = resort.packages.find(p => p.code === state.sugadairaPkgCode);
+    return pkg && pkg.dows.includes(dow);
+  }
+  // 일반 리조트: state.startDow와 비교
+  if (state.startDow == null) return false;
+  return dow === state.startDow;
+}
+
+function renderCalendar() {
+  const resort = RESORTS[state.resort];
+  let subText = `${resort.name} · ${state.nights}박 ${state.nights+1}일`;
+  if (state.startDow != null) {
+    const dows = ['일','월','화','수','목','금','토'];
+    subText += ` · ${dows[state.startDow]}요일 출발`;
+  } else if (resort.pricingMode === 'krw_free') {
+    subText += ` · 자유 출발일`;
+  }
+  document.getElementById('calSub').textContent = subText;
+
+  const { y, m } = state.calMonth;
+  document.getElementById('calMonth').textContent = `${y}년 ${m}월`;
+  const first = new Date(y, m - 1, 1);
+  const last = new Date(y, m, 0);
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  ['일','월','화','수','목','금','토'].forEach((h, i) => {
+    const el = document.createElement('div');
+    el.className = 'cal-head' + (i === 0 ? ' sun' : i === 6 ? ' sat' : '');
+    el.textContent = h;
+    grid.appendChild(el);
+  });
+  for (let i = 0; i < first.getDay(); i++) {
+    const e = document.createElement('div');
+    e.className = 'cal-cell empty';
+    grid.appendChild(e);
+  }
+
+  for (let d = 1; d <= last.getDate(); d++) {
+    const date = new Date(y, m - 1, d);
+    const cell = document.createElement('div');
+    cell.className = 'cal-cell';
+    const dow = date.getDay();
+    if (dow === 0) cell.classList.add('dow-sun');
+    else if (dow === 6) cell.classList.add('dow-sat');
+    const today = new Date(); today.setHours(0,0,0,0);
+    const isPast = date < today;
+    const dateStr = `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const peak = isPeakDate(dateStr);
+    const holiday = isJpHoliday(dateStr);
+    const validDow = isValidDepartureDow(resort, dateStr);
+    const ubuyamaIn = isUbuyamaInRange(dateStr, state.nights || 0);
+
+    const badges = [];
+    if (holiday) badges.push(`<span class="cal-badge cal-holiday" title="${holiday}">日</span>`);
+    if (ubuyamaIn) badges.push(`<span class="cal-badge cal-ubuyama" title="우부야마 자선대회 (10/7) 라운드 불가">⚠</span>`);
+
+    if (isPast || !validDow) {
+      cell.classList.add('inactive');
+      cell.innerHTML = `${d}${badges.join('')}`;
+    } else {
+      const rooms = buildDefaultRooms(state.resort);
+      // roomSelection 정규화 후 첫 선택 룸의 잔여 검사
+      const sel = state.roomSelection || {};
+      let needRooms = 0;
+      let primaryRoomId = null;
+      Object.entries(sel).forEach(([id, v]) => {
+        const cnt = (typeof v === 'object') ? (v.pair + v.single) : v;
+        if (cnt > 0) {
+          needRooms += cnt;
+          if (!primaryRoomId) primaryRoomId = id;
+        }
+      });
+      const roomId = primaryRoomId || (rooms[0] && rooms[0].id);
+      const have = roomId ? mockRemain(state.resort, roomId, dateStr) : 0;
+      const need = Math.max(1, needRooms);
+      const canBook = have >= need;
+      const roomDef = rooms.find(x => x.id === roomId);
+      const cap = roomDef ? roomDef.total : 1;
+      const ratio = have / cap;
+      if (!canBook) cell.classList.add('full');
+      else if (ratio < 0.2) cell.classList.add('low');
+      else cell.classList.add('available');
+      if (state.date === dateStr) cell.classList.add('selected');
+      if (peak.peak) cell.classList.add('peak');
+      if (ubuyamaIn) cell.classList.add('ubuyama');
+      cell.innerHTML = `${d}${badges.join('')}<span class="rem">잔 ${have}실</span>`;
+      if (canBook) {
+        cell.onclick = () => {
+          state.date = dateStr;
+          if (ubuyamaIn) {
+            alert('🟥 우부야마 자선 골프대회 안내\n\n선택하신 일정에 2026년 10월 7일(수)이 포함되어 있습니다.\n해당 날짜는 우부야마 자선 골프대회로 라운드가 불가능하며, 쇼핑·관광 등으로 대체 운영됩니다.');
+          }
+          renderCalendar();
+          showSchedInfo();
+          showEstimate();
+          document.getElementById('toStep5').disabled = false;
+        };
+      }
+    }
+    grid.appendChild(cell);
+  }
+  if (state.date) { showSchedInfo(); showEstimate(); }
+}
+
+function showSchedInfo() {
+  const resort = RESORTS[state.resort];
+  const info = document.getElementById('schedInfo');
+  if (!state.date) { info.style.display = 'none'; return; }
+  info.style.display = 'block';
+  const [y, m, d] = state.date.split('-');
+  const dayN = ['일','월','화','수','목','금','토'][new Date(+y,+m-1,+d).getDay()];
+  document.getElementById('schedDate').textContent = `${+m}월 ${+d}일 (${dayN}) 출발 · ${state.nights}박 ${state.nights+1}일`;
+  document.getElementById('schedTime').textContent = `${resort.airport} 출발 · 항공 편명은 발권 시 안내`;
+  const peak = isPeakDate(state.date);
+  const pa = document.getElementById('peakAlert');
+  if (peak.peak) {
+    pa.style.display = 'block';
+    pa.textContent = `🎎 일본 성수기(${peak.name}) — 항공 발권이 조기에 마감될 수 있어요. 빠른 확정을 권장합니다.`;
+  } else {
+    pa.style.display = 'none';
+  }
+}
+
+function showEstimate() {
+  if (!state.date) return;
+  const box = document.getElementById('estimateBox');
+  const e = computeEstimate(state.date);
+  box.style.display = 'block';
+  if (e.mode === 'krw') {
+    document.getElementById('estAmt').innerHTML =
+      `1인 약 ${e.wonManPer.toLocaleString()}만원 <small>(${e.people}명 · 합계 ${e.wonManTotal.toLocaleString()}만원)</small>`;
+    document.getElementById('estDetail').innerHTML = `
+      <strong>원화 패키지 상품</strong> · 항공 + 숙박 + 골프 포함<br/>
+      환율 영향 없음 · 상품 금액으로 확정
+    `;
+  } else if (e.mode === 'krw_free') {
+    document.getElementById('estAmt').innerHTML =
+      `1인 약 ${e.wonManPer.toLocaleString()}만원 <small>(${e.nights}박 · ${e.people}명 · 합계 ${e.wonManTotal.toLocaleString()}만원)</small>`;
+    document.getElementById('estDetail').innerHTML = `
+      <strong>자유 일정 상품</strong> · 1박 1인당 ₩${RESORTS[state.resort].krwPerNightPerPerson.toLocaleString()} (트윈 기준)<br/>
+      <em>※ 카트비 1박당 ₩16,000/실 별도 · 홀수 인원 시 싱글룸 추가 요금 발생 가능</em>
+    `;
+  } else {
+    document.getElementById('estAmt').innerHTML =
+      `1인 약 ${e.wonManPer.toLocaleString()}만원 <small>(${e.people}명 · 합계 ${e.wonManTotal.toLocaleString()}만원)</small>`;
+    const weekendNote = e.useWeekend ? ` · <strong>주말 출발 요금 적용</strong>` : '';
+    const scNote = e.singleChargeJpy > 0 ? `+ <strong>싱글차지</strong> ${e.singleChargeJpy.toLocaleString()}엔 ` : '';
+    document.getElementById('estDetail').innerHTML = `
+      <strong>체재비</strong> ${e.taizaiJpy.toLocaleString()}엔 +
+      <strong>송영비</strong> ${e.soyouJpy.toLocaleString()}엔 ${scNote}=
+      합계 <strong>${e.totalJpy.toLocaleString()}엔</strong><br/>
+      환율 Mock 100엔 = ${(FX_JPY_KRW * 100).toLocaleString()}원 적용 · <strong>항공료 별도</strong>${weekendNote}<br/>
+      <em>※ ${FX_REFERENCE_DATE}</em>
+    `;
+  }
+  showDeposit();
+}
+
+function computeDeposit() {
+  const { people } = totalPeople();
+  const total = people * DEPOSIT_PER_PERSON;
+  return { people, perPerson: DEPOSIT_PER_PERSON, total, totalMan: Math.round(total / 10000) };
+}
+
+function showDeposit() {
+  const box = document.getElementById('depositBox');
+  if (!box) return;
+  const d = computeDeposit();
+  if (d.people <= 0) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  document.getElementById('depAmt').innerHTML =
+    `${d.totalMan.toLocaleString()}만원 <small>(${d.people}명 × 30만원)</small>`;
+  const est = computeEstimate(state.date);
+  const balance = Math.max(0, (est.wonManTotal || 0) - d.totalMan);
+  document.getElementById('depDetail').innerHTML = `
+    예약 확정을 위해 <strong>1인당 예약금 30만원</strong>을 입금해 주세요.<br/>
+    ${est.wonManTotal ? `예상 총 요금 ${est.wonManTotal.toLocaleString()}만원 중 ` : ''}예약금 <strong>${d.totalMan.toLocaleString()}만원</strong>${est.wonManTotal ? ` (잔금 약 ${balance.toLocaleString()}만원은 출발 전 정산)` : ''}
+  `;
+}
+
+// 달력 네비게이션
+document.getElementById('calPrev').onclick = () => {
+  let { y, m } = state.calMonth;
+  m--; if (m < 1) { m = 12; y--; }
+  state.calMonth = { y, m };
+  if (y < 2026 || (y === 2026 && m < 5)) state.calMonth = { y: 2026, m: 5 };
+  renderCalendar();
+};
+document.getElementById('calNext').onclick = () => {
+  let { y, m } = state.calMonth;
+  m++; if (m > 12) { m = 1; y++; }
+  state.calMonth = { y, m };
+  if (y > 2027) state.calMonth = { y: 2027, m: 12 };
+  renderCalendar();
+};
+
+// 아코디언
+function bindAccordion(btnId, bodyId) {
+  const btn = document.getElementById(btnId);
+  const body = document.getElementById(bodyId);
+  if (!btn || !body) return;
+  btn.onclick = () => {
+    const open = body.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open);
+    btn.querySelector('.caret').textContent = open ? '▲' : '▼';
+  };
+}
+bindAccordion('durInfoBtn', 'durInfoBody');
+bindAccordion('priceInfoBtn', 'priceInfoBody');
+
+// ============================================================
+// STEP NAVIGATION
+// ============================================================
+const stepTitles = {
+  0: { t: '2026 EWRC 우선예약',          s: '회원권별 사전 예약 기간입니다' },
+  1: { t: '어느 골프장으로 떠나실까요?',   s: '지역별로 살펴보세요' },
+  2: { t: '며칠간 머무르실까요?',        s: '숙박 일수를 자유롭게 선택' },
+  3: { t: '방과 인원을 정해주세요',      s: '방 종류마다 가격이 달라요' },
+  4: { t: '출발일을 달력에서 골라주세요', s: '초록색 날짜만 예약 가능합니다' },
+  5: { t: '마지막으로 확인하고 확정해 주세요', s: '로그인 정보로 예약이 진행됩니다' },
+  6: { t: '예약 완료', s: '' }
+};
+
+function goStep(n) {
+  state.step = n;
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec' + n).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const label = document.getElementById('progLabel');
+  const fill = document.getElementById('progFill');
+  if (n === 0) {
+    // v10 — phase에 따라 타이틀/라벨 동적
+    const _ph = getPhase();
+    if (_ph.type === 'free') {
+      label.textContent = '자유예약';
+      document.getElementById('pageTitle').textContent = '2026 EWRC 자유예약';
+      document.getElementById('pageSub').textContent = '횟수 제한 없이 자유롭게 예약하실 수 있습니다';
+    } else {
+      label.textContent = '우선예약';
+      document.getElementById('pageTitle').textContent = stepTitles[0].t;
+      document.getElementById('pageSub').textContent = stepTitles[0].s;
+    }
+    fill.style.width = '0%';
+  } else if (n <= 5) {
+    label.textContent = `${n} / 5 단계`;
+    fill.style.width = (n * 20) + '%';
+    document.getElementById('pageTitle').textContent = stepTitles[n].t;
+    document.getElementById('pageSub').textContent = stepTitles[n].s;
+  } else {
+    label.textContent = '완료!';
+    fill.style.width = '100%';
+    document.getElementById('pageTitle').textContent = stepTitles[n].t;
+    document.getElementById('pageSub').textContent = stepTitles[n].s;
+  }
+
+  if (n === 0) renderGate();
+  if (n === 1) renderRegions();
+  if (n === 2) renderDurations();
+  if (n === 3) renderRooms();
+  if (n === 4) renderCalendar();
+  if (n === 5) { renderSummary(); renderStep5Deposit(); validateSubmit(); }
+
+  // v11 — Step 5 진입 시 락 시작, 다른 step으로 이탈 시 락 정지
+  if (n === 5) {
+    startStep5Lock();
+  } else {
+    stopStep5Lock();
+  }
+}
+
+document.getElementById('gateCta').onclick = () => {
+  if (document.getElementById('gateCta').disabled) return;
+  goStep(1);
+};
+document.getElementById('toStep2').onclick = () => goStep(2);
+document.getElementById('toStep3').onclick = () => goStep(3);
+document.getElementById('toStep4').onclick = () => goStep(4);
+document.getElementById('toStep5').onclick = () => goStep(5);
+
+// ============================================================
+// v11 — Step 5 락 매니저 (10분 카운트다운, 만료 시 Step 4 복귀)
+// ============================================================
+const LOCK_DEFAULT_SEC = 600; // 10분
+let _lockTimer = null;
+let _lockEndsAt = 0;     // ms 시점
+let _lockTotalSec = 0;   // 시연용 락 시간 (default 600)
+let _lockExpired = false;
+
+function getDevLockSec() {
+  const el = document.getElementById('devLockSec');
+  if (!el) return LOCK_DEFAULT_SEC;
+  return parseInt(el.value, 10) || LOCK_DEFAULT_SEC;
+}
+
+function startStep5Lock() {
+  stopStep5Lock();
+  _lockTotalSec = getDevLockSec();
+  _lockEndsAt = Date.now() + _lockTotalSec * 1000;
+  _lockExpired = false;
+  // 락 바 show + body 클래스
+  const bar = document.getElementById('lockBar');
+  if (bar) bar.classList.add('show');
+  document.body.classList.add('lock-active');
+  tickStep5Lock(); // 즉시 1회 표시
+  _lockTimer = setInterval(tickStep5Lock, 250);
+  // 시작 안내 모달
+  showStartModal();
+}
+
+function stopStep5Lock() {
+  if (_lockTimer) { clearInterval(_lockTimer); _lockTimer = null; }
+  // 락 바 hide
+  const bar = document.getElementById('lockBar');
+  if (bar) {
+    bar.classList.remove('show', 'warn', 'danger');
+  }
+  document.body.classList.remove('lock-active');
+}
+
+function tickStep5Lock() {
+  const remain = Math.max(0, Math.ceil((_lockEndsAt - Date.now()) / 1000));
+  const bar  = document.getElementById('lockBar');
+  const tEl  = document.getElementById('lockTime');
+  if (!bar || !tEl) return;
+  const m = Math.floor(remain / 60);
+  const s = remain % 60;
+  tEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  // 색상 단계
+  bar.classList.remove('warn', 'danger');
+  if (remain <= 60) bar.classList.add('danger');
+  else if (remain <= 300) bar.classList.add('warn');
+  // 만료
+  if (remain <= 0 && !_lockExpired) {
+    _lockExpired = true;
+    stopStep5Lock();
+    showExpireModal();
+  }
+}
+
+// 모달 헬퍼
+function showModal({ kind, icon, title, body, actions, withPhone = true }) {
+  const mask = document.getElementById('modalMask');
+  const card = document.getElementById('modalCard');
+  card.className = 'modal-card ' + kind;
+  document.getElementById('modalIcon').textContent = icon;
+  document.getElementById('modalTitle').textContent = title;
+  const phoneHtml = withPhone
+    ? `<div class="m-phone">전화 도움이 필요하시면 <strong>02-365-9800</strong><br/>카카오톡 채널 "메리트투어"</div>`
+    : '';
+  document.getElementById('modalBody').innerHTML = body + phoneHtml;
+  const acts = document.getElementById('modalActions');
+  acts.innerHTML = '';
+  actions.forEach(a => {
+    const b = document.createElement('button');
+    b.className = 'm-btn ' + (a.cls || 'primary');
+    b.textContent = a.label;
+    b.onclick = () => { hideModal(); if (a.onClick) a.onClick(); };
+    acts.appendChild(b);
+  });
+  mask.classList.add('show');
+}
+function hideModal() {
+  document.getElementById('modalMask').classList.remove('show');
+}
+
+function showStartModal() {
+  const mins = Math.round(_lockTotalSec / 60);
+  const timeLabel = _lockTotalSec >= 60 ? `${mins}분` : `${_lockTotalSec}초`;
+  showModal({
+    kind: 'start', icon: '⏱',
+    title: `${timeLabel} 안에 예약을 완료해 주세요`,
+    body: `이 단계에서 객실이 임시로 보류됩니다.<br/>시간 안에 <strong>예약 확정하기</strong>를 눌러주세요.<br/><br/>시간이 지나면 자리가 자동으로 풀려<br/>다른 분이 예약하실 수 있게 됩니다.`,
+    actions: [{ label: '확인했어요', cls: 'ok' }]
+  });
+}
+
+function showExpireModal() {
+  showModal({
+    kind: 'expire', icon: '⌛',
+    title: '예약 보류 시간이 끝났어요',
+    body: `다른 분이 같은 자리를 예약하실 수 있도록<br/>자리가 자동으로 풀렸습니다.<br/><br/><strong>다시 날짜를 선택해 주세요.</strong>`,
+    actions: [{
+      label: '날짜 다시 고르기', cls: 'primary',
+      onClick: () => {
+        // 날짜 초기화 후 Step 4로 복귀
+        state.date = null;
+        goStep(4);
+      }
+    }]
+  });
+}
+
+function showCollisionModal() {
+  showModal({
+    kind: 'collide', icon: '😢',
+    title: '방금 다른 분이 먼저 예약하셨어요',
+    body: `같은 시간에 다른 분이 이 자리를 예약하셨습니다.<br/>다른 객실을 고르거나, 다른 날짜를 선택해 주세요.`,
+    actions: [
+      { label: '같은 날 다른 객실 보기',  cls: 'primary', onClick: () => goStep(3) },
+      { label: '다른 날짜 보기',         cls: 'ok',      onClick: () => { state.date = null; goStep(4); } },
+      { label: '닫기',                  cls: 'outline' }
+    ]
+  });
+}
+
+// 충돌 시뮬: 확정 버튼 클릭 시 결과 결정
+function simulateSubmitResult() {
+  const collideSim = document.getElementById('devCollideSim');
+  if (collideSim && collideSim.checked) {
+    // 10% 확률로 충돌
+    return Math.random() < 0.1 ? 'collide' : 'success';
+  }
+  return 'success';
+}
+
+// ============================================================
+// SUMMARY & SUBMIT
+// ============================================================
+function renderSummary() {
+  const resort = RESORTS[state.resort];
+  const rooms = buildDefaultRooms(state.resort);
+  const roomSummary = Object.entries(state.roomSelection)
+    .filter(([, v]) => {
+      if (typeof v === 'object') return v.pair > 0 || v.single > 0;
+      return v > 0;
+    })
+    .map(([id, v]) => {
+      const r = rooms.find(x => x.id === id);
+      if (!r) return '';
+      const parts = [];
+      const sel = (typeof v === 'object') ? v : { pair: v, single: 0 };
+      if (sel.pair > 0) parts.push(`${r.name} ${sel.pair}실 (${r.cap}인 사용)`);
+      if (sel.single > 0) parts.push(`${r.name} ${sel.single}실 (1인 사용·싱글차지)`);
+      return parts.join(' / ');
+    }).filter(Boolean).join(', ');
+  const { people, singleCharge } = totalPeople();
+  const [y, m, d] = state.date.split('-');
+  const dayN = ['일','월','화','수','목','금','토'][new Date(+y,+m-1,+d).getDay()];
+  const e = computeEstimate(state.date);
+  const dep = computeDeposit();
+  const peak = isPeakDate(state.date);
+  const holiday = isJpHoliday(state.date);
+  const ubuyamaIn = isUbuyamaInRange(state.date, state.nights);
+
+  const peakRow = peak.peak ? `<div class="summary-row"><span class="k">특이사항</span><span class="v" style="color:var(--peak);">🎎 일본 성수기 (${peak.name})</span></div>` : '';
+  const holidayRow = holiday ? `<div class="summary-row"><span class="k">일본 공휴일</span><span class="v" style="color:#92400E;">📅 ${holiday}</span></div>` : '';
+  const ubuyamaRow = ubuyamaIn ? `<div class="summary-row"><span class="k">⚠ 우부야마</span><span class="v" style="color:#B91C1C;">10/7 자선대회 라운드 불가 — 쇼핑·관광 대체</span></div>` : '';
+  // v10 — 회원권 복수 보유 시 합계까지 표시
+  const ms = LOGIN_USER.memberships || [];
+  let memberValueHtml;
+  if (ms.length > 1) {
+    const breakdown = ms.map(m => `${m.type} ${m.maxPeople}명`).join(' + ');
+    memberValueHtml = `${LOGIN_USER.name}<br><span style="font-size:13px;color:var(--muted);font-weight:600;">${breakdown} = 예약가능 ${LOGIN_USER.maxPeople}명</span>`;
+  } else {
+    memberValueHtml = `${LOGIN_USER.name} (${LOGIN_USER.membershipType} · 예약가능 ${LOGIN_USER.maxPeople}명)`;
+  }
+  const memberRow = `<div class="summary-row"><span class="k">회원</span><span class="v">${memberValueHtml}</span></div>`;
+  // v10 — 예약 기간 표시 (우선예약/자유예약)
+  const _phaseNow = getPhase();
+  let phaseText = '';
+  if (_phaseNow.type === 'active' && _phaseNow.round) phaseText = `${_phaseNow.round.label} 진행중`;
+  else if (_phaseNow.type === 'free') phaseText = '자유예약 기간';
+  const phaseRow = phaseText ? `<div class="summary-row"><span class="k">예약 기간</span><span class="v">${phaseText}</span></div>` : '';
+  const pkgRow = state.sugadairaPkgCode ? `<div class="summary-row"><span class="k">패키지</span><span class="v">${state.sugadairaPkgCode}</span></div>` : '';
+  const scRow = singleCharge > 0 ? `<div class="summary-row"><span class="k">싱글차지</span><span class="v">${singleCharge}실 × ¥${resort.singleChargeJpy.toLocaleString()}/박/인</span></div>` : '';
+
+  let priceLine;
+  if (e.mode === 'krw') {
+    priceLine = `<span class="v" style="color:var(--accent-deep);">1인 ${e.wonManPer}만원 <span style="color:var(--muted);font-weight:600;font-size:14px;">(합계 ${e.wonManTotal.toLocaleString()}만원 · 항공+숙박+골프 포함)</span></span>`;
+  } else if (e.mode === 'krw_free') {
+    priceLine = `<span class="v" style="color:var(--accent-deep);">1인 ${e.wonManPer}만원 <span style="color:var(--muted);font-weight:600;font-size:14px;">(합계 ${e.wonManTotal.toLocaleString()}만원 · ${e.nights}박 · 자유일정)</span></span>`;
+  } else {
+    priceLine = `<span class="v" style="color:var(--accent-deep);">1인 약 ${e.wonManPer}만원 <span style="color:var(--muted);font-weight:600;font-size:14px;">(합계 약 ${e.wonManTotal.toLocaleString()}만원 · 항공료 별도)</span></span>`;
+  }
+
+  const html = `
+    ${memberRow}
+    ${phaseRow}
+    <div class="summary-row"><span class="k">골프장</span><span class="v">${resort.name}</span></div>
+    ${pkgRow}
+    <div class="summary-row"><span class="k">기간</span><span class="v">${state.nights}박 ${state.nights+1}일</span></div>
+    <div class="summary-row"><span class="k">출발일</span><span class="v">${+m}월 ${+d}일 (${dayN})</span></div>
+    <div class="summary-row"><span class="k">출발 공항</span><span class="v">${resort.airport} (항공 편명은 발권 시 안내)</span></div>
+    <div class="summary-row"><span class="k">객실</span><span class="v">${roomSummary}</span></div>
+    <div class="summary-row"><span class="k">총 인원</span><span class="v">${people}명</span></div>
+    ${scRow}
+    <div class="summary-row"><span class="k">예상 요금</span>${priceLine}</div>
+    <div class="summary-row"><span class="k">예약금</span><span class="v" style="color:#166534;">${dep.totalMan.toLocaleString()}만원 (1인 30만원 × ${dep.people}명 · 7일 이내 입금)</span></div>
+    ${peakRow}
+    ${holidayRow}
+    ${ubuyamaRow}
+  `;
+  document.getElementById('summaryAll').innerHTML = html;
+}
+
+// 로그인 배너
+function initLoginBanner() {
+  const banner = document.getElementById('loginWho');
+  const avatar = document.getElementById('loginAvatar');
+  if (!banner) return;
+  banner.textContent = `${LOGIN_USER.name} 회원님`;
+  avatar.textContent = LOGIN_USER.name.charAt(0);
+  const sub = document.getElementById('loginSub');
+  if (sub) {
+    sub.textContent = LOGIN_USER.role === 'designated'
+      ? `지정회원 로그인 · 같은 회원권의 예약 횟수를 공유합니다`
+      : `로그인 세션으로 예약을 진행합니다`;
+  }
+}
+
+function renderStep5Deposit() {
+  if (!state.date) return;
+  const dep = computeDeposit();
+  const est = computeEstimate(state.date);
+  const amt = document.getElementById('step5DepAmt');
+  const detail = document.getElementById('step5DepDetail');
+  amt.innerHTML = `${dep.totalMan.toLocaleString()}만원 <small>(${dep.people}명 × 30만원)</small>`;
+  const balance = Math.max(0, (est.wonManTotal || 0) - dep.totalMan);
+  detail.innerHTML = `
+    예약 확정을 위해 <strong>1인당 예약금 30만원</strong>을 예약일 기준 7일 이내 입금해 주세요.<br/>
+    ${est.wonManTotal ? `예상 총 요금 ${est.wonManTotal.toLocaleString()}만원 중 ` : ''}예약금 <strong>${dep.totalMan.toLocaleString()}만원</strong>${est.wonManTotal ? ` (잔금 약 ${balance.toLocaleString()}만원은 출발 전 정산)` : ''}
+  `;
+  const btn = document.getElementById('submitBtn');
+  if (btn) btn.textContent = '예약 확정하기';
+}
+
+// 동의 아코디언
+document.querySelectorAll('#sec5 .consent-head .toggle').forEach(btn => {
+  btn.onclick = e => {
+    e.stopPropagation();
+    const target = document.getElementById(btn.dataset.target);
+    const open = target.classList.toggle('open');
+    btn.textContent = open ? '접기 ▲' : '보기 ▼';
+    btn.setAttribute('aria-expanded', open);
+  };
+});
+
+function bindConsent(id, key) {
+  const cb = document.getElementById(id);
+  cb.onchange = e => { state[key] = e.target.checked; validateSubmit(); };
+  const item = cb.closest('.consent-item');
+  item.querySelector('.consent-head').addEventListener('click', e => {
+    if (e.target === cb || e.target.classList.contains('toggle')) return;
+    cb.checked = !cb.checked;
+    state[key] = cb.checked;
+    validateSubmit();
+  });
+}
+bindConsent('agreePrivacy', 'agreePrivacy');
+bindConsent('agreeTerms', 'agreeTerms');
+bindConsent('agreeMarketing', 'agreeMarketing');
+
+function validateSubmit() {
+  const ok = state.agreePrivacy && state.agreeTerms;
+  const btn = document.getElementById('submitBtn');
+  const hint = document.getElementById('submitHint');
+  if (!btn) return;
+  if (ok) {
+    btn.classList.remove('disabled');
+    hint.classList.remove('warn');
+    hint.textContent = '누르면 예약이 접수되고 예약금 입금 안내를 받게 됩니다';
+  } else {
+    btn.classList.add('disabled');
+    hint.classList.remove('warn');
+    hint.textContent = '필수 동의 2개를 체크하시면 확정할 수 있어요';
+  }
+}
+
+function nudgeToFirstUnchecked() {
+  const order = [
+    { id: 'consentPrivacy', key: 'agreePrivacy' },
+    { id: 'consentTerms',   key: 'agreeTerms' }
+  ];
+  const target = order.find(o => !state[o.key]);
+  if (!target) return;
+  const el = document.getElementById(target.id);
+  const hint = document.getElementById('submitHint');
+  hint.textContent = '아래 필수 항목에 동의해 주세요';
+  hint.classList.add('warn');
+  try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch(e) {}
+  el.classList.remove('highlight');
+  void el.offsetWidth;
+  el.classList.add('highlight');
+  setTimeout(() => el.classList.remove('highlight'), 1200);
+}
+
+document.getElementById('submitBtn').onclick = async () => {
+  const btn = document.getElementById('submitBtn');
+  if (btn.classList.contains('disabled')) {
+    nudgeToFirstUnchecked();
+    return;
+  }
+  // 락이 이미 만료되었다면 진행 중단
+  if (_lockExpired) {
+    showExpireModal();
+    return;
+  }
+
+  // v11 — 처리중 오버레이 표시
+  const overlay = document.getElementById('submitOverlay');
+  overlay.classList.add('show');
+  // 1.5초 처리 시뮬레이션
+  await new Promise(r => setTimeout(r, 1500));
+
+  // 충돌 시뮬 결과 결정
+  const result = simulateSubmitResult();
+  overlay.classList.remove('show');
+  if (result === 'collide') {
+    // 충돌 발생 → 모달, 락은 풀림
+    stopStep5Lock();
+    showCollisionModal();
+    return;
+  }
+
+  // 성공 — 락 해제
+  stopStep5Lock();
+
+  const e = computeEstimate(state.date);
+  const dep = computeDeposit();
+  const payload = {
+    memberId: LOGIN_USER.memberId,
+    memberName: LOGIN_USER.name,
+    memberRole: LOGIN_USER.role,
+    groupCode: LOGIN_USER.groupCode, // 내부 전달용 (응답 화면에는 표시 안 함)
+    resort: RESORTS[state.resort].name,
+    pricingMode: RESORTS[state.resort].pricingMode,
+    sugadairaPkgCode: state.sugadairaPkgCode,
+    nights: state.nights, date: state.date,
+    rooms: state.roomSelection, people: totalPeople().people,
+    estWonMan: e.wonManTotal, depositWon: dep.total,
+    peak: isPeakDate(state.date),
+    agreePrivacy: state.agreePrivacy, agreeTerms: state.agreeTerms, agreeMarketing: state.agreeMarketing,
+    submitted_at: new Date().toISOString()
+  };
+  console.log('[MERITTOUR 예약 확정 v11]', payload);
+  const no = 'MT26' + String(Date.now()).slice(-6);
+  document.getElementById('confirmNo').textContent = no;
+  document.getElementById('confirmAll').innerHTML = document.getElementById('summaryAll').innerHTML;
+
+  document.querySelector('#sec6 .confirm-title').textContent = '예약이 접수되었습니다';
+  document.querySelector('#sec6 .confirm-desc').innerHTML =
+    '예약금 입금 확인 후 <strong>최종 확정</strong>됩니다.<br/>24시간 이내 담당자가 안내드립니다.';
+
+  const dBox = document.getElementById('confirmDeposit');
+  if (dBox) {
+    dBox.innerHTML = `
+      <div class="lbl">📥 예약 확정 예약금 입금 안내</div>
+      <div class="amt">${dep.totalMan.toLocaleString()}만원 <small>(${dep.people}명 × 30만원)</small></div>
+      <div class="detail">예약일 기준 7일 이내에 아래 계좌로 입금해 주셔야 예약이 최종 확정됩니다.</div>
+      <div class="bank">
+        KEB하나은행 <strong>109-890042-62004</strong>
+        <small>예금주: 주식회사 메리트투어</small>
+      </div>
+      <div class="kakao-confirm-note">
+        💬 입금 후 <strong>카카오톡 채널 '메리트투어'</strong>로 알려주시면 빠르게 확인해 드립니다<br/>
+        <small>(예약번호 ${no} 알려주시면 더 빠르게 확인됩니다)</small>
+      </div>
+    `;
+  }
+  goStep(6);
+};
+
+function restart() {
+  Object.assign(state, {
+    step: 0, resort: null, patternIdx: null, nights: null, startDow: null, freeNights: null,
+    roomSelection: {},
+    calMonth: { y: 2026, m: 5 }, date: null, sugadairaPkgCode: null,
+    agreePrivacy: false, agreeTerms: false, agreeMarketing: false
+  });
+  ['agreePrivacy','agreeTerms','agreeMarketing'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.checked = false;
+  });
+  document.querySelectorAll('#sec5 .consent-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('#sec5 .consent-head .toggle').forEach(t => {
+    t.textContent = '보기 ▼'; t.setAttribute('aria-expanded', 'false');
+  });
+  validateSubmit();
+  goStep(0);
+}
+
+// ============================================================
+// DEV 토글 (시간/로그인 시뮬레이션)
+// ============================================================
+// v9.1 — 시뮬레이션 시간 앵커: 선택 시점부터 실제 시간이 흐름
+document.getElementById('devTime').onchange = e => {
+  const v = e.target.value;
+  _devTimeOverride = null; // anchor 방식 사용
+  if (v) {
+    _devTimeAnchor = { simulated: new Date(v), real: Date.now() };
+  } else {
+    _devTimeAnchor = null;
+  }
+  renderGate();
+};
+document.getElementById('devLogin').onchange = e => {
+  LOGIN_USER = LOGIN_USERS[e.target.value];
+  refreshLoginUserDerived(); // v10 — memberships[] 합산 재계산
+  initLoginBanner();
+  renderGate();
+};
+document.getElementById('problemCallBtn').onclick = () => {
+  alert('02-365-9800 · 카카오톡 채널 "메리트투어"로 연결하실 수 있습니다.');
+};
+
+// 전화 문의 CTA (스가다이라 카톡 연결용)
+
+// ============================================================
+// INIT
+// ============================================================
+initLoginBanner();
+renderGate();
+startGateTimer();
+</script>
+</body>
+</html>
