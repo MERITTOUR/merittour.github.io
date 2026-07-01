@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<meta name="description" content="메리트투어 예약 확정서 — 모바일 확정서 예시 (프로토타입)">
+<title>예약 확정서 | MERITTOUR</title>
+<style>
+  /* ============================================================
+     확정서 모바일 뷰 — 단독 문서 페이지
+     (정보 100% 보존 + 자동 접힘 · 동일 일정 병합 · 결제 현황)
+     ※ 데모 데이터: 야마나미CC 골프투어 7박 8일
+     ============================================================ */
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Malgun Gothic', '맑은 고딕', 'Noto Sans KR', sans-serif;
+    background: #e9e7e0;
+    color: #2a2a28;
+    line-height: 1.55;
+    padding: 18px 12px 60px;
+  }
+  .proto-watermark {
+    position: fixed; top: 8px; right: 8px; z-index: 100;
+    background: rgba(220, 38, 38, 0.92); color: #fff;
+    padding: 5px 12px; border-radius: 999px;
+    font-size: 11px; font-weight: 800; letter-spacing: 0.6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    pointer-events: none;
+  }
+
+  .doc {
+    max-width: 480px; margin: 0 auto;
+    background: #ffffff; border: 1px solid #d6d3ca; border-radius: 12px;
+    overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+    font-size: 14px;
+  }
+
+  .proto-note {
+    background: #FEF3C7; border-bottom: 1px dashed #FCD34D; color: #92400E;
+    padding: 10px 14px; font-size: 12.5px; font-weight: 700; text-align: center;
+  }
+
+  .doc-header {
+    background: #ffffff; padding: 18px 16px 14px; border-bottom: 2px solid #2a2a28;
+  }
+  .doc-logo { font-size: 16px; font-weight: 800; letter-spacing: 1px; color: #1a2942; margin-bottom: 3px; }
+  .doc-contact { font-size: 11px; color: #6b6862; line-height: 1.5; }
+  .doc-title {
+    text-align: center; font-size: 19px; font-weight: 800; letter-spacing: 10px;
+    margin: 16px 0 6px; color: #1a1a1a; text-decoration: underline; text-underline-offset: 5px;
+  }
+
+  .section-title {
+    font-size: 13.5px; font-weight: 800; color: #1a1a1a;
+    padding: 12px 16px 7px; background: #ffffff; border-top: 1px solid #e6e3d9;
+  }
+  .section-title.collapsible {
+    cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+    user-select: none; padding: 14px 16px; background: #f5f4ef; border-bottom: 1px solid #e6e3d9;
+  }
+  .section-title.collapsible:hover { background: #ebe8de; }
+  .section-title.collapsible .arrow { color: #888; font-size: 11px; font-weight: 400; transition: transform 0.2s; }
+  .section-title.collapsible.open .arrow { transform: rotate(180deg); }
+  .section-content { display: none; background: #ffffff; }
+  .section-title.collapsible.open + .section-content { display: block; }
+
+  .info-block { padding: 12px 16px; font-size: 12.5px; line-height: 1.65; color: #2a2a28; }
+  .info-block + .info-block { border-top: 1px solid #f0eee8; }
+  .info-block .block-title { font-weight: 700; color: #1a1a1a; margin-bottom: 5px; font-size: 12.5px; }
+  .info-block .block-note { color: #993c1d; font-size: 11.5px; margin-top: 5px; }
+  .info-block ul { list-style: none; padding: 0; margin: 5px 0; }
+  .info-block li { padding: 1px 0; color: #444; }
+  .info-block li::before { content: "· "; color: #888; }
+  .info-block .indent { padding-left: 8px; color: #555; font-size: 12px; }
+  .info-block a { color: #1a4d8f; word-break: break-all; text-decoration: underline; }
+
+  table.doc-table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: #fff; }
+  table.doc-table td { border: 1px solid #d6d3ca; padding: 8px 10px; vertical-align: middle; }
+  table.doc-table td.label { background: #f5f4ef; width: 26%; text-align: center; color: #444; font-weight: 500; }
+
+  .meal-row { display: flex; gap: 6px; font-size: 11.5px; color: #555; }
+  .meal-row span { flex: 1; }
+
+  .accordion { background: #fff; }
+  .accordion-item { border-bottom: 1px solid #e6e3d9; }
+  .accordion-item:last-child { border-bottom: none; }
+  .accordion-header {
+    padding: 12px 16px; background: #fafaf6; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12.5px; font-weight: 700; color: #1a1a1a; user-select: none;
+  }
+  .accordion-header:hover { background: #f0eee8; }
+  .accordion-header .day-num { color: #1a2942; font-weight: 800; margin-right: 8px; }
+  .accordion-header .summary { color: #6b6862; font-weight: 400; font-size: 11.5px; margin-left: 6px; }
+  .accordion-header .arrow { transition: transform 0.2s; color: #888; font-size: 11px; }
+  .accordion-item.open .arrow { transform: rotate(180deg); }
+  .accordion-body { display: none; background: #ffffff; }
+  .accordion-item.open .accordion-body { display: block; }
+  .accordion-body table td { padding: 6px 9px; }
+
+  /* 결제 현황 */
+  .payment-section { padding: 10px 16px 12px; }
+  .payment-card { background: #fff; border: 1px solid #d6d3ca; border-radius: 8px; overflow: hidden; }
+  .payment-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; font-size: 12.5px; border-bottom: 1px solid #f0eee8;
+  }
+  .payment-row:last-child { border-bottom: none; }
+  .payment-row .label-text { color: #6b6862; }
+  .payment-row .value-text { color: #1a1a1a; font-weight: 700; }
+  .payment-row.total { background: #fafaf6; padding: 12px 14px; }
+  .payment-row.total .label-text { color: #1a1a1a; font-weight: 700; font-size: 13.5px; }
+  .payment-row.total .value-text { color: #1a2942; font-weight: 800; font-size: 14.5px; }
+  .payment-row.balance { background: #fdf4ec; padding: 13px 14px; border-top: 1px solid #e8d9b0; }
+  .payment-row.balance .label-text { color: #854f0b; font-weight: 700; font-size: 13.5px; }
+  .payment-row.balance .value-text { color: #993c1d; font-weight: 800; font-size: 16px; }
+  .payment-deadline {
+    font-size: 11.5px; color: #6b6862; padding: 8px 14px 10px;
+    background: #fafaf6; text-align: center; border-top: 1px solid #f0eee8;
+  }
+  .payment-deadline strong { color: #993c1d; }
+  .bank-line {
+    margin: 10px 16px 0; padding: 12px 14px; background: #f0f7f3;
+    border: 1px solid #9fd9c1; border-radius: 8px; font-size: 12.5px; color: #0f5040;
+  }
+  .bank-line strong { color: #0a3d62; }
+  .kakao-line {
+    margin: 8px 16px 14px; padding: 12px 14px; background: #FEF9C3;
+    border: 1px solid #FDE047; border-radius: 8px; font-size: 12.5px; color: #713F12; font-weight: 700;
+  }
+
+  .doc-footer { padding: 16px; text-align: center; font-size: 11.5px; color: #888; border-top: 1px solid #e6e3d9; }
+
+  .back-bar { max-width: 480px; margin: 0 auto 14px; }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 16px; background: #fff; border: 1px solid #c9c5ba; border-radius: 999px;
+    font-size: 13px; font-weight: 700; color: #1a2942; text-decoration: none;
+  }
+  .back-link:hover { background: #f0eee8; }
+</style>
+</head>
+<body>
+<div class="proto-watermark">PROTOTYPE · 시연용</div>
+
+<div class="back-bar"><a class="back-link" href="../">← 예약으로 돌아가기</a></div>
+
+<div class="doc">
+  <div class="proto-note">⚙ 이 화면은 시연용 확정서 예시입니다 — 데모 데이터(야마나미CC 7박 8일)</div>
+
+  <div class="doc-header">
+    <div class="doc-logo">MERITTOUR</div>
+    <div class="doc-contact">TEL : 02-365-9800 · 카카오톡 채널 '메리트투어'<br>https://www.merittour.co.kr</div>
+  </div>
+  <div class="doc-title">확 정 서</div>
+
+  <!-- 여행정보 -->
+  <div class="section-title">▶ 여행정보</div>
+  <table class="doc-table">
+    <tr><td class="label">상품명</td><td>[7박 8일] 야마나미CC 골프투어</td></tr>
+    <tr><td class="label">여행기간</td><td>2026.06.03 ~ 2026.06.10</td></tr>
+    <tr><td class="label">고객명/인원</td><td>김동선 님 / 2명</td></tr>
+  </table>
+
+  <!-- 요금안내 + 결제 현황 -->
+  <div class="section-title">▶ 요금안내</div>
+  <table class="doc-table">
+    <tr><td class="label">판매요금</td><td>투어비(항공료 34만원 포함)<br>성인 1,477,800원 × 2명</td></tr>
+    <tr><td class="label">총합계</td><td><strong style="color:#1a2942;">2,955,600원</strong></td></tr>
+  </table>
+  <div class="payment-section">
+    <div class="payment-card">
+      <div class="payment-row total"><span class="label-text">총 합계</span><span class="value-text">2,955,600원</span></div>
+      <div class="payment-row"><span class="label-text">예약금 (입금완료)</span><span class="value-text" style="color:#0f6e56;">600,000원</span></div>
+      <div class="payment-row balance"><span class="label-text">잔금</span><span class="value-text">2,355,600원</span></div>
+      <div class="payment-deadline">납부 기한: <strong>2026.05.04</strong> (출발 30일 전)</div>
+    </div>
+  </div>
+  <div class="bank-line">입금 계좌 : KEB하나은행 <strong>109-890042-62004</strong> (주)메리트투어</div>
+  <div class="kakao-line">💬 입금 후 카카오톡 채널 '메리트투어'로 알려주시면 빠르게 확인해 드립니다</div>
+
+  <!-- 상품정보 -->
+  <div class="section-title collapsible" onclick="toggleSec(this)">
+    <span>▶ 상품정보</span><span class="arrow">▼</span>
+  </div>
+  <div class="section-content">
+    <div class="info-block">
+      <div class="block-title">■ 포함 사항</div>
+      <ul>
+        <li>항공료 (유류할증료 및 제세공과금 포함)</li>
+        <li>지상비 (숙박비, 라운딩비, 식사 포함)</li>
+        <li>왕복 송영 서비스</li>
+        <li><strong>회원 관리비 ₩50,000</strong> (여행자보험 가입 포함)</li>
+      </ul>
+    </div>
+    <div class="info-block">
+      <div class="block-title">■ 불포함 사항</div>
+      <ul><li>개인경비</li></ul>
+    </div>
+    <div class="info-block">
+      <div class="block-title">■ 추가 비용 안내</div>
+      <div class="indent">※ 아래 금액은 현지 엔화(JPY) 결제입니다.</div>
+      <div class="indent">싱글/단독 사용: 1인/1박 당 ¥2,200 추가</div>
+      <div class="block-note">※ 선택 또는 인원 조건에 해당하는 경우에만 비용이 발생합니다.</div>
+    </div>
+    <div class="info-block">
+      <div class="block-title">■ 사전 신청 항목 (출발일 기준 3일 전까지 신청)</div>
+      <div class="indent">전기카트 사전 예약: 1박 1대 ¥2,000 추가</div>
+      <div class="indent">저녁식사 특별 메뉴 (바베큐, 후나모리 특선회 등)</div>
+    </div>
+    <div class="info-block">
+      <div class="block-title">■ 항공 수하물 안내</div>
+      <div>수하물 허용량은 이용 항공사 및 발권 조건에 따릅니다. (당사 단체 운임 기준)</div>
+      <div class="indent" style="margin-top:4px;">[이스타항공]<br>· 위탁수하물 20kg 기준 (골프백 포함)<br>· 기내수하물 10kg 1개</div>
+      <div class="block-note">※ 항공권을 개별적으로 구매하신 경우 반드시 해당 항공사 수하물 규정을 사전에 확인해주시기 바랍니다.</div>
+    </div>
+    <div class="info-block">
+      <div class="block-title">■ 일본 입국 안내</div>
+      <div>일본 입국 시 Visit Japan Web 사전 등록을 권장드립니다.<br>공식 사이트: <a href="https://www.vjw.digital.go.jp/">https://www.vjw.digital.go.jp/</a></div>
+      <div class="block-note">사전 등록을 하지 않으신 경우에도 입국은 가능하며, 일본 도착 공항에서 종이 신고서 작성이 가능합니다.</div>
+    </div>
+    <div class="info-block">
+      <div class="block-title">■ 일본 입국 신고용 숙소 정보</div>
+      <div class="indent">ASO YAMANAMI RESORT HOTEL GOLF CLUB<br>우편번호: 869-2702<br>주소: 630 Ori, Ubuyama, Aso District, Kumamoto<br>전화: +81-967-25-2331</div>
+    </div>
+  </div>
+
+  <!-- 항공정보 -->
+  <div class="section-title collapsible" onclick="toggleSec(this)">
+    <span>▶ 항공정보</span><span class="arrow">▼</span>
+  </div>
+  <div class="section-content">
+    <table class="doc-table">
+      <tr><td class="label">항공사</td><td>이스타항공</td></tr>
+      <tr><td class="label">가는 편</td><td>ZE967 / 06.03 (수)<br>PUS 12:30 → KMJ 13:50</td></tr>
+      <tr><td class="label">오는 편</td><td>ZE968 / 06.10 (수)<br>KMJ 14:50 → PUS 15:55</td></tr>
+    </table>
+  </div>
+
+  <!-- 숙박정보 -->
+  <div class="section-title collapsible" onclick="toggleSec(this)">
+    <span>▶ 숙박정보</span><span class="arrow">▼</span>
+  </div>
+  <div class="section-content">
+    <table class="doc-table">
+      <tr><td class="label">호텔명</td><td>아소 야마나미 골프텔</td></tr>
+      <tr><td class="label">체크인</td><td>2026.06.03</td></tr>
+      <tr><td class="label">체크아웃</td><td>2026.06.10</td></tr>
+      <tr><td class="label">박수/방수</td><td>7박 / 1실</td></tr>
+    </table>
+  </div>
+
+  <!-- 상세일정 (아코디언) -->
+  <div class="section-title">▶ 상세일정 (탭하여 펼치기)</div>
+  <div class="accordion">
+    <div class="accordion-item open">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div><span class="day-num">1일차</span>06.03 (수)<span class="summary">출국 · 도착</span></div>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        <table class="doc-table">
+          <tr><td class="label">부산/김해</td><td>김해공항 2층, 이스타항공 카운터 개별수속</td></tr>
+          <tr><td class="label">구마모토</td><td>구마모토공항 도착, 야마나미리조트 도착</td></tr>
+          <tr><td class="label">호텔</td><td>아소 야마나미 골프텔</td></tr>
+          <tr><td class="label">식사</td><td><div class="meal-row"><span>조식 -</span><span>중식 -</span><span>석식 호텔식</span></div></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="accordion-item">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div><span class="day-num">2~7일차</span>06.04 (목) ~ 06.09 (화)<span class="summary">6일간 라운딩 · 호텔식 (동일 일정)</span></div>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        <div class="info-block" style="background:#f0f7f3;border-bottom:1px solid #9fd9c1;color:#0f5040;font-weight:700;">
+          🔁 2~7일차는 일정이 동일하여 하나로 묶어 표시합니다 (6일간 동일)
+        </div>
+        <table class="doc-table">
+          <tr><td class="label">구마모토</td><td>아침식사 후 라운딩 / 골프 후 휴식</td></tr>
+          <tr><td class="label">골프장</td><td>아소 야마나미CC<br>(주중 18홀+9홀 · 주말 18홀)</td></tr>
+          <tr><td class="label">호텔</td><td>아소 야마나미 골프텔</td></tr>
+          <tr><td class="label">식사</td><td><div class="meal-row"><span>조식 호텔식</span><span>중식 클럽식</span><span>석식 호텔식</span></div></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="accordion-item open">
+      <div class="accordion-header" onclick="toggleAcc(this)">
+        <div><span class="day-num">8일차</span>06.10 (수)<span class="summary">9홀 후 귀국</span></div>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="accordion-body">
+        <table class="doc-table">
+          <tr><td class="label">구마모토</td><td>체크아웃 후 9홀 라운딩, 구마모토 공항 이동</td></tr>
+          <tr><td class="label">부산/김해</td><td>김해국제공항 도착</td></tr>
+          <tr><td class="label">식사</td><td><div class="meal-row"><span>조식 호텔식</span><span>중식 클럽식</span><span>석식 -</span></div></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 미팅 장소 -->
+  <div class="section-title collapsible" onclick="toggleSec(this)">
+    <span>▶ 미팅 장소 및 시간</span><span class="arrow">▼</span>
+  </div>
+  <div class="section-content">
+    <div class="info-block">
+      구마모토 공항 도착 후 입국심사와 세관 절차를 마치고 수하물을 찾으신 뒤, 도착 출구는 한 곳이므로 출구로 나오시면 <strong>"야마나미"</strong> 피켓을 든 현지 직원이 대기하고 있습니다.
+    </div>
+  </div>
+
+  <!-- 취소 및 환불 -->
+  <div class="section-title collapsible" onclick="toggleSec(this)">
+    <span>▶ 취소 및 환불 정보</span><span class="arrow">▼</span>
+  </div>
+  <div class="section-content">
+    <div class="info-block">
+      <div class="block-note">※ 천재지변(우천, 폭설 등) 또는 골프장 사정으로 인해 라운드 진행이 불가능한 경우, 환불되지 않으며 대체 프로그램으로 진행됩니다.<br>(리조트 ↔ 대체 장소 간 왕복 차량은 무상 제공이며 이외 비용은 개인 부담입니다.)</div>
+    </div>
+    <div class="info-block">
+      <div class="block-title">[취소 수수료 안내]</div>
+      <div class="indent">출발 30일 전까지(~30일): 계약금 전액 환급</div>
+      <div class="indent">출발 20일 전까지(29~20일): 여행요금의 10% 배상</div>
+      <div class="indent">출발 10일 전까지(19~10일): 여행요금의 15% 배상</div>
+      <div class="indent">출발 8일 전까지(9~8일): 여행요금의 20% 배상</div>
+      <div class="indent">출발 1일 전까지(7~1일): 여행요금의 30% 배상</div>
+      <div class="indent">출발 당일: 여행요금의 50% 배상</div>
+      <div class="block-note">(No-show의 경우, 왕복 항공권은 전액 환불 불가)</div>
+    </div>
+  </div>
+
+  <div class="doc-footer">
+    <strong>메리트투어 (MERITTOUR)</strong><br>
+    서울특별시 · 02-365-9800 · 카카오톡 채널 '메리트투어'<br>
+    © 2026 MERITTOUR
+  </div>
+</div>
+
+<script>
+function toggleAcc(el) { el.parentElement.classList.toggle('open'); }
+function toggleSec(el) { el.classList.toggle('open'); }
+</script>
+</body>
+</html>
