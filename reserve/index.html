@@ -268,6 +268,15 @@
                    · 회원권 예약가능 인원보다 큰 옵션은 비활성 (maxPeople < 4면 4인 잠김)
                    · 캘린더 마감 판정: 고른 트윈 수(2인=1실·4인=2실)만큼만 필요
                    · MOCK 데모/시연 안내를 트윈 전용 케이스로 정리
+          · v13.38 — 메리트투어 브랜드톤 + 리조트 마스터 동기화:
+                   · 팔레트를 회사소개(/about/) 기준으로: 딥 네이비 #1a2740 + 브랜드 골드 #a67c3c
+                     + 뮤트 블루그레이, 배경 #f7f8fa, Pretendard 폰트
+                   · merittour-tools 대시보드 RESORT_DEFAULTS(리조트 마스터)를 단일 소스로 참조
+                   · 룸 보유수 마스터 반영: 야마나미 트윈 100 / 간지 15 / 시즈 7 / 아키바 15
+                     / 무츠키 4 / 시로사토·후쿠로다 20(인천 단일) / 미야자키 10 / 스가다이라 온천 35 / 닐라이 50
+                   · 포틴힐즈 카라반 9→6(마스터), 시로사토·후쿠로다 서울/부산→인천 단일
+                   · ⚠ 손님 판매가(taizaiJpy)는 유지 — 마스터 stay는 현지정산단가(B2B)라 손님가와 다름
+                     (간지·시즈 손님가 17,000 유지). ※쿠주힐즈·미야자키 시내호텔은 손님 판매가 확정 후 추가 예정
      v11 — Step 5 락 + 10분 카운트다운 + 충돌 시뮬레이션 (시연용)
           · Step 5 진입 시 자동 카운트다운 시작 (sticky bar)
           · 만료 시 Step 4 자동 복귀 + 날짜 초기화
@@ -2251,7 +2260,7 @@ const RESORTS = {
     roomMode: 'fixed_twin',
     partySizes: [2, 4],
     rooms: [
-      { id: 'twin', name: '트윈', cap: 2, total: 90 }
+      { id: 'twin', name: '트윈', cap: 2, total: 100 }
     ]
   },
 
@@ -2331,7 +2340,7 @@ const RESORTS = {
     ],
     airport: '인천 / 김해',
     roomMode: 'single',
-    rooms: [{ id: 'std', name: '표준 객실', cap: 2, total: 30 }]
+    rooms: [{ id: 'std', name: '표준 객실', cap: 2, total: 15 }]
   },
   shizunoyado: {
     name: '시즈노야도 료칸', icon: '🍵', variant: 'v3',
@@ -2346,7 +2355,7 @@ const RESORTS = {
     ],
     airport: '인천 / 김해',
     roomMode: 'single',
-    rooms: [{ id: 'std', name: '일본식 객실', cap: 2, total: 14 }]
+    rooms: [{ id: 'std', name: '일본식 객실', cap: 2, total: 7 }]
   },
 
   // ====== 나고야 ======
@@ -2366,7 +2375,7 @@ const RESORTS = {
     rooms: [
       { id: 'hotel_twin',   name: '호텔 트윈',    cap: 2, total: 13 },
       { id: 'hotel_family', name: '호텔 패밀리룸', cap: 4, total: 19, desc: '4인 1실 (가족·소그룹)' },
-      { id: 'caravan_twin', name: '카라반 트윈',  cap: 2, total: 9,  desc: '카라반형 트윈' }
+      { id: 'caravan_twin', name: '카라반 트윈',  cap: 2, total: 6,  desc: '카라반형 트윈' }
     ]
   },
 
@@ -2382,7 +2391,7 @@ const RESORTS = {
     ],
     airport: '인천 / 대구 / 김해',
     roomMode: 'single',
-    rooms: [{ id: 'std', name: '표준 객실', cap: 2, total: 30 }],
+    rooms: [{ id: 'std', name: '표준 객실', cap: 2, total: 15 }],
     note: '석식은 포함되어 있지 않습니다.'
   },
   mutsuki: {
@@ -2396,7 +2405,7 @@ const RESORTS = {
     ],
     airport: '인천',
     roomMode: 'single',
-    rooms: [{ id: 'std', name: '료칸 객실', cap: 2, total: 12 }]
+    rooms: [{ id: 'std', name: '료칸 객실', cap: 2, total: 4 }]
   },
 
   // ====== 이바라키 — 서울/부산 분리 ======
@@ -2405,18 +2414,20 @@ const RESORTS = {
     meta: '시로사토CC · 주중 18+9, 주말·공휴일 18', regionId: 'ibaraki',
     pricingMode: 'jpy', taizaiJpy: 16000, soyouJpy: 12000,
     patterns: [{ nights: 6, dow: 0, label: '6박 7일', dowLabel: '일요일 출발' }],
-    departures: ['서울', '부산'],
+    departures: ['서울'],
+    airport: '인천',
     roomMode: 'single',
-    rooms: [{ id: 'std', name: '트윈 객실', cap: 2, total: 40 }]
+    rooms: [{ id: 'std', name: '트윈 객실', cap: 2, total: 20 }]
   },
   fukuroda: {
     name: '후쿠로다노타키CC', icon: '💧', variant: 'v4',
     meta: '후쿠로다노타키CC', regionId: 'ibaraki',
     pricingMode: 'jpy', taizaiJpy: 16000, soyouJpy: 12000,
     patterns: [{ nights: 7, dow: 1, label: '7박 8일', dowLabel: '월요일 출발' }],
-    departures: ['서울', '부산'],
+    departures: ['서울'],
+    airport: '인천',
     roomMode: 'single',
-    rooms: [{ id: 'std', name: '트윈 객실', cap: 2, total: 40 }]
+    rooms: [{ id: 'std', name: '트윈 객실', cap: 2, total: 20 }]
   },
 
   // ====== 미야자키 ======
@@ -2428,7 +2439,7 @@ const RESORTS = {
     patterns: [{ nights: 5, dow: 0, label: '5박 6일', dowLabel: '일요일 출발' }],
     airport: '인천',
     roomMode: 'single',
-    rooms: [{ id: 'std', name: '트윈 객실', cap: 2, total: 20 }],
+    rooms: [{ id: 'std', name: '트윈 객실', cap: 2, total: 10 }],
     note: '출·귀국일 라운드 없음 · 체재일 중식 미포함'
   },
 
@@ -2449,7 +2460,7 @@ const RESORTS = {
     airport: '인천 (니가타)',
     // v13.34 — 룸 타입 분리 (야마나미와 동일 패턴)
     rooms: [
-      { id: 'hotel',   name: '온천호텔',     cap: 2, total: 30,
+      { id: 'hotel',   name: '온천호텔',     cap: 2, total: 35,
         desc: '온천 시설 이용 가능' },
       { id: 'mansion', name: '맨션형 숙소',  cap: 2, total: 20,
         desc: '레지던스 스타일 · 취사 가능' }
@@ -2464,14 +2475,14 @@ const RESORTS = {
   // ====== 말레이시아 — 닐라이스프링스 자유일정 ======
   nilai: {
     name: '닐라이스프링스 골프&CC', icon: '🌴', variant: 'v6',
-    meta: '쿠알라룸푸르 · 자유 일정 · 100실/일', regionId: 'malaysia',
+    meta: '쿠알라룸푸르 · 자유 일정 · 50실/일', regionId: 'malaysia',
     departures: ['서울'],
     pricingMode: 'krw_free', krwPerNightPerPerson: 140000,
     freeNights: { min: 3, max: 30 }, // 자유 박수
     patterns: null, // 모든 요일 출발 가능
     airport: '인천',
     roomMode: 'single',
-    rooms: [{ id: 'std', name: '트윈 객실', cap: 2, total: 100 }],
+    rooms: [{ id: 'std', name: '트윈 객실', cap: 2, total: 50 }],
     longHaul: true, // v13.35 — 비행시간이 길어 일수 +2 (예: 5박 7일)
     note: '카트비 1박 ₩16,000/실 별도. 홀수 인원 시 싱글룸 추가 요금 발생'
   }
