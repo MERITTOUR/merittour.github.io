@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <meta name="robots" content="noindex" />
 <meta name="description" content="메리트투어 회원 간편 예약 — 골프투어 우선예약·자유예약 (프로토타입)" />
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" rel="stylesheet" />
 <title>메리트투어 간편 예약 | MERITTOUR</title>
 <style>
   /* ============================================================
@@ -288,11 +289,13 @@
      시니어 친화 디자인 (평균 66세 / 70+ 30%)
      ============================================================ */
   :root {
-    --brand: #0A3D62;
-    --brand-deep: #062740;
-    --brand-soft: #E8F1F9;
-    --accent: #E67E22;
-    --accent-deep: #C05A0A;
+    /* v13.38 — 메리트투어 브랜드 톤 (회사소개 /about/ 팔레트 기준)
+       딥 네이비 #1a2740 + 브랜드 골드 계열 + 뮤트 블루그레이 · Pretendard */
+    --brand: #1a2740;
+    --brand-deep: #0f1b33;
+    --brand-soft: #eef2f7;
+    --accent: #a67c3c;       /* 브랜드 골드 (흰 글자 CTA 대비 확보용 딥 톤) */
+    --accent-deep: #7a5520;
     --ok: #15803D;
     --ok-soft: #DCFCE7;
     --warn: #D97706;
@@ -300,11 +303,11 @@
     --peak: #7C3AED;
     --peak-soft: #EDE9FE;
     --danger: #B91C1C;
-    --text: #111827;
-    --muted: #4B5563;
-    --line: #D1D5DB;
-    --line-soft: #E5E7EB;
-    --bg: #F3F4F6;
+    --text: #1a2740;
+    --muted: #6a7a92;
+    --line: #d0d6e0;
+    --line-soft: #e8ebf0;
+    --bg: #f7f8fa;
     --card: #FFFFFF;
     --f-base: 19px;
     --f-lg: 22px;
@@ -315,7 +318,7 @@
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   html, body { margin: 0; padding: 0; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", "맑은 고딕", "Noto Sans KR", sans-serif;
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "맑은 고딕", "Malgun Gothic", "Noto Sans KR", sans-serif;
     background: var(--bg);
     color: var(--text);
     font-size: var(--f-base);
@@ -2358,8 +2361,13 @@ const RESORTS = {
       { nights: 7, dow: 2, label: '7박 8일', dowLabel: '화요일 출발' }
     ],
     airport: '김해',
-    roomMode: 'single',
-    rooms: [{ id: 'std', name: '표준 객실', cap: 2, total: 26 }]
+    // v13.38 — 포틴힐즈 실제 객실: 호텔 트윈13 · 호텔 패밀리룸(4인)19 · 카라반 트윈9
+    roomMode: 'multi',
+    rooms: [
+      { id: 'hotel_twin',   name: '호텔 트윈',    cap: 2, total: 13 },
+      { id: 'hotel_family', name: '호텔 패밀리룸', cap: 4, total: 19, desc: '4인 1실 (가족·소그룹)' },
+      { id: 'caravan_twin', name: '카라반 트윈',  cap: 2, total: 9,  desc: '카라반형 트윈' }
+    ]
   },
 
   // ====== 벳푸 ======
