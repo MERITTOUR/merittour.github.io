@@ -2766,6 +2766,9 @@ refreshLoginUserDerived();
 // v9 state
 // roomSelection: { roomId: { pair: N, single: M } }   // 야마나미는 pair/single 분리
 //                or { roomId: N }                      // 단일 인원 룸
+// v13.42 — 예약 시즌 시작(데모): 2026-03-10 이후 출발만 예약 가능
+const SEASON_START = new Date(2026, 2, 10);
+
 const state = {
   step: 0,
   origin: null,     // v12 — 출발지 (서울/부산/대구)
@@ -2775,8 +2778,9 @@ const state = {
   startDow: null,   // 출발 요일 (0~6)
   freeNights: null, // 닐라이 자유박수
   roomSelection: {},
-  calMonth: { y: 2026, m: 5 },
+  calMonth: { y: 2026, m: 3 },
   date: null,
+  skipWait: false,  // v13.42 — 검색위젯 직접 진입 시 대기화면 건너뛰고 캘린더로
   sugadairaPkgCode: null,
   agreePrivacy: false,
   agreeTerms: false,
@@ -3907,8 +3911,7 @@ function renderCalendar() {
     const dow = date.getDay();
     if (dow === 0) cell.classList.add('dow-sun');
     else if (dow === 6) cell.classList.add('dow-sat');
-    const today = new Date(); today.setHours(0,0,0,0);
-    const isPast = date < today;
+    const isPast = date < SEASON_START; // v13.42 — 실제 오늘 대신 예약 시즌 시작 기준
     const dateStr = `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const peak = isPeakDate(dateStr);
     const holiday = isJpHoliday(dateStr);
@@ -4196,7 +4199,7 @@ document.getElementById('calPrev').onclick = () => {
   let { y, m } = state.calMonth;
   m--; if (m < 1) { m = 12; y--; }
   state.calMonth = { y, m };
-  if (y < 2026 || (y === 2026 && m < 5)) state.calMonth = { y: 2026, m: 5 };
+  if (y < 2026 || (y === 2026 && m < 3)) state.calMonth = { y: 2026, m: 3 };
   renderCalendar();
 };
 document.getElementById('calNext').onclick = () => {
@@ -4354,6 +4357,7 @@ let _calWaitFlashed = false;
 
 // "예약을 시작할 수 있는 phase인가?" — active 또는 free
 function canBookNow() {
+  if (state.skipWait) return true; // v13.42 — 검색위젯 직접 예약 진입은 대기 없이 캘린더
   const ph = getPhase();
   return ph.type === 'active' || ph.type === 'free';
 }
@@ -4992,7 +4996,7 @@ function restart() {
   Object.assign(state, {
     step: 0, resort: null, patternIdx: null, nights: null, startDow: null, freeNights: null,
     roomSelection: {},
-    calMonth: { y: 2026, m: 5 }, date: null, sugadairaPkgCode: null,
+    calMonth: { y: 2026, m: 3 }, date: null, skipWait: false, sugadairaPkgCode: null,
     agreePrivacy: false, agreeTerms: false, agreeMarketing: false
   });
   ['agreePrivacy','agreeTerms','agreeMarketing'].forEach(id => {
@@ -5107,6 +5111,7 @@ startGateTimer();
       state.startDow = r.patterns[p.patternIdx].dow;
     }
   }
+  state.skipWait = true; // v13.42 — 검색위젯 진입: 대기화면 없이 캘린더로
   if (state.origin && state.resort && state.patternIdx != null) goStep(4);
   else if (state.origin && state.resort) goStep(3);
   else if (state.origin) goStep(2);
