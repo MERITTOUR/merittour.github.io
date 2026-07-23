@@ -279,6 +279,11 @@
                      (간지·시즈 손님가 17,000 유지).
           · v13.39 — 야마나미 쿠주힐즈 추가 (야마나미 상품 → 손님가 15,000 동일, 트윈 10실 수7박).
                      ※미야자키 시내호텔은 판매가 미정으로 보류.
+          · v13.40 — 시니어 UX: 선택 즉시 다음 단계 자동 진행 (다음 버튼 없이 선택→선택):
+                   · 출발지(Step1)·골프장(Step2)·기간(Step3) 선택 시 260ms 후 자동으로 다음 단계
+                   · 선택 하이라이트가 보이도록 짧은 딜레이 후 이동, breadcrumb·이전 버튼으로 되돌리기 유지
+                   · 날짜(요금 확인)·객실(다인 조합)·확정(약관·락)·스가다이라 패키지·닐라이 스텝퍼는 수동 유지
+                   · ※지역별 분류·N박M일 표기·적용버튼 없는 즉시 선택은 기존부터 적용됨
      v11 — Step 5 락 + 10분 카운트다운 + 충돌 시뮬레이션 (시연용)
           · Step 5 진입 시 자동 카운트다운 시작 (sticky bar)
           · 만료 시 Step 4 자동 복귀 + 날짜 초기화
@@ -3101,6 +3106,8 @@ function renderOrigins() {
           void nav.offsetWidth;
           nav.classList.add('has-selection');
         }
+        // v13.40 — 출발지 선택 즉시 골프장 단계로 자동 진행 (선택→선택)
+        setTimeout(() => { if (state.origin === o.id && state.step === 1) goStep(2); }, 260);
       };
     }
     host.appendChild(card);
@@ -3190,13 +3197,9 @@ function renderRegions() {
         state.sugadairaPkgCode = null;
         renderRegions();
         document.getElementById('toStep2').disabled = false;
-        // v9.1 — sticky 다음 버튼에 펄스 효과로 시선 유도
-        const nav = document.getElementById('step1Nav');
-        if (nav) {
-          nav.classList.remove('has-selection');
-          void nav.offsetWidth; // 애니메이션 재시작
-          nav.classList.add('has-selection');
-        }
+        // v13.40 — 선택 즉시 다음 단계로 자동 진행 (시니어: 선택→선택, 다음 버튼 불필요)
+        //          선택 하이라이트가 보이도록 짧은 딜레이 후 이동
+        setTimeout(() => { if (state.resort === rid && state.step === 2) goStep(3); }, 260);
       };
       list.appendChild(card);
     });
@@ -3340,6 +3343,8 @@ function renderDurations() {
       state.date = null;
       renderDurations();
       document.getElementById('toStep3').disabled = false;
+      // v13.40 — 기간 선택 즉시 다음 단계로 자동 진행 (선택→선택)
+      setTimeout(() => { if (state.patternIdx === idx && state.step === 3) goStep(4); }, 260);
     };
     group.appendChild(btn);
   });
