@@ -139,6 +139,10 @@
   .opt:hover{border-color:var(--navy);background:var(--navy-soft);}
   .opt.selected{border-color:var(--navy);background:var(--navy-soft);}
   .opt .sub{font-size:13px;color:var(--muted);font-weight:600;}
+  /* 호텔 선택: 이름 아래에 한 줄 설명 (시니어 가독성) */
+  .opt.stack{flex-direction:column;align-items:flex-start;gap:5px;padding:16px 18px;}
+  .opt.stack .nm{font-size:17.5px;font-weight:800;line-height:1.35;}
+  .opt.stack .desc{font-size:14px;color:var(--muted);font-weight:600;line-height:1.45;white-space:normal;}
   .opt.disabled{opacity:.45;cursor:not-allowed;}
   .grp-label{font-size:13px;font-weight:800;color:var(--navy);margin:16px 0 8px;}
   .grp-label:first-child{margin-top:0;}
@@ -257,34 +261,34 @@
 // ============================================================
 const CAT = [
   {region:'구마모토 · 아소', sub:'규슈 내륙 · 온천+골프', items:[
-    {k:'yamanami',    n:'아소 야마나미 (호텔)',   dep:['서울','부산'], std:true, meta:'아소 야마나미CC · 주중 18+9', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']},
-    {k:'kuzu',        n:'야마나미 쿠주힐즈',       dep:['서울','부산'], std:true, meta:'야마나미CC · 쿠주힐즈 18홀', durs:['7박 8일 (수 출발)']},
-    {k:'kanji',       n:'간지호텔 2색 골프투어',   dep:['서울','부산'], std:true, meta:'구주고원GC · 야마나미GC 2색', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']},
-    {k:'shizunoyado', n:'시즈노야도 료칸',         dep:['서울','부산'], std:true, meta:'야마나미GC · 힐링 료칸', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (목 출발)','7박 8일 (일 출발)']},
-    {k:'aso_villa',   n:'아소별장',               dep:['서울','부산'], std:true, meta:'8인 1동 · 단체 전용', durs:['7박 8일 (목 출발)','7박 8일 (일 출발)']},
-    {k:'sobo_villa',  n:'소보별장',               dep:['서울','부산'], std:true, meta:'트윈 2동 + 트리플 1동', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)']},
-    {k:'dome_house',  n:'돔하우스',               dep:['서울','부산'], std:true, meta:'독채형 별장 4동', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)']},
-    {k:'sobo5',       n:'소보5동',                dep:['서울','부산'], std:true, meta:'4인 1동', durs:['7박 8일 (목 출발)','7박 8일 (일 출발)']},
+    {k:'yamanami',    n:'아소 야마나미 (호텔)',   dep:['서울','부산'], std:true, meta:'아소 야마나미CC · 주중 18+9', desc:'27홀 명문 코스 · 온천 · 골프텔 숙박 (가장 인기)', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']},
+    {k:'kuzu',        n:'야마나미 쿠주힐즈',       dep:['서울','부산'], std:true, meta:'야마나미CC · 쿠주힐즈 18홀', desc:'야마나미 골프 + 쿠주힐즈 독채형 숙소 · 장기 체류형', durs:['7박 8일 (수 출발)']},
+    {k:'kanji',       n:'간지호텔 2색 골프투어',   dep:['서울','부산'], std:true, meta:'구주고원GC · 야마나미GC 2색', desc:'구주고원·야마나미 두 코스를 번갈아 라운딩', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']},
+    {k:'shizunoyado', n:'시즈노야도 료칸',         dep:['서울','부산'], std:true, meta:'야마나미GC · 힐링 료칸', desc:'조용한 일본식 료칸 · 정갈한 식사와 온천', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (목 출발)','7박 8일 (일 출발)']},
+    {k:'aso_villa',   n:'아소별장',               dep:['서울','부산'], std:true, meta:'8인 1동 · 단체 전용', desc:'별장 한 채를 통째로 · 8인 단체 모임에 적합', durs:['7박 8일 (목 출발)','7박 8일 (일 출발)']},
+    {k:'sobo_villa',  n:'소보별장',               dep:['서울','부산'], std:true, meta:'트윈 2동 + 트리플 1동', desc:'트윈 2동 + 트리플 1동 · 가족·소그룹 별장', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)']},
+    {k:'dome_house',  n:'돔하우스',               dep:['서울','부산'], std:true, meta:'독채형 별장 4동', desc:'독채 돔형 별장 · 2인이 오붓하게', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)']},
+    {k:'sobo5',       n:'소보5동',                dep:['서울','부산'], std:true, meta:'4인 1동', desc:'4인 1동 별장 · 친구 모임에 딱 맞는 규모', durs:['7박 8일 (목 출발)','7박 8일 (일 출발)']},
   ]},
   {region:'나고야', sub:'주부 지역 · 챔피언십', items:[
-    {k:'fourteen',    n:'포틴힐즈CC',             dep:['서울','부산'], std:true, meta:'포틴힐즈CC · 챔피언십 코스', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (화 출발)']},
+    {k:'fourteen',    n:'포틴힐즈CC',             dep:['서울','부산'], std:true, meta:'포틴힐즈CC · 챔피언십 코스', desc:'나고야 챔피언십 코스 · 호텔/카라반 선택 가능', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (화 출발)']},
   ]},
   {region:'벳푸', sub:'규슈 온천 휴양지', items:[
-    {k:'akiba',       n:'아키바 리조트 2색',       dep:['서울','부산','대구'], std:true, meta:'벳푸CC · 오기야마CC · 주중/주말', durs:['3박 4일 (금 출발)','4박 5일 (월 출발)']},
-    {k:'mutsuki',     n:'무츠키 료칸',            dep:['서울','부산','대구'], std:true, meta:'항공+숙박+골프 확정 패키지', durs:['3박 4일 (금 출발)','4박 5일 (월 출발)']},
+    {k:'akiba',       n:'아키바 리조트 2색',       dep:['서울','부산','대구'], std:true, meta:'벳푸CC · 오기야마CC · 주중/주말', desc:'벳푸·오기야마 두 코스 · 온천 휴양 (석식 미포함)', durs:['3박 4일 (금 출발)','4박 5일 (월 출발)']},
+    {k:'mutsuki',     n:'무츠키 료칸',            dep:['서울','부산','대구'], std:true, meta:'항공+숙박+골프 확정 패키지', desc:'항공·숙박·골프 모두 포함된 확정 패키지', durs:['3박 4일 (금 출발)','4박 5일 (월 출발)']},
   ]},
   {region:'이바라키', sub:'관동 북부 · 자연 코스', items:[
-    {k:'shirosato',   n:'시로사토CC',             dep:['서울'], std:true, meta:'시로사토CC · 주중 18+9', durs:['6박 7일 (일 출발)']},
-    {k:'fukuroda',    n:'후쿠로다노타키CC',        dep:['서울'], std:true, meta:'후쿠로다노타키CC', durs:['7박 8일 (월 출발)']},
+    {k:'shirosato',   n:'시로사토CC',             dep:['서울'], std:true, meta:'시로사토CC · 주중 18+9', desc:'도쿄 근교 이바라키 · 주중 18+9홀 라운딩', durs:['6박 7일 (일 출발)']},
+    {k:'fukuroda',    n:'후쿠로다노타키CC',        dep:['서울'], std:true, meta:'후쿠로다노타키CC', desc:'폭포로 유명한 이바라키 · 여유로운 7박 일정', durs:['7박 8일 (월 출발)']},
   ]},
   {region:'미야자키', sub:'규슈 남부 · 온난', items:[
-    {k:'miyazaki_kuko', n:'미야자키 국제공항CC',   dep:['서울'], std:true, meta:'국제공항CC · 5박 6일', durs:['5박 6일 (일 출발)']},
+    {k:'miyazaki_kuko', n:'미야자키 국제공항CC',   dep:['서울'], std:true, meta:'국제공항CC · 5박 6일', desc:'공항 바로 앞 골프텔 · 온난한 남규슈 (중식 미포함)', durs:['5박 6일 (일 출발)']},
   ]},
   {region:'나가노', sub:'고원 리조트 · 확정 패키지', items:[
-    {k:'sugadaira',   n:'스가다이라 그린CC',       dep:['서울'], std:false, meta:'해발 1,700m 고원 · 니가타', durs:['5박 6일','7박 8일','14박 15일']},
+    {k:'sugadaira',   n:'스가다이라 그린CC',       dep:['서울'], std:false, meta:'해발 1,700m 고원 · 니가타', desc:'해발 1,700m 고원 · 여름에도 시원한 확정 패키지', durs:['5박 6일','7박 8일','14박 15일']},
   ]},
   {region:'말레이시아', sub:'쿠알라룸푸르 · 자유 일정', items:[
-    {k:'nilai',       n:'닐라이스프링스 골프&CC',  dep:['서울'], std:false, meta:'쿠알라룸푸르 · 자유 일정', durs:['자유 일정']},
+    {k:'nilai',       n:'닐라이스프링스 골프&CC',  dep:['서울'], std:false, meta:'쿠알라룸푸르 · 자유 일정', desc:'쿠알라룸푸르 · 원하는 날짜·박수로 자유롭게', durs:['자유 일정']},
   ]},
 ];
 const ORIGINS = [
@@ -346,8 +350,8 @@ function openSheet(kind){
   } else if(kind==='resort'){
     const groups = catByOrigin(sel.origin);
     html += groups.map(g=>`<div class="grp-label">${g.region}</div>`+
-      g.items.map(it=>`<button class="opt${sel.resortKey===it.k?' selected':''}" data-v="${it.k}">
-        <span>${it.n}</span><span class="sub">${it.meta}</span></button>`).join('')
+      g.items.map(it=>`<button class="opt stack${sel.resortKey===it.k?' selected':''}" data-v="${it.k}">
+        <span class="nm">${it.n}</span><span class="desc">${it.desc || it.meta}</span></button>`).join('')
     ).join('');
   } else if(kind==='dur'){
     const it = findResort(sel.resortKey);
