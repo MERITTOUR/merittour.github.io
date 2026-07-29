@@ -1289,6 +1289,31 @@
   .dev-toggle .demo-cases b { color: #1E40AF; font-weight: 800; }
 
   /* v13 — 진행 상황 Breadcrumb (헤더 아래 sticky · 항상 보임) */
+  /* v13.43 — Step4 상품 헤더 (상품명 → 달력 순서, 모바일 우선) */
+  .prod-head {
+    background: var(--brand); color: #fff; border-radius: 16px;
+    padding: 16px 18px; margin-bottom: 18px; box-shadow: 0 6px 18px rgba(26,39,64,.18);
+  }
+  .prod-head .ph-row { display: flex; align-items: flex-start; gap: 12px; }
+  .prod-head .ph-main { flex: 1; min-width: 0; }
+  .prod-head .ph-name { font-size: 21px; font-weight: 800; line-height: 1.3; }
+  .prod-head .ph-meta { font-size: 14px; color: rgba(255,255,255,.82); margin-top: 4px; line-height: 1.45; }
+  .prod-head .ph-home {
+    flex-shrink: 0; background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.35);
+    color: #fff; border-radius: 10px; padding: 9px 14px; font-size: 14px; font-weight: 700;
+    text-decoration: none; white-space: nowrap;
+  }
+  .prod-head .ph-home:hover { background: rgba(255,255,255,.26); }
+  .prod-head .ph-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+  .prod-head .ph-tags span {
+    background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.22);
+    border-radius: 999px; padding: 5px 12px; font-size: 13.5px; font-weight: 600;
+  }
+  @media (max-width: 480px) {
+    .prod-head { padding: 14px 15px; border-radius: 14px; }
+    .prod-head .ph-name { font-size: 19px; }
+  }
+
   .crumbs {
     display: none;
     /* v13.2 — 헤더 높이만큼 떨어뜨려서 헤더 바로 아래 항상 고정 */
@@ -1804,6 +1829,17 @@
 
   <!-- STEP 4 — 출발일 (달력) -->
   <section id="sec4">
+    <!-- v13.43 — 상품 헤더(선택한 골프장·일정) + 홈으로 -->
+    <div class="prod-head" id="prodHead">
+      <div class="ph-row">
+        <div class="ph-main">
+          <div class="ph-name" id="phName">-</div>
+          <div class="ph-meta" id="phMeta"></div>
+        </div>
+        <a class="ph-home" href="../" title="처음 화면으로">홈</a>
+      </div>
+      <div class="ph-tags" id="phTags"></div>
+    </div>
     <h2 class="q" id="sec4Title">출발일을 선택하세요</h2>
     <p class="q-sub" id="calSub"></p>
 
@@ -3856,8 +3892,38 @@ function isValidDepartureDow(resort, dateStr) {
   return dow === state.startDow;
 }
 
+// v13.43 — Step4 상품 헤더: 선택한 상품명 + 일정/출발지 요약을 달력 위에 표시
+function renderProductHead() {
+  const head = document.getElementById('prodHead');
+  if (!head) return;
+  const resort = RESORTS[state.resort];
+  if (!resort) { head.style.display = 'none'; return; }
+  head.style.display = '';
+  const DOWS = ['일','월','화','수','목','금','토'];
+  const nights = state.nights;
+  const nameEl = document.getElementById('phName');
+  const metaEl = document.getElementById('phMeta');
+  const tagsEl = document.getElementById('phTags');
+
+  // 상품명: [N박M일] 리조트명
+  const prefix = nights != null ? `[${nights}박 ${daysFromNights(state.resort, nights)}일] ` : '';
+  nameEl.textContent = prefix + resort.name;
+  metaEl.textContent = resort.meta || '';
+
+  const tags = [];
+  if (state.origin) {
+    const air = (typeof resolveOriginAirport === 'function')
+      ? resolveOriginAirport(state.origin, resort.airport) : '';
+    tags.push(`${state.origin} 출발${air ? ' · ' + air : ''}`);
+  }
+  if (state.startDow != null) tags.push(`${DOWS[state.startDow]}요일 출발`);
+  if (resort.pricingMode === 'krw_free') tags.push('자유 일정');
+  tagsEl.innerHTML = tags.map(t => `<span>${t}</span>`).join('');
+}
+
 function renderCalendar() {
   const resort = RESORTS[state.resort];
+  renderProductHead(); // v13.43 — 상품명 헤더 먼저
   // v13.37 — fixed_twin(야마나미)은 룸이 트윈 1종뿐이라 "다른 객실로 가능"(alt) 셀이 없음 → 범례 항목 숨김
   const altLgLegend = document.getElementById('altLgLegend');
   if (altLgLegend) altLgLegend.style.display = (resort.roomMode === 'fixed_twin') ? 'none' : '';
@@ -4374,6 +4440,7 @@ function nextOpenAt() {
 function startCalendarWait() {
   stopCalendarWait();
   _calWaitFlashed = false;
+  renderProductHead(); // v13.43 — 대기 화면에도 상품 헤더 표시
   document.getElementById('calendarWaiting').classList.add('show');
   document.getElementById('calendarMain').style.display = 'none';
   document.getElementById('sec4Title').textContent = '예약 오픈을 기다려 주세요';
