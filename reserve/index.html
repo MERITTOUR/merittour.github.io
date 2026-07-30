@@ -113,7 +113,7 @@
   .pv-checks li{display:flex;align-items:flex-start;gap:8px;font-size:15px;color:#4a5a72;margin-bottom:6px;}
   .pv-checks li .ck{color:var(--navy);font-weight:900;flex-shrink:0;}
   .pv-grid{display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start;}
-  @media(max-width:900px){ .pv-grid{grid-template-columns:1fr;gap:20px;} }
+  @media(max-width:900px){ .pv-grid{grid-template-columns:1fr;gap:20px;} .pv-side{order:-1;} }
   .pv-sec-t{font-size:17px;font-weight:800;border-left:4px solid var(--navy);padding-left:10px;margin:0 0 12px;}
   .pv-note{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--bg-alt);
     font-size:15px;color:#4a5a72;line-height:1.6;margin-bottom:26px;}
@@ -594,17 +594,23 @@ const RES = {
 };
 // 상품 태그 (제목 뒤 #표기)
 const TAGS = {
-  yamanami:['27홀','체류형','온천','석식포함'], kuzu:['18홀','장기체류','독채형'],
-  kanji:['2색골프','온천','석식포함'], shizunoyado:['료칸','온천','석식포함'],
+  yamanami:['27홀','체류형','온천','3식포함'], kuzu:['18홀','장기체류','독채형','3식포함'],
+  kanji:['2색골프','온천','3식포함'], shizunoyado:['료칸','온천','3식포함'],
   aso_villa:['별장단독','8인','단체'], sobo_villa:['별장','가족형'],
   dome_house:['독채','2인'], sobo5:['별장단독','4인'],
-  fourteen:['챔피언십','호텔/카라반'], akiba:['2색골프','온천','석식미포함'],
+  fourteen:['챔피언십','호텔/카라반'], akiba:['2색골프','온천','석식불포함'],
   mutsuki:['항공포함','료칸','확정가'], shirosato:['18+9홀','관동'],
-  fukuroda:['18홀','관동','장기체류'], miyazaki_kuko:['공항인접','남규슈','중식미포함'],
+  fukuroda:['18홀','관동','장기체류'], miyazaki_kuko:['공항인접','남규슈','중식불포함'],
   sugadaira:['고원','확정가','항공포함'], nilai:['자유일정','동남아']
 };
 const CHECKS = {
-  _base:['회원 우선예약 · 최저가 보장','현지 송영 차량 포함 (일본인 기사)','2인 예약 가능'],
+  _base:[
+    '회원 우선예약',
+    '왕복 항공 · 현지 송영 · 라운딩 · 숙박 · 식사 포함',
+    '2인부터 예약 가능'
+  ],
+  yamanami:['조식 · 중식 · 석식 3식 제공'], kuzu:['조식 · 중식 · 석식 3식 제공'],
+  kanji:['조식 · 중식 · 석식 3식 제공'], shizunoyado:['조식 · 중식 · 석식 3식 제공'],
   akiba:['석식 미포함 (자유 식사)'], miyazaki_kuko:['체재일 중식 미포함'],
   mutsuki:['왕복 항공 포함 확정가'], sugadaira:['왕복 항공 포함 확정가'],
   nilai:['원하는 날짜·박수로 자유 예약'], aso_villa:['별장 한 채 단독 사용'], sobo5:['별장 한 채 단독 사용']
@@ -720,7 +726,7 @@ function renderItin(it,nights){
   for(let d=1;d<=days;d++){
     let mv='', plan='', meal='';
     if(d===1){
-      mv=`단체 항공<br>(편명 추후 안내)<br><small>${airOut} 개별 수속</small><br><br>현지 송영 차량<br>(일본인 기사)`;
+      mv=`단체 항공<br>(편명 추후 안내)<br><small>${airOut} 개별 수속</small><br><br>현지 송영 차량`;
       plan=`${airOut} 출발 · 개별 수속<br>현지 공항 도착 · 입국 수속<br>숙소로 이동 (약 1시간)<br><br>`+
            (fromSeoul
              ? `점심식사 후 <span class="g">라운딩</span> (일몰 전까지 · 최대 18홀)<br><small style="color:var(--muted);">※ 일몰 시간·현지 사정에 따라 라운딩 시간이 짧아질 수 있습니다.</small><br>`
@@ -728,7 +734,7 @@ function renderItin(it,nights){
            `호텔 체크인 · 석식 및 자유시간`;
       meal=`중식 : ${lunch1}<br>석식 : ${noDin?'불포함':'호텔식'}`;
     } else if(d===days){
-      mv='현지 송영 차량<br>(일본인 기사)<br><br>단체 항공<br>(편명 추후 안내)';
+      mv='현지 송영 차량<br><br>단체 항공<br>(편명 추후 안내)';
       plan='아침식사 후 호텔 체크아웃<br>공항 이동 · 출국 수속<br><span class="g">귀국</span>';
       meal='조식 : 호텔식<br>중식 : 불포함';
     } else {
@@ -794,7 +800,7 @@ function pvSyncPrice(){
   if(!p){ box.innerHTML=`${M}월 ${D}일(${dn}) 출발<small>요금은 예약 단계에서 안내드립니다.</small>`; }
   else {
     box.innerHTML=`${p.krw.toLocaleString()}원`+
-      `<small>${M}월 ${D}일(${dn}) 출발 · ${nights}박${p.air?' · 왕복 항공 포함':' · 숙박·송영 기준 (항공요금 별도)'}<br>`+
+      `<small>${M}월 ${D}일(${dn}) 출발 · ${nights}박${p.air?' · 왕복 항공 포함':' · 숙박·송영 기준 · 항공요금은 발권 확정 후 안내'}<br>`+
       `총 ${pv.people}명 · <b>${(p.krw*pv.people).toLocaleString()}원</b></small>`;
   }
 }
