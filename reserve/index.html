@@ -54,7 +54,13 @@
     pointer-events:none;}
   .hero-inner{position:relative;z-index:2;max-width:1160px;margin:0 auto;padding:54px 22px 60px;
     display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:stretch;}
-  @media(max-width:860px){ .hero-inner{grid-template-columns:1fr;gap:24px;padding:36px 18px 44px;} }
+  /* 모바일: 사진(슬라이드) 숨김 + 여백 축소 → 스크롤 최소화, 검색이 첫 화면에 */
+  @media(max-width:860px){
+    .hero-inner{grid-template-columns:1fr;gap:0;padding:20px 16px 26px;}
+    .hero-slide{display:none;}
+    .hero-copy h1{font-size:25px;margin-bottom:4px;}
+    .hero-copy p{font-size:14.5px;margin-bottom:14px;}
+  }
   .hero-copy h1{font-size:34px;font-weight:800;line-height:1.3;letter-spacing:-.01em;margin-bottom:6px;}
   .hero-copy h1 .u{background:linear-gradient(transparent 62%, rgba(184,147,90,.85) 62%);padding:0 2px;}
   .hero-copy p{font-size:16px;color:rgba(255,255,255,.85);margin-bottom:22px;}
@@ -210,6 +216,16 @@
   .opt.disabled{opacity:.45;cursor:not-allowed;}
   .grp-label{font-size:13px;font-weight:800;color:var(--navy);margin:16px 0 8px;}
   .grp-label:first-child{margin-top:0;}
+  /* 인원 선택 스테퍼 (최소 2명 ~ 회원 예약가능 인원) */
+  .stp{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 4px;}
+  .stp-lbl{font-size:17px;font-weight:800;}
+  .stp-lbl small{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-top:3px;}
+  .stp-ctl{display:flex;align-items:center;gap:14px;flex-shrink:0;}
+  .stp-btn{width:46px;height:46px;border:2px solid var(--line);background:#fff;border-radius:12px;
+    font-size:24px;font-weight:800;color:var(--navy);cursor:pointer;font-family:inherit;line-height:1;}
+  .stp-btn:disabled{opacity:.35;cursor:not-allowed;}
+  .stp-num{font-size:24px;font-weight:800;min-width:34px;text-align:center;}
+  .stp-hint{font-size:13.5px;color:var(--muted);background:var(--bg-alt);border-radius:10px;padding:12px 14px;line-height:1.5;}
 </style>
 </head>
 <body>
@@ -273,6 +289,9 @@
         <button type="button" class="sfield" id="fDur" onclick="openSheet('dur')">
           <span class="ic">🧳</span><span class="val ph" id="vDur">여행기간</span><span class="arrow">▼</span>
         </button>
+        <button type="button" class="sfield" id="fPpl" onclick="openSheet('ppl')">
+          <span class="ic">👥</span><span class="val ph" id="vPpl">인원</span><span class="arrow">▼</span>
+        </button>
         <button type="button" class="go" onclick="doSearch()">검색하기<span class="sub" id="goSub">출발지부터 골라주세요</span></button>
       </div>
     </div>
@@ -329,6 +348,15 @@
       <div class="pv-legend">
         <span><i style="background:#fff;border:1px solid var(--line);"></i>예약 가능</span>
         <span><i style="background:#f5f6f8;border:1px solid #eef0f4;"></i>마감</span>
+      </div>
+      <div class="pv-price-lbl">인원</div>
+      <div class="stp" style="padding:6px 2px 10px;">
+        <div class="stp-lbl" style="font-size:15px;font-weight:700;">총 인원<small id="pvPplHint"></small></div>
+        <div class="stp-ctl">
+          <button type="button" class="stp-btn" style="width:40px;height:40px;font-size:21px;" id="pvPplMinus" onclick="pvPpl(-1)">−</button>
+          <span class="stp-num" style="font-size:21px;min-width:28px;" id="pvPplNum">2</span>
+          <button type="button" class="stp-btn" style="width:40px;height:40px;font-size:21px;" id="pvPplPlus" onclick="pvPpl(1)">＋</button>
+        </div>
       </div>
       <div class="pv-price-lbl">1인당 금액</div>
       <div class="pv-price ph" id="pvPrice">출발 날짜를 선택해주세요.</div>
@@ -405,7 +433,12 @@ const ORIGINS = [
 ];
 const THUMB = ['linear-gradient(135deg,#3a6b4a,#22503a)','linear-gradient(135deg,#4a7fb0,#264f77)','linear-gradient(135deg,#b0894a,#7a5520)','linear-gradient(135deg,#6d8b57,#3f5e38)','linear-gradient(135deg,#8a5a7a,#4d2f45)','linear-gradient(135deg,#4a9aa0,#26666b)','linear-gradient(135deg,#a0684a,#5e3820)'];
 
-const sel = { origin:null, resortKey:null, durIdx:null };
+// 로그인 회원 (실운영: 서버 세션 주입 · book/ LOGIN_USERS와 동일 구조)
+//   maxPeople = 회원권 예약 가능 인원 → 인원 선택 최대치
+const MEMBER = { name:'홍길동', maxPeople:4 };
+const MIN_PEOPLE = 2; // 1명 예약 불가
+
+const sel = { origin:null, resortKey:null, durIdx:null, people:null };
 
 function catByOrigin(o){
   return CAT.map(g=>({...g, items:g.items.filter(it=> !o || it.dep.includes(o))})).filter(g=>g.items.length);
@@ -444,8 +477,9 @@ let sheetKind = null;
 function openSheet(kind){
   if(kind==='resort' && !sel.origin){ openSheet('origin'); return; }
   if(kind==='dur' && !sel.resortKey){ openSheet(sel.origin?'resort':'origin'); return; }
+  if(kind==='ppl' && !sel.resortKey){ openSheet(sel.origin?'resort':'origin'); return; }
   sheetKind = kind;
-  const title = {origin:'출발지 선택', resort:'골프장 · 호텔 선택', dur:'여행기간 선택'}[kind];
+  const title = {origin:'어디서 출발하시나요?', resort:'어디로 가시나요?', dur:'얼마나 머무시나요?', ppl:'몇 분이 가시나요?'}[kind];
   document.getElementById('sheetTitle').textContent = title;
   const body = document.getElementById('sheetBody');
   let html = '<div class="sheet-hint">고르시면 바로 적용되고 다음으로 넘어갑니다.</div>';
@@ -463,8 +497,32 @@ function openSheet(kind){
     html += it.durs.map((d,i)=>`<button class="opt${sel.durIdx===i?' selected':''}" data-v="${i}">
       <span>${d}</span></button>`).join('');
     if(!it.std) html += '<div class="sheet-hint" style="margin-top:8px;">※ 이 상품은 다음 화면에서 세부 일정을 선택합니다.</div>';
+  } else if(kind==='ppl'){
+    const cur = sel.people || MIN_PEOPLE;
+    html = `<div class="stp">
+        <div class="stp-lbl">인원<small>회원 본인 포함 총 인원</small></div>
+        <div class="stp-ctl">
+          <button type="button" class="stp-btn" id="pplMinus">−</button>
+          <span class="stp-num" id="pplNum">${cur}</span>
+          <button type="button" class="stp-btn" id="pplPlus">＋</button>
+        </div>
+      </div>
+      <div class="stp-hint">최소 ${MIN_PEOPLE}명부터 예약 가능합니다.<br>
+        ${MEMBER.name} 회원님의 <b>예약 가능 인원은 최대 ${MEMBER.maxPeople}명</b>입니다.</div>
+      <button class="opt" id="pplDone" style="margin-top:16px;justify-content:center;font-weight:800;">선택 완료</button>`;
   }
   body.innerHTML = html;
+  if(kind==='ppl'){
+    let cur = sel.people || MIN_PEOPLE;
+    const num=body.querySelector('#pplNum'), minus=body.querySelector('#pplMinus'), plus=body.querySelector('#pplPlus');
+    const sync=()=>{ num.textContent=cur; minus.disabled=(cur<=MIN_PEOPLE); plus.disabled=(cur>=MEMBER.maxPeople); };
+    minus.onclick=()=>{ if(cur>MIN_PEOPLE){ cur--; sync(); } };
+    plus.onclick=()=>{ if(cur<MEMBER.maxPeople){ cur++; sync(); } };
+    body.querySelector('#pplDone').onclick=()=>{ sel.people=cur; syncFields(); closeSheet(); };
+    sync();
+    document.getElementById('sheetMask').classList.add('show');
+    return;
+  }
   body.querySelectorAll('.opt').forEach(b=> b.onclick = ()=> pickOpt(b.dataset.v));
   document.getElementById('sheetMask').classList.add('show');
 }
@@ -487,7 +545,8 @@ function pickOpt(v){
   setTimeout(()=>{
     if(sheetKind==='origin') openSheet('resort');
     else if(sheetKind==='resort') openSheet('dur');
-    // dur 선택 후엔 검색 버튼만 강조
+    else if(sheetKind==='dur' && !sel.people) openSheet('ppl');
+    // 인원까지 고르면 검색 버튼만 강조
   }, 160);
 }
 
@@ -499,12 +558,17 @@ function syncFields(){
   if(it){ vr.textContent=it.n; vr.classList.remove('ph'); } else { vr.textContent='골프장 · 호텔'; vr.classList.add('ph'); }
   if(it && sel.durIdx!=null){ vd.textContent=it.durs[sel.durIdx]; vd.classList.remove('ph'); }
   else { vd.textContent='여행기간'; vd.classList.add('ph'); }
+  const vp=document.getElementById('vPpl');
+  if(sel.people){ vp.textContent=`총 ${sel.people}명`; vp.classList.remove('ph'); }
+  else { vp.textContent='인원'; vp.classList.add('ph'); }
   document.getElementById('fResort').disabled = !sel.origin;
   document.getElementById('fDur').disabled = !sel.resortKey;
+  document.getElementById('fPpl').disabled = !sel.resortKey;
   const sub=document.getElementById('goSub');
-  sub.textContent = !sel.origin ? '출발지부터 골라주세요'
-    : !sel.resortKey ? '골프장을 골라주세요'
-    : sel.durIdx==null ? '여행기간을 골라주세요 (선택)'
+  sub.textContent = !sel.origin ? '어디서 출발하시나요?'
+    : !sel.resortKey ? '어디로 가시나요?'
+    : sel.durIdx==null ? '얼마나 머무시나요?'
+    : !sel.people ? '몇 분이 가시나요?'
     : '선택 완료 — 눌러서 예약 진행';
 }
 
@@ -564,7 +628,19 @@ const CHECKS = {
   nilai:['원하는 날짜·박수로 자유 예약'], aso_villa:['별장 한 채 단독 사용'], sobo5:['별장 한 채 단독 사용']
 };
 
-const pv = { key:null, durIdx:0, y:2026, m:3, date:null };
+const pv = { key:null, durIdx:0, y:2026, m:3, date:null, people:MIN_PEOPLE };
+
+function pvPpl(delta){
+  const n = pv.people + delta;
+  if(n < MIN_PEOPLE || n > MEMBER.maxPeople) return;
+  pv.people = n; sel.people = n; syncFields(); pvSyncPpl(); pvSyncPrice();
+}
+function pvSyncPpl(){
+  document.getElementById('pvPplNum').textContent = pv.people;
+  document.getElementById('pvPplMinus').disabled = (pv.people <= MIN_PEOPLE);
+  document.getElementById('pvPplPlus').disabled = (pv.people >= MEMBER.maxPeople);
+  document.getElementById('pvPplHint').textContent = `최소 ${MIN_PEOPLE}명 · 최대 ${MEMBER.maxPeople}명 (회원권 기준)`;
+}
 
 function pvNights(it){ // 선택한 기간의 박수
   const m = (it.durs[pv.durIdx]||'').match(/(\d+)박/); return m ? +m[1] : null;
@@ -597,6 +673,7 @@ function pvPricePerson(k,nights,dateStr){
 
 function openProduct(k){
   pv.key=k; pv.durIdx=0; pv.date=null; pv.y=2026; pv.m=3;
+  pv.people = sel.people || MIN_PEOPLE;
   document.getElementById('productView').classList.add('show');
   document.querySelector('section.resorts').style.display='none';
   document.querySelector('.hero').style.display='none';
@@ -632,6 +709,7 @@ function renderPv(){
     `<button type="button" class="pv-dur${i===pv.durIdx?' on':''}" onclick="pvSetDur(${i})">${d}</button>`).join('');
   renderItin(it,nights);
   renderPvCal();
+  pvSyncPpl();
   pvSyncPrice();
   document.getElementById('pvFoot').innerHTML =
     `※ 일정·식사는 현지 사정(기상·항공)으로 변경될 수 있습니다. 라운딩 순서와 티오프 시간은 현지에서 확정됩니다.`;
@@ -704,7 +782,8 @@ function pvSyncPrice(){
   if(!p){ box.innerHTML=`${M}월 ${D}일(${dn}) 출발<small>요금은 상담 시 안내드립니다.</small>`; }
   else {
     box.innerHTML=`${p.krw.toLocaleString()}원`+
-      `<small>${M}월 ${D}일(${dn}) 출발 · ${nights}박${p.air?' · 왕복 항공 포함':' · 숙박·송영 기준 (항공요금 별도)'}</small>`;
+      `<small>${M}월 ${D}일(${dn}) 출발 · ${nights}박${p.air?' · 왕복 항공 포함':' · 숙박·송영 기준 (항공요금 별도)'}<br>`+
+      `총 ${pv.people}명 · <b>${(p.krw*pv.people).toLocaleString()}원</b></small>`;
   }
   cta.disabled=false;
 }
@@ -715,6 +794,7 @@ function pvGo(){
   else payload.origin=it.dep[0]; // 출발지 미선택 시 첫 출발지
   if(it.std) payload.patternIdx=pv.durIdx;
   if(pv.date) payload.date=pv.date;
+  if(pv.people) payload.people=pv.people;
   try{ sessionStorage.setItem('reserve_prefill', JSON.stringify(payload)); }catch(e){}
   location.href='book/';
 }
