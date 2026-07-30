@@ -269,8 +269,8 @@
 <div class="hero">
   <div class="hero-inner">
     <div class="hero-copy">
-      <h1>고객님,<br><span class="u">어떤 여행을 꿈꾸시나요?</span></h1>
-      <p>출발지 · 골프장 · 일정을 고르면 바로 예약으로 이어집니다.</p>
+      <h1 id="heroH1">회원님,<br><span class="u">이번 라운딩은 어디로 가시겠습니까?</span></h1>
+      <p>출발지 · 골프장 · 일정 · 인원만 고르면 바로 예약으로 이어집니다.</p>
       <div class="search">
         <button type="button" class="sfield" id="fOrigin" onclick="openSheet('origin')">
           <span class="ic">✈️</span><span class="val ph" id="vOrigin">출발지</span><span class="arrow">▼</span>
@@ -850,6 +850,12 @@ function pvGo(){
   try{ sessionStorage.setItem('reserve_prefill', JSON.stringify(payload)); }catch(e){}
   location.href='book/';
 }
+
+// 히어로 인사말 — 로그인 회원명 반영 (회원 전용 예약 사이트)
+(function heroGreeting(){
+  const h1=document.getElementById('heroH1');
+  if(h1 && MEMBER.name) h1.innerHTML=`${MEMBER.name} 회원님,<br><span class="u">이번 라운딩은 어디로 가시겠습니까?</span>`;
+})();
 
 renderResortCards();
 syncFields();
