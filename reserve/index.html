@@ -96,17 +96,81 @@
   .region-block{margin-bottom:14px;}
   .region-title{font-size:15px;font-weight:800;color:var(--navy);margin:22px 0 12px;letter-spacing:.02em;}
   .region-title small{color:var(--muted);font-weight:600;margin-left:8px;font-size:13px;}
-  .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;}
-  .rcard{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;cursor:pointer;
-    transition:transform .18s, box-shadow .18s, border-color .18s;}
-  .rcard:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(26,39,64,.14);border-color:var(--gold);}
-  .rcard .thumb{height:132px;position:relative;display:flex;align-items:flex-end;padding:14px 16px;color:#fff;}
-  .rcard .thumb .rg{position:absolute;top:12px;left:14px;font-size:12px;font-weight:700;background:rgba(15,27,51,.42);padding:3px 10px;border-radius:999px;}
-  .rcard .thumb .nm{position:relative;z-index:2;font-size:19px;font-weight:800;text-shadow:0 2px 8px rgba(0,0,0,.4);line-height:1.3;}
-  .rcard .body{padding:13px 16px 16px;}
-  .rcard .meta{font-size:13.5px;color:var(--muted);line-height:1.5;min-height:40px;}
-  .rcard .go{margin-top:10px;display:inline-flex;align-items:center;gap:6px;font-weight:800;color:var(--navy);font-size:14.5px;}
-  .rcard:hover .go{color:var(--gold-deep);}
+  /* 리조트 목록 = 사진 카드 대신 지역별 텍스트 행 (상품 많아도 안 어지럽게) */
+  .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:8px;}
+  .rcard{display:flex;align-items:center;gap:13px;border:1px solid var(--line);border-radius:12px;
+    background:#fff;cursor:pointer;padding:13px 15px;transition:border-color .15s, background .15s;}
+  .rcard:hover{border-color:var(--navy);background:var(--navy-soft);}
+  .rcard .chip{width:42px;height:42px;border-radius:11px;flex-shrink:0;}
+  .rcard .body{flex:1;min-width:0;}
+  .rcard .nm{font-size:17px;font-weight:800;line-height:1.35;}
+  .rcard .meta{font-size:13.5px;color:var(--muted);line-height:1.45;margin-top:2px;}
+  .rcard .go{flex-shrink:0;color:var(--muted);font-size:17px;font-weight:800;}
+  .rcard:hover .go{color:var(--navy);}
+
+  /* ===== 상품 상세 (좌 설명 / 우 달력) ===== */
+  #productView{display:none;max-width:1160px;margin:0 auto;padding:26px 22px 40px;}
+  #productView.show{display:block;}
+  .pv-back{display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:700;color:var(--muted);
+    background:none;border:none;cursor:pointer;font-family:inherit;padding:6px 0;margin-bottom:12px;}
+  .pv-back:hover{color:var(--navy);}
+  .pv-title{font-size:26px;font-weight:800;line-height:1.35;letter-spacing:-.01em;margin-bottom:12px;}
+  .pv-title .rg{color:var(--muted);font-weight:700;}
+  .pv-title .tag{color:var(--gold-deep);font-weight:700;font-size:20px;}
+  .pv-checks{list-style:none;margin-bottom:26px;}
+  .pv-checks li{display:flex;align-items:flex-start;gap:8px;font-size:15px;color:#4a5a72;margin-bottom:6px;}
+  .pv-checks li .ck{color:var(--navy);font-weight:900;flex-shrink:0;}
+  .pv-grid{display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start;}
+  @media(max-width:900px){ .pv-grid{grid-template-columns:1fr;gap:20px;} }
+  .pv-sec-t{font-size:17px;font-weight:800;border-left:4px solid var(--navy);padding-left:10px;margin:0 0 12px;}
+  .pv-note{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--bg-alt);
+    font-size:15px;color:#4a5a72;line-height:1.6;margin-bottom:26px;}
+  .pv-note b{color:var(--ink);}
+  .itin{width:100%;border-collapse:collapse;font-size:14px;border:1px solid var(--line);}
+  .itin th{background:var(--bg-alt);font-weight:700;padding:11px 8px;border:1px solid var(--line);font-size:13.5px;}
+  .itin td{padding:11px 10px;border:1px solid var(--line);vertical-align:top;line-height:1.6;}
+  .itin td.day{text-align:center;font-weight:800;white-space:nowrap;width:64px;}
+  .itin td.mv{text-align:center;color:var(--muted);font-size:13px;white-space:nowrap;}
+  .itin .g{color:#1f7a4d;font-weight:700;}
+  .itin td.meal{font-size:13px;color:#4a5a72;white-space:nowrap;}
+  /* 우측 예약 카드 */
+  .pv-side{position:sticky;top:96px;border:1px solid var(--line);border-radius:16px;padding:20px;background:#fff;
+    box-shadow:0 6px 22px rgba(26,39,64,.07);}
+  @media(max-width:900px){ .pv-side{position:static;} }
+  .pv-side h3{font-size:19px;font-weight:800;margin-bottom:16px;}
+  .pv-durs{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px;}
+  .pv-dur{padding:8px 13px;border:2px solid var(--line);border-radius:999px;background:#fff;cursor:pointer;
+    font-size:14px;font-weight:700;color:var(--ink);font-family:inherit;}
+  .pv-dur.on{border-color:var(--navy);background:var(--navy);color:#fff;}
+  .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+  .cal-nav button{width:36px;height:36px;border:1px solid var(--line);background:#fff;border-radius:9px;
+    cursor:pointer;font-size:17px;color:var(--navy);font-family:inherit;}
+  .cal-nav button:disabled{opacity:.35;cursor:not-allowed;}
+  .cal-nav .ym{font-size:17px;font-weight:800;}
+  .cal-dows,.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+  .cal-dows div{text-align:center;font-size:12.5px;font-weight:700;color:var(--muted);padding:5px 0;}
+  .cal-dows div.sun{color:#c0392b;} .cal-dows div.sat{color:#2471a3;}
+  .cal-day{min-height:46px;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:1px;font-size:14.5px;color:#c8cdd6;background:#fff;border:1px solid transparent;}
+  .cal-day.on{color:var(--ink);font-weight:700;border-color:var(--line);cursor:pointer;background:#fff;}
+  .cal-day.on:hover{border-color:var(--navy);background:var(--navy-soft);}
+  .cal-day.on .rm{font-size:11px;font-weight:700;color:#1f7a4d;}
+  .cal-day.full{color:#b9c0cb;background:#f5f6f8;border-color:#eef0f4;}
+  .cal-day.full .rm{font-size:11px;color:#c0392b;font-weight:700;}
+  .cal-day.sel{background:var(--navy);border-color:var(--navy);color:#fff;}
+  .cal-day.sel .rm{color:#e8d9b8;}
+  .pv-price-lbl{font-size:15px;font-weight:800;margin:18px 0 7px;}
+  .pv-price{border:1px solid var(--line);border-radius:11px;padding:14px 16px;background:var(--bg-alt);
+    font-size:19px;font-weight:800;color:var(--navy);}
+  .pv-price.ph{font-size:14.5px;font-weight:600;color:var(--muted);}
+  .pv-price small{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-top:4px;line-height:1.5;}
+  .pv-cta{width:100%;padding:16px;border:none;border-radius:11px;background:var(--navy);color:#fff;
+    font-size:17px;font-weight:800;cursor:pointer;font-family:inherit;margin-top:12px;}
+  .pv-cta:disabled{opacity:.45;cursor:not-allowed;}
+  .pv-cta2{width:100%;padding:13px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);
+    font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;}
+  .pv-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;font-size:12.5px;color:var(--muted);}
+  .pv-legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:4px;vertical-align:-1px;}
 
   /* ===== 플로팅 ===== */
   .fabs{position:fixed;right:16px;bottom:20px;z-index:120;display:flex;flex-direction:column;gap:10px;}
@@ -231,6 +295,49 @@
   <div id="resortRegions"></div>
 </section>
 
+<!-- ===== 상품 상세 (좌: 설명·일정표 / 우: 예약 가능 달력) ===== -->
+<section id="productView">
+  <button class="pv-back" onclick="closeProduct()">‹ 목록으로</button>
+  <h1 class="pv-title" id="pvTitle"></h1>
+  <ul class="pv-checks" id="pvChecks"></ul>
+
+  <div class="pv-grid">
+    <div>
+      <h3 class="pv-sec-t">항공편</h3>
+      <div class="pv-note" id="pvAir"></div>
+
+      <h3 class="pv-sec-t">일정표</h3>
+      <div style="overflow-x:auto;">
+        <table class="itin">
+          <thead><tr><th>날짜</th><th>교통편</th><th>일정</th><th>식사</th></tr></thead>
+          <tbody id="pvItin"></tbody>
+        </table>
+      </div>
+      <div class="pv-note" style="margin-top:14px;" id="pvFoot"></div>
+    </div>
+
+    <aside class="pv-side">
+      <h3>패키지 일정 선택</h3>
+      <div class="pv-durs" id="pvDurs"></div>
+      <div class="cal-nav">
+        <button type="button" id="pvPrev" onclick="pvMonth(-1)">‹</button>
+        <span class="ym" id="pvYm"></span>
+        <button type="button" id="pvNext" onclick="pvMonth(1)">›</button>
+      </div>
+      <div class="cal-dows"><div class="sun">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div class="sat">토</div></div>
+      <div class="cal-days" id="pvDays"></div>
+      <div class="pv-legend">
+        <span><i style="background:#fff;border:1px solid var(--line);"></i>예약 가능</span>
+        <span><i style="background:#f5f6f8;border:1px solid #eef0f4;"></i>마감</span>
+      </div>
+      <div class="pv-price-lbl">1인당 금액</div>
+      <div class="pv-price ph" id="pvPrice">출발 날짜를 선택해주세요.</div>
+      <button class="pv-cta" id="pvCta" disabled onclick="pvGo()">예약 진행</button>
+      <button class="pv-cta2" onclick="alert('카카오톡 채널 메리트투어 상담으로 연결됩니다.\n(프로토타입 안내)')">상담 신청</button>
+    </aside>
+  </div>
+</section>
+
 <!-- ===== 플로팅 ===== -->
 <div class="fabs">
   <div class="fab talk" id="consult" onclick="alert('카카오톡 채널 메리트투어 실시간 상담으로 연결됩니다.\n(프로토타입 안내)')"><span class="ic">💬</span>상담</div>
@@ -318,15 +425,13 @@ function renderResortCards(){
       const bg = THUMB[ti % THUMB.length]; ti++;
       const card = document.createElement('div'); card.className='rcard';
       card.innerHTML = `
-        <div class="thumb" style="background:${bg}">
-          <span class="rg">${g.region.split(' · ')[0]}</span>
-          <span class="nm">${it.n}</span>
-        </div>
+        <div class="chip" style="background:${bg}"></div>
         <div class="body">
-          <div class="meta">${it.meta}</div>
-          <span class="go">예약하기 →</span>
-        </div>`;
-      card.onclick = ()=> goToBook({ resort: it.k });
+          <div class="nm">${it.n}</div>
+          <div class="meta">${it.desc || it.meta}</div>
+        </div>
+        <span class="go">›</span>`;
+      card.onclick = ()=> openProduct(it.k);
       grid.appendChild(card);
     });
     block.appendChild(grid);
@@ -417,7 +522,201 @@ function goToBook(extra){
 function doSearch(){
   if(!sel.origin){ openSheet('origin'); return; }
   if(!sel.resortKey){ openSheet('resort'); return; }
-  goToBook(null);
+  // 상품 상세(좌 설명 / 우 달력)로 이동 — 고른 기간을 그대로 반영
+  openProduct(sel.resortKey);
+  if(sel.durIdx!=null){ pv.durIdx=sel.durIdx; renderPv(); }
+}
+
+// ============================================================
+// 상품 상세 — 좌: 설명·일정표 / 우: 예약 가능 달력
+//   요금·잔여 상수는 예약 앱(book/)과 동일 값 사용
+// ============================================================
+const FX = 9.5;                          // 100엔 = 950원 (book/ FX_JPY_KRW)
+const SEASON_START = new Date(2026, 2, 10); // 2026-03-10 시즌 시작
+// 리조트별 요금·객실 (book/ RESORTS와 동일)
+const RES = {
+  yamanami:{t:15000,s:6000,rm:100},  kuzu:{t:14000,s:6000,rm:10},
+  kanji:{t:17000,s:6000,rm:15},      shizunoyado:{t:17000,s:6000,rm:7},
+  aso_villa:{t:17000,s:6000,rm:1},   sobo_villa:{t:15000,s:6000,rm:3},
+  dome_house:{t:15000,s:6000,rm:4},  sobo5:{t:17000,s:6000,rm:1},
+  fourteen:{t:15000,s:12000,rm:38},
+  akiba:{t:15000,tWe:17000,s:12000,rm:15}, mutsuki:{pkg:{3:1450000,4:1660000},rm:4},
+  shirosato:{t:16000,s:12000,rm:20}, fukuroda:{t:16000,s:12000,rm:20},
+  miyazaki_kuko:{t:17000,s:5000,rm:10},
+  sugadaira:{pkg:{5:1450000,7:1850000,14:null},rm:35},
+  nilai:{krwNight:140000,rm:50}
+};
+// 상품 태그 (제목 뒤 #표기)
+const TAGS = {
+  yamanami:['27홀','체류형','온천','석식포함'], kuzu:['18홀','장기체류','독채형'],
+  kanji:['2색골프','온천','석식포함'], shizunoyado:['료칸','온천','석식포함'],
+  aso_villa:['별장단독','8인','단체'], sobo_villa:['별장','가족형'],
+  dome_house:['독채','2인'], sobo5:['별장단독','4인'],
+  fourteen:['챔피언십','호텔/카라반'], akiba:['2색골프','온천','석식미포함'],
+  mutsuki:['항공포함','료칸','확정가'], shirosato:['18+9홀','관동'],
+  fukuroda:['18홀','관동','장기체류'], miyazaki_kuko:['공항인접','남규슈','중식미포함'],
+  sugadaira:['고원','확정가','항공포함'], nilai:['자유일정','동남아']
+};
+const CHECKS = {
+  _base:['회원 우선예약 · 최저가 보장','현지 송영 차량 포함 (일본인 기사)','2인 예약 가능'],
+  akiba:['석식 미포함 (자유 식사)'], miyazaki_kuko:['체재일 중식 미포함'],
+  mutsuki:['왕복 항공 포함 확정가'], sugadaira:['왕복 항공 포함 확정가'],
+  nilai:['원하는 날짜·박수로 자유 예약'], aso_villa:['별장 한 채 단독 사용'], sobo5:['별장 한 채 단독 사용']
+};
+
+const pv = { key:null, durIdx:0, y:2026, m:3, date:null };
+
+function pvNights(it){ // 선택한 기간의 박수
+  const m = (it.durs[pv.durIdx]||'').match(/(\d+)박/); return m ? +m[1] : null;
+}
+function pvDows(it){ // 선택한 기간의 출발 요일 (없으면 전 요일)
+  const DOW={'일':0,'월':1,'화':2,'수':3,'목':4,'금':5,'토':6};
+  const s = it.durs[pv.durIdx]||''; const hits=[...s.matchAll(/([일월화수목금토])\s*출발/g)].map(x=>DOW[x[1]]);
+  return hits.length?hits:null; // null = 요일 제한 없음(자유)
+}
+// 잔여 (book/ mockRemain과 동일 해시 + 시연 케이스)
+const DEMO_REMAIN = {'yamanami|2026-10-15':0,'yamanami|2026-10-29':5,'yamanami|2026-11-05':1};
+function pvRemain(k,dateStr){
+  if(Object.prototype.hasOwnProperty.call(DEMO_REMAIN,k+'|'+dateStr)) return DEMO_REMAIN[k+'|'+dateStr];
+  const key=k+'twin'+dateStr; let h=0;
+  for(let i=0;i<key.length;i++) h=((h<<5)-h)+key.charCodeAt(i)|0;
+  const total=(RES[k]||{}).rm||10;
+  return Math.max(0, Math.round(total*(0.15+(Math.abs(h)%100)/100*0.75)));
+}
+function pvPricePerson(k,nights,dateStr){
+  const r=RES[k]||{};
+  if(r.pkg){ const v=r.pkg[nights]; return v?{krw:v,air:true}:null; }
+  if(r.krwNight) return {krw:r.krwNight*nights, air:false};
+  if(!r.t||!nights) return null;
+  let taizai=r.t*nights;
+  if(r.tWe && dateStr){ // 아키바: 주중/주말 분리 → 평균 대신 출발일 기준 표기
+    const dw=new Date(dateStr).getDay(); if(dw===5||dw===6) taizai=r.tWe*nights;
+  }
+  return {krw:Math.round((taizai+(r.s||0))*FX), air:false};
+}
+
+function openProduct(k){
+  pv.key=k; pv.durIdx=0; pv.date=null; pv.y=2026; pv.m=3;
+  document.getElementById('productView').classList.add('show');
+  document.querySelector('section.resorts').style.display='none';
+  document.querySelector('.hero').style.display='none';
+  renderPv();
+  window.scrollTo({top:0,behavior:'auto'});
+}
+function closeProduct(){
+  document.getElementById('productView').classList.remove('show');
+  document.querySelector('section.resorts').style.display='';
+  document.querySelector('.hero').style.display='';
+  window.scrollTo({top:0,behavior:'auto'});
+}
+
+function renderPv(){
+  const it=findResort(pv.key); if(!it) return;
+  const g=CAT.find(x=>x.items.some(i=>i.k===pv.key));
+  const nights=pvNights(it);
+  // 제목: [일본] 지역 리조트명 N박 #태그
+  const area = g.region.split(' · ')[0];
+  const country = pv.key==='nilai' ? '말레이시아' : '일본';
+  const tags=(TAGS[pv.key]||[]).map(t=>`<span class="tag">#${t}</span>`).join(' ');
+  document.getElementById('pvTitle').innerHTML =
+    `<span class="rg">[${country}] ${area}</span> ${it.n}${nights?' '+nights+'박':''} ${tags}`;
+  // 체크 항목
+  const cks=[...CHECKS._base, ...(CHECKS[pv.key]||[])];
+  document.getElementById('pvChecks').innerHTML = cks.map(c=>`<li><span class="ck">✓</span>${c}</li>`).join('');
+  // 항공편 — 연부킹이라 좌석 확정 전
+  document.getElementById('pvAir').innerHTML =
+    `<b>항공 일정은 출발 확정 후 안내됩니다.</b><br>연간 블록 예약(연부킹) 상품으로, 단체 항공 발권 일정에 맞춰
+     편명·시간을 개별 안내드립니다. 출발 공항: ${it.dep.map(d=>d==='서울'?'인천':d==='부산'?'김해':'대구').join(' / ')}`;
+  // 기간(패키지 일정) 칩
+  document.getElementById('pvDurs').innerHTML = it.durs.map((d,i)=>
+    `<button type="button" class="pv-dur${i===pv.durIdx?' on':''}" onclick="pvSetDur(${i})">${d}</button>`).join('');
+  renderItin(it,nights);
+  renderPvCal();
+  pvSyncPrice();
+  document.getElementById('pvFoot').innerHTML =
+    `※ 일정·식사는 현지 사정(기상·항공)으로 변경될 수 있습니다. 라운딩 순서와 티오프 시간은 현지에서 확정됩니다.`;
+}
+// 일정표: 1일차 도착·라운딩 / 중간일 라운딩 / 마지막일 체크아웃
+function renderItin(it,nights){
+  const body=document.getElementById('pvItin');
+  if(!nights){ body.innerHTML=`<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">
+    자유 일정 상품입니다. 원하는 박수를 예약 단계에서 선택해주세요.</td></tr>`; return; }
+  const course=(it.meta||'').split(' · ')[0];
+  const noDin = pv.key==='akiba';           // 아키바 석식 미포함
+  const noLun = pv.key==='miyazaki_kuko';   // 미야자키 중식 미포함
+  const days=nights+1; let html='';
+  for(let d=1;d<=days;d++){
+    let mv='', plan='', meal='';
+    if(d===1){
+      mv='단체 항공<br>(추후 안내)<br><br>현지 송영 차량<br>(일본인 기사)';
+      plan=`출발지 공항 출발<br>현지 공항 도착<br><br>골프장 이동<br><span class="g">${course} 18홀 라운딩</span><br>호텔 이동 · 체크인<br>석식 및 자유시간`;
+      meal=`중식 : ${noLun?'불포함':'현지식'}<br>석식 : ${noDin?'불포함':'호텔식'}`;
+    } else if(d===days){
+      mv='현지 송영 차량<br>(일본인 기사)<br><br>단체 항공<br>(추후 안내)';
+      plan='기상 및 조식<br>호텔 체크아웃<br>공항 이동<br>귀국';
+      meal='조식 : 호텔식<br>중식 : 불포함';
+    } else {
+      mv='도보 · 카트 이동';
+      plan=`기상 및 조식<br>골프장 이동<br><span class="g">${course} 18홀 라운딩</span><br>호텔 이동<br>석식 및 자유시간`;
+      meal=`조식 : 호텔식<br>중식 : ${noLun?'불포함':'뷔페'}<br>석식 : ${noDin?'불포함':'호텔식'}`;
+    }
+    html+=`<tr><td class="day">${d}일차</td><td class="mv">${mv}</td><td>${plan}</td><td class="meal">${meal}</td></tr>`;
+  }
+  body.innerHTML=html;
+}
+function pvSetDur(i){ pv.durIdx=i; pv.date=null; renderPv(); }
+function pvMonth(delta){
+  let y=pv.y, m=pv.m+delta;
+  if(m<1){m=12;y--;} if(m>12){m=1;y++;}
+  if(y<2026||(y===2026&&m<3)){y=2026;m=3;}
+  if(y>2027){y=2027;m=12;}
+  pv.y=y; pv.m=m; renderPvCal();
+}
+function renderPvCal(){
+  const it=findResort(pv.key); const dows=pvDows(it);
+  document.getElementById('pvYm').textContent=`${pv.y}.${String(pv.m).padStart(2,'0')}`;
+  document.getElementById('pvPrev').disabled=(pv.y===2026&&pv.m<=3);
+  document.getElementById('pvNext').disabled=(pv.y===2027&&pv.m>=12);
+  const first=new Date(pv.y,pv.m-1,1), last=new Date(pv.y,pv.m,0);
+  let html='';
+  for(let i=0;i<first.getDay();i++) html+='<div class="cal-day"></div>';
+  for(let d=1;d<=last.getDate();d++){
+    const dt=new Date(pv.y,pv.m-1,d);
+    const ds=`${pv.y}-${String(pv.m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const okDow = !dows || dows.includes(dt.getDay());
+    if(dt<SEASON_START || !okDow){ html+=`<div class="cal-day">${d}</div>`; continue; }
+    const rm=pvRemain(pv.key,ds);
+    if(rm<=0){ html+=`<div class="cal-day full">${d}<span class="rm">마감</span></div>`; continue; }
+    const sel=pv.date===ds?' sel':'';
+    html+=`<div class="cal-day on${sel}" onclick="pvPick('${ds}')">${d}<span class="rm">${rm}실</span></div>`;
+  }
+  document.getElementById('pvDays').innerHTML=html;
+}
+function pvPick(ds){ pv.date=ds; renderPvCal(); pvSyncPrice(); }
+function pvSyncPrice(){
+  const it=findResort(pv.key), nights=pvNights(it);
+  const box=document.getElementById('pvPrice'), cta=document.getElementById('pvCta');
+  if(!pv.date){ box.className='pv-price ph'; box.textContent='출발 날짜를 선택해주세요.'; cta.disabled=true; return; }
+  const p=pvPricePerson(pv.key,nights,pv.date);
+  const [Y,M,D]=pv.date.split('-').map(Number);
+  const dn=['일','월','화','수','목','금','토'][new Date(Y,M-1,D).getDay()];
+  box.className='pv-price';
+  if(!p){ box.innerHTML=`${M}월 ${D}일(${dn}) 출발<small>요금은 상담 시 안내드립니다.</small>`; }
+  else {
+    box.innerHTML=`${p.krw.toLocaleString()}원`+
+      `<small>${M}월 ${D}일(${dn}) 출발 · ${nights}박${p.air?' · 왕복 항공 포함':' · 숙박·송영 기준 (항공요금 별도)'}</small>`;
+  }
+  cta.disabled=false;
+}
+function pvGo(){
+  const it=findResort(pv.key);
+  const payload={ resort:pv.key };
+  if(sel.origin) payload.origin=sel.origin;
+  else payload.origin=it.dep[0]; // 출발지 미선택 시 첫 출발지
+  if(it.std) payload.patternIdx=pv.durIdx;
+  if(pv.date) payload.date=pv.date;
+  try{ sessionStorage.setItem('reserve_prefill', JSON.stringify(payload)); }catch(e){}
+  location.href='book/';
 }
 
 renderResortCards();
