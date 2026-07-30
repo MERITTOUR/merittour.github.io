@@ -44,14 +44,13 @@
   @media(max-width:820px){ .hdr-links a span.tx{display:none;} .hdr-nav{overflow-x:auto;} .hdr-nav-inner{white-space:nowrap;} }
 
   /* ===== HERO ===== */
-  .hero{position:relative;background:
-      linear-gradient(180deg, rgba(15,27,51,.34), rgba(15,27,51,.5)),
-      linear-gradient(135deg,#2f4a34 0%, #22503a 45%, #3a6b4a 100%);
-    color:#fff;}
-  .hero::after{content:'';position:absolute;inset:0;background-image:
-      radial-gradient(circle at 15% 10%, rgba(255,255,255,.08),transparent 40%),
-      repeating-linear-gradient(60deg,transparent,transparent 44px,rgba(255,255,255,.03) 44px,rgba(255,255,255,.03) 45px);
-    pointer-events:none;}
+  /* 히어로 배경 = 코스 항공사진(assets/hero.webp).
+     파일이 없으면 맨 아래 그라디언트가 그대로 보이므로 깨지지 않음. */
+  .hero{position:relative;color:#fff;
+    background:
+      linear-gradient(180deg, rgba(15,27,51,.52) 0%, rgba(15,27,51,.68) 100%),
+      url('./assets/hero.webp') center 38% / cover no-repeat,
+      linear-gradient(135deg,#2f4a34 0%, #22503a 45%, #3a6b4a 100%);}
   .hero-inner{position:relative;z-index:2;max-width:640px;margin:0 auto;padding:30px 22px 34px;}
   /* 모바일: 여백 축소 → 첫 화면에 검색이 바로 (히어로 사진 카드는 제거됨) */
   @media(max-width:860px){
