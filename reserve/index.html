@@ -272,6 +272,7 @@
     <div class="hero-copy">
       <h1 id="heroH1">회원님,<br><span class="u">이번 라운딩은 어디로 가시겠습니까?</span></h1>
       <p>출발지 · 골프장 · 일정 · 인원만 고르면 바로 예약으로 이어집니다.</p>
+      <div id="quotaChip" style="display:none;"></div>
       <div class="search">
         <button type="button" class="sfield" id="fOrigin" onclick="openSheet('origin')">
           <span class="ic">✈️</span><span class="val ph" id="vOrigin">출발지</span><span class="arrow">▼</span>
@@ -422,16 +423,29 @@ const THUMB = ['linear-gradient(135deg,#3a6b4a,#22503a)','linear-gradient(135deg
 //   비밀번호 = 휴대폰번호                 예) 01012345678
 //   ※ 실운영은 서버 인증. 여기는 시연용이며 실제 회원 개인정보는 담지 않는다.
 // ============================================================
+// 우선예약 배정 — 회원권 종류와 무관하게 동일 (1차 1회 · 2차 2회 · 3차 2회)
+//   단, 특별회원은 3차에만 참여 가능(1·2차 미개방)
+const STD_QUOTA = { round1:1, round2:2, round3:2 };
+function isSpecialGrade(grade){ return /특별/.test(String(grade||'')); }
+function quotaFor(acc){
+  const sp = isSpecialGrade(acc.grade);
+  const u = acc.used || {};
+  const mk = (r) => {
+    const open = !(sp && r !== 'round3');
+    const total = open ? STD_QUOTA[r] : 0;
+    return { total, used: Math.min(u[r]||0, total), open };
+  };
+  return { round1: mk('round1'), round2: mk('round2'), round3: mk('round3') };
+}
+function quotaLeft(q){ return ['round1','round2','round3'].reduce((n,r)=> n + Math.max(0, q[r].total - q[r].used), 0); }
+
 const DEMO_ACCOUNTS = {
   'HONG01012345678': { name:'홍길동', grade:'EWRC이용권', maxPeople:4,
-    memberType:'정회원', joinedAt:'2019-03-14', designees:1,
-    quota:{ round1:{total:1,used:1}, round2:{total:2,used:0}, round3:{total:2,used:0} } },
+    memberType:'정회원', joinedAt:'2019-03-14', designees:1, used:{ round1:1 } },
   'KIM01087654321':  { name:'김영희', grade:'특별회원',   maxPeople:2,
-    memberType:'지정회원', joinedAt:'2021-07-02', designees:0,
-    quota:{ round1:{total:1,used:0}, round2:{total:1,used:0}, round3:{total:1,used:0} } },
+    memberType:'지정회원', joinedAt:'2021-07-02', designees:0, used:{} },
   'CHOI01011112222': { name:'최민창', grade:'EWRC Ⅱ',    maxPeople:16,
-    memberType:'정회원', joinedAt:'2026-02-11', designees:2,
-    quota:{ round1:{total:2,used:1}, round2:{total:2,used:0}, round3:{total:2,used:0} } }
+    memberType:'정회원', joinedAt:'2026-02-11', designees:2, used:{ round2:1 } }
 };
 const AUTH_KEY = 'mt_reserve_auth';
 let AUTH = null;            // {id, name, grade, maxPeople}
@@ -900,7 +914,22 @@ function renderAuthUI(){
   const h1=document.getElementById('heroH1');
   if(h1) h1.innerHTML=`${AUTH?AUTH.name+' 회원님':'회원님'},<br><span class="u">이번 라운딩은 어디로 가시겠습니까?</span>`;
   if(sel.people && sel.people>MEMBER.maxPeople){ sel.people=Math.max(MIN_PEOPLE,MEMBER.maxPeople); }
+  renderQuotaChip();
   syncFields();
+}
+// 남은 예약 가능 횟수 (우선예약 차수 합계)
+function renderQuotaChip(){
+  const el=document.getElementById('quotaChip'); if(!el) return;
+  if(!AUTH || !AUTH.quota){ el.style.display='none'; return; }
+  const q=AUTH.quota, left=quotaLeft(q);
+  const part=[['1차',q.round1],['2차',q.round2],['3차',q.round3]]
+    .map(([lab,r])=> r.open ? `${lab} ${Math.max(0,r.total-r.used)}회` : `${lab} 미개방`).join(' · ');
+  el.style.display='block';
+  el.innerHTML=`<div style="display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;background:rgba(15,27,51,.42);
+      border:1px solid rgba(232,217,184,.55);border-radius:999px;padding:9px 16px;margin-bottom:16px;font-size:14.5px;">
+      <b style="color:#e8d9b8;">예약 가능 ${left}회</b>
+      <span style="color:rgba(255,255,255,.82);">${part}</span>
+    </div>`;
 }
 function onAuthClick(){ AUTH ? logout() : openLogin(); }
 function logout(){
@@ -947,13 +976,14 @@ function doLogin(rawId, pw){
   const acc=DEMO_ACCOUNTS[id] || { name:m[1].charAt(0)+m[1].slice(1).toLowerCase()+' 회원', grade:'회원권', maxPeople:4 };
   AUTH={ id, name:acc.name, grade:acc.grade, maxPeople:acc.maxPeople,
          memberType:acc.memberType||'정회원', joinedAt:acc.joinedAt||'-',
-         designees:acc.designees||0, quota:acc.quota||null };
+         designees:acc.designees||0, quota:quotaFor(acc) };
   try{ sessionStorage.setItem(AUTH_KEY, JSON.stringify(AUTH)); }catch(e){}
   renderAuthUI();
   const b=sheetOpen('로그인 완료');
   b.innerHTML=`<div class="opt stack" style="cursor:default;border-color:var(--navy);background:var(--navy-soft);">
       <span class="nm">${AUTH.name} 회원님, 환영합니다</span>
-      <span class="desc">${AUTH.grade} · 예약 가능 인원 최대 ${AUTH.maxPeople}명</span>
+      <span class="desc">${AUTH.grade} · 예약 가능 인원 최대 ${AUTH.maxPeople}명<br>
+        남은 예약 가능 횟수 <b>${quotaLeft(AUTH.quota)}회</b>${isSpecialGrade(AUTH.grade)?' (특별회원 · 3차 우선예약만)':''}</span>
     </div>
     <div class="stp-hint" style="margin-top:12px;">보안을 위해 로그인 후 비밀번호 변경을 권장드립니다.</div>
     <button class="opt" onclick="closeSheet()" style="margin-top:14px;justify-content:center;font-weight:800;">예약 시작하기</button>`;
@@ -1034,13 +1064,17 @@ function openMyPage(){
         ${AUTH.designees?`<br>회원대우(지정인) ${AUTH.designees}명`:''}</span>
     </div>
 
-    ${q?`<div class="grp-label">우선예약 사용 현황</div>
+    ${q?`<div class="grp-label">우선예약 사용 현황 — 남은 ${quotaLeft(q)}회</div>
     ${[['round1','1차'],['round2','2차'],['round3','3차']].map(([k,lab])=>{
       const r=q[k]; if(!r) return '';
+      if(!r.open) return `<div class="opt stack" style="cursor:default;opacity:.6;">
+        <span class="nm" style="font-size:15.5px;">${lab} 우선예약 — 미개방</span>
+        <span class="desc">특별회원은 3차 우선예약에만 참여하실 수 있습니다.</span></div>`;
       return `<div class="opt stack" style="cursor:default;">
         <span class="nm" style="font-size:15.5px;">${lab} 우선예약 ${r.used} / ${r.total}회</span>
         <span class="desc">${r.used>=r.total?'배정 횟수를 모두 사용하셨습니다.':`${r.total-r.used}회 남았습니다.`}${bar(r.used,r.total)}</span>
-      </div>`; }).join('')}`:''}
+      </div>`; }).join('')}
+    <div class="stp-hint" style="margin-top:8px;">회원권 종류와 무관하게 1차 1회 · 2차 2회 · 3차 2회가 배정됩니다.${isSpecialGrade(AUTH.grade)?' (특별회원은 3차만)':''}</div>`:''}
 
     <div class="grp-label">예약 내역</div>
     <div class="opt stack" style="cursor:default;">
