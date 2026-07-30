@@ -379,6 +379,10 @@
 //   durs 순서 = book/ RESORTS[key].patterns 인덱스와 동일 (patternIdx)
 // ============================================================
 const CAT = [
+  // 관련도(주력·수요) 순 배치 — 지역: 주력 규모 → 출발지 접근성 → 상품 성격(장기·해외 후순위)
+  //   구마모토(야마나미 등 최다) → 나고야(포틴힐즈) → 벳푸(3개 출발지) → 이바라키(장기 6·7박)
+  //   → 나가노(고원 확정패키지) → 미야자키(소규모) → 말레이시아(해외 자유일정)
+  //   지역 안에서도 주력 호텔 → 특색 호텔·료칸 → 장기체류 → 별장(소규모) 순
   {region:'구마모토 · 아소', sub:'규슈 내륙 · 온천+골프', items:[
     {k:'yamanami',    n:'야마나미 호텔',   dep:['서울','부산'], std:true, meta:'아소 야마나미CC · 주중 18+9', desc:'호텔 트윈 2인 1실 · 27홀 코스 · 온천', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']},
     {k:'kanji',       n:'간지호텔',   dep:['서울','부산'], std:true, meta:'구주고원GC · 야마나미GC 2색', desc:'구주고원CC와 야마나미CC 2색 골프 · 온천', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']},
@@ -400,16 +404,17 @@ const CAT = [
     {k:'shirosato',   n:'시로사토CC',             dep:['서울'], std:true, meta:'시로사토CC · 주중 18+9', desc:'도쿄 근교 이바라키 · 주중 18+9홀 라운딩', durs:['6박 7일 (일 출발)']},
     {k:'fukuroda',    n:'후쿠로다노타키CC',        dep:['서울'], std:true, meta:'후쿠로다노타키CC', desc:'폭포로 유명한 이바라키 · 여유로운 7박 일정', durs:['7박 8일 (월 출발)']},
   ]},
-  {region:'미야자키', sub:'규슈 남부 · 온난', items:[
-    {k:'miyazaki_kuko', n:'미야자키 국제공항CC',   dep:['서울'], std:true, meta:'국제공항CC · 5박 6일', desc:'공항 바로 앞 골프텔 · 온난한 남규슈 (중식 미포함)', durs:['5박 6일 (일 출발)']},
-  ]},
   {region:'나가노', sub:'고원 리조트 · 확정 패키지', items:[
     {k:'sugadaira',   n:'스가다이라 그린CC',       dep:['서울'], std:false, meta:'해발 1,700m 고원 · 니가타', desc:'해발 1,700m 고원 · 여름에도 시원한 확정 패키지', durs:['5박 6일','7박 8일','14박 15일']},
+  ]},
+  {region:'미야자키', sub:'규슈 남부 · 온난', items:[
+    {k:'miyazaki_kuko', n:'미야자키 국제공항CC',   dep:['서울'], std:true, meta:'국제공항CC · 5박 6일', desc:'공항 바로 앞 골프텔 · 온난한 남규슈 (중식 미포함)', durs:['5박 6일 (일 출발)']},
   ]},
   {region:'말레이시아', sub:'쿠알라룸푸르 · 자유 일정', items:[
     {k:'nilai',       n:'닐라이스프링스CC 호텔',  dep:['서울'], std:false, meta:'쿠알라룸푸르 · 자유 일정', desc:'쿠알라룸푸르 · 원하는 날짜·박수로 자유롭게', durs:['자유 일정']},
   ]},
 ];
+
 const ORIGINS = [
   {id:'서울', name:'서울 출발', airport:'인천공항'},
   {id:'부산', name:'부산 출발', airport:'김해공항'},
@@ -981,7 +986,8 @@ function openLogin(msg){
   b.innerHTML=`
     ${msg?`<div class="sheet-hint" style="color:var(--gold-deep);font-weight:700;">${msg}</div>`:''}
     <div class="stp-hint" style="margin-bottom:14px;">
-      기존 EWRC 앱·홈페이지 서비스가 종료되어, <b>메리트투어 홈페이지</b>에서 예약·이용 확인을 하실 수 있습니다.<br>
+      <b>메리트투어 홈페이지가 새롭게 단장했습니다.</b><br>
+      회원님의 예약과 이용 내역을 한곳에서 확인하실 수 있습니다.<br>
       <b>회원가입 없이</b> 아래 방법으로 바로 로그인하실 수 있습니다.
     </div>
     <label class="grp-label" for="loginId">아이디</label>
