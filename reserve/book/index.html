@@ -5179,6 +5179,13 @@ startGateTimer();
     }
   }
   state.skipWait = true; // v13.42 — 검색위젯 진입: 대기화면 없이 캘린더로
+  // v13.44 — 상품 상세에서 날짜까지 고른 경우 객실 선택(Step5)으로 직행
+  if (p.date && state.resort && state.patternIdx != null) {
+    state.date = p.date;
+    state.calMonth = { y: +p.date.slice(0,4), m: +p.date.slice(5,7) };
+    goStep(5);
+    return;
+  }
   if (state.origin && state.resort && state.patternIdx != null) goStep(4);
   else if (state.origin && state.resort) goStep(3);
   else if (state.origin) goStep(2);
