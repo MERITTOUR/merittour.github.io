@@ -148,10 +148,16 @@
   .cal-day.on{color:var(--ink);font-weight:700;border-color:var(--line);cursor:pointer;background:#fff;}
   .cal-day.on:hover{border-color:var(--navy);background:var(--navy-soft);}
   .cal-day.on .rm{font-size:11px;font-weight:700;color:#1f7a4d;}
-  .cal-day.full{color:#b9c0cb;background:#f5f6f8;border-color:#eef0f4;}
+  /* 마감일도 클릭 가능 → 예약 대기 신청 (엠클릭 「대기」 구분값 활용) */
+  .cal-day.full{color:#8a93a3;background:#f5f6f8;border-color:#e6e9ee;cursor:pointer;}
+  .cal-day.full:hover{border-color:var(--gold-deep);background:#fdf8f0;}
   .cal-day.full .rm{font-size:11px;color:#c0392b;font-weight:700;}
   .cal-day.sel{background:var(--navy);border-color:var(--navy);color:#fff;}
   .cal-day.sel .rm{color:#e8d9b8;}
+  .cal-day.full.sel{background:var(--gold-deep);border-color:var(--gold-deep);color:#fff;}
+  .cal-day.full.sel .rm{color:#fff;}
+  .pv-cta.wait{background:var(--gold-deep);}
+  .pv-price.wait{background:#fdf8f0;border-color:#e8d9b8;color:var(--gold-deep);}
   .pv-price-lbl{font-size:15px;font-weight:800;margin:18px 0 7px;}
   .pv-price{border:1px solid var(--line);border-radius:11px;padding:14px 16px;background:var(--bg-alt);
     font-size:19px;font-weight:800;color:var(--navy);}
@@ -325,7 +331,7 @@
       <div class="cal-days" id="pvDays"></div>
       <div class="pv-legend">
         <span><i style="background:#fff;border:1px solid var(--line);"></i>예약 가능</span>
-        <span><i style="background:#f5f6f8;border:1px solid #eef0f4;"></i>마감</span>
+        <span><i style="background:#f5f6f8;border:1px solid #e6e9ee;"></i>마감 — 눌러서 대기 신청</span>
       </div>
       <div class="pv-price-lbl">인원</div>
       <div class="stp" style="padding:6px 2px 10px;">
@@ -339,7 +345,6 @@
       <div class="pv-price-lbl">1인당 금액</div>
       <div class="pv-price ph" id="pvPrice">출발 날짜를 선택해주세요.</div>
       <button class="pv-cta" id="pvCta" disabled onclick="pvGo()">예약 진행</button>
-      <button class="pv-cta2" onclick="alert('카카오톡 채널 메리트투어 상담으로 연결됩니다.\n(프로토타입 안내)')">상담 신청</button>
     </aside>
   </div>
 </section>
@@ -606,7 +611,7 @@ const CHECKS = {
   nilai:['원하는 날짜·박수로 자유 예약'], aso_villa:['별장 한 채 단독 사용'], sobo5:['별장 한 채 단독 사용']
 };
 
-const pv = { key:null, durIdx:0, y:2026, m:3, date:null, people:MIN_PEOPLE };
+const pv = { key:null, durIdx:0, y:2026, m:3, date:null, people:MIN_PEOPLE, wait:false };
 
 function pvPpl(delta){
   const n = pv.people + delta;
@@ -692,29 +697,46 @@ function renderPv(){
   document.getElementById('pvFoot').innerHTML =
     `※ 일정·식사는 현지 사정(기상·항공)으로 변경될 수 있습니다. 라운딩 순서와 티오프 시간은 현지에서 확정됩니다.`;
 }
-// 일정표: 1일차 도착·라운딩 / 중간일 라운딩 / 마지막일 체크아웃
+// 일정표 — 엠클릭 확정서(야마나미 기준) 문안 반영
+//   1일차: 개별 수속 → 도착·입국 → 숙소 이동(1시간) → 점심 후 라운딩(일몰까지)
+//   중간일: 조식 후 라운딩 (주중 18+9 서비스 / 주말·일본공휴일 18홀), 주말 온천·마트 셔틀
+//   마지막일: 조식 → 체크아웃 → 공항 이동 → 귀국
 function renderItin(it,nights){
   const body=document.getElementById('pvItin');
   if(!nights){ body.innerHTML=`<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">
     자유 일정 상품입니다. 원하는 박수를 예약 단계에서 선택해주세요.</td></tr>`; return; }
   const course=(it.meta||'').split(' · ')[0];
-  const noDin = pv.key==='akiba';           // 아키바 석식 미포함
-  const noLun = pv.key==='miyazaki_kuko';   // 미야자키 중식 미포함
+  const svc9  = /18\+9/.test(it.meta||'');    // 주중 18홀 + 9홀 서비스
+  const yama  = /야마나미|쿠주|간지|시즈/.test(it.n); // 야마나미 계열(클럽식·셔틀 안내)
+  const noDin = pv.key==='akiba';             // 아키바 석식 미포함
+  const noLun = pv.key==='miyazaki_kuko';     // 미야자키 중식 미포함
+  const fromSeoul = (sel.origin||it.dep[0])==='서울';
+  const airOut = it.dep.includes('서울') && fromSeoul ? '인천국제공항' : ((sel.origin||it.dep[0])==='부산' ? '김해국제공항' : '대구국제공항');
+  const lunch1 = noLun ? '불포함' : (yama && fromSeoul ? '카츠카레' : '현지식');
+  const lunchMid = noLun ? '불포함' : (yama ? '클럽식' : '현지식');
+  const roundLine = svc9
+    ? `<span class="g">${course} 주중 18홀 + 9홀(서비스)</span><br><small style="color:var(--muted);">주말·일본공휴일 18홀 라운딩</small>`
+    : `<span class="g">${course} 18홀 라운딩</span>`;
   const days=nights+1; let html='';
   for(let d=1;d<=days;d++){
     let mv='', plan='', meal='';
     if(d===1){
-      mv='단체 항공<br>(추후 안내)<br><br>현지 송영 차량<br>(일본인 기사)';
-      plan=`출발지 공항 출발<br>현지 공항 도착<br><br>골프장 이동<br><span class="g">${course} 18홀 라운딩</span><br>호텔 이동 · 체크인<br>석식 및 자유시간`;
-      meal=`중식 : ${noLun?'불포함':'현지식'}<br>석식 : ${noDin?'불포함':'호텔식'}`;
+      mv=`단체 항공<br>(편명 추후 안내)<br><small>${airOut} 개별 수속</small><br><br>현지 송영 차량<br>(일본인 기사)`;
+      plan=`${airOut} 출발 · 개별 수속<br>현지 공항 도착 · 입국 수속<br>숙소로 이동 (약 1시간)<br><br>`+
+           (fromSeoul
+             ? `점심식사 후 <span class="g">라운딩</span> (일몰 전까지 · 최대 18홀)<br><small style="color:var(--muted);">※ 일몰 시간·현지 사정에 따라 라운딩 시간이 짧아질 수 있습니다.</small><br>`
+             : `호텔 체크인<br>`)+
+           `호텔 체크인 · 석식 및 자유시간`;
+      meal=`중식 : ${lunch1}<br>석식 : ${noDin?'불포함':'호텔식'}`;
     } else if(d===days){
-      mv='현지 송영 차량<br>(일본인 기사)<br><br>단체 항공<br>(추후 안내)';
-      plan='기상 및 조식<br>호텔 체크아웃<br>공항 이동<br>귀국';
+      mv='현지 송영 차량<br>(일본인 기사)<br><br>단체 항공<br>(편명 추후 안내)';
+      plan='아침식사 후 호텔 체크아웃<br>공항 이동 · 출국 수속<br><span class="g">귀국</span>';
       meal='조식 : 호텔식<br>중식 : 불포함';
     } else {
-      mv='도보 · 카트 이동';
-      plan=`기상 및 조식<br>골프장 이동<br><span class="g">${course} 18홀 라운딩</span><br>호텔 이동<br>석식 및 자유시간`;
-      meal=`조식 : 호텔식<br>중식 : ${noLun?'불포함':'뷔페'}<br>석식 : ${noDin?'불포함':'호텔식'}`;
+      mv='현지 송영 차량<br>또는 도보 이동';
+      plan=`아침식사 후 골프장 이동<br>${roundLine}<br>라운딩 후 호텔 휴식<br>석식 및 자유시간`+
+           (yama ? `<br><small style="color:var(--muted);">※ 주말(토·일) 슈퍼마켓·온천 유료 셔틀 운행 (현지 사정에 따라 취소될 수 있음)</small>` : '');
+      meal=`조식 : 호텔식<br>중식 : ${lunchMid}<br>석식 : ${noDin?'불포함':'호텔식'}`;
     }
     html+=`<tr><td class="day">${d}일차</td><td class="mv">${mv}</td><td>${plan}</td><td class="meal">${meal}</td></tr>`;
   }
@@ -742,30 +764,83 @@ function renderPvCal(){
     const okDow = !dows || dows.includes(dt.getDay());
     if(dt<SEASON_START || !okDow){ html+=`<div class="cal-day">${d}</div>`; continue; }
     const rm=pvRemain(pv.key,ds);
-    if(rm<=0){ html+=`<div class="cal-day full">${d}<span class="rm">마감</span></div>`; continue; }
-    const sel=pv.date===ds?' sel':'';
-    html+=`<div class="cal-day on${sel}" onclick="pvPick('${ds}')">${d}<span class="rm">${rm}실</span></div>`;
+    const isSel=pv.date===ds?' sel':'';
+    // 마감일도 클릭 가능 → 예약 대기 신청
+    if(rm<=0){ html+=`<div class="cal-day full${isSel}" onclick="pvPick('${ds}',true)">${d}<span class="rm">마감</span></div>`; continue; }
+    html+=`<div class="cal-day on${isSel}" onclick="pvPick('${ds}',false)">${d}<span class="rm">${rm}실</span></div>`;
   }
   document.getElementById('pvDays').innerHTML=html;
 }
-function pvPick(ds){ pv.date=ds; renderPvCal(); pvSyncPrice(); }
+function pvPick(ds,isFull){ pv.date=ds; pv.wait=!!isFull; renderPvCal(); pvSyncPrice(); }
 function pvSyncPrice(){
   const it=findResort(pv.key), nights=pvNights(it);
   const box=document.getElementById('pvPrice'), cta=document.getElementById('pvCta');
+  cta.classList.remove('wait');
+  cta.textContent='예약 진행';
   if(!pv.date){ box.className='pv-price ph'; box.textContent='출발 날짜를 선택해주세요.'; cta.disabled=true; return; }
   const p=pvPricePerson(pv.key,nights,pv.date);
   const [Y,M,D]=pv.date.split('-').map(Number);
   const dn=['일','월','화','수','목','금','토'][new Date(Y,M-1,D).getDay()];
+  cta.disabled=false;
+  // 마감일 = 예약 대기 신청 (엠클릭 구분값 「대기」로 접수)
+  if(pv.wait){
+    box.className='pv-price wait';
+    box.innerHTML=`${M}월 ${D}일(${dn}) 마감`+
+      `<small>취소분이 생기면 <b>대기 순서대로</b> 연락드립니다.<br>총 ${pv.people}명 기준으로 대기 신청됩니다.</small>`;
+    cta.classList.add('wait');
+    cta.textContent='예약 대기 신청';
+    return;
+  }
   box.className='pv-price';
-  if(!p){ box.innerHTML=`${M}월 ${D}일(${dn}) 출발<small>요금은 상담 시 안내드립니다.</small>`; }
+  if(!p){ box.innerHTML=`${M}월 ${D}일(${dn}) 출발<small>요금은 예약 단계에서 안내드립니다.</small>`; }
   else {
     box.innerHTML=`${p.krw.toLocaleString()}원`+
       `<small>${M}월 ${D}일(${dn}) 출발 · ${nights}박${p.air?' · 왕복 항공 포함':' · 숙박·송영 기준 (항공요금 별도)'}<br>`+
       `총 ${pv.people}명 · <b>${(p.krw*pv.people).toLocaleString()}원</b></small>`;
   }
-  cta.disabled=false;
 }
+// 예약 대기 신청 — 엠클릭 예약 구분값 「대기」로 접수되는 흐름
+function pvWaitApply(){
+  const it=findResort(pv.key);
+  const [Y,M,D]=pv.date.split('-').map(Number);
+  const dn=['일','월','화','수','목','금','토'][new Date(Y,M-1,D).getDay()];
+  const body=document.getElementById('sheetBody');
+  document.getElementById('sheetTitle').textContent='예약 대기 신청';
+  sheetKind='wait';
+  body.innerHTML=`
+    <div class="sheet-hint">마감된 일정입니다. 취소분이 생기면 대기 순서대로 연락드립니다.</div>
+    <div class="opt stack" style="cursor:default;">
+      <span class="nm">${it.n}</span>
+      <span class="desc">${M}월 ${D}일(${dn}) 출발 · ${it.durs[pv.durIdx]} · 총 ${pv.people}명</span>
+    </div>
+    <div class="stp-hint" style="margin-top:12px;">
+      · 신청 후 <b>예약 상태가 「대기」</b>로 등록되며, 자리가 나면 순서대로 안내드립니다.<br>
+      · 대기 중에는 요금이 청구되지 않습니다.<br>
+      · 연락처는 회원 정보의 번호로 안내드립니다.
+    </div>
+    <button class="opt" id="waitGo" style="margin-top:16px;justify-content:center;font-weight:800;
+      background:var(--gold-deep);color:#fff;border-color:var(--gold-deep);">대기 신청하기</button>`;
+  body.querySelector('#waitGo').onclick=pvWaitSubmit;
+  document.getElementById('sheetMask').classList.add('show');
+}
+function pvWaitSubmit(){
+  const it=findResort(pv.key);
+  const [Y,M,D]=pv.date.split('-').map(Number);
+  document.getElementById('sheetTitle').textContent='대기 신청 접수';
+  document.getElementById('sheetBody').innerHTML=`
+    <div class="opt stack" style="cursor:default;border-color:var(--gold-deep);background:#fdf8f0;">
+      <span class="nm">대기 신청이 접수되었습니다</span>
+      <span class="desc">${it.n} · ${M}월 ${D}일 출발 · 총 ${pv.people}명</span>
+    </div>
+    <div class="stp-hint" style="margin-top:12px;">
+      자리가 나면 순서대로 연락드립니다. 예약 내역에서 <b>「대기」</b> 상태로 확인하실 수 있습니다.<br>
+      <small style="color:var(--muted);">※ 프로토타입 화면입니다. 실제 접수는 예약 시스템 연동 후 처리됩니다.</small>
+    </div>
+    <button class="opt" onclick="closeSheet()" style="margin-top:16px;justify-content:center;font-weight:800;">확인</button>`;
+}
+
 function pvGo(){
+  if(pv.wait){ pvWaitApply(); return; }
   const it=findResort(pv.key);
   const payload={ resort:pv.key };
   if(sel.origin) payload.origin=sel.origin;
