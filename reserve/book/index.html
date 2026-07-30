@@ -5053,6 +5053,32 @@ async function _submitHandler() {
 
   // breadcrumb의 확정 단계를 "완료"로 표시
   if (typeof renderCrumbs === 'function') renderCrumbs();
+
+  // v13.46 — 예약 완료 알림: 랜딩(/reserve/)이 읽어 배너로 안내하고 우선예약 사용분 반영
+  try {
+    const _r = RESORTS[state.resort] || {};
+    sessionStorage.setItem('mt_reserve_event', JSON.stringify({
+      type: 'booked', no,
+      resort: _r.name || '',
+      date: state.date || '',
+      people: (typeof totalPeople === 'function' ? totalPeople().people : null),
+      at: new Date().toISOString()
+    }));
+  } catch (e) {}
+  // 완료 화면에도 남은 우선예약 횟수 안내(로그인 회원 기준)
+  try {
+    const q = (LOGIN_USER && LOGIN_USER.priorityQuota) || null;
+    if (q) {
+      const left = ['round1','round2','round3'].reduce((n,k)=> n + Math.max(0,(q[k]?.total||0)-(q[k]?.used||0)), 0);
+      const bn = document.getElementById('completedBanner');
+      if (bn && left >= 0) {
+        const line = document.createElement('div');
+        line.style.cssText = 'margin-top:10px;font-size:15px;font-weight:700;';
+        line.textContent = `우선예약 1회를 사용하셨습니다 · 남은 예약 가능 횟수 ${Math.max(0,left-1)}회`;
+        bn.appendChild(line);
+      }
+    }
+  } catch (e) {}
 }
 
 // v13.23 — submitBtn에 핸들러 바인딩 (restart 후 재바인딩용으로 named function 사용)
