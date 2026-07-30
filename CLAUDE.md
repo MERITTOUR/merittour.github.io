@@ -35,12 +35,19 @@
     dining/index.html      식사 안내 — 조식·중식·석식 순서
   14hills/                 나고야 포틴힐즈 CC 안내 (랜딩 + dining)
 /reserve/                  회원 간편 예약 (프로토타입 · Supabase 연결 전 단계)
-  index.html               다단계 예약 플로우 (우선예약 게이트→골프장→기간→객실→날짜→확정→완료)
-                           ※ 단일 HTML, 목 데이터 인라인(RESORTS·LOGIN_USERS), 시니어 친화 디자인(블루/오렌지)
-                           ※ 상단 dev 토글로 시간(우선/자유예약 단계)·로그인 시나리오 시뮬레이션
+  index.html               랜딩 = 검색 4단계(어디서/어디로/얼마나/몇 명) + 지역별 상품 목록
+                           + 같은 화면 상품 상세(좌 설명·일정표 / 우 예약 가능 달력) + 로그인·마이페이지·예약확인·고객센터
+                           ※ 단일 HTML, 목 데이터 인라인(CAT·RES·TAGS·CHECKS·ROUND·DEMO_ACCOUNTS·DEMO_BOOKINGS)
+                           ※ 우선예약 차수(PRIORITY_SCHEDULE) 누적·차감, `?sim=ISO` 로 시각 시뮬레이션
+                           ※ 상품 데이터의 단일 출처 = 사내 「2027 시즌 골프투어 예약 안내」 가이드
+                             (merittour-tools `tools/booking/2027guide/`) + 리조트 마스터 보유 객실
+  spec/index.html          요구사항 정의서 (개발 위탁사 전달용 · A4 인쇄 CSS · noindex)
+  book/index.html          구 다단계 예약 플로우 (레거시 · 어디에서도 링크하지 않음)
   confirm/index.html       모바일 확정서 예시 (섹션 자동 접힘·동일 일정 병합·결제 현황)
 ```
 - **`/reserve/`는 별도 디자인 축**: 회원 예약 프로토타입이라 야마나미 다크 골드 테마가 아니라 프로토타입 고유 팔레트(시니어 친화 고대비)를 그대로 유지한다. Supabase 연결 시 목 데이터를 실데이터로 교체 예정.
+- **`/reserve/`에 실제 회원 개인정보(이름·휴대폰·생년월일·고객ID)를 넣지 않는다.** public 저장소이므로 시연은 `DEMO_ACCOUNTS`(HONG/KIM/CHOI + 가상 번호)로만 한다.
+- **상품 구성을 바꿀 때는 `index.html`(CAT·RES·TAGS·CHECKS·ROUND)과 `spec/index.html`(§2 상품 표)을 함께 고친다.** 2027 시즌 미진행 상품(후쿠로다노타키CC·닐라이스프링스CC 호텔·스가다이라 맨션)은 제외된 상태다.
 - 계층: **(임시 게이트)`/` → 리조트 안내(`/guide/`) → 각 리조트(`/guide/yamanami/`, `/guide/14hills/`)**.
 - `/about/`(회사소개)은 **루트 고정 주소**라 `/guide/` 아래로 옮기지 않는다.
 - 식사 안내는 **점심·저녁 분리 없이 한 페이지**(`dining/`)에서 **조식 → 중식 → 석식** 순서로 안내한다.
