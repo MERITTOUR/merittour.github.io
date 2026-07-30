@@ -348,7 +348,7 @@
           <button type="button" class="stp-btn" style="width:40px;height:40px;font-size:21px;" id="pvPplPlus" onclick="pvPpl(1)">＋</button>
         </div>
       </div>
-      <div class="pv-price-lbl">1인당 금액</div>
+      <div class="pv-price-lbl">선택 일정</div>
       <div class="pv-price ph" id="pvPrice">출발 날짜를 선택해주세요.</div>
       <button class="pv-cta" id="pvCta" disabled onclick="pvGo()">예약 진행</button>
     </aside>
@@ -909,13 +909,11 @@ function pvSyncPrice(){
     cta.textContent='예약 대기 신청';
     return;
   }
+  // 금액은 표기하지 않는다(요금 안내는 담당자 확인 후) — 선택 일정만 요약
   box.className='pv-price';
-  if(!p){ box.innerHTML=`${M}월 ${D}일(${dn}) 출발<small>요금은 예약 단계에서 안내드립니다.</small>`; }
-  else {
-    box.innerHTML=`${p.krw.toLocaleString()}원`+
-      `<small>${M}월 ${D}일(${dn}) 출발 · ${nights}박${p.air?' · 왕복 항공 포함':' · 숙박·송영 기준 · 항공요금은 발권 확정 후 안내'}<br>`+
-      `총 ${pv.people}명 · <b>${(p.krw*pv.people).toLocaleString()}원</b></small>`;
-  }
+  box.innerHTML=`${M}월 ${D}일(${dn}) 출발`+
+    `<small>${nights?nights+'박 '+(nights+1)+'일 · ':''}총 ${pv.people}명 (2인 1실 기준 ${Math.ceil(pv.people/2)}실)<br>`+
+    `요금은 예약 확정 후 담당자가 안내드립니다.</small>`;
 }
 // 예약 대기 신청 — 엠클릭 예약 구분값 「대기」로 접수되는 흐름
 function pvWaitApply(){
@@ -998,11 +996,11 @@ function openConfirm(){
       <span class="nm">${AUTH.name} 회원님</span>
       <span class="desc">${AUTH.grade} · ${AUTH.memberType} · 예약 후 남는 횟수 ${Math.max(0,quotaLeft(myQuota())-1)}회</span>
     </div>
-    <div class="grp-label">금액</div>
+    <div class="grp-label">요금 안내</div>
     <div class="opt stack" style="cursor:default;">
-      <span class="nm">${p?`1인 ${p.krw.toLocaleString()}원 · 총 ${(p.krw*pv.people).toLocaleString()}원`:'상담 시 안내'}</span>
-      <span class="desc">${p?(p.air?'왕복 항공 포함':'숙박·송영 기준 · 항공요금은 발권 확정 후 안내'):''}<br>
-        예약 확정 후 예약금 안내를 드립니다.</span>
+      <span class="nm">확정 후 담당자가 안내드립니다</span>
+      <span class="desc">${p&&p.air?'왕복 항공 포함 상품입니다.':'숙박·송영·라운딩·식사 포함, 항공은 단체 발권 일정에 맞춰 안내됩니다.'}<br>
+        예약금 안내는 카카오톡 채널 「메리트투어」 또는 문자로 발송됩니다.</span>
     </div>
     <div class="stp-hint" style="margin-top:12px;">
       · 확정 시 <b>우선예약 1회</b>가 사용됩니다.<br>
