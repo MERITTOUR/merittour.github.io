@@ -88,6 +88,11 @@
   .region-block{margin-bottom:14px;}
   .region-title{font-size:15px;font-weight:800;color:var(--navy);margin:22px 0 12px;letter-spacing:.02em;}
   .region-title small{color:var(--muted);font-weight:600;margin-left:8px;font-size:13px;}
+  /* 골프장·리조트(중간 단계) 소제목 */
+  .venue-title{display:flex;align-items:baseline;gap:8px;font-size:14.5px;font-weight:800;color:#3a4a63;
+    margin:14px 0 8px;padding-left:11px;border-left:3px solid var(--gold);}
+  .venue-title small{color:var(--muted);font-weight:600;font-size:12.5px;}
+  .venue-label{font-size:13px;font-weight:800;color:#3a4a63;margin:10px 0 6px;padding-left:9px;border-left:3px solid var(--gold);}
   /* 리조트 목록 = 사진 카드 대신 지역별 텍스트 행 (상품 많아도 안 어지럽게) */
   .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:8px;}
   .rcard{display:flex;align-items:center;gap:13px;border:1px solid var(--line);border-radius:12px;
@@ -252,9 +257,9 @@
   <div class="hdr-nav">
     <div class="hdr-nav-inner">
       <span class="ham">☰</span>
-      <a href="book/">실시간예약현황</a>
+      <a href="#resorts">실시간 예약현황</a>
       <a href="#resorts">일본 골프</a>
-      <a href="book/">3박4일 골프</a>
+      <a href="#resorts">3박4일 골프</a>
       <a href="#resorts">부산/김해 출발</a>
       <a href="#resorts">골프장&amp;호텔정보</a>
       <a href="#">공지사항</a>
@@ -379,41 +384,65 @@
 //   durs 순서 = book/ RESORTS[key].patterns 인덱스와 동일 (patternIdx)
 // ============================================================
 const CAT = [
-  // 관련도(주력·수요) 순 배치 — 지역: 주력 규모 → 출발지 접근성 → 상품 성격(장기·해외 후순위)
-  //   구마모토(야마나미 등 최다) → 나고야(포틴힐즈) → 벳푸(3개 출발지) → 이바라키(장기 6·7박)
-  //   → 나가노(고원 확정패키지) → 미야자키(소규모) → 말레이시아(해외 자유일정)
-  //   지역 안에서도 주력 호텔 → 특색 호텔·료칸 → 장기체류 → 별장(소규모) 순
-  {region:'구마모토 · 아소', sub:'규슈 내륙 · 온천+골프', items:[
-    {k:'yamanami',    n:'야마나미 호텔',   dep:['서울','부산'], std:true, meta:'아소 야마나미CC · 주중 18+9', desc:'호텔 트윈 2인 1실 · 27홀 코스 · 온천', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']},
-    {k:'kanji',       n:'간지호텔',   dep:['서울','부산'], std:true, meta:'구주고원GC · 야마나미GC 2색', desc:'구주고원CC와 야마나미CC 2색 골프 · 온천', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']},
-    {k:'shizunoyado', n:'시즈노야도 료칸',         dep:['서울','부산'], std:true, meta:'야마나미GC · 힐링 료칸', desc:'조용한 일본식 료칸 · 정갈한 식사와 온천', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (목 출발)','7박 8일 (일 출발)']},
-    {k:'kuzu',        n:'야마나미 프라이빗 레지던스',       dep:['서울','부산'], std:true, meta:'야마나미CC · 쿠주힐즈 18홀', desc:'장기 체류형 2인 1동 독채 레지던스', durs:['7박 8일 (수 출발)']},
-    {k:'aso_villa',   n:'야마나미 프레스티지',               dep:['서울','부산'], std:true, meta:'8인 1동 · 단체 전용', desc:'8인 대형 별장 한 채 단독 사용 · 단체 모임', durs:['7박 8일 (목 출발)','7박 8일 (일 출발)']},
-    {k:'sobo_villa',  n:'야마나미 히노키빌라 - 캐빈',               dep:['서울','부산'], std:true, meta:'편백 2인 별장 · 트윈 2동 + 트리플 1동', desc:'편백으로 지은 2인 별장 · 가족·소그룹', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)']},
-    {k:'sobo5',       n:'야마나미 히노키빌라 - 패밀리',                dep:['서울','부산'], std:true, meta:'4인 1동', desc:'편백 4인 독채 별장 · 친구 모임', durs:['7박 8일 (목 출발)','7박 8일 (일 출발)']},
-    {k:'dome_house',  n:'야마나미 포레스트 돔',               dep:['서울','부산'], std:true, meta:'독채형 별장 4동', desc:'숲 속 독채 돔형 별장 · 2인', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)']},
+  // 3단 구성: 지역 → 골프장·리조트(venue) → 숙소(items)
+  //   관련도(주력·수요) 순 — 지역: 주력 규모 → 출발지 접근성 → 상품 성격(장기·해외 후순위)
+  { region:'구마모토 · 아소', sub:'규슈 내륙 · 온천+골프', venues:[
+    { v:'아소 야마나미 리조트', vsub:'야마나미CC 27홀 · 리조트 내 호텔·별장', items:[
+      {k:'yamanami',    n:'야마나미 호텔',            dep:['서울','부산'], std:true,  meta:'아소 야마나미CC · 주중 18+9', desc:'호텔 트윈 2인 1실 · 온천 대욕장', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']},
+      {k:'kuzu',        n:'야마나미 프라이빗 레지던스', dep:['서울','부산'], std:true,  meta:'야마나미CC · 장기 체류형', desc:'장기 체류형 2인 1동 독채 레지던스', durs:['7박 8일 (수 출발)']},
+      {k:'aso_villa',   n:'야마나미 프레스티지',       dep:['서울','부산'], std:true,  meta:'8인 대형 별장 · 단체 전용', desc:'8인 대형 별장 한 채 단독 사용 · 단체 모임', durs:['7박 8일 (목 출발)','7박 8일 (일 출발)']},
+      {k:'sobo_villa',  n:'야마나미 히노키빌라 - 캐빈', dep:['서울','부산'], std:true,  meta:'편백 2인 별장 · 3동', desc:'편백으로 지은 2인 별장 · 가족·소그룹', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)']},
+      {k:'sobo5',       n:'야마나미 히노키빌라 - 패밀리', dep:['서울','부산'], std:true, meta:'편백 4인 독채 별장 · 1동', desc:'편백 4인 독채 별장 · 친구 모임', durs:['7박 8일 (목 출발)','7박 8일 (일 출발)']},
+      {k:'dome_house',  n:'야마나미 포레스트 돔',      dep:['서울','부산'], std:true,  meta:'독채 돔형 별장 4동', desc:'숲 속 독채 돔형 별장 · 2인', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)']}
+    ]},
+    { v:'구주고원CC · 야마나미CC', vsub:'2색 골프', items:[
+      {k:'kanji',       n:'간지호텔',                dep:['서울','부산'], std:true,  meta:'구주고원CC · 야마나미CC 2색', desc:'구주고원CC와 야마나미CC 2색 골프 · 온천', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']}
+    ]},
+    { v:'야마나미CC', vsub:'료칸 숙박', items:[
+      {k:'shizunoyado', n:'시즈노야도 료칸',          dep:['서울','부산'], std:true,  meta:'야마나미CC · 힐링 료칸', desc:'조용한 일본식 료칸 · 정갈한 식사와 온천', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (목 출발)','7박 8일 (일 출발)']}
+    ]}
   ]},
-  {region:'나고야', sub:'주부 지역 · 챔피언십', items:[
-    {k:'fourteen',    n:'포틴힐즈CC 호텔',             dep:['서울','부산'], std:true, meta:'포틴힐즈CC · 챔피언십 코스', desc:'나고야 챔피언십 코스 · 호텔/카라반 선택 가능', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (화 출발)']},
+  { region:'나고야', sub:'주부 지역 · 챔피언십', venues:[
+    { v:'포틴힐즈CC', vsub:'챔피언십 코스', items:[
+      {k:'fourteen_hotel',   n:'포틴힐즈CC 호텔',   dep:['서울','부산'], std:true, meta:'포틴힐즈CC · 챔피언십 코스', desc:'호텔 트윈 2인 1실 · 4인 패밀리룸 선택 가능', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (화 출발)']},
+      {k:'fourteen_caravan', n:'포틴힐즈CC 카라반', dep:['서울','부산'], std:true, meta:'포틴힐즈CC · 카라반형 숙소', desc:'카라반형 트윈 2인 1실', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (화 출발)']}
+    ]}
   ]},
-  {region:'벳푸', sub:'규슈 온천 휴양지', items:[
-    {k:'akiba',       n:'아키바 리조트',       dep:['서울','부산','대구'], std:true, meta:'벳푸CC · 오기야마CC · 주중/주말', desc:'벳푸CC와 오기야마CC 2색 골프 · 온천 휴양', durs:['3박 4일 (금 출발)','4박 5일 (월 출발)']},
-    {k:'mutsuki',     n:'무츠키 료칸',            dep:['서울','부산','대구'], std:true, meta:'항공+숙박+골프 확정 패키지', desc:'항공·숙박·골프 모두 포함된 확정 패키지', durs:['3박 4일 (금 출발)','4박 5일 (월 출발)']},
+  { region:'벳푸', sub:'규슈 온천 휴양지', venues:[
+    { v:'벳푸CC · 오기야마CC', vsub:'2색 골프', items:[
+      {k:'akiba',   n:'아키바 리조트', dep:['서울','부산','대구'], std:true, meta:'벳푸CC · 오기야마CC · 주중/주말', desc:'벳푸CC와 오기야마CC 2색 골프 · 온천 휴양', durs:['3박 4일 (금 출발)','4박 5일 (월 출발)']},
+      {k:'mutsuki', n:'무츠키 료칸',   dep:['서울','부산','대구'], std:true, meta:'항공+숙박+골프 확정 패키지', desc:'항공·숙박·골프 모두 포함된 확정 패키지', durs:['3박 4일 (금 출발)','4박 5일 (월 출발)']}
+    ]}
   ]},
-  {region:'이바라키', sub:'관동 북부 · 자연 코스', items:[
-    {k:'shirosato',   n:'시로사토CC',             dep:['서울'], std:true, meta:'시로사토CC · 주중 18+9', desc:'도쿄 근교 이바라키 · 주중 18+9홀 라운딩', durs:['6박 7일 (일 출발)']},
-    {k:'fukuroda',    n:'후쿠로다노타키CC',        dep:['서울'], std:true, meta:'후쿠로다노타키CC', desc:'폭포로 유명한 이바라키 · 여유로운 7박 일정', durs:['7박 8일 (월 출발)']},
+  { region:'이바라키', sub:'관동 북부 · 자연 코스', venues:[
+    { v:'시로사토CC', vsub:'주중 18+9홀', items:[
+      {k:'shirosato', n:'시로사토CC', dep:['서울'], std:true, meta:'시로사토CC · 주중 18+9', desc:'도쿄 근교 이바라키 · 주중 18+9홀 라운딩', durs:['6박 7일 (일 출발)']}
+    ]},
+    { v:'후쿠로다노타키CC', vsub:'장기 체류', items:[
+      {k:'fukuroda', n:'후쿠로다노타키CC', dep:['서울'], std:true, meta:'후쿠로다노타키CC', desc:'폭포로 유명한 이바라키 · 여유로운 7박 일정', durs:['7박 8일 (월 출발)']}
+    ]}
   ]},
-  {region:'나가노', sub:'고원 리조트 · 확정 패키지', items:[
-    {k:'sugadaira',   n:'스가다이라 그린CC',       dep:['서울'], std:false, meta:'해발 1,700m 고원 · 니가타', desc:'해발 1,700m 고원 · 여름에도 시원한 확정 패키지', durs:['5박 6일','7박 8일','14박 15일']},
+  { region:'나가노', sub:'고원 리조트 · 확정 패키지', venues:[
+    { v:'스가다이라 그린CC', vsub:'해발 1,700m 고원', items:[
+      {k:'sugadaira_onsen',   n:'스가다이라 고원 온천호텔', dep:['서울'], std:false, meta:'해발 1,700m 고원 · 니가타공항', desc:'고원 온천호텔 · 여름에도 시원한 확정 패키지', durs:['5박 6일','7박 8일','14박 15일']},
+      {k:'sugadaira_mansion', n:'스가다이라 맨션',        dep:['서울'], std:false, meta:'레지던스형 · 취사 가능', desc:'레지던스형 숙소 · 취사 가능 · 장기 체류', durs:['5박 6일','7박 8일','14박 15일']}
+    ]}
   ]},
-  {region:'미야자키', sub:'규슈 남부 · 온난', items:[
-    {k:'miyazaki_kuko', n:'미야자키 국제공항CC',   dep:['서울'], std:true, meta:'국제공항CC · 5박 6일', desc:'공항 바로 앞 골프텔 · 온난한 남규슈 (중식 미포함)', durs:['5박 6일 (일 출발)']},
+  { region:'미야자키', sub:'규슈 남부 · 온난', venues:[
+    { v:'미야자키 국제공항CC', vsub:'공항 인접', items:[
+      {k:'miyazaki_kuko', n:'미야자키 국제공항CC', dep:['서울'], std:true, meta:'국제공항CC · 5박 6일 · 중식 미포함', desc:'공항 바로 앞 골프텔 · 온난한 남규슈', durs:['5박 6일 (일 출발)']}
+    ]}
   ]},
-  {region:'말레이시아', sub:'쿠알라룸푸르 · 자유 일정', items:[
-    {k:'nilai',       n:'닐라이스프링스CC 호텔',  dep:['서울'], std:false, meta:'쿠알라룸푸르 · 자유 일정', desc:'쿠알라룸푸르 · 원하는 날짜·박수로 자유롭게', durs:['자유 일정']},
-  ]},
+  { region:'말레이시아', sub:'쿠알라룸푸르 · 자유 일정', venues:[
+    { v:'닐라이스프링스CC', vsub:'자유 일정', items:[
+      {k:'nilai', n:'닐라이스프링스CC 호텔', dep:['서울'], std:false, meta:'쿠알라룸푸르 · 자유 일정', desc:'쿠알라룸푸르 · 원하는 날짜·박수로 자유롭게', durs:['자유 일정']}
+    ]}
+  ]}
 ];
+// 평탄화 헬퍼 — 기존 로직(검색·상세)이 쓰던 item 목록
+function allItems(){ return CAT.flatMap(g=>g.venues.flatMap(v=>v.items)); }
+function venueOf(k){ for(const g of CAT) for(const v of g.venues) if(v.items.some(i=>i.k===k)) return v; return null; }
+function regionOf(k){ for(const g of CAT) for(const v of g.venues) if(v.items.some(i=>i.k===k)) return g; return null; }
 
 const ORIGINS = [
   {id:'서울', name:'서울 출발', airport:'인천공항'},
@@ -492,9 +521,12 @@ const MIN_PEOPLE = 2; // 1명 예약 불가
 const sel = { origin:null, resortKey:null, durIdx:null, people:null };
 
 function catByOrigin(o){
-  return CAT.map(g=>({...g, items:g.items.filter(it=> !o || it.dep.includes(o))})).filter(g=>g.items.length);
+  return CAT.map(g=>({ ...g,
+    venues: g.venues.map(v=>({ ...v, items: v.items.filter(it=> !o || it.dep.includes(o)) }))
+                    .filter(v=>v.items.length)
+  })).filter(g=>g.venues.length);
 }
-function findResort(k){ for(const g of CAT) for(const it of g.items) if(it.k===k) return it; return null; }
+function findResort(k){ return allItems().find(i=>i.k===k) || null; }
 
 // ===== 골프장 카드 렌더 =====
 function renderResortCards(){
@@ -504,21 +536,30 @@ function renderResortCards(){
   CAT.forEach(g=>{
     const block = document.createElement('div'); block.className='region-block';
     block.innerHTML = `<div class="region-title">${g.region}<small>${g.sub}</small></div>`;
-    const grid = document.createElement('div'); grid.className='card-grid';
-    g.items.forEach(it=>{
-      const bg = THUMB[ti % THUMB.length]; ti++;
-      const card = document.createElement('div'); card.className='rcard';
-      card.innerHTML = `
-        <div class="chip" style="background:${bg}"></div>
-        <div class="body">
-          <div class="nm">${it.n}</div>
-          <div class="meta">${it.desc || it.meta}</div>
-        </div>
-        <span class="go">›</span>`;
-      card.onclick = ()=> openProduct(it.k);
-      grid.appendChild(card);
+    g.venues.forEach(v=>{
+      // 숙소가 1곳이고 이름이 골프장명과 같으면 헤더 생략(중복 방지)
+      const single = v.items.length===1 && v.items[0].n===v.v;
+      if(!single){
+        const vh=document.createElement('div'); vh.className='venue-title';
+        vh.innerHTML=`${v.v}${v.vsub?`<small>${v.vsub}</small>`:''}`;
+        block.appendChild(vh);
+      }
+      const grid = document.createElement('div'); grid.className='card-grid';
+      v.items.forEach(it=>{
+        const bg = THUMB[ti % THUMB.length]; ti++;
+        const card = document.createElement('div'); card.className='rcard';
+        card.innerHTML = `
+          <div class="chip" style="background:${bg}"></div>
+          <div class="body">
+            <div class="nm">${it.n}</div>
+            <div class="meta">${it.desc || it.meta}</div>
+          </div>
+          <span class="go">›</span>`;
+        card.onclick = ()=> openProduct(it.k);
+        grid.appendChild(card);
+      });
+      block.appendChild(grid);
     });
-    block.appendChild(grid);
     host.appendChild(block);
   });
 }
@@ -540,8 +581,12 @@ function openSheet(kind){
   } else if(kind==='resort'){
     const groups = catByOrigin(sel.origin);
     html += groups.map(g=>`<div class="grp-label">${g.region}</div>`+
-      g.items.map(it=>`<button class="opt stack${sel.resortKey===it.k?' selected':''}" data-v="${it.k}">
-        <span class="nm">${it.n}</span><span class="desc">${it.desc || it.meta}</span></button>`).join('')
+      g.venues.map(v=>{
+        const single = v.items.length===1 && v.items[0].n===v.v;
+        return (single?'':`<div class="venue-label">${v.v}${v.vsub?` · ${v.vsub}`:''}</div>`)+
+          v.items.map(it=>`<button class="opt stack${sel.resortKey===it.k?' selected':''}" data-v="${it.k}">
+            <span class="nm">${it.n}</span><span class="desc">${it.desc || it.meta}</span></button>`).join('');
+      }).join('')
     ).join('');
   } else if(kind==='dur'){
     const it = findResort(sel.resortKey);
@@ -624,16 +669,12 @@ function syncFields(){
     : '선택 완료 — 눌러서 예약 진행';
 }
 
-// ===== book/ 로 진입 (사전선택 전달) =====
+// ===== 예약 진행 = 새 화면 안에서 확인 → 확정 (예전 예약화면으로 넘기지 않음) =====
 function goToBook(extra){
-  const it = extra && extra.resort ? findResort(extra.resort) : (sel.resortKey ? findResort(sel.resortKey) : null);
-  const payload = {};
-  if(sel.origin) payload.origin = sel.origin;
-  if(it) payload.resort = it.k;
-  // 표준 상품 + 기간 선택 시에만 patternIdx 전달(→ 캘린더 직행). 특수상품은 기간 단계로.
-  if(it && it.std && sel.durIdx!=null && !(extra && extra.resort)) payload.patternIdx = sel.durIdx;
-  try{ sessionStorage.setItem('reserve_prefill', JSON.stringify(payload)); }catch(e){}
-  location.href = 'book/';
+  const key = (extra && extra.resort) ? extra.resort : sel.resortKey;
+  if(!key){ openSheet('origin'); return; }
+  openProduct(key);
+  if(!(extra && extra.resort) && sel.durIdx!=null){ pv.durIdx=sel.durIdx; renderPv(); }
 }
 function doSearch(){
   if(!sel.origin){ openSheet('origin'); return; }
@@ -655,11 +696,12 @@ const RES = {
   kanji:{t:17000,s:6000,rm:15},      shizunoyado:{t:17000,s:6000,rm:7},
   aso_villa:{t:17000,s:6000,rm:1},   sobo_villa:{t:15000,s:6000,rm:3},
   dome_house:{t:15000,s:6000,rm:4},  sobo5:{t:17000,s:6000,rm:1},
-  fourteen:{t:15000,s:12000,rm:38},
+  fourteen_hotel:{t:15000,s:12000,rm:32}, fourteen_caravan:{t:15000,s:12000,rm:6},
   akiba:{t:15000,tWe:17000,s:12000,rm:15}, mutsuki:{pkg:{3:1450000,4:1660000},rm:4},
   shirosato:{t:16000,s:12000,rm:20}, fukuroda:{t:16000,s:12000,rm:20},
   miyazaki_kuko:{t:17000,s:5000,rm:10},
-  sugadaira:{pkg:{5:1450000,7:1850000,14:null},rm:35},
+  sugadaira_onsen:{pkg:{5:1450000,7:1850000,14:null},rm:35},
+  sugadaira_mansion:{pkg:{5:1450000,7:1850000,14:null},rm:10},
   nilai:{krwNight:140000,rm:50}
 };
 // 상품 태그 (제목 뒤 #표기)
@@ -668,10 +710,10 @@ const TAGS = {
   kanji:['2색골프','온천','3식포함'], shizunoyado:['료칸','온천','3식포함'],
   aso_villa:['별장단독','8인','단체'], sobo_villa:['별장','가족형'],
   dome_house:['독채','2인'], sobo5:['별장단독','4인'],
-  fourteen:['챔피언십','호텔/카라반'], akiba:['2색골프','온천','석식불포함'],
+  fourteen_hotel:['챔피언십','호텔','패밀리룸'], fourteen_caravan:['챔피언십','카라반'], akiba:['2색골프','온천','석식불포함'],
   mutsuki:['항공포함','료칸','확정가'], shirosato:['18+9홀','관동'],
   fukuroda:['18홀','관동','장기체류'], miyazaki_kuko:['공항인접','남규슈','중식불포함'],
-  sugadaira:['고원','확정가','항공포함'], nilai:['자유일정','동남아']
+  sugadaira_onsen:['고원','온천','확정가','항공포함'], sugadaira_mansion:['고원','취사가능','확정가','항공포함'], nilai:['자유일정','동남아']
 };
 const CHECKS = {
   _base:[
@@ -682,7 +724,8 @@ const CHECKS = {
   yamanami:['조식 · 중식 · 석식 3식 제공'], kuzu:['조식 · 중식 · 석식 3식 제공'],
   kanji:['조식 · 중식 · 석식 3식 제공'], shizunoyado:['조식 · 중식 · 석식 3식 제공'],
   akiba:['석식 미포함 (자유 식사)'], miyazaki_kuko:['체재일 중식 미포함'],
-  mutsuki:['왕복 항공 포함 확정가'], sugadaira:['왕복 항공 포함 확정가'],
+  mutsuki:['왕복 항공 포함 확정가'],
+  sugadaira_onsen:['왕복 항공 포함 확정가'], sugadaira_mansion:['왕복 항공 포함 확정가 · 취사 가능'],
   nilai:['원하는 날짜·박수로 자유 예약'], aso_villa:['별장 한 채 단독 사용'], sobo5:['별장 한 채 단독 사용']
 };
 
@@ -747,14 +790,14 @@ function closeProduct(){
 
 function renderPv(){
   const it=findResort(pv.key); if(!it) return;
-  const g=CAT.find(x=>x.items.some(i=>i.k===pv.key));
+  const g=regionOf(pv.key), vn=venueOf(pv.key);
   const nights=pvNights(it);
   // 제목: [일본] 지역 리조트명 N박 #태그
   const area = g.region.split(' · ')[0];
   const country = pv.key==='nilai' ? '말레이시아' : '일본';
   const tags=(TAGS[pv.key]||[]).map(t=>`<span class="tag">#${t}</span>`).join(' ');
   document.getElementById('pvTitle').innerHTML =
-    `<span class="rg">[${country}] ${area}</span> ${it.n}${nights?' '+nights+'박':''} ${tags}`;
+    `<span class="rg">[${country}] ${area}${vn?' · '+vn.v:''}</span> ${it.n}${nights?' '+nights+'박':''} ${tags}`;
   // 체크 항목
   const cks=[...CHECKS._base, ...(CHECKS[pv.key]||[])];
   document.getElementById('pvChecks').innerHTML = cks.map(c=>`<li><span class="ck">✓</span>${c}</li>`).join('');
@@ -917,16 +960,92 @@ function pvWaitSubmit(){
 function pvGo(){
   if(!AUTH){ openLogin('예약은 회원 로그인 후 진행하실 수 있습니다.'); return; }
   if(pv.wait){ pvWaitApply(); return; }
-  const it=findResort(pv.key);
-  const payload={ resort:pv.key };
-  if(sel.origin) payload.origin=sel.origin;
-  else payload.origin=it.dep[0]; // 출발지 미선택 시 첫 출발지
-  if(it.std) payload.patternIdx=pv.durIdx;
-  if(pv.date) payload.date=pv.date;
-  if(pv.people) payload.people=pv.people;
-  try{ sessionStorage.setItem('reserve_prefill', JSON.stringify(payload)); }catch(e){}
-  location.href='book/';
+  if(!pv.date){ return; }
+  const q=myQuota();
+  if(quotaLeft(q)<=0){ noQuotaNotice(); return; }
+  openConfirm();
 }
+
+// 배정 횟수 소진·미개방 안내
+function noQuotaNotice(){
+  const nx=nextRound(AUTH.grade);
+  const b=sheetOpen('예약 가능 횟수 안내');
+  b.innerHTML=`
+    <div class="stp-hint">
+      현재 <b>예약 가능 횟수가 없습니다.</b><br>
+      ${nx?`${nx.label}이 <b>${fmtOpen(nx.opensAt)}</b>에 열리면 <b>+${nx.grants}회</b>가 추가됩니다.`
+          :'배정된 우선예약 횟수를 모두 사용하셨습니다. 자유예약 기간에 잔여 객실로 예약하실 수 있습니다.'}<br>
+      마감 일정은 <b>예약 대기</b> 신청이 가능합니다.
+    </div>
+    <button class="opt" onclick="closeSheet();openMyPage();" style="margin-top:14px;justify-content:center;font-weight:800;">마이페이지에서 확인</button>`;
+}
+
+// 예약 확인 → 확정 (새 화면 내부에서 완결)
+function openConfirm(){
+  const it=findResort(pv.key), nights=pvNights(it);
+  const p=pvPricePerson(pv.key,nights,pv.date);
+  const [Y,M,D]=pv.date.split('-').map(Number);
+  const dn=['일','월','화','수','목','금','토'][new Date(Y,M-1,D).getDay()];
+  const rooms=Math.ceil(pv.people/2);
+  const b=sheetOpen('예약 확인');
+  b.innerHTML=`
+    <div class="opt stack" style="cursor:default;border-color:var(--navy);background:var(--navy-soft);">
+      <span class="nm">${it.n}</span>
+      <span class="desc">${it.durs[pv.durIdx]}<br>${M}월 ${D}일(${dn}) 출발 · 총 ${pv.people}명 (2인 1실 기준 ${rooms}실)</span>
+    </div>
+    <div class="grp-label">예약자</div>
+    <div class="opt stack" style="cursor:default;">
+      <span class="nm">${AUTH.name} 회원님</span>
+      <span class="desc">${AUTH.grade} · ${AUTH.memberType} · 예약 후 남는 횟수 ${Math.max(0,quotaLeft(myQuota())-1)}회</span>
+    </div>
+    <div class="grp-label">금액</div>
+    <div class="opt stack" style="cursor:default;">
+      <span class="nm">${p?`1인 ${p.krw.toLocaleString()}원 · 총 ${(p.krw*pv.people).toLocaleString()}원`:'상담 시 안내'}</span>
+      <span class="desc">${p?(p.air?'왕복 항공 포함':'숙박·송영 기준 · 항공요금은 발권 확정 후 안내'):''}<br>
+        예약 확정 후 예약금 안내를 드립니다.</span>
+    </div>
+    <div class="stp-hint" style="margin-top:12px;">
+      · 확정 시 <b>우선예약 1회</b>가 사용됩니다.<br>
+      · 일정·인원 변경, 취소는 메리트투어(${TEL})로 문의해 주세요.
+    </div>
+    <button class="opt" id="confirmGo" style="margin-top:16px;justify-content:center;font-weight:800;background:var(--navy);color:#fff;border-color:var(--navy);">예약 확정하기</button>
+    <button class="opt" onclick="closeSheet()" style="justify-content:center;font-weight:700;">다시 선택</button>`;
+  b.querySelector('#confirmGo').onclick=submitReserve;
+}
+function submitReserve(){
+  const it=findResort(pv.key), nights=pvNights(it);
+  const [Y,M,D]=pv.date.split('-').map(Number);
+  const no='MT-'+String(Y).slice(2)+String(M).padStart(2,'0')+String(D).padStart(2,'0')+'-'+
+    String(Math.floor(1000+ (Y+M+D+pv.people+pv.key.length)*7 % 9000));
+  // 우선예약 1회 사용
+  const q=myQuota();
+  const target=[q.round1,q.round2,q.round3].find(r=>r.opened&&r.eligible&&r.total-r.used>0);
+  if(target){
+    AUTH.used=AUTH.used||{}; AUTH.used['round'+target.no]=(AUTH.used['round'+target.no]||0)+1;
+    try{ sessionStorage.setItem(AUTH_KEY, JSON.stringify(AUTH)); }catch(e){}
+  }
+  // 예약 내역에 추가 (시연용 · 실제는 예약 시스템 저장)
+  const rows=DEMO_BOOKINGS[AUTH.id]=DEMO_BOOKINGS[AUTH.id]||[];
+  rows.unshift({ no, resort:it.n, period:`${Y}.${String(M).padStart(2,'0')}.${String(D).padStart(2,'0')} 출발 · ${it.durs[pv.durIdx]}`,
+                 people:pv.people, status:'확정', balance:0 });
+  renderAuthUI();
+  const left=quotaLeft(myQuota());
+  const b=sheetOpen('예약 완료');
+  b.innerHTML=`
+    <div class="opt stack" style="cursor:default;border-color:#15803D;background:#F0FDF4;">
+      <span class="nm">예약이 완료되었습니다</span>
+      <span class="desc">${it.n} · ${M}월 ${D}일 출발 · ${pv.people}명<br>예약번호 <b>${no}</b></span>
+    </div>
+    <div class="stp-hint" style="margin-top:12px;">
+      ${target?`${target.label} 1회를 사용하셨습니다. `:''}남은 예약 가능 횟수 <b>${left}회</b><br>
+      예약금 안내와 확정서는 카카오톡 채널 「메리트투어」 또는 문자로 안내드립니다.
+    </div>
+    <button class="opt" onclick="closeSheet();openMyBookings();" style="margin-top:14px;justify-content:center;font-weight:800;background:var(--navy);color:#fff;border-color:var(--navy);">예약 내역 보기</button>
+    <button class="opt" onclick="closeSheet();closeProduct();" style="justify-content:center;font-weight:700;">목록으로</button>`;
+  showNotice(`<b>예약이 완료되었습니다.</b> (예약번호 ${no})<br>${it.n} · ${M}월 ${D}일 · ${pv.people}명<br>
+    ${target?`${target.label} 1회 사용 · `:''}남은 예약 가능 횟수 <b>${left}회</b>`);
+}
+
 
 // ============================================================
 // 로그인 / 회원가입 / 예약확인 / 고객센터
@@ -1157,7 +1276,7 @@ function openSupport(){
     <button class="opt" onclick="closeSheet()" style="margin-top:14px;justify-content:center;font-weight:800;">확인</button>`;
 }
 
-// 예약 완료 알림 — book/ 에서 확정 시 남긴 이벤트를 배너로 안내하고 사용분 반영
+// 예약 완료 알림 배너 (예약 확정 시 사용)
 const EVENT_KEY='mt_reserve_event';
 function showNotice(html){
   const old=document.getElementById('reserveNotice'); if(old) old.remove();
