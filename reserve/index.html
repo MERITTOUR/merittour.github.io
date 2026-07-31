@@ -385,53 +385,53 @@
 // ============================================================
 const CAT = [
   // 3단 구성: 지역 → 골프장·리조트(venue) → 숙소(items)
-  // ★ 2027 시즌 골프투어 예약 안내(가이드) 기준으로 최신화 — 출발지·상품 패턴·숙소 구성
-  //   관련도(주력·수요) 순
+  // ★ 단일 출처 = 사내 「2027 시즌 골프 패키지 예약 안내」 통합 안내문
+  //   (merittour-tools tools/booking/asoyamanami2027reservation.html)
+  //   출발지 인천=서울 · 김해=부산 표기. 관련도(주력·수요) 순
   { region:'구마모토 · 아소', sub:'규슈 내륙 · 온천+골프', venues:[
     { v:'아소 야마나미 리조트', vsub:'야마나미CC 27홀 · 구마모토공항 약 1시간', items:[
-      {k:'yamanami',    n:'야마나미 호텔',            dep:['서울','부산','대구'], std:true, meta:'야마나미CC 27홀 · 트윈·소형트윈·트리플', desc:'호텔 트윈 2인 1실 · 온천 대욕장', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']},
-      {k:'kuzu',        n:'야마나미 프라이빗 레지던스', dep:['서울','부산','대구'], std:true, meta:'야마나미CC · 장기 체류형', desc:'장기 체류형 2인 1동 독채 레지던스', durs:['7박 8일 (수 출발)']},
-      {k:'aso_villa',   n:'야마나미 프레스티지',       dep:['서울','부산','대구'], std:true, meta:'8인 대형 별장 · 단체 전용', desc:'8인 대형 별장 한 채 단독 사용 · 단체 모임', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']},
-      {k:'sobo_villa',  n:'야마나미 히노키빌라 - 캐빈', dep:['서울','부산','대구'], std:true, meta:'편백 2인 별장 · 3동', desc:'편백으로 지은 2인 별장 · 가족·소그룹', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']},
-      {k:'sobo5',       n:'야마나미 히노키빌라 - 패밀리', dep:['서울','부산','대구'], std:true, meta:'편백 4인 독채 별장 · 1동', desc:'편백 4인 독채 별장 · 친구 모임', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']},
-      {k:'dome_house',  n:'야마나미 포레스트 돔',      dep:['서울','부산','대구'], std:true, meta:'독채 돔형 별장 4동', desc:'숲 속 독채 돔형 별장 · 2인', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']}
+      {k:'yamanami',    n:'야마나미 호텔',            dep:['서울','부산'], std:true, meta:'야마나미CC 27홀 · 트윈 2인 1실', desc:'골프장에 바로 붙은 리조트 본관 · 온천 대욕장', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']},
+      {k:'kuzu',        n:'야마나미 프라이빗 레지던스', dep:['서울','부산'], std:true, meta:'야마나미CC · 장기 체류형', desc:'장기 체류 프라이빗 레지던스 · 2인 1동 독채', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (일 출발)']},
+      {k:'aso_villa',   n:'야마나미 프레스티지',       dep:['서울','부산'], std:true, meta:'8인 대형 별장 1동 · 단체 전용', desc:'8인 대형 별장 한 채 단독 사용 · 전기카트 무료', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (일 출발)']},
+      {k:'sobo_villa',  n:'야마나미 히노키빌라 - 캐빈', dep:['서울','부산'], std:true, meta:'편백 2인 별장 3동', desc:'편백으로 지은 2인 별장 · 가족·소그룹', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (일 출발)']},
+      {k:'sobo5',       n:'야마나미 히노키빌라 - 패밀리', dep:['서울','부산'], std:true, meta:'편백 4인 독채 별장 1동', desc:'편백 4인 독채 별장 · 전기카트 무료', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (일 출발)']},
+      {k:'dome_house',  n:'야마나미 포레스트 돔',      dep:['서울','부산'], std:true, meta:'독채 돔형 별장 4동', desc:'숲 속 독채 돔형 별장 · 2인', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (일 출발)']}
     ]},
-    { v:'구주고원CC · 야마나미CC', vsub:'2색 골프 (월·화 구주고원)', items:[
-      {k:'kanji',       n:'간지호텔',                dep:['서울','부산','대구'], std:true, meta:'구주고원CC 18홀 · 야마나미CC 27홀', desc:'구주고원CC와 야마나미CC 2색 골프 · 온천', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']}
+    { v:'구주고원CC · 야마나미CC', vsub:'2색 골프 (주중 구주고원CC)', items:[
+      {k:'kanji',       n:'간지호텔',                dep:['서울','부산'], std:true, meta:'구주고원CC 18홀 · 야마나미CC 27홀', desc:'표고 1,100m 온천 리조트 · 2색 골프', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (일 출발)']}
     ]},
     { v:'야마나미CC', vsub:'료칸 숙박', items:[
-      {k:'shizunoyado', n:'시즈노야도 료칸',          dep:['서울','부산','대구'], std:true, meta:'야마나미CC · 힐링 료칸', desc:'조용한 일본식 료칸 · 정갈한 식사와 온천', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (수 출발)']}
+      {k:'shizunoyado', n:'시즈노야도 료칸',          dep:['서울','부산'], std:true, meta:'야마나미CC · 천연온천 료칸', desc:'만간지 천연온천 일본 전통 료칸 · 다다미 2인 1실', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (일 출발)']}
     ]}
   ]},
   { region:'나고야', sub:'주부 지역 · 챔피언십', venues:[
-    { v:'포틴힐즈CC', vsub:'호텔 윈저 · 18홀 + 9홀 서비스 · 나고야공항 약 1시간 40분', items:[
-      {k:'fourteen_hotel',   n:'포틴힐즈CC 호텔',   dep:['서울','부산'], std:true, meta:'호텔 윈저 · 트윈 2인실 / 패밀리룸 4인실', desc:'호텔 트윈 2인 1실 · 4인 패밀리룸 선택 가능', durs:['3박 4일 (금 출발)','4박 5일 (월 출발)','7박 8일 (월 출발)']},
-      {k:'fourteen_caravan', n:'포틴힐즈CC 카라반', dep:['서울','부산'], std:true, meta:'호텔 윈저 · 카라반 2인실', desc:'카라반형 트윈 2인 1실', durs:['3박 4일 (금 출발)','4박 5일 (월 출발)','7박 8일 (월 출발)']}
+    { v:'포틴힐즈CC', vsub:'호텔 윈저 · 나고야 중부국제공항 약 1시간 40분', items:[
+      {k:'fourteen_hotel',   n:'포틴힐즈CC 호텔',   dep:['서울','부산'], std:true, meta:'포틴힐즈CC 18홀 · 트윈 2인실 / 패밀리룸 4인실', desc:'호텔 트윈 2인 1실 · 4인 패밀리룸 선택 가능', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (화 출발)']},
+      {k:'fourteen_caravan', n:'포틴힐즈CC 카라반', dep:['서울','부산'], std:true, meta:'포틴힐즈CC 18홀 · 카라반 2인실', desc:'카라반형 트윈 2인 1실', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (화 출발)']}
     ]}
   ]},
   { region:'벳푸', sub:'규슈 온천 휴양지', venues:[
-    { v:'벳푸CC', vsub:'오기야마 · 유후 · 츠루미 코스 · 후쿠오카공항 약 2시간', items:[
-      {k:'akiba',   n:'아키바 리조트', dep:['서울','부산','대구'], std:true, meta:'벳푸CC 2색·3색 골프 · 전용 온천탕', desc:'벳푸CC 다색 골프 · 투숙객 전용 온천탕 무료', durs:['5박 6일 (일 출발)']},
-      {k:'mutsuki', n:'무츠키 료칸',   dep:['서울','부산','대구'], std:true, meta:'벳푸CC · 료칸 숙박', desc:'벳푸 온천 료칸 · 항공·숙박·골프 포함', durs:['5박 6일 (일 출발)']}
+    { v:'벳푸CC · 오기야마CC', vsub:'벳푸CC 유후·츠루미 코스 · 후쿠오카공항 약 2시간', items:[
+      {k:'akiba',   n:'아키바 리조트', dep:['서울','부산','대구'], std:true, meta:'벳푸CC · 오기야마CC 18홀 · 전용 온천탕', desc:'투숙객 전용 온천탕 무료 · 2인 1실', durs:['3박 4일 (금 출발)','4박 5일 (월 출발)']},
+      {k:'mutsuki', n:'무츠키 료칸',   dep:['서울','부산','대구'], std:true, meta:'벳푸CC · 오기야마CC 18홀 · 전통 료칸', desc:'일본 전통 료칸 2인 1실 · 객실이 적어 조기 마감', durs:['3박 4일 (금 출발)','4박 5일 (월 출발)']}
     ]}
   ]},
   { region:'이바라키', sub:'관동 북부 · 자연 코스', venues:[
-    { v:'시로사토CC', vsub:'주중 18+9홀 · 나리타공항 약 1시간 30분', items:[
-      {k:'shirosato', n:'시로사토CC', dep:['서울','부산'], std:true, meta:'시로사토CC 18홀 · 내부 숙소 2인 1실', desc:'도쿄 근교 이바라키 · 주중 18+9홀 라운딩', durs:['6박 7일 (일 출발)']}
+    { v:'시로사토CC', vsub:'주중 18홀+9홀 서비스 · 나리타공항 약 1시간 30분', items:[
+      {k:'shirosato', n:'시로사토CC', dep:['서울','부산'], std:true, meta:'시로사토CC 18홀 · 골프장 내 숙소 2인 1실', desc:'도쿄 근교 이바라키 · 골프장 내 숙소', durs:['6박 7일 (일 출발)']}
     ]}
   ]},
-  { region:'나가노', sub:'고원 리조트 · 확정 패키지', venues:[
-    { v:'스가다이라 그린CC', vsub:'해발 1,700m 고원 · 니가타공항 약 3시간 30분', items:[
-      {k:'sugadaira_onsen', n:'스가다이라 고원 온천호텔', dep:['서울'], std:true, meta:'전 일정 18+9홀 · 온천 24시간', desc:'고원 온천호텔 · 여름에도 시원한 고원 라운딩', durs:['7박 8일 (목 출발)']}
+  { region:'나가노', sub:'고원 리조트 · 패키지', venues:[
+    { v:'스가다이라 그린CC', vsub:'해발 약 1,600m 고원 · 니가타공항 약 3시간 30분~4시간', items:[
+      {k:'sugadaira_onsen', n:'스가다이라 고원 온천호텔', dep:['서울'], std:true, meta:'스가다이라 그린CC 18홀 · 온천 24시간', desc:'여름에도 시원한 고원 라운딩 · 골프장에서 약 15분', durs:['5박 6일 (목 출발)','7박 8일 (화 출발)','7박 8일 (목 출발)','14박 15일 (화 출발)','14박 15일 (목 출발)']}
     ]}
   ]},
   { region:'미야자키', sub:'규슈 남부 · 온난', venues:[
     { v:'미야자키 국제공항CC', vsub:'공항에서 약 30분 · 페어웨이 진입 가능', items:[
-      {k:'miyazaki_kuko', n:'미야자키 국제공항CC', dep:['서울'], std:true, meta:'국제공항CC 18홀 · 숙소 2인 1실', desc:'공항 바로 앞 골프텔 · 온난한 남규슈', durs:['4박 5일 (목 출발)','5박 6일 (일 출발)','7박 8일 (수 출발)']}
+      {k:'miyazaki_kuko', n:'미야자키 국제공항CC', dep:['서울'], std:true, meta:'국제공항CC 18홀 · 골프장 숙소 2인 1실', desc:'공항 바로 앞 골프텔 · 온난한 남규슈', durs:['5박 6일 (일 출발)']}
     ]}
   ]}
-];
-// 평탄화 헬퍼 — 기존 로직(검색·상세)이 쓰던 item 목록
+];// 평탄화 헬퍼 — 기존 로직(검색·상세)이 쓰던 item 목록
 function allItems(){ return CAT.flatMap(g=>g.venues.flatMap(v=>v.items)); }
 function venueOf(k){ for(const g of CAT) for(const v of g.venues) if(v.items.some(i=>i.k===k)) return v; return null; }
 function regionOf(k){ for(const g of CAT) for(const v of g.venues) if(v.items.some(i=>i.k===k)) return g; return null; }
@@ -684,15 +684,16 @@ const FX = 9.5;                          // 100엔 = 950원 (book/ FX_JPY_KRW)
 const SEASON_START = new Date(2026, 2, 10); // 2026-03-10 시즌 시작
 // 리조트별 요금·객실 (book/ RESORTS와 동일)
 const RES = {
-  // 2027 가이드 체재비(1인 1박)·왕복 송영비 기준 · rm=보유 객실
+  // 통합 안내문 체재비(1인 1박)·왕복 송영비 기준 · rm=보유 객실(리조트 마스터)
+  //   tWe=주말 단가(아키바) · pkg=박수별 확정 패키지가(무츠키) · 미확정(스가다이라)은 단가 없음
   yamanami:{t:15000,s:6000,rm:100},  kuzu:{t:15000,s:6000,rm:10},
   kanji:{t:17000,s:6000,rm:15},      shizunoyado:{t:17000,s:6000,rm:7},
   aso_villa:{t:18000,s:6000,rm:1},   sobo_villa:{t:15000,s:6000,rm:3},
   dome_house:{t:15000,s:6000,rm:4},  sobo5:{t:18000,s:6000,rm:1},
-  fourteen_hotel:{t:12000,s:9000,rm:32}, fourteen_caravan:{t:12000,s:9000,rm:6},
-  akiba:{t:12000,s:8000,rm:15},      mutsuki:{t:12000,s:8000,rm:4},
+  fourteen_hotel:{t:15000,s:12000,rm:32}, fourteen_caravan:{t:15000,s:12000,rm:6},
+  akiba:{t:15000,tWe:17000,s:12000,rm:15}, mutsuki:{pkg:{3:1450000,4:1660000},rm:4},
   shirosato:{t:16000,s:12000,rm:20},
-  sugadaira_onsen:{t:12000,s:16000,rm:35},
+  sugadaira_onsen:{s:0,rm:35},       // 골프·숙박 포함 패키지 · 2027 요금 확정 예정
   miyazaki_kuko:{t:17000,s:5000,rm:10}
 };
 
@@ -700,26 +701,26 @@ const RES = {
 const TAGS = {
   yamanami:['27홀','체류형','온천','3식포함'], kuzu:['18홀','장기체류','독채형','3식포함'],
   kanji:['2색골프','온천','3식포함'], shizunoyado:['료칸','온천','3식포함'],
-  aso_villa:['별장단독','8인','단체'], sobo_villa:['별장','가족형'],
-  dome_house:['독채','2인'], sobo5:['별장단독','4인'],
+  aso_villa:['별장단독','8인','단체','전기카트무료'], sobo_villa:['별장','가족형'],
+  dome_house:['독채','2인'], sobo5:['별장단독','4인','전기카트무료'],
   fourteen_hotel:['18+9홀','호텔','패밀리룸'], fourteen_caravan:['18+9홀','카라반'],
-  akiba:['다색골프','온천','전용온천탕'], mutsuki:['료칸','온천'],
+  akiba:['2색·3색골프','전용온천탕','석식불포함'], mutsuki:['료칸','2색·3색골프','패키지'],
   shirosato:['18+9홀','관동'],
-  sugadaira_onsen:['고원','온천','18+9홀'],
-  miyazaki_kuko:['공항인접','남규슈','페어웨이진입','중식개별지불']
+  sugadaira_onsen:['고원','온천','18+9홀','패키지'],
+  miyazaki_kuko:['공항인접','남규슈','페어웨이진입','중식불포함']
 };
 // 라운딩 규칙 — 2027 가이드 「골프 플레이」 문안 기준
 //   야마나미 계열은 주중 야마나미CC(27홀) 중심 · 주말·일본공휴일 18홀
 const ROUND = {
-  _yama:            {main:'야마나미CC 주중 27홀 중심 라운딩',        note:'주말·일본공휴일 18홀 라운딩'},
-  kanji:            {main:'야마나미CC 27홀 · 월·화요일 구주고원CC 18홀', note:'주말·일본공휴일 18홀 라운딩'},
-  fourteen_hotel:   {main:'포틴힐즈CC 18홀 + 9홀(서비스)',           note:'9홀 서비스는 현지 사정에 따라 제한될 수 있습니다.'},
-  fourteen_caravan: {main:'포틴힐즈CC 18홀 + 9홀(서비스)',           note:'9홀 서비스는 현지 사정에 따라 제한될 수 있습니다.'},
-  akiba:            {main:'벳푸CC 다색 골프 (오기야마 · 유후 · 츠루미)', note:'3박 4일 2색 · 4박 5일 3색 골프 (투어비 추가)'},
-  mutsuki:          {main:'벳푸CC 다색 골프 (오기야마 · 유후 · 츠루미)', note:'3박 4일 2색 · 4박 5일 3색 골프 (투어비 추가)'},
-  shirosato:        {main:'시로사토CC 주중 18홀 + 9홀(서비스)',       note:'주말·일본공휴일 18홀 라운딩 · 도착일 라운딩 없음'},
-  sugadaira_onsen:  {main:'스가다이라 그린CC 전 일정 18홀 + 9홀(서비스)', note:'입국일 라운딩이 어려워 주말·일본공휴일에도 27홀 제공'},
-  miyazaki_kuko:    {main:'국제공항CC 평일 18홀 + 9홀(서비스)',       note:'주말 18홀 라운딩'}
+  _yama:            {main:'야마나미CC 주중 18홀 + 9홀(서비스)',      note:'주말·일본공휴일 18홀 라운딩'},
+  kanji:            {main:'주중 구주고원CC 18홀 + 9홀(서비스)',      note:'주말·일본공휴일은 야마나미CC 18홀 · 출·귀국일 라운딩도 야마나미CC 18홀'},
+  fourteen_hotel:   {main:'포틴힐즈CC 주중 18홀 + 9홀(서비스)',      note:'주말·일본공휴일 18홀 라운딩'},
+  fourteen_caravan: {main:'포틴힐즈CC 주중 18홀 + 9홀(서비스)',      note:'주말·일본공휴일 18홀 라운딩'},
+  akiba:            {main:'벳푸CC · 오기야마CC 18홀 라운딩',          note:'주중·주말·일본공휴일 모두 18홀 · 3박 4일 2색 · 4박 5일 3색 골프'},
+  mutsuki:          {main:'벳푸CC · 오기야마CC 18홀 라운딩',          note:'주중·주말·일본공휴일 모두 18홀 · 3박 4일 2색 · 4박 5일 3색 골프'},
+  shirosato:        {main:'시로사토CC 주중 18홀 + 9홀(서비스)',       note:'주말·일본공휴일 18홀 라운딩'},
+  sugadaira_onsen:  {main:'스가다이라 그린CC 전 일정 18홀 + 9홀(서비스)', note:'해발 약 1,600m 고원 코스'},
+  miyazaki_kuko:    {main:'국제공항CC 월~목 18홀 + 9홀(서비스)',      note:'출·귀국일 라운딩 없음'}
 };
 function roundOf(k){ return ROUND[k] || ROUND._yama; }
 // 도착 공항 → 숙소 이동 시간 (2027 가이드 「도착 공항」) · 미지정은 야마나미 기준
@@ -735,17 +736,35 @@ function moveOf(k){ return MOVE[k] || '약 1시간'; }
 const CHECKS = {
   _base:[
     '회원 우선예약 · 동일 조건 내 예약 순서대로 배정',
-    '왕복 항공 · 현지 송영 · 여행자보험 · 숙박 · 식사 · 라운딩 포함',
+    '왕복 항공 · 공항–숙소 송영 · 여행자보험 · 숙박 · 식사 · 라운딩 포함',
     '2인부터 예약 가능'
   ],
-  yamanami:['조식 · 중식 뷔페 + 석식 요일 메뉴'], kuzu:['조식 · 중식 뷔페 + 석식 요일 메뉴'],
-  kanji:['월·화요일은 구주고원CC 라운딩'], shizunoyado:['조식 · 중식 뷔페 + 석식 요일 메뉴'],
-  akiba:['입국일 석식 도시락 · 중식 클럽하우스 단품'],
-  mutsuki:['벳푸 온천 료칸 숙박'],
-  shirosato:['조식 뷔페 · 중식 메인+뷔페 · 석식 세트메뉴','도착일 라운딩 없음 (일몰 이른 편)'],
-  sugadaira_onsen:['도착일 중식 기내식 대체 · 온천 24시간'],
-  miyazaki_kuko:['중식은 클럽하우스 개별 지불'],
-  aso_villa:['별장 한 채 단독 사용'], sobo5:['별장 한 채 단독 사용']
+  yamanami:['조식 · 중식 매일 뷔페식(중식은 한식 위주) + 석식 요일 메뉴',
+            '도착일 점심 — 서울 출발팀 카츠카레(라운딩 직행) / 부산 출발팀은 저녁 식사부터'],
+  kuzu:['조식 · 중식 매일 뷔페식 + 석식 요일 메뉴'],
+  aso_villa:['별장 한 채 단독 사용 · 체재일 전기카트 무료',
+             '주류 제공 — 3박 4일·4박 5일 1병 / 7박 8일 2병'],
+  sobo5:['별장 한 채 단독 사용 · 체재일 전기카트 무료'],
+  sobo_villa:['편백으로 지은 2인 별장'],
+  dome_house:['숲 속 독채 돔형 별장'],
+  kanji:['주중 구주고원CC · 주말·일본공휴일 야마나미CC 라운딩',
+         '조식은 숙소 · 중식은 그날 라운딩하는 골프장 · 석식은 숙소'],
+  shizunoyado:['조식은 숙소 · 중식은 그날 라운딩하는 골프장 · 석식은 숙소 (메뉴 일부 상이)'],
+  fourteen_hotel:['조식 매일 뷔페식 · 석식 요일 메뉴',
+                  '중식 — 도착일 간편식(샌드위치) / 체류일 화·목·일 단품, 그 외 뷔페식',
+                  '우천 시 인근 쇼핑몰(에나역 부근) 차량 안내'],
+  fourteen_caravan:['조식 매일 뷔페식 · 석식 요일 메뉴',
+                    '중식 — 도착일 간편식(샌드위치) / 체류일 화·목·일 단품, 그 외 뷔페식'],
+  akiba:['체재일 석식은 패키지에 미포함 — 벳푸 시내에서 자유롭게 식사',
+         '투숙객 전용 온천탕 무료 이용'],
+  mutsuki:['항공 · 숙박 · 골프 포함 토탈 패키지 상품',
+           '객실이 적어 조기 마감될 수 있습니다'],
+  shirosato:['조식 뷔페 · 중식 메인+뷔페 · 석식 요일별 세트메뉴',
+             '2인 1실 기준 · 2인 플레이 시 2BAG 차지 현지 발생'],
+  sugadaira_onsen:['조식 · 중식 · 석식 클럽하우스 · 도착일 중식은 기내식 대체',
+                   '호텔 온천 24시간 운영 (성수기 여탕 시간 제한)',
+                   '골프·숙박 포함 패키지 · 2027 요금 확정 예정'],
+  miyazaki_kuko:['체재일 중식은 포함되어 있지 않습니다']
 };
 
 const pv = { key:null, durIdx:0, y:2026, m:3, date:null, people:MIN_PEOPLE, wait:false };
@@ -843,13 +862,19 @@ function renderItin(it,nights){
   if(!nights){ body.innerHTML=`<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px;">
     자유 일정 상품입니다. 원하는 박수를 예약 단계에서 선택해주세요.</td></tr>`; return; }
   const yama  = /야마나미|쿠주|간지|시즈/.test(it.n); // 야마나미 계열(뷔페식·셔틀 안내)
-  const bento = pv.key==='akiba';             // 아키바: 입국일 석식 도시락 · 이후 한식당(오이소)
-  const ownLun = pv.key==='miyazaki_kuko';    // 미야자키: 중식 클럽하우스 개별 지불
-  const sugad = pv.key==='sugadaira_onsen';   // 스가다이라: 도착일 중식 기내식 대체
+  const noDin  = pv.key==='akiba';            // 아키바: 체재일 석식 미포함 (벳푸 시내 자유식)
+  const noLun  = pv.key==='miyazaki_kuko';    // 미야자키: 체재일 중식 미포함
+  const sugad  = pv.key==='sugadaira_onsen';  // 스가다이라: 도착일 중식 기내식 대체 · 조·중·석식 클럽하우스
+  const golfLun = pv.key==='kanji'||pv.key==='shizunoyado'; // 중식은 그날 라운딩하는 골프장에서
+  const fw14   = pv.key==='fourteen_hotel'||pv.key==='fourteen_caravan';
   const fromSeoul = (sel.origin||it.dep[0])==='서울';
   const airOut = it.dep.includes('서울') && fromSeoul ? '인천국제공항' : ((sel.origin||it.dep[0])==='부산' ? '김해국제공항' : '대구국제공항');
-  const lunch1 = sugad ? '기내식 대체' : ownLun ? '클럽하우스 개별 지불' : (yama && fromSeoul ? '카츠카레' : '현지식');
-  const lunchMid = ownLun ? '클럽하우스 개별 지불' : (yama ? '뷔페식' : bento ? '클럽하우스 단품' : '현지식');
+  const lunch1 = sugad ? '기내식 대체' : noLun ? '불포함' : fw14 ? '간편식(샌드위치)'
+               : (yama && fromSeoul ? '카츠카레' : '현지식');
+  const lunchMid = noLun ? '불포함' : sugad ? '클럽하우스' : golfLun ? '골프장 중식'
+               : fw14 ? '뷔페식 / 화·목·일 단품' : yama ? '뷔페식' : '현지식';
+  const brk = sugad ? '클럽하우스' : (yama || fw14) ? '뷔페식' : '호텔식';
+  const din = noDin ? '불포함 (벳푸 시내 자유식)' : sugad ? '클럽하우스' : '호텔식';
   const rd = roundOf(pv.key);
   const roundLine = `<span class="g">${rd.main}</span>`+
     (rd.note ? `<br><small style="color:var(--muted);">${rd.note}</small>` : '');
@@ -863,17 +888,18 @@ function renderItin(it,nights){
            (yama && fromSeoul
              ? `점심식사 후 <span class="g">라운딩</span> (일몰 전까지 · 최대 18홀)<br><small style="color:var(--muted);">※ 일몰 시간·현지 사정에 따라 라운딩 시간이 짧아질 수 있습니다.</small><br>`
              : `<small style="color:var(--muted);">※ 도착일 라운딩 여부는 항공 시간·현지 일몰에 따라 확정됩니다.</small><br>`)+
-           `호텔 체크인 · 석식 및 자유시간`;
-      meal=`중식 : ${lunch1}<br>석식 : ${bento?'도시락':'호텔식'}`;
+           (yama && !fromSeoul ? `호텔 체크인<br><small style="color:var(--muted);">※ 부산 출발팀은 저녁 식사부터 일정이 시작됩니다.</small><br>` : '')+
+           (noDin ? `호텔 체크인 · 자유시간<br><small style="color:var(--muted);">※ 석식은 벳푸 시내에서 자유롭게 드십니다.</small>` : `호텔 체크인 · 석식 및 자유시간`);
+      meal=`중식 : ${lunch1}<br>석식 : ${din}`;
     } else if(d===days){
       mv='현지 송영 차량<br><br>단체 항공<br>(편명 추후 안내)';
       plan='아침식사 후 호텔 체크아웃<br>공항 이동 · 출국 수속<br><span class="g">귀국</span>';
-      meal=`조식 : ${yama?'뷔페식':bento?'한식당(오이소)':'호텔식'}<br>중식 : 불포함`;
+      meal=`조식 : ${brk}<br>중식 : 불포함`;
     } else {
       mv='현지 송영 차량<br>또는 도보 이동';
-      plan=`아침식사 후 골프장 이동<br>${roundLine}<br>라운딩 후 호텔 휴식<br>석식 및 자유시간`+
+      plan=`아침식사 후 골프장 이동<br>${roundLine}<br>라운딩 후 호텔 휴식<br>${noDin?'자유시간 (석식은 벳푸 시내 자유식)':'석식 및 자유시간'}`+
            (yama ? `<br><small style="color:var(--muted);">※ 주말(토·일) 슈퍼마켓·온천 유료 셔틀 운행 (현지 사정에 따라 취소될 수 있음)</small>` : '');
-      meal=`조식 : ${yama?'뷔페식':bento?'한식당(오이소)':'호텔식'}<br>중식 : ${lunchMid}<br>석식 : ${bento?'한식당(오이소)':'호텔식'}`;
+      meal=`조식 : ${brk}<br>중식 : ${lunchMid}<br>석식 : ${din}`;
     }
     html+=`<tr><td class="day">${d}일차</td><td class="mv">${mv}</td><td>${plan}</td><td class="meal">${meal}</td></tr>`;
   }
