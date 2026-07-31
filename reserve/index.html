@@ -405,7 +405,7 @@
 
 <!-- ===== 플로팅 ===== -->
 <div class="fabs">
-  <div class="fab talk" id="consult" onclick="alert('카카오톡 채널 메리트투어 실시간 상담으로 연결됩니다.\n(프로토타입 안내)')"><span class="ic">💬</span>상담</div>
+  <div class="fab talk" id="consult" onclick="openKakao()"><span class="ic">💬</span>상담</div>
   <div class="fab top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
 </div>
 
@@ -1189,6 +1189,12 @@ function submitReserve(){
 // 로그인 / 회원가입 / 예약확인 / 고객센터
 // ============================================================
 const TEL='02-365-9800', TEL_HOURS='평일 09:00~18:00';
+// 카카오톡 채널 상담 — 주소를 비우면 채널명 안내만 표시된다
+const KAKAO_URL='http://pf.kakao.com/_dxhWus/chat';
+function openKakao(){
+  if(KAKAO_URL){ window.open(KAKAO_URL,'_blank','noopener'); return; }
+  openSupport();
+}
 
 function sheetOpen(title){
   document.getElementById('sheetTitle').textContent=title;
@@ -1417,14 +1423,14 @@ function openMyPage(){
 function openSupport(){
   const b=sheetOpen('고객센터');
   b.innerHTML=`
-    <div class="opt stack" style="cursor:default;border-color:#FEE500;background:#FFFBE6;">
-      <span class="nm">카카오톡 채널 「메리트투어」</span>
-      <span class="desc">카카오톡에서 <b>메리트투어</b> 채널 검색 · 실시간 상담<br>예약 문의, 일정 변경, 결제 안내</span>
+    <div class="opt stack" onclick="openKakao()" style="border-color:#FEE500;background:#FFFBE6;">
+      <span class="nm">카카오톡 채널 「메리트투어」 ›</span>
+      <span class="desc">눌러서 <b>실시간 상담</b> 연결 · 예약 문의, 일정 변경, 결제 안내</span>
     </div>
-    <div class="opt stack" style="cursor:default;">
-      <span class="nm">전화 ${TEL}</span>
+    <a class="opt stack" href="tel:${TEL.replace(/-/g,'')}" style="text-decoration:none;color:inherit;">
+      <span class="nm">전화 ${TEL} ›</span>
       <span class="desc">${TEL_HOURS} (주말·공휴일 휴무)</span>
-    </div>
+    </a>
     <div class="stp-hint" style="margin-top:12px;">
       현지 긴급 상황은 예약 확정서에 안내된 현지 담당자 번호로 연락해 주세요.
     </div>
