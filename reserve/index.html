@@ -129,8 +129,12 @@
   .rcard{display:flex;align-items:center;gap:13px;border:1px solid var(--line);border-radius:12px;
     background:#fff;cursor:pointer;padding:13px 15px;transition:border-color .15s, background .15s;}
   .rcard:hover{border-color:var(--navy);background:var(--navy-soft);}
-  .rcard .chip{width:52px;height:52px;border-radius:11px;flex-shrink:0;overflow:hidden;position:relative;}
-  .rcard .chip img{width:100%;height:100%;object-fit:cover;display:block;}
+  /* 사진 자리 — 사진이 없으면 점선 빈칸으로 보여 "채워야 할 칸"임을 알 수 있게 한다 */
+  .rcard .chip{width:52px;height:52px;border-radius:11px;flex-shrink:0;overflow:hidden;position:relative;
+    background:#f3f5f8;border:1px dashed #c8d0dc;display:flex;align-items:center;justify-content:center;}
+  .rcard .chip svg{width:22px;height:22px;stroke:#aab4c4;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;}
+  .rcard .chip img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+  .rcard .chip.has{border-style:solid;border-color:var(--line);background:#fff;}
   .rcard .body{flex:1;min-width:0;}
   .rcard .nm{font-size:17px;font-weight:800;line-height:1.35;}
   .rcard .meta{font-size:13.5px;color:var(--muted);line-height:1.45;margin-top:2px;}
@@ -558,7 +562,6 @@ const ORIGINS = [
   {id:'부산', name:'부산 출발', airport:'김해공항'},
   {id:'대구', name:'대구 출발', airport:'대구공항'},
 ];
-const THUMB = ['linear-gradient(135deg,#3a6b4a,#22503a)','linear-gradient(135deg,#4a7fb0,#264f77)','linear-gradient(135deg,#b0894a,#7a5520)','linear-gradient(135deg,#6d8b57,#3f5e38)','linear-gradient(135deg,#8a5a7a,#4d2f45)','linear-gradient(135deg,#4a9aa0,#26666b)','linear-gradient(135deg,#a0684a,#5e3820)'];
 
 // ============================================================
 // 로그인 (회원 전용)
@@ -703,7 +706,6 @@ function selectMapRegion(region){
 function renderResortCards(){
   const host = document.getElementById('resortRegions');
   host.innerHTML = '';
-  let ti = 0;
   CAT.forEach((g,gi)=>{
     const block = document.createElement('div'); block.className='region-block'; block.id='region-'+gi;
     block.innerHTML = `<div class="region-title">${g.region}<small>${g.sub}</small></div>`;
@@ -717,10 +719,12 @@ function renderResortCards(){
       }
       const grid = document.createElement('div'); grid.className='card-grid';
       v.items.forEach(it=>{
-        const bg = THUMB[ti % THUMB.length]; ti++;
         const card = document.createElement('div'); card.className='rcard';
         card.innerHTML = `
-          <div class="chip" style="background:${bg}"><img src="./assets/rooms/${it.k}.webp" alt="" loading="lazy" onerror="this.remove()"></div>
+          <div class="chip">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="8.5" cy="10" r="1.6"></circle><path d="M4.5 17.5l4.8-4.6 3.2 3 2.6-2.3 4.4 3.9"></path></svg>
+            <img src="./assets/rooms/${it.k}.webp" alt="" loading="lazy" onload="this.parentNode.classList.add('has')" onerror="this.remove()">
+          </div>
           <div class="body">
             <div class="nm">${it.n}</div>
             <div class="meta">${it.desc || it.meta}</div>
