@@ -579,6 +579,11 @@ const AUTH_KEY = 'mt_reserve_auth';
 let AUTH = null;            // {id, name, grade, maxPeople}
 const MEMBER = { name:'', maxPeople:4 };  // 로그인 시 갱신 (인원 상한 = 예약 가능 인원)
 const MIN_PEOPLE = 2; // 1명 예약 불가
+// 인원 기본값 = 회원권 예약 가능 인원 (4인 회원권이면 4명 · 골드·특별회원이면 2명)
+//   회원이 직접 인원을 고르면 pplTouched 가 서고, 그 뒤로는 기본값이 덮어쓰지 않는다.
+let pplTouched = false;
+function defaultPeople(){ return Math.max(MIN_PEOPLE, MEMBER.maxPeople || MIN_PEOPLE); }
+function applyDefaultPeople(){ if(!pplTouched) sel.people = defaultPeople(); }
 
 const sel = { origin:null, resortKey:null, durIdx:null, people:null };
 
@@ -657,7 +662,7 @@ function openSheet(kind){
       <span>${d}</span></button>`).join('');
     if(!it.std) html += '<div class="sheet-hint" style="margin-top:8px;">※ 이 상품은 다음 화면에서 세부 일정을 선택합니다.</div>';
   } else if(kind==='ppl'){
-    const cur = sel.people || MIN_PEOPLE;
+    const cur = sel.people || defaultPeople();
     html = `<div class="stp">
         <div class="stp-lbl">인원<small>회원 본인 포함 총 인원</small></div>
         <div class="stp-ctl">
@@ -667,18 +672,18 @@ function openSheet(kind){
         </div>
       </div>
       <div class="stp-hint">최소 ${MIN_PEOPLE}명부터 예약 가능합니다.<br>
-        ${AUTH ? `${MEMBER.name} 회원님의 <b>예약 가능 인원은 최대 ${MEMBER.maxPeople}명</b>입니다.`
+        ${AUTH ? `${MEMBER.name} 회원님의 <b>예약 가능 인원은 최대 ${MEMBER.maxPeople}명</b>이며, 기본값으로 채워 뒀습니다.`
                : `로그인하시면 <b>회원권 기준 예약 가능 인원</b>이 적용됩니다. (현재 최대 ${MEMBER.maxPeople}명)`}</div>
       <button class="opt" id="pplDone" style="margin-top:16px;justify-content:center;font-weight:800;">선택 완료</button>`;
   }
   body.innerHTML = html;
   if(kind==='ppl'){
-    let cur = sel.people || MIN_PEOPLE;
+    let cur = sel.people || defaultPeople();
     const num=body.querySelector('#pplNum'), minus=body.querySelector('#pplMinus'), plus=body.querySelector('#pplPlus');
     const sync=()=>{ num.textContent=cur; minus.disabled=(cur<=MIN_PEOPLE); plus.disabled=(cur>=MEMBER.maxPeople); };
     minus.onclick=()=>{ if(cur>MIN_PEOPLE){ cur--; sync(); } };
     plus.onclick=()=>{ if(cur<MEMBER.maxPeople){ cur++; sync(); } };
-    body.querySelector('#pplDone').onclick=()=>{ sel.people=cur; syncFields(); closeSheet(); };
+    body.querySelector('#pplDone').onclick=()=>{ sel.people=cur; pplTouched=true; syncFields(); closeSheet(); };
     sync();
     document.getElementById('sheetMask').classList.add('show');
     return;
@@ -705,7 +710,7 @@ function pickOpt(v){
   setTimeout(()=>{
     if(sheetKind==='origin') openSheet('resort');
     else if(sheetKind==='resort') openSheet('dur');
-    else if(sheetKind==='dur' && !sel.people) openSheet('ppl');
+    else if(sheetKind==='dur' && !pplTouched) openSheet('ppl');
     // 인원까지 고르면 검색 버튼만 강조
   }, 160);
 }
@@ -843,7 +848,7 @@ const pv = { key:null, durIdx:0, y:2026, m:3, date:null, people:MIN_PEOPLE, wait
 function pvPpl(delta){
   const n = pv.people + delta;
   if(n < MIN_PEOPLE || n > MEMBER.maxPeople) return;
-  pv.people = n; sel.people = n; syncFields(); pvSyncPpl(); pvSyncPrice();
+  pv.people = n; sel.people = n; pplTouched=true; syncFields(); pvSyncPpl(); pvSyncPrice();
 }
 function pvSyncPpl(){
   document.getElementById('pvPplNum').textContent = pv.people;
@@ -883,7 +888,7 @@ function pvPricePerson(k,nights,dateStr){
 
 function openProduct(k){
   pv.key=k; pv.durIdx=0; pv.date=null; pv.y=2026; pv.m=3;
-  pv.people = sel.people || MIN_PEOPLE;
+  pv.people = sel.people || defaultPeople();
   document.getElementById('productView').classList.add('show');
   document.querySelector('section.resorts').style.display='none';
   document.querySelector('.hero').style.display='none';
@@ -1213,6 +1218,7 @@ function renderAuthUI(){
   }
   const h1=document.getElementById('heroH1');
   if(h1) h1.innerHTML=`${AUTH?AUTH.name+' 회원님':'회원님'},<br><span class="u">이번 라운딩은 어디로 가시겠습니까?</span>`;
+  applyDefaultPeople();                                    // 회원권 인원으로 기본값 갱신
   if(sel.people && sel.people>MEMBER.maxPeople){ sel.people=Math.max(MIN_PEOPLE,MEMBER.maxPeople); }
   renderQuotaChip();
   syncFields();
@@ -1478,6 +1484,7 @@ function consumeReserveEvent(){
 })();
 
 renderResortCards();
+applyDefaultPeople();   // 첫 화면부터 회원권 기준 인원이 채워져 있게
 syncFields();
 </script>
 </body>
