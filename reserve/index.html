@@ -186,6 +186,28 @@
   .pv-dur.on::before{content:'✓';position:absolute;left:13px;top:50%;transform:translateY(-50%);
     font-size:13px;font-weight:900;}
   .pv-durs-hint{font-size:12.5px;color:var(--muted);margin-bottom:14px;}
+  /* 객실 선택 — 날짜를 고른 뒤 룸타입별 잔여를 보고 고른다 */
+  .pv-rooms{display:flex;flex-direction:column;gap:8px;}
+  .pv-room{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+    padding:13px 15px;border:2px solid var(--line);border-radius:12px;background:#fff;
+    cursor:pointer;font-family:inherit;text-align:left;color:var(--ink);
+    transition:border-color .12s,background .12s;}
+  .pv-room:hover:not(:disabled){border-color:var(--navy);}
+  .pv-room .rl{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .pv-room .rl b{font-size:16px;font-weight:800;}
+  .pv-room .rl small{font-size:12.5px;color:var(--muted);}
+  .pv-room .rr{font-size:13px;color:var(--muted);white-space:nowrap;text-align:right;}
+  .pv-room .rr b{font-size:15px;font-weight:800;color:var(--ink);}
+  .pv-room .rr .warn{display:block;font-size:12px;font-weight:700;color:#c0392b;}
+  /* 고른 객실은 색만이 아니라 체크 표시로도 구분 (기간 칩과 같은 규칙) */
+  .pv-room.on{border-color:var(--navy);background:var(--navy);color:#fff;
+    box-shadow:0 2px 10px rgba(26,39,64,.28);}
+  .pv-room.on .rl small,.pv-room.on .rr{color:rgba(255,255,255,.82);}
+  .pv-room.on .rr b{color:#fff;}
+  .pv-room.on .rl b::before{content:'✓ ';font-weight:900;}
+  .pv-room.full{background:#f5f6f8;border-color:#e6e9ee;color:var(--muted);cursor:not-allowed;}
+  .pv-room.full .rl b{color:var(--muted);}
+  .pv-room-hint{font-size:12.5px;color:var(--muted);margin:8px 0 4px;line-height:1.6;}
   .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
   .cal-nav button{width:36px;height:36px;border:1px solid var(--line);background:#fff;border-radius:9px;
     cursor:pointer;font-size:17px;color:var(--navy);font-family:inherit;}
@@ -392,6 +414,11 @@
       <div class="pv-legend">
         <span><i style="background:#fff;border:1px solid var(--line);"></i>예약 가능</span>
         <span><i style="background:#f5f6f8;border:1px solid #e6e9ee;"></i>마감 — 눌러서 대기 신청</span>
+      </div>
+      <div id="pvRoomWrap" style="display:none;">
+        <div class="pv-price-lbl">객실 선택</div>
+        <div class="pv-rooms" id="pvRooms"></div>
+        <div class="pv-room-hint" id="pvRoomHint"></div>
       </div>
       <div class="pv-price-lbl">인원</div>
       <div class="stp" style="padding:6px 2px 10px;">
@@ -779,6 +806,29 @@ const RES = {
   miyazaki_kuko:{t:17000,s:5000,rm:10}
 };
 
+// 룸타입 — 단일 출처는 사내 리조트 마스터(대시보드 ① 리조트 마스터)의 rooms·roomMeta
+//   n=룸타입 · rm=보유 객실(실/동) · pax=1방 정원(명) · d=부연 · extra=1박·1인 추가요금(엔)
+//   야마나미 골프텔·포틴힐즈 호텔만 2종이고 나머지는 1종이라 고를 것이 없다.
+const ROOMS = {
+  yamanami:        [{n:'트윈',rm:55,pax:2},{n:'소형트윈',rm:50,pax:2}],
+  kuzu:            [{n:'트윈',rm:10,pax:2}],
+  kanji:           [{n:'트윈',rm:15,pax:2}],
+  shizunoyado:     [{n:'트윈',rm:7,pax:2}],
+  aso_villa:       [{n:'별장',rm:1,pax:8,d:'8인 대형 1동'}],
+  sobo_villa:      [{n:'별장',rm:3,pax:2,d:'편백 2인 · 3동'}],
+  dome_house:      [{n:'돔하우스',rm:4,pax:2}],
+  sobo5:           [{n:'별장',rm:1,pax:4,d:'편백 4인 독채'}],
+  // 포틴힐즈 패밀리룸은 4인실 — 2인이 쓰면 1박·1인당 2,200엔 추가(2027 안내문)
+  fourteen_hotel:  [{n:'트윈',rm:13,pax:2},{n:'패밀리룸',rm:19,pax:4,extra:2200}],
+  fourteen_caravan:[{n:'트윈',rm:6,pax:2}],
+  akiba:           [{n:'트윈',rm:15,pax:2}],
+  mutsuki:         [{n:'트윈',rm:4,pax:2}],
+  shirosato:       [{n:'트윈',rm:20,pax:2}],
+  sugadaira_onsen: [{n:'온천호텔',rm:35,pax:2}],
+  miyazaki_kuko:   [{n:'트윈',rm:10,pax:2}]
+};
+function roomsOf(k){ return ROOMS[k] || [{n:'트윈',rm:(RES[k]||{}).rm||10,pax:2}]; }
+
 // 상품 태그 (제목 뒤 #표기)
 const TAGS = {
   yamanami:['27홀','체류형','온천','3식포함'], kuzu:['18홀','장기체류','독채형','3식포함'],
@@ -849,12 +899,13 @@ const CHECKS = {
   miyazaki_kuko:['체재일 중식은 포함되어 있지 않습니다']
 };
 
-const pv = { key:null, durIdx:0, y:2026, m:3, date:null, people:MIN_PEOPLE, wait:false };
+const pv = { key:null, durIdx:0, y:2026, m:3, date:null, room:null, people:MIN_PEOPLE, wait:false };
 
 function pvPpl(delta){
   const n = pv.people + delta;
   if(n < MIN_PEOPLE || n > MEMBER.maxPeople) return;
-  pv.people = n; sel.people = n; pplTouched=true; syncFields(); pvSyncPpl(); pvSyncPrice();
+  // 인원이 바뀌면 필요 실수도 바뀌므로 객실 칸을 다시 그린다
+  pv.people = n; sel.people = n; pplTouched=true; syncFields(); pvSyncPpl(); renderPvRooms(); pvSyncPrice();
 }
 function pvSyncPpl(){
   document.getElementById('pvPplNum').textContent = pv.people;
@@ -872,14 +923,28 @@ function pvDows(it){ // 선택한 기간의 출발 요일 (없으면 전 요일)
   return hits.length?hits:null; // null = 요일 제한 없음(자유)
 }
 // 잔여 (book/ mockRemain과 동일 해시 + 시연 케이스)
+//   ⚠ 시안용 가짜 값이다. 실제로는 룸타입×날짜 재고를 예약 시스템에서 받아야 하고,
+//      마지막 1실을 두 사람이 동시에 누르는 경우까지 서버가 막아야 한다.
 const DEMO_REMAIN = {'yamanami|2026-10-15':0,'yamanami|2026-10-29':5,'yamanami|2026-11-05':1};
-function pvRemain(k,dateStr){
-  if(Object.prototype.hasOwnProperty.call(DEMO_REMAIN,k+'|'+dateStr)) return DEMO_REMAIN[k+'|'+dateStr];
-  const key=k+'twin'+dateStr; let h=0;
-  for(let i=0;i<key.length;i++) h=((h<<5)-h)+key.charCodeAt(i)|0;
-  const total=(RES[k]||{}).rm||10;
-  return Math.max(0, Math.round(total*(0.15+(Math.abs(h)%100)/100*0.75)));
+// 룸타입별 잔여. DEMO_REMAIN 은 그 날짜 '전체' 잔여라 룸타입에 한 실씩 돌려 담는다(0이면 전 타입 마감).
+function pvRemainRoom(k,room,dateStr){
+  const rs=roomsOf(k), i=rs.findIndex(r=>r.n===room);
+  if(i<0) return 0;
+  const tot=DEMO_REMAIN[k+'|'+dateStr];
+  if(tot!=null){
+    let n=0; for(let j=i;j<tot;j+=rs.length) n++;
+    return Math.min(n, rs[i].rm);
+  }
+  const key=k+room+dateStr; let h=0;
+  for(let x=0;x<key.length;x++) h=((h<<5)-h)+key.charCodeAt(x)|0;
+  return Math.max(0, Math.round(rs[i].rm*(0.15+(Math.abs(h)%100)/100*0.75)));
 }
+// 달력에 찍는 값 = 그 날짜 전 룸타입 합계
+function pvRemain(k,dateStr){
+  return roomsOf(k).reduce((s,r)=>s+pvRemainRoom(k,r.n,dateStr),0);
+}
+// 선택 인원이 그 룸타입으로 몇 실 필요한가 (2인 1실 기준 4명=트윈 2실)
+function roomsNeeded(people,pax){ return Math.max(1, Math.ceil(people/(pax||2))); }
 function pvPricePerson(k,nights,dateStr){
   const r=RES[k]||{};
   if(r.pkg){ const v=r.pkg[nights]; return v?{krw:v,air:true}:null; }
@@ -893,7 +958,7 @@ function pvPricePerson(k,nights,dateStr){
 }
 
 function openProduct(k){
-  pv.key=k; pv.durIdx=0; pv.date=null; pv.y=2026; pv.m=3;
+  pv.key=k; pv.durIdx=0; pv.date=null; pv.room=null; pv.y=2026; pv.m=3;
   pv.people = sel.people || defaultPeople();
   document.getElementById('productView').classList.add('show');
   document.querySelector('section.resorts').style.display='none';
@@ -932,6 +997,7 @@ function renderPv(){
   const itd=document.getElementById('pvItinD');
   if(itd) itd.open = window.innerWidth > 640;   // 모바일은 접어두고 눌러서 펼친다
   renderPvCal();
+  renderPvRooms();
   pvSyncPpl();
   pvSyncPrice();
   document.getElementById('pvFoot').innerHTML =
@@ -989,7 +1055,7 @@ function renderItin(it,nights){
   }
   body.innerHTML=html;
 }
-function pvSetDur(i){ pv.durIdx=i; pv.date=null; renderPv(); }
+function pvSetDur(i){ pv.durIdx=i; pv.date=null; pv.room=null; renderPv(); }
 function pvMonth(delta){
   let y=pv.y, m=pv.m+delta;
   if(m<1){m=12;y--;} if(m>12){m=1;y++;}
@@ -1018,7 +1084,41 @@ function renderPvCal(){
   }
   document.getElementById('pvDays').innerHTML=html;
 }
-function pvPick(ds,isFull){ pv.date=ds; pv.wait=!!isFull; renderPvCal(); pvSyncPrice(); }
+function pvPick(ds,isFull){
+  pv.date=ds; pv.wait=!!isFull;
+  pv.room=null;                     // 날짜가 바뀌면 잔여도 달라지므로 객실을 다시 고른다
+  renderPvCal(); renderPvRooms(); pvSyncPrice();
+}
+function pvSetRoom(n){ pv.room=n; renderPvRooms(); pvSyncPrice(); }
+function renderPvRooms(){
+  const wrap=document.getElementById('pvRoomWrap'), box=document.getElementById('pvRooms'),
+        hint=document.getElementById('pvRoomHint');
+  if(!wrap||!box) return;
+  // 날짜 전이거나 마감일(대기 신청)이면 고를 객실이 없다
+  if(!pv.date || pv.wait){ wrap.style.display='none'; return; }
+  wrap.style.display='';
+  const rs=roomsOf(pv.key);
+  if(rs.length===1) pv.room=rs[0].n;                              // 한 종류면 자동 선택
+  if(pv.room && !rs.some(r=>r.n===pv.room)) pv.room=null;         // 상품이 바뀌었을 때
+  box.innerHTML=rs.map(r=>{
+    const left=pvRemainRoom(pv.key,r.n,pv.date), need=roomsNeeded(pv.people,r.pax);
+    const cls='pv-room'+(pv.room===r.n?' on':'')+(left<=0?' full':'');
+    const rr = left<=0 ? '<b>마감</b>'
+             : left<need ? `<b>${left}실</b><span class="warn">${need}실 필요</span>`
+             : `<b>${left}실</b> 남음`;
+    return `<button type="button" class="${cls}" ${left<=0?'disabled':''} onclick="pvSetRoom('${r.n}')">`+
+      `<span class="rl"><b>${r.n}</b><small>${r.pax}인 1실${r.d?' · '+r.d:''}`+
+      `${left>0?` · ${pv.people}명이면 ${need}실`:''}</small></span>`+
+      `<span class="rr">${rr}</span></button>`;
+  }).join('');
+  const cur=rs.find(r=>r.n===pv.room);
+  let h = rs.length===1 ? `이 상품은 <b>${rs[0].n}</b> 한 종류입니다.`
+        : !pv.room ? '객실을 선택해주세요.' : '';
+  // 4인실을 정원 미만으로 쓰면 추가요금 (포틴힐즈 패밀리룸)
+  if(cur && cur.extra && pv.people < cur.pax)
+    h += (h?'<br>':'')+`※ ${cur.pax}인실을 ${pv.people}명이 이용하시면 <b>1박·1인당 ${cur.extra.toLocaleString()}엔</b>이 추가됩니다.`;
+  hint.innerHTML=h;
+}
 function pvSyncPrice(){
   const it=findResort(pv.key), nights=pvNights(it);
   const box=document.getElementById('pvPrice'), cta=document.getElementById('pvCta');
@@ -1038,10 +1138,22 @@ function pvSyncPrice(){
     cta.textContent='예약 대기 신청';
     return;
   }
+  // 객실을 골라야 실수(室數)가 정해지므로 그 전에는 진행할 수 없다
+  const rs=roomsOf(pv.key), cur=rs.find(r=>r.n===pv.room);
+  if(!cur){
+    box.className='pv-price ph'; box.textContent='객실을 선택해주세요.'; cta.disabled=true; return;
+  }
+  const need=roomsNeeded(pv.people,cur.pax), left=pvRemainRoom(pv.key,pv.room,pv.date);
+  if(left<need){
+    box.className='pv-price wait';
+    box.innerHTML=`${cur.n} 잔여 ${left}실`+
+      `<small>${pv.people}명은 <b>${need}실</b>이 필요합니다. 인원을 줄이거나 다른 객실·날짜를 선택해주세요.</small>`;
+    cta.disabled=true; return;
+  }
   // 금액은 표기하지 않는다(요금 안내는 담당자 확인 후) — 선택 일정만 요약
   box.className='pv-price';
   box.innerHTML=`${M}월 ${D}일(${dn}) 출발`+
-    `<small>${nights?nights+'박 '+(nights+1)+'일 · ':''}총 ${pv.people}명 (2인 1실 기준 ${Math.ceil(pv.people/2)}실)<br>`+
+    `<small>${nights?nights+'박 '+(nights+1)+'일 · ':''}총 ${pv.people}명 · ${cur.n} ${need}실<br>`+
     `요금은 예약 확정 후 담당자가 안내드립니다.</small>`;
 }
 // 예약 대기 신청 — 엠클릭 예약 구분값 「대기」로 접수되는 흐름
@@ -1130,12 +1242,13 @@ function openConfirm(){
   const p=pvPricePerson(pv.key,nights,pv.date);
   const [Y,M,D]=pv.date.split('-').map(Number);
   const dn=['일','월','화','수','목','금','토'][new Date(Y,M-1,D).getDay()];
-  const rooms=Math.ceil(pv.people/2);
+  const cur=roomsOf(pv.key).find(r=>r.n===pv.room)||{n:'트윈',pax:2};
+  const rooms=roomsNeeded(pv.people,cur.pax);
   const b=sheetOpen('예약 확인');
   b.innerHTML=`
     <div class="opt stack" style="cursor:default;border-color:var(--navy);background:var(--navy-soft);">
       <span class="nm">${it.n}</span>
-      <span class="desc">${it.durs[pv.durIdx]}<br>${M}월 ${D}일(${dn}) 출발 · 총 ${pv.people}명 (2인 1실 기준 ${rooms}실)</span>
+      <span class="desc">${it.durs[pv.durIdx]}<br>${M}월 ${D}일(${dn}) 출발 · 총 ${pv.people}명<br><b>${cur.n}</b> ${rooms}실${(cur.extra&&pv.people<cur.pax)?` · ${cur.pax}인실 ${pv.people}명 이용 (1박·1인 ${cur.extra.toLocaleString()}엔 추가)`:''}</span>
     </div>
     <div class="grp-label">예약자</div>
     <div class="opt stack" style="cursor:default;">
@@ -1172,8 +1285,9 @@ function submitReserve(){
   }
   // 예약 내역에 추가 (시연용 · 실제는 예약 시스템 저장)
   const rows=DEMO_BOOKINGS[AUTH.id]=DEMO_BOOKINGS[AUTH.id]||[];
+  const rcur=roomsOf(pv.key).find(r=>r.n===pv.room)||{n:'트윈',pax:2};
   rows.unshift({ no, resort:it.n, period:`${Y}.${String(M).padStart(2,'0')}.${String(D).padStart(2,'0')} 출발 · ${it.durs[pv.durIdx]}`,
-                 people:pv.people, status:'확정', balance:0 });
+                 people:pv.people, room:`${rcur.n} ${roomsNeeded(pv.people,rcur.pax)}실`, status:'확정', balance:0 });
   renderAuthUI();
   const left=quotaLeft(myQuota());
   const b=sheetOpen('예약 완료');
@@ -1360,7 +1474,7 @@ function openMyBookings(){
     ${rows.length? rows.map(r=>`
       <div class="opt stack" style="cursor:default;">
         <span class="nm">${r.resort} ${badge(r.status)}</span>
-        <span class="desc">${r.period} · ${r.people}명<br>예약번호 ${r.no}
+        <span class="desc">${r.period} · ${r.people}명${r.room?' · '+r.room:''}<br>예약번호 ${r.no}
           ${r.balance>0?`<br><b style="color:var(--gold-deep);">미결제 잔액 ${r.balance.toLocaleString()}원</b>`:'<br>결제 완료'}</span>
       </div>`).join('')
       : `<div class="stp-hint">현재 예약 내역이 없습니다. 아래에서 원하는 골프장을 선택해 예약을 진행해 주세요.</div>`}
