@@ -113,6 +113,26 @@
   .rcard .body{flex:1;min-width:0;}
   .rcard .nm{font-size:17px;font-weight:800;line-height:1.35;}
   .rcard .meta{font-size:13.5px;color:var(--muted);line-height:1.45;margin-top:2px;}
+  /* 시연 계정 안내 — 프로토타입 전용. 실계정 연결 시 통째로 지운다. */
+  .demo-box{border:1px dashed var(--line);border-radius:12px;padding:12px 13px;margin-bottom:16px;background:#fbfcfe;}
+  .demo-t{font-size:12.5px;font-weight:800;color:var(--muted);margin-bottom:9px;}
+  .demo-row{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+    padding:9px 11px;margin-bottom:6px;border:1px solid var(--line);border-radius:9px;background:#fff;
+    cursor:pointer;font-family:inherit;text-align:left;color:var(--ink);}
+  .demo-row:hover{border-color:var(--navy);background:var(--navy-soft);}
+  .demo-row .d-l{display:flex;flex-direction:column;gap:1px;min-width:0;}
+  .demo-row .d-l b{font-size:14.5px;font-weight:800;}
+  .demo-row .d-l small,.demo-row .d-r small{font-size:11.5px;color:var(--muted);}
+  .demo-row .d-r{display:flex;flex-direction:column;gap:1px;text-align:right;white-space:nowrap;
+    font-size:12px;font-weight:700;font-family:ui-monospace,Menlo,monospace;}
+  .demo-n{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:4px;}
+  @media(max-width:480px){ .demo-row{flex-direction:column;align-items:flex-start;gap:3px;}
+    .demo-row .d-r{text-align:left;} }
+  .rbadge{display:inline-block;margin-left:7px;padding:2px 8px;border-radius:999px;
+    font-size:11.5px;font-weight:800;vertical-align:middle;}
+  .rbadge.promo{background:#8B3A2F;color:#fff;}
+  .rbadge.no{background:#f1f3f6;color:#8a94a3;border:1px solid var(--line);}
+  .promo-t{color:#8B3A2F;} .no-t{color:#8a94a3;font-weight:700;}
   .rcard .go{flex-shrink:0;color:var(--muted);font-size:17px;font-weight:800;}
   .rcard:hover .go{color:var(--navy);}
 
@@ -131,6 +151,19 @@
   .pv-grid{display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start;}
   /* 포함내역은 그리드 왼쪽 칸 첫 줄 — 오른쪽 달력이 제목 바로 아래에 온다 */
   .pv-checks{margin-bottom:22px;}
+  /* 웹 화면: 예약 패널을 상단 전체 폭으로 빼고 달력을 크게. 일정표는 그 아래로 내린다. */
+  @media(min-width:901px){
+    .pv-grid{grid-template-columns:1fr;gap:26px;}
+    .pv-side{order:-1;position:static;padding:26px 28px;}
+    .pv-side>h3{font-size:20px;}
+    .cal-nav .ym{font-size:20px;}
+    .pv-side .cal-dows div{font-size:14px;padding:7px 0;}
+    .pv-side .cal-days .cal-day{min-height:66px;font-size:18px;}
+    .pv-side .cal-days .cal-day .rm{font-size:12.5px;}
+    /* 달력 아래 컨트롤은 3단으로 — 세로로 길어지지 않게 */
+    .pv-side .pv-lower{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;align-items:start;margin-top:6px;}
+    .pv-side .pv-lower>div{min-width:0;}
+  }
   @media(max-width:900px){
     .pv-grid{grid-template-columns:1fr;gap:20px;} .pv-side{order:-1;}
   }
@@ -415,23 +448,30 @@
         <span><i style="background:#fff;border:1px solid var(--line);"></i>예약 가능</span>
         <span><i style="background:#f5f6f8;border:1px solid #e6e9ee;"></i>마감 — 눌러서 대기 신청</span>
       </div>
-      <div id="pvRoomWrap" style="display:none;">
-        <div class="pv-price-lbl">객실 선택</div>
-        <div class="pv-rooms" id="pvRooms"></div>
-        <div class="pv-room-hint" id="pvRoomHint"></div>
-      </div>
-      <div class="pv-price-lbl">인원</div>
-      <div class="stp" style="padding:6px 2px 10px;">
-        <div class="stp-lbl" style="font-size:15px;font-weight:700;">총 인원<small id="pvPplHint"></small></div>
-        <div class="stp-ctl">
-          <button type="button" class="stp-btn" style="width:40px;height:40px;font-size:21px;" id="pvPplMinus" onclick="pvPpl(-1)">−</button>
-          <span class="stp-num" style="font-size:21px;min-width:28px;" id="pvPplNum">2</span>
-          <button type="button" class="stp-btn" style="width:40px;height:40px;font-size:21px;" id="pvPplPlus" onclick="pvPpl(1)">＋</button>
+      <!-- 달력 아래 컨트롤 — 웹에서는 3단(.pv-lower), 모바일에서는 그대로 세로로 쌓인다 -->
+      <div class="pv-lower">
+        <div id="pvRoomWrap" style="display:none;">
+          <div class="pv-price-lbl">객실 선택</div>
+          <div class="pv-rooms" id="pvRooms"></div>
+          <div class="pv-room-hint" id="pvRoomHint"></div>
+        </div>
+        <div>
+          <div class="pv-price-lbl">인원</div>
+          <div class="stp" style="padding:6px 2px 10px;">
+            <div class="stp-lbl" style="font-size:15px;font-weight:700;">총 인원<small id="pvPplHint"></small></div>
+            <div class="stp-ctl">
+              <button type="button" class="stp-btn" style="width:40px;height:40px;font-size:21px;" id="pvPplMinus" onclick="pvPpl(-1)">−</button>
+              <span class="stp-num" style="font-size:21px;min-width:28px;" id="pvPplNum">2</span>
+              <button type="button" class="stp-btn" style="width:40px;height:40px;font-size:21px;" id="pvPplPlus" onclick="pvPpl(1)">＋</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="pv-price-lbl">선택 일정</div>
+          <div class="pv-price ph" id="pvPrice">출발 날짜를 선택해주세요.</div>
+          <button class="pv-cta" id="pvCta" disabled onclick="pvGo()">예약 진행</button>
         </div>
       </div>
-      <div class="pv-price-lbl">선택 일정</div>
-      <div class="pv-price ph" id="pvPrice">출발 날짜를 선택해주세요.</div>
-      <button class="pv-cta" id="pvCta" disabled onclick="pvGo()">예약 진행</button>
     </aside>
   </div>
 </section>
@@ -652,8 +692,8 @@ function renderResortCards(){
             <img src="./assets/rooms/${it.k}.webp" alt="" loading="lazy" onload="this.parentNode.classList.add('has')" onerror="this.remove()">
           </div>
           <div class="body">
-            <div class="nm">${it.n}</div>
-            <div class="meta">${it.desc || it.meta}</div>
+            <div class="nm">${it.n}${isPromo(it.k)?'<span class="rbadge promo">기획전</span>':''}${bookBlock(it.k)?'<span class="rbadge no">예약 불가</span>':''}</div>
+            <div class="meta">${it.desc || it.meta}${isPromo(it.k)?'<br><b class="promo-t">'+PROMO[it.k].note+'</b>':''}${bookBlock(it.k)?'<br><b class="no-t">'+bookBlock(it.k)+'</b>':''}</div>
           </div>
           <span class="go">›</span>`;
         card.onclick = ()=> openProduct(it.k);
@@ -833,6 +873,22 @@ const ROOMS = {
 function roomsOf(k){ return ROOMS[k] || [{n:'트윈',rm:(RES[k]||{}).rm||10,pax:2}]; }
 // 상품별 최소 예약 인원. 독채 별장은 동 단위라 정원이 곧 최소(히노키빌라 패밀리 4명·프레스티지 8명).
 function minPaxOf(k){ return Math.max(MIN_PEOPLE, ...roomsOf(k).map(r=>r.min||0)); }
+// 기획전 — 8인 전용이라 8명까지 예약 가능한 회원권 보유자가 많지 않다.
+// 회원이면 회원권 구분과 관계없이 예약할 수 있게 연다(시스템사 협의 완료).
+const PROMO = { aso_villa:{ label:'기획전', note:'회원권 구분과 관계없이 예약하실 수 있습니다' } };
+function isPromo(k){ return !!PROMO[k]; }
+// 예약 가능한 최대 인원. 기획전은 회원권 한도를 적용하지 않고 그 동의 정원까지 받는다.
+function maxPaxOf(k){
+  return isPromo(k) ? Math.max(...roomsOf(k).map(r=>r.pax||MIN_PEOPLE)) : MEMBER.maxPeople;
+}
+// 이 회원이 이 상품을 예약할 수 없는 이유(없으면 null). 기획전은 항상 예약 가능.
+function bookBlock(k){
+  if(isPromo(k)) return null;
+  const lo=minPaxOf(k);
+  if(lo > MEMBER.maxPeople)
+    return `${lo}인 전용 상품입니다. 회원권 예약 가능 인원이 ${MEMBER.maxPeople}명이라 예약하실 수 없습니다.`;
+  return null;
+}
 
 // 상품 태그 (제목 뒤 #표기)
 const TAGS = {
@@ -907,22 +963,22 @@ const CHECKS = {
 const pv = { key:null, durIdx:0, y:2026, m:3, date:null, room:null, people:MIN_PEOPLE, wait:false };
 
 function pvPpl(delta){
-  const n = pv.people + delta, lo = minPaxOf(pv.key);
-  if(n < lo || n > MEMBER.maxPeople) return;
+  const n = pv.people + delta, lo = minPaxOf(pv.key), hi = maxPaxOf(pv.key);
+  if(n < lo || n > hi) return;
   // 인원이 바뀌면 필요 실수도 바뀌므로 객실 칸을 다시 그린다
   pv.people = n; sel.people = n; pplTouched=true; syncFields(); pvSyncPpl(); renderPvRooms(); pvSyncPrice();
 }
 function pvSyncPpl(){
-  const lo = minPaxOf(pv.key);
+  const lo = minPaxOf(pv.key), hi = maxPaxOf(pv.key), blk = bookBlock(pv.key);
   document.getElementById('pvPplNum').textContent = pv.people;
-  document.getElementById('pvPplMinus').disabled = (pv.people <= lo);
-  document.getElementById('pvPplPlus').disabled = (pv.people >= MEMBER.maxPeople);
-  // 독채는 동 단위라 최소가 올라간다. 회원권 인원이 그보다 적으면 예약 자체가 안 되므로 그 이유를 적는다.
-  document.getElementById('pvPplHint').textContent = (lo > MEMBER.maxPeople)
-    ? `이 상품은 최소 ${lo}명부터 예약 가능합니다 — 회원권 예약 가능 인원(${MEMBER.maxPeople}명)으로는 예약하실 수 없습니다.`
+  document.getElementById('pvPplMinus').disabled = (pv.people <= lo || !!blk);
+  document.getElementById('pvPplPlus').disabled = (pv.people >= hi || !!blk);
+  // 독채는 동 단위라 최소가 올라간다. 예약이 아예 막히는 경우엔 그 이유를 적는다.
+  document.getElementById('pvPplHint').textContent = blk ? blk
+    : isPromo(pv.key) ? `${lo}인 전용 · 기획전 상품이라 회원권 구분과 관계없이 예약하실 수 있습니다.`
     : (lo > MIN_PEOPLE
-        ? `최소 ${lo}명 (독채 1동 단위) · 최대 ${MEMBER.maxPeople}명 (회원권 기준)`
-        : `최소 ${MIN_PEOPLE}명 · 최대 ${MEMBER.maxPeople}명 (회원권 기준)`);
+        ? `최소 ${lo}명 (독채 1동 단위) · 최대 ${hi}명 (회원권 기준)`
+        : `최소 ${MIN_PEOPLE}명 · 최대 ${hi}명 (회원권 기준)`);
 }
 
 function pvNights(it){ // 선택한 기간의 박수
@@ -971,7 +1027,7 @@ function pvPricePerson(k,nights,dateStr){
 function openProduct(k){
   pv.key=k; pv.durIdx=0; pv.date=null; pv.room=null; pv.y=2026; pv.m=3;
   // 독채 별장은 최소 인원이 회원권 기본값보다 클 수 있어 그 아래로는 내려가지 않게 한다
-  pv.people = Math.max(minPaxOf(k), sel.people || defaultPeople());
+  pv.people = Math.min(maxPaxOf(k), Math.max(minPaxOf(k), sel.people || defaultPeople()));
   document.getElementById('productView').classList.add('show');
   document.querySelector('section.resorts').style.display='none';
   document.querySelector('.hero').style.display='none';
@@ -1136,6 +1192,14 @@ function pvSyncPrice(){
   const box=document.getElementById('pvPrice'), cta=document.getElementById('pvCta');
   cta.classList.remove('wait');
   cta.textContent='예약 진행';
+  // 예약 자체가 불가능한 상품은 날짜와 무관하게 막는다
+  const blk0=bookBlock(pv.key);
+  if(blk0){
+    box.className='pv-price wait';
+    box.innerHTML=`예약 불가<small>${blk0}</small>`;
+    cta.disabled=true; cta.textContent='예약 불가';
+    return;
+  }
   if(!pv.date){ box.className='pv-price ph'; box.textContent='출발 날짜를 선택해주세요.'; cta.disabled=true; return; }
   const p=pvPricePerson(pv.key,nights,pv.date);
   const [Y,M,D]=pv.date.split('-').map(Number);
@@ -1210,6 +1274,9 @@ function pvWaitSubmit(){
 
 function pvGo(){
   if(!AUTH){ openLogin('예약은 회원 로그인 후 진행하실 수 있습니다.'); return; }
+  // 회원권 예약 가능 인원으로 못 잡는 상품은 여기서 끊는다(안내만 하고 통과시키면 안 된다)
+  const blk=bookBlock(pv.key);
+  if(blk){ showNotice(`<b>예약하실 수 없는 상품입니다.</b><br>${blk}<br>문의는 메리트투어(${TEL})로 연락해 주세요.`); return; }
   if(pv.wait){ pvWaitApply(); return; }
   if(!pv.date){ return; }
   if(!isFreePeriod()){                       // 우선예약 기간에만 횟수 검사
@@ -1394,6 +1461,15 @@ function logout(){
   b.innerHTML=`<div class="stp-hint">로그아웃되었습니다.</div>
     <button class="opt" onclick="closeSheet()" style="margin-top:14px;justify-content:center;font-weight:800;">확인</button>`;
 }
+// 시연 계정 자동 입력 — 프로토타입이라 아이디를 외우고 있을 이유가 없다
+function demoFill(id){
+  const b=document.getElementById('sheetBody'); if(!b) return;
+  const i=b.querySelector('#loginId'), p=b.querySelector('#loginPw');
+  if(i) i.value=id;
+  if(p) p.value=id.replace(/^[A-Z]+/,'');
+  const e=b.querySelector('#loginErr'); if(e) e.style.display='none';
+  if(p) p.focus();
+}
 function openLogin(msg){
   const b=sheetOpen('로그인');
   b.innerHTML=`
@@ -1402,6 +1478,16 @@ function openLogin(msg){
       <b>메리트투어 홈페이지가 새롭게 단장했습니다.</b><br>
       회원님의 예약과 이용 내역을 한곳에서 확인하실 수 있습니다.<br>
       <b>회원가입 없이</b> 아래 방법으로 바로 로그인하실 수 있습니다.
+    </div>
+    <div class="demo-box">
+      <div class="demo-t">시연용 계정 — 누르면 자동 입력됩니다</div>
+      ${Object.keys(DEMO_ACCOUNTS).map(id=>{
+        const a=DEMO_ACCOUNTS[id], pw=id.replace(/^[A-Z]+/,'');
+        return `<button type="button" class="demo-row" onclick="demoFill('${id}')">
+          <span class="d-l"><b>${a.name}</b><small>${a.grade} · ${a.memberType} · 예약가능 ${a.maxPeople}명</small></span>
+          <span class="d-r">${id}<small>비번 ${pw}</small></span></button>`;
+      }).join('')}
+      <div class="demo-n">실제 회원정보가 아닌 가상 계정입니다. 비밀번호는 아이디 뒤 휴대폰번호와 같습니다.</div>
     </div>
     <label class="grp-label" for="loginId">아이디</label>
     <input class="opt" id="loginId" placeholder="HONG01012345678" autocomplete="username"
