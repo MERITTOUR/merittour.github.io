@@ -163,10 +163,6 @@
     .pv-grid{grid-template-columns:1fr;gap:26px;}
     .pv-side{order:-1;position:static;padding:26px 28px;}
     .pv-side>h3{font-size:20px;}
-    .cal-nav .ym{font-size:20px;}
-    .pv-side .cal-dows div{font-size:14px;padding:7px 0;}
-    .pv-side .cal-days .cal-day{min-height:66px;font-size:18px;}
-    .pv-side .cal-days .cal-day .rm{font-size:12.5px;}
     /* 달력 아래 컨트롤은 3단으로 — 세로로 길어지지 않게 */
     .pv-side .pv-lower{display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px;align-items:start;margin-top:6px;}
     .pv-side .pv-lower>div{min-width:0;}
@@ -252,15 +248,17 @@
   .cal-nav button{width:36px;height:36px;border:1px solid var(--line);background:#fff;border-radius:9px;
     cursor:pointer;font-size:17px;color:var(--navy);font-family:inherit;}
   .cal-nav button:disabled{opacity:.35;cursor:not-allowed;}
-  .cal-nav .ym{font-size:17px;font-weight:800;}
+  .cal-nav .ym{font-size:clamp(17px,1.7vw,21px);font-weight:800;}
   .cal-dows,.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
-  .cal-dows div{text-align:center;font-size:12.5px;font-weight:700;color:var(--muted);padding:5px 0;}
+  .cal-dows div{text-align:center;font-size:clamp(12.5px,1.15vw,14.5px);font-weight:700;color:var(--muted);
+    padding:clamp(5px,.6vw,8px) 0;}
   .cal-dows div.sun{color:#c0392b;} .cal-dows div.sat{color:#2471a3;}
-  .cal-day{min-height:46px;border-radius:9px;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:1px;font-size:14.5px;color:#c8cdd6;background:#fff;border:1px solid transparent;}
+  .cal-day{min-height:clamp(46px,6.2vw,68px);border-radius:9px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    gap:1px;font-size:clamp(14.5px,1.45vw,18.5px);color:#c8cdd6;background:#fff;border:1px solid transparent;}
   .cal-day.on{color:var(--ink);font-weight:700;border-color:var(--line);cursor:pointer;background:#fff;}
   .cal-day.on:hover{border-color:var(--navy);background:var(--navy-soft);}
-  .cal-day.on .rm{font-size:11px;font-weight:700;color:#1f7a4d;}
+  .cal-day.on .rm{font-size:clamp(11px,1.02vw,13px);font-weight:700;color:#1f7a4d;}
   /* 마감일도 클릭 가능 → 예약 대기 신청 (엠클릭 「대기」 구분값 활용) */
   .cal-day.full{color:#8a93a3;background:#f5f6f8;border-color:#e6e9ee;cursor:pointer;}
   .cal-day.full:hover{border-color:var(--gold-deep);background:#fdf8f0;}
@@ -837,7 +835,7 @@ function doSearch(){
 //   요금·잔여 상수는 예약 앱(book/)과 동일 값 사용
 // ============================================================
 const FX = 9.5;                          // 100엔 = 950원 (book/ FX_JPY_KRW)
-const SEASON_START = new Date(2026, 2, 10); // 2026-03-10 시즌 시작
+const SEASON_START = new Date(2027, 2, 10); // 2027-03-10 시즌 시작 (2027년 출발분 예약)
 // 리조트별 요금·객실 (book/ RESORTS와 동일)
 const RES = {
   // 통합 안내문 체재비(1인 1박)·왕복 송영비 기준 · rm=보유 객실(리조트 마스터)
@@ -967,7 +965,7 @@ const CHECKS = {
   miyazaki_kuko:['체재일 중식은 포함되어 있지 않습니다']
 };
 
-const pv = { key:null, durIdx:0, y:2026, m:3, date:null, room:null, people:MIN_PEOPLE, wait:false };
+const pv = { key:null, durIdx:0, y:2027, m:3, date:null, room:null, people:MIN_PEOPLE, wait:false };
 
 function pvPpl(delta){
   const n = pv.people + delta, lo = minPaxOf(pv.key), hi = maxPaxOf(pv.key);
@@ -999,7 +997,7 @@ function pvDows(it){ // 선택한 기간의 출발 요일 (없으면 전 요일)
 // 잔여 (book/ mockRemain과 동일 해시 + 시연 케이스)
 //   ⚠ 시안용 가짜 값이다. 실제로는 룸타입×날짜 재고를 예약 시스템에서 받아야 하고,
 //      마지막 1실을 두 사람이 동시에 누르는 경우까지 서버가 막아야 한다.
-const DEMO_REMAIN = {'yamanami|2026-10-15':0,'yamanami|2026-10-29':5,'yamanami|2026-11-05':1};
+const DEMO_REMAIN = {'yamanami|2027-10-14':0,'yamanami|2027-10-28':5,'yamanami|2027-11-04':1};
 // 룸타입별 잔여. DEMO_REMAIN 은 그 날짜 '전체' 잔여라 룸타입에 한 실씩 돌려 담는다(0이면 전 타입 마감).
 function pvRemainRoom(k,room,dateStr){
   const rs=roomsOf(k), i=rs.findIndex(r=>r.n===room);
@@ -1032,7 +1030,7 @@ function pvPricePerson(k,nights,dateStr){
 }
 
 function openProduct(k){
-  pv.key=k; pv.durIdx=0; pv.date=null; pv.room=null; pv.y=2026; pv.m=3;
+  pv.key=k; pv.durIdx=0; pv.date=null; pv.room=null; pv.y=2027; pv.m=3;
   // 독채 별장은 최소 인원이 회원권 기본값보다 클 수 있어 그 아래로는 내려가지 않게 한다
   pv.people = Math.min(maxPaxOf(k), Math.max(minPaxOf(k), sel.people || defaultPeople()));
   document.getElementById('productView').classList.add('show');
@@ -1134,14 +1132,14 @@ function pvSetDur(i){ pv.durIdx=i; pv.date=null; pv.room=null; renderPv(); }
 function pvMonth(delta){
   let y=pv.y, m=pv.m+delta;
   if(m<1){m=12;y--;} if(m>12){m=1;y++;}
-  if(y<2026||(y===2026&&m<3)){y=2026;m=3;}
+  if(y<2027||(y===2027&&m<3)){y=2027;m=3;}
   if(y>2027){y=2027;m=12;}
   pv.y=y; pv.m=m; renderPvCal();
 }
 function renderPvCal(){
   const it=findResort(pv.key); const dows=pvDows(it);
   document.getElementById('pvYm').textContent=`${pv.y}.${String(pv.m).padStart(2,'0')}`;
-  document.getElementById('pvPrev').disabled=(pv.y===2026&&pv.m<=3);
+  document.getElementById('pvPrev').disabled=(pv.y===2027&&pv.m<=3);
   document.getElementById('pvNext').disabled=(pv.y===2027&&pv.m>=12);
   const first=new Date(pv.y,pv.m-1,1), last=new Date(pv.y,pv.m,0);
   let html='';
@@ -1575,11 +1573,11 @@ function openSignup(){
 // 예약 확인 / 결제 — 시연용 목 데이터 (실운영은 예약 시스템 조회)
 const DEMO_BOOKINGS = {
   'HONG01012345678': [
-    { no:'MT-260312-0142', resort:'야마나미 호텔', period:'2026.03.12 ~ 03.15 (3박 4일)', people:4, status:'확정', balance:0 },
-    { no:'MT-260521-0388', resort:'포틴힐즈CC 호텔', period:'2026.05.21 ~ 05.25 (4박 5일)', people:2, status:'대기', balance:0 }
+    { no:'MT-270312-0142', resort:'야마나미 호텔', period:'2027.03.12 ~ 03.15 (3박 4일)', people:4, status:'확정', balance:0 },
+    { no:'MT-270521-0388', resort:'포틴힐즈CC 호텔', period:'2027.05.21 ~ 05.25 (4박 5일)', people:2, status:'대기', balance:0 }
   ],
   'CHOI01011112222': [
-    { no:'MT-260415-0207', resort:'야마나미 프레스티지', period:'2026.04.15 ~ 04.22 (7박 8일)', people:8, status:'견적', balance:3840000 }
+    { no:'MT-270415-0207', resort:'야마나미 프레스티지', period:'2027.04.15 ~ 04.22 (7박 8일)', people:8, status:'견적', balance:3840000 }
   ]
 };
 function openMyBookings(){
