@@ -135,6 +135,10 @@
   .demo-n code{font-family:ui-monospace,Menlo,monospace;font-size:11px;}
   @media(max-width:480px){ .demo-row{flex-direction:column;align-items:flex-start;gap:3px;}
     .demo-row .d-r{text-align:left;} }
+  .promo-nav{position:relative;}
+  .nbadge{display:inline-block;margin-left:5px;min-width:17px;height:17px;line-height:17px;padding:0 5px;
+    border-radius:999px;background:#8B3A2F;color:#fff;font-size:11px;font-weight:800;text-align:center;
+    vertical-align:middle;}
   .rbadge{display:inline-block;margin-left:7px;padding:2px 8px;border-radius:999px;
     font-size:11.5px;font-weight:800;vertical-align:middle;}
   .rbadge.promo{background:#8B3A2F;color:#fff;}
@@ -222,6 +226,17 @@
   .pv-dur.on::before{content:'✓';position:absolute;left:13px;top:50%;transform:translateY(-50%);
     font-size:13px;font-weight:900;}
   .pv-durs-hint{font-size:12.5px;color:var(--muted);margin-bottom:14px;}
+  /* 세로가 짧은 환경(13~14인치 노트북 등)에서도 달력 전체가 한 화면에 들어오도록 */
+  @media(max-height:820px){
+    .pv-side{padding:16px 20px;}
+    .pv-durs-hint{margin-bottom:8px;font-size:12px;}
+    .pv-durs{gap:6px;}
+    .pv-dur{padding:7px 12px;font-size:13.5px;}
+    .pv-dur.on{padding-left:27px;}
+    .cal-nav{margin-bottom:6px;}
+    .cal-nav button{width:31px;height:31px;font-size:15px;}
+    .pv-title{margin-bottom:10px;}
+  }
   /* 객실 선택 — 날짜를 고른 뒤 룸타입별 잔여를 보고 고른다 */
   .pv-rooms{display:flex;flex-direction:column;gap:8px;}
   .pv-room{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
@@ -248,17 +263,17 @@
   .cal-nav button{width:36px;height:36px;border:1px solid var(--line);background:#fff;border-radius:9px;
     cursor:pointer;font-size:17px;color:var(--navy);font-family:inherit;}
   .cal-nav button:disabled{opacity:.35;cursor:not-allowed;}
-  .cal-nav .ym{font-size:clamp(17px,1.7vw,21px);font-weight:800;}
+  .cal-nav .ym{font-size:clamp(15px,min(1.7vw,1.9vh),21px);font-weight:800;}
   .cal-dows,.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
-  .cal-dows div{text-align:center;font-size:clamp(12.5px,1.15vw,14.5px);font-weight:700;color:var(--muted);
-    padding:clamp(5px,.6vw,8px) 0;}
+  .cal-dows div{text-align:center;font-size:clamp(11px,min(1.15vw,1.3vh),14.5px);font-weight:700;color:var(--muted);
+    padding:clamp(3px,.55vh,8px) 0;}
   .cal-dows div.sun{color:#c0392b;} .cal-dows div.sat{color:#2471a3;}
-  .cal-day{min-height:clamp(46px,6.2vw,68px);border-radius:9px;display:flex;flex-direction:column;
+  .cal-day{min-height:clamp(34px,min(6.2vw,6.0vh),68px);border-radius:9px;display:flex;flex-direction:column;
     align-items:center;justify-content:center;
-    gap:1px;font-size:clamp(14.5px,1.45vw,18.5px);color:#c8cdd6;background:#fff;border:1px solid transparent;}
+    gap:1px;font-size:clamp(13px,min(1.45vw,1.6vh),18.5px);color:#c8cdd6;background:#fff;border:1px solid transparent;}
   .cal-day.on{color:var(--ink);font-weight:700;border-color:var(--line);cursor:pointer;background:#fff;}
   .cal-day.on:hover{border-color:var(--navy);background:var(--navy-soft);}
-  .cal-day.on .rm{font-size:clamp(11px,1.02vw,13px);font-weight:700;color:#1f7a4d;}
+  .cal-day.on .rm{font-size:clamp(9.5px,min(1.02vw,1.15vh),13px);font-weight:700;color:#1f7a4d;}
   /* 마감일도 클릭 가능 → 예약 대기 신청 (엠클릭 「대기」 구분값 활용) */
   .cal-day.full{color:#8a93a3;background:#f5f6f8;border-color:#e6e9ee;cursor:pointer;}
   .cal-day.full:hover{border-color:var(--gold-deep);background:#fdf8f0;}
@@ -375,7 +390,7 @@
       <a href="#resorts">골프장&amp;호텔정보</a>
       <a href="#">공지사항</a>
       <span class="sp"></span>
-      <a class="sub" href="#">기획전</a>
+      <a class="sub promo-nav" href="#" onclick="openPromo();return false;">기획전<span class="nbadge" id="promoN"></span></a>
       <a class="sub" href="#">이벤트</a>
       <a class="sub" href="#consult">고객센터</a>
     </div>
@@ -667,17 +682,31 @@ const sel = { origin:null, resortKey:null, durIdx:null, people:null };
 
 function catByOrigin(o){
   return CAT.map(g=>({ ...g,
-    venues: g.venues.map(v=>({ ...v, items: v.items.filter(it=> !o || it.dep.includes(o)) }))
+    venues: g.venues.map(v=>({ ...v, items: v.items.filter(it=> !isPromo(it.k) && (!o || it.dep.includes(o))) }))
                     .filter(v=>v.items.length)
   })).filter(g=>g.venues.length);
 }
 function findResort(k){ return allItems().find(i=>i.k===k) || null; }
 
+// 기획전 상품은 일반 목록·검색에 섞지 않는다 — 섞으면 인원·차수 규칙이 상품마다 갈린다
+function promoItems(){
+  const out=[];
+  CAT.forEach(g=>g.venues.forEach(v=>v.items.forEach(it=>{ if(isPromo(it.k)) out.push(it); })));
+  return out;
+}
+// 기획전을 뺀 일반 목록
+function catPublic(){
+  return CAT.map(g=>({...g, venues:g.venues
+      .map(v=>({...v, items:v.items.filter(it=>!isPromo(it.k))}))
+      .filter(v=>v.items.length)}))
+    .filter(g=>g.venues.length);
+}
+
 // ===== 골프장 카드 렌더 =====
 function renderResortCards(){
   const host = document.getElementById('resortRegions');
   host.innerHTML = '';
-  CAT.forEach((g,gi)=>{
+  catPublic().forEach((g,gi)=>{
     const block = document.createElement('div'); block.className='region-block'; block.id='region-'+gi;
     block.innerHTML = `<div class="region-title">${g.region}<small>${g.sub}</small></div>`;
     g.venues.forEach(v=>{
@@ -697,8 +726,8 @@ function renderResortCards(){
             <img src="./assets/rooms/${it.k}.webp" alt="" loading="lazy" onload="this.parentNode.classList.add('has')" onerror="this.remove()">
           </div>
           <div class="body">
-            <div class="nm">${it.n}${isPromo(it.k)?'<span class="rbadge promo">기획전</span>':''}${bookBlock(it.k)?'<span class="rbadge no">예약 불가</span>':''}</div>
-            <div class="meta">${it.desc || it.meta}${isPromo(it.k)?'<br><b class="promo-t">'+PROMO[it.k].note+'</b>':''}${bookBlock(it.k)?'<br><b class="no-t">'+bookBlock(it.k)+'</b>':''}</div>
+            <div class="nm">${it.n}${bookBlock(it.k)?'<span class="rbadge no">예약 불가</span>':''}</div>
+            <div class="meta">${it.desc || it.meta}${bookBlock(it.k)?'<br><b class="no-t">'+bookBlock(it.k)+'</b>':''}</div>
           </div>
           <span class="go">›</span>`;
         card.onclick = ()=> openProduct(it.k);
@@ -749,18 +778,21 @@ function openSheet(kind){
           <button type="button" class="stp-btn" id="pplPlus">＋</button>
         </div>
       </div>
-      <div class="stp-hint">최소 ${MIN_PEOPLE}명부터 예약 가능합니다.<br>
+      <div class="stp-hint">${selMinPax()>MIN_PEOPLE
+          ? `이 상품은 <b>${selMinPax()}인 전용</b>입니다 — 인원이 ${selMinPax()}명으로 고정됩니다.`
+          : `최소 ${MIN_PEOPLE}명부터 예약 가능합니다.`}<br>
         ${AUTH ? `${MEMBER.name} 회원님의 <b>예약 가능 인원은 최대 ${MEMBER.maxPeople}명</b>이며, 기본값으로 채워 뒀습니다.`
                : `로그인하시면 <b>회원권 기준 예약 가능 인원</b>이 적용됩니다. (현재 최대 ${MEMBER.maxPeople}명)`}</div>
       <button class="opt" id="pplDone" style="margin-top:16px;justify-content:center;font-weight:800;">선택 완료</button>`;
   }
   body.innerHTML = html;
   if(kind==='ppl'){
-    let cur = sel.people || defaultPeople();
+    const lo=selMinPax(), hi=selMaxPax();
+    let cur = Math.min(hi, Math.max(lo, sel.people || defaultPeople()));
     const num=body.querySelector('#pplNum'), minus=body.querySelector('#pplMinus'), plus=body.querySelector('#pplPlus');
-    const sync=()=>{ num.textContent=cur; minus.disabled=(cur<=MIN_PEOPLE); plus.disabled=(cur>=MEMBER.maxPeople); };
-    minus.onclick=()=>{ if(cur>MIN_PEOPLE){ cur--; sync(); } };
-    plus.onclick=()=>{ if(cur<MEMBER.maxPeople){ cur++; sync(); } };
+    const sync=()=>{ num.textContent=cur; minus.disabled=(cur<=lo); plus.disabled=(cur>=hi); };
+    minus.onclick=()=>{ if(cur>lo){ cur--; sync(); } };
+    plus.onclick=()=>{ if(cur<hi){ cur++; sync(); } };
     body.querySelector('#pplDone').onclick=()=>{ sel.people=cur; pplTouched=true; syncFields(); closeSheet(); };
     sync();
     document.getElementById('sheetMask').classList.add('show');
@@ -779,6 +811,8 @@ function pickOpt(v){
   } else if(sheetKind==='resort'){
     if(sel.resortKey !== v){ sel.durIdx=null; }
     sel.resortKey = v;
+    // 8인 전용 기획전(프레스티지)처럼 상품이 인원을 정하는 경우가 있어 다시 맞춘다
+    sel.people = Math.min(maxPaxOf(v), Math.max(minPaxOf(v), sel.people || defaultPeople()));
   } else if(sheetKind==='dur'){
     sel.durIdx = parseInt(v,10);
   }
@@ -878,6 +912,9 @@ const ROOMS = {
 function roomsOf(k){ return ROOMS[k] || [{n:'트윈',rm:(RES[k]||{}).rm||10,pax:2}]; }
 // 상품별 최소 예약 인원. 독채 별장은 동 단위라 정원이 곧 최소(히노키빌라 패밀리 4명·프레스티지 8명).
 function minPaxOf(k){ return Math.max(MIN_PEOPLE, ...roomsOf(k).map(r=>r.min||0)); }
+// 랜딩 검색용 — 상품을 아직 안 골랐으면 회원권 기준을 쓴다
+function selMinPax(){ return sel.resortKey ? minPaxOf(sel.resortKey) : MIN_PEOPLE; }
+function selMaxPax(){ return sel.resortKey ? maxPaxOf(sel.resortKey) : MEMBER.maxPeople; }
 // 기획전 — 8인 전용이라 8명까지 예약 가능한 회원권 보유자가 많지 않다.
 // 회원이면 회원권 구분과 관계없이 예약할 수 있게 연다(시스템사 협의 완료).
 const PROMO = { aso_villa:{ label:'기획전', note:'회원권 구분과 관계없이 예약하실 수 있습니다' } };
@@ -1466,12 +1503,56 @@ function logout(){
   b.innerHTML=`<div class="stp-hint">로그아웃되었습니다.</div>
     <button class="opt" onclick="closeSheet()" style="margin-top:14px;justify-content:center;font-weight:800;">확인</button>`;
 }
+// 기획전 — 일반 목록에서 뺀 상품을 여기서만 연다
+function openPromo(){
+  const list=promoItems();
+  const b=sheetOpen('기획전');
+  b.innerHTML = list.length ? list.map(it=>{
+    const lo=minPaxOf(it.k), note=(PROMO[it.k]||{}).note||'';
+    return `<button class="opt stack" onclick="closeSheet();openProduct('${it.k}');" style="border-color:#8B3A2F;">
+      <span class="nm">${it.n}<span class="rbadge promo" style="margin-left:7px">기획전</span></span>
+      <span class="desc">${it.desc || it.meta}<br><b style="color:#8B3A2F">${lo}인 전용 · ${note}</b></span></button>`;
+  }).join('') : '<div class="stp-hint">진행 중인 기획전이 없습니다.</div>';
+  b.innerHTML += `<div class="stp-hint" style="margin-top:14px;">
+    기획전 상품은 <b>회원권 구분과 관계없이</b> 예약하실 수 있습니다.
+    일반 상품 목록·검색에는 나오지 않습니다.</div>`;
+}
+function markPromoN(){
+  const el=document.getElementById('promoN'); if(!el) return;
+  const n=promoItems().length;
+  el.textContent = n ? n : '';
+  el.style.display = n ? '' : 'none';
+}
+
 // 차수 시연 — 차수는 계정이 아니라 시각으로 정해지므로 ?sim= 을 붙여 다시 연다.
 // 로그인 상태는 sessionStorage 라 새로고침해도 유지된다.
 function demoJump(iso){
+  // 시각을 옮기면 페이지가 다시 열리므로, 입력해 둔 시연 계정으로 '먼저' 로그인해 둔다.
+  // 안 그러면 새로고침 때 입력값이 날아가 로그인도 안 되고 화면만 닫힌 것처럼 보인다.
+  const b=document.getElementById('sheetBody');
+  const idEl=b&&b.querySelector('#loginId'), pwEl=b&&b.querySelector('#loginPw');
+  if(!AUTH && idEl && idEl.value.trim()) doLogin(idEl.value, pwEl?pwEl.value:'');
   const u=new URL(location.href);
   if(iso) u.searchParams.set('sim', iso.slice(0,16)); else u.searchParams.delete('sim');
+  u.searchParams.set('demo','1');           // 다시 열렸을 때 그 차수 상태를 바로 보여주기 위한 표시
   location.href=u.toString();
+}
+// 차수 시연으로 다시 열렸을 때 — 그 계정이 그 차수에서 어떤 상태인지 한 장으로 보여준다
+function demoRoundNotice(){
+  if(!AUTH) return;
+  const q=myQuota(), left=quotaLeft(q), free=isFreePeriod(), act=activeRound(AUTH.grade);
+  const rows=PRIORITY_SCHEDULE.map(r=>{
+    const s=q['round'+r.no];
+    const st = !s.eligible ? '<b style="color:#8a94a3">자격 없음</b>'
+             : !s.opened   ? '<span style="color:#8a94a3">아직 안 열림</span>'
+             : `${s.used}/${s.total}회 사용${s.active?' <b style="color:#1f7a4d">· 접수 중</b>':''}`;
+    return `<tr><td style="padding:3px 10px 3px 0;font-weight:700">${r.label}</td><td style="padding:3px 0">${st}</td></tr>`;
+  }).join('');
+  const head = free ? '<b>자유예약 기간</b> — 횟수 제한 없이 잔여 객실로 예약하실 수 있습니다.'
+             : act  ? `<b>${act.label} 접수 중</b> — 남은 예약 가능 횟수 <b>${left}회</b>`
+                    : `<b>접수 휴지 기간</b> — 다음 차수를 기다려 주세요. (보유 횟수 ${left}회)`;
+  showNotice(`<b>${AUTH.name} 회원님</b> · ${AUTH.grade} · ${AUTH.memberType}<br>${head}
+    <table style="margin-top:8px;font-size:13.5px">${rows}</table>`);
 }
 // 시연 계정 자동 입력 — 프로토타입이라 아이디를 외우고 있을 이유가 없다
 function demoFill(id){
@@ -1721,6 +1802,9 @@ function consumeReserveEvent(){
 })();
 
 renderResortCards();
+markPromoN();
+// 차수 시연 버튼으로 다시 열린 경우 — 그 계정의 그 차수 상태를 바로 보여준다
+if(new URLSearchParams(location.search).get('demo')==='1') setTimeout(demoRoundNotice, 260);
 applyDefaultPeople();   // 첫 화면부터 회원권 기준 인원이 채워져 있게
 syncFields();
 </script>
