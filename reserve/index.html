@@ -173,7 +173,11 @@
   }
   @media(max-width:900px){
     .pv-grid{grid-template-columns:1fr;gap:20px;} .pv-side{order:-1;}
+    /* 세로로만 쌓이면 패널이 화면을 넘는다 — 인원과 선택 일정을 나란히 */
+    .pv-lower{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px;align-items:start;}
+    .pv-lower>#pvRoomWrap{grid-column:1 / -1;}
   }
+  @media(max-width:420px){ .pv-lower{grid-template-columns:1fr;} }
   .pv-sec-t{font-size:17px;font-weight:800;border-left:4px solid var(--navy);padding-left:10px;margin:0 0 12px;}
   .pv-note{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--bg-alt);
     font-size:15px;color:#4a5a72;line-height:1.6;margin-bottom:26px;}
@@ -227,7 +231,7 @@
     font-size:13px;font-weight:900;}
   .pv-durs-hint{font-size:12.5px;color:var(--muted);margin-bottom:14px;}
   /* 세로가 짧은 환경(13~14인치 노트북 등)에서도 달력 전체가 한 화면에 들어오도록 */
-  @media(max-height:820px){
+  @media (max-height:820px), (max-width:560px){
     .pv-side{padding:16px 20px;}
     .pv-durs-hint{margin-bottom:8px;font-size:12px;}
     .pv-durs{gap:6px;}
@@ -236,6 +240,14 @@
     .cal-nav{margin-bottom:6px;}
     .cal-nav button{width:31px;height:31px;font-size:15px;}
     .pv-title{margin-bottom:10px;}
+    .pv-durs-hint{display:none;}          /* 칩을 고르면 달력이 바뀌는 건 눌러 보면 안다 */
+    .pv-legend{margin:4px 0 8px;font-size:11.5px;}
+    .pv-price-lbl{margin:8px 0 5px;font-size:12px;}
+    .pv-lower{gap:14px;margin-top:0;}
+    .pv-cta{padding:12px;font-size:15px;margin-top:8px;}
+    .pv-price{padding:10px 12px;font-size:13.5px;}
+    .pv-rooms{gap:5px;} .pv-room{padding:8px 11px;}
+    .pv-room .rl b{font-size:14px;} .pv-room-hint{margin:5px 0 0;}
   }
   /* 객실 선택 — 날짜를 고른 뒤 룸타입별 잔여를 보고 고른다 */
   .pv-rooms{display:flex;flex-direction:column;gap:8px;}
@@ -268,7 +280,7 @@
   .cal-dows div{text-align:center;font-size:clamp(11px,min(1.15vw,1.3vh),14.5px);font-weight:700;color:var(--muted);
     padding:clamp(3px,.55vh,8px) 0;}
   .cal-dows div.sun{color:#c0392b;} .cal-dows div.sat{color:#2471a3;}
-  .cal-day{min-height:clamp(34px,min(6.2vw,6.0vh),68px);border-radius:9px;display:flex;flex-direction:column;
+  .cal-day{min-height:var(--calh,clamp(34px,min(6.2vw,6.0vh),68px));border-radius:9px;display:flex;flex-direction:column;
     align-items:center;justify-content:center;
     gap:1px;font-size:clamp(13px,min(1.45vw,1.6vh),18.5px);color:#c8cdd6;background:#fff;border:1px solid transparent;}
   .cal-day.on{color:var(--ink);font-weight:700;border-color:var(--line);cursor:pointer;background:#fff;}
@@ -1173,6 +1185,27 @@ function pvMonth(delta){
   if(y>2027){y=2027;m=12;}
   pv.y=y; pv.m=m; renderPvCal();
 }
+// 예약 패널 전체(기간·달력·객실·인원·예약 진행)가 한 화면에 들어오도록 날짜 칸 높이를 정한다.
+// 패널 위에 헤더·제목이 얼마나 있는지는 CSS 가 알 수 없어 실제 높이를 재서 맞춘다.
+function fitPanel(){
+  const side=document.querySelector('.pv-side'), days=document.getElementById('pvDays');
+  const view=document.getElementById('productView');
+  if(!side||!days||!view||!view.classList.contains('show')) return;
+  const rows=Math.max(1, Math.ceil(days.children.length/7));
+  side.style.removeProperty('--calh');
+  const grid=days.getBoundingClientRect().height;
+  const fixed=side.getBoundingClientRect().height-grid;   // 달력을 뺀 나머지(칩·인원·버튼 등)
+  const gap=3;
+  // 상단 header 는 sticky 라 화면을 계속 가린다 — 그 높이를 빼야 실제로 보이는 높이가 나온다
+  const hd=document.querySelector('header');
+  const stick=(hd && getComputedStyle(hd).position==='sticky') ? hd.getBoundingClientRect().height : 0;
+  const avail=window.innerHeight-stick-20-fixed;
+  const h=Math.max(30, Math.min(68, Math.floor((avail-(rows-1)*gap)/rows)));
+  side.style.setProperty('--calh', h+'px');
+}
+function fitPanelSoon(){ fitPanel(); requestAnimationFrame(fitPanel); }
+addEventListener('resize', ()=>{ clearTimeout(window.__fitT); window.__fitT=setTimeout(fitPanel,120); });
+
 function renderPvCal(){
   const it=findResort(pv.key); const dows=pvDows(it);
   document.getElementById('pvYm').textContent=`${pv.y}.${String(pv.m).padStart(2,'0')}`;
@@ -1193,6 +1226,7 @@ function renderPvCal(){
     html+=`<div class="cal-day on${isSel}" onclick="pvPick('${ds}',false)">${d}<span class="rm">${rm}실</span></div>`;
   }
   document.getElementById('pvDays').innerHTML=html;
+  fitPanelSoon();
 }
 function pvPick(ds,isFull){
   pv.date=ds; pv.wait=!!isFull;
