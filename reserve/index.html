@@ -126,6 +126,9 @@
     padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:#fff;
     cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:800;color:var(--ink);}
   .demo-rd small{font-size:10.5px;font-weight:600;color:var(--muted);white-space:nowrap;}
+  .demo-row.on{border-color:var(--navy);background:var(--navy);color:#fff;}
+  .demo-row.on .d-l small,.demo-row.on .d-r small{color:rgba(255,255,255,.8);}
+  .demo-row.on .d-l b::before{content:'✓ ';font-weight:900;}
   .demo-n{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:8px;}
   .demo-n code{font-family:ui-monospace,Menlo,monospace;font-size:11px;}
   @media(max-width:480px){ .demo-row{flex-direction:column;align-items:flex-start;gap:3px;}
@@ -364,11 +367,13 @@
   /* 손가락 기기는 hover 가 눌린 뒤에도 남는다 — 화면이 움직이면 엉뚱한 버튼에 불이 들어오므로
      진짜로 커서가 있는 환경에서만 적용한다 */
   @media (hover:hover){
+    .demo-row:hover{border-color:var(--navy);background:var(--navy-soft);}
+    .demo-rd:hover{border-color:var(--navy);background:var(--navy-soft);}
     .hdr-nav-inner a:hover{color:var(--gold-deep);}
     .search .go:hover{background:var(--navy-deep);}
     .rcard:hover{border-color:var(--navy);background:var(--navy-soft);}
-    .demo-row:hover{border-color:var(--navy);background:var(--navy-soft);}
-    .demo-rd:hover{border-color:var(--navy);background:var(--navy-soft);}
+  
+  
     .rcard:hover .go{color:var(--navy);}
     .pv-back:hover{color:var(--navy);}
     .pv-dur:hover{border-color:var(--navy);color:var(--ink);}
@@ -1643,7 +1648,13 @@ function demoJump(iso){
   // 안 그러면 새로고침 때 입력값이 날아가 로그인도 안 되고 화면만 닫힌 것처럼 보인다.
   const b=document.getElementById('sheetBody');
   const idEl=b&&b.querySelector('#loginId'), pwEl=b&&b.querySelector('#loginPw');
-  if(!AUTH && idEl && idEl.value.trim()) doLogin(idEl.value, pwEl?pwEl.value:'');
+  const pick=demoSel || (idEl && idEl.value.trim());
+  if(!AUTH && !pick){                       // 회원을 아직 안 골랐다
+    const st=b&&b.querySelector('#demoStep');
+    if(st){ st.textContent='— 먼저 위에서 회원을 골라 주세요'; }
+    return;
+  }
+  if(!AUTH && pick) doLogin(pick, String(pick).replace(/^[A-Z]+/,''));
   const u=new URL(location.href);
   if(iso) u.searchParams.set('sim', iso.slice(0,16)); else u.searchParams.delete('sim');
   u.searchParams.set('demo','1');           // 다시 열렸을 때 그 차수 상태를 바로 보여주기 위한 표시
@@ -1667,13 +1678,18 @@ function demoRoundNotice(){
     <table style="margin-top:8px;font-size:13.5px">${rows}</table>`);
 }
 // 시연 계정 자동 입력 — 프로토타입이라 아이디를 외우고 있을 이유가 없다
+let demoSel=null;
 function demoFill(id){
   const b=document.getElementById('sheetBody'); if(!b) return;
+  demoSel=id;
+  b.querySelectorAll('.demo-row').forEach(r=>r.classList.toggle('on', r.dataset.id===id));
   const i=b.querySelector('#loginId'), p=b.querySelector('#loginPw');
   if(i) i.value=id;
   if(p) p.value=id.replace(/^[A-Z]+/,'');
   const e=b.querySelector('#loginErr'); if(e) e.style.display='none';
-  if(p) p.focus();
+  const st=b.querySelector('#demoStep');
+  const a=DEMO_ACCOUNTS[id];
+  if(st) st.textContent = a ? `— ${a.name}(${a.grade}) 선택됨` : '';
 }
 function openLogin(msg){
   const b=sheetOpen('로그인');
@@ -1685,21 +1701,21 @@ function openLogin(msg){
       <b>회원가입 없이</b> 아래 방법으로 바로 로그인하실 수 있습니다.
     </div>
     <div class="demo-box">
-      <div class="demo-t">시연용 계정 — 누르면 자동 입력됩니다</div>
+      <div class="demo-t"><b>①</b> 회원 선택</div>
       ${Object.keys(DEMO_ACCOUNTS).map(id=>{
         const a=DEMO_ACCOUNTS[id], pw=id.replace(/^[A-Z]+/,'');
-        return `<button type="button" class="demo-row" onclick="demoFill('${id}')">
+        return `<button type="button" class="demo-row" data-id="${id}" onclick="demoFill('${id}')">
           <span class="d-l"><b>${a.name}</b><small>${a.grade} · ${a.memberType} · 예약가능 ${a.maxPeople}명</small></span>
           <span class="d-r">${id}<small>비번 ${pw}</small></span></button>`;
       }).join('')}
-      <div class="demo-t" style="margin:12px 0 7px;">차수 시연 — 화면 시각을 그 차수로 옮깁니다</div>
+      <div class="demo-t" style="margin:12px 0 7px;"><b>②</b> 차수 선택 <span id="demoStep" style="font-weight:600;color:#8B3A2F"></span></div>
       <div class="demo-rounds">
         ${PRIORITY_SCHEDULE.map(r=>`<button type="button" class="demo-rd" onclick="demoJump('${r.opensAt}')">${r.no}차<small>+${r.grants}회${r.forSpecial?' · 특별회원':''}</small></button>`).join('')}
         <button type="button" class="demo-rd" onclick="demoJump('${FREE_OPEN_AT}')">자유예약<small>제한 없음</small></button>
         <button type="button" class="demo-rd" onclick="demoJump('')">현재<small>시각 되돌림</small></button>
       </div>
-      <div class="demo-n">실제 회원정보가 아닌 가상 계정입니다. 비밀번호는 아이디 뒤 휴대폰번호와 같습니다.<br>
-        차수는 계정이 아니라 <b>시각</b>으로 정해집니다 — 위 버튼이 <code>?sim=</code> 으로 그 시점을 흉내 냅니다.</div>
+      <div class="demo-n">회원을 고르고 차수를 고르면 <b>바로 로그인</b>되어 그 회원의 그 차수 화면으로 넘어갑니다.<br>
+        실제 회원정보가 아닌 가상 계정입니다. 차수는 계정이 아니라 <b>시각</b>으로 정해집니다(<code>?sim=</code>).</div>
     </div>
     <label class="grp-label" for="loginId">아이디</label>
     <input class="opt" id="loginId" placeholder="HONG01012345678" autocomplete="username"
