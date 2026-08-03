@@ -153,7 +153,7 @@
   .pv-back{display:inline-flex;align-items:center;gap:6px;font-size:15px;font-weight:700;color:var(--muted);
     background:none;border:none;cursor:pointer;font-family:inherit;padding:6px 0;margin-bottom:12px;}
   .pv-back:hover{color:var(--navy);}
-  .pv-title{font-size:26px;font-weight:800;line-height:1.35;letter-spacing:-.01em;margin-bottom:12px;}
+  .pv-title{font-size:clamp(17px,2.1vw,26px);font-weight:800;line-height:1.3;letter-spacing:-.01em;margin-bottom:12px;}
   .pv-title .rg{color:var(--muted);font-weight:700;}
   .pv-title .tag{color:var(--gold-deep);font-weight:700;font-size:20px;}
   .pv-checks{list-style:none;margin-bottom:26px;}
@@ -178,6 +178,14 @@
     .pv-lower>#pvRoomWrap{grid-column:1 / -1;}
   }
   @media(max-width:420px){ .pv-lower{grid-template-columns:1fr;} }
+  /* 폰은 상단 헤더까지 화면을 가려 달력+컨트롤을 한 번에 다 담기 어렵다.
+     예약 진행 버튼만 화면 아래에 고정해 어디까지 스크롤하든 바로 누를 수 있게 한다. */
+  @media(max-width:560px){
+    .pv-side{padding-bottom:76px;}
+    .pv-cta{position:fixed;left:12px;right:12px;bottom:12px;width:auto;z-index:130;margin:0;
+      box-shadow:0 8px 24px rgba(15,27,51,.28);}
+    .fabs{bottom:78px;}
+  }
   .pv-sec-t{font-size:17px;font-weight:800;border-left:4px solid var(--navy);padding-left:10px;margin:0 0 12px;}
   .pv-note{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--bg-alt);
     font-size:15px;color:#4a5a72;line-height:1.6;margin-bottom:26px;}
@@ -239,7 +247,11 @@
     .pv-dur.on{padding-left:27px;}
     .cal-nav{margin-bottom:6px;}
     .cal-nav button{width:31px;height:31px;font-size:15px;}
-    .pv-title{margin-bottom:10px;}
+    .pv-title{margin-bottom:7px;font-size:clamp(16px,4.2vw,20px);}
+    .pv-title small,.pv-title .tags{font-size:.72em;}
+    .stp-lbl{font-size:14px;white-space:nowrap;}
+    .stp-lbl small{white-space:normal;}
+    .pv-back{margin-bottom:4px;}
     .pv-durs-hint{display:none;}          /* 칩을 고르면 달력이 바뀌는 건 눌러 보면 안다 */
     .pv-legend{margin:4px 0 8px;font-size:11.5px;}
     .pv-price-lbl{margin:8px 0 5px;font-size:12px;}
@@ -353,7 +365,7 @@
   .grp-label:first-child{margin-top:0;}
   /* 인원 선택 스테퍼 (최소 2명 ~ 회원 예약가능 인원) */
   .stp{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 4px;}
-  .stp-lbl{font-size:17px;font-weight:800;}
+  .stp-lbl{font-size:17px;font-weight:800;white-space:nowrap;}
   .stp-lbl small{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-top:3px;}
   .stp-ctl{display:flex;align-items:center;gap:14px;flex-shrink:0;}
   .stp-btn{width:46px;height:46px;border:2px solid var(--line);background:#fff;border-radius:12px;
@@ -1083,6 +1095,7 @@ function openProduct(k){
   // 독채 별장은 최소 인원이 회원권 기본값보다 클 수 있어 그 아래로는 내려가지 않게 한다
   pv.people = Math.min(maxPaxOf(k), Math.max(minPaxOf(k), sel.people || defaultPeople()));
   document.getElementById('productView').classList.add('show');
+  setTimeout(scrollToPanel, 90);
   document.querySelector('section.resorts').style.display='none';
   document.querySelector('.hero').style.display='none';
   renderPv();
@@ -1122,6 +1135,7 @@ function renderPv(){
   renderPvRooms();
   pvSyncPpl();
   pvSyncPrice();
+  fitPanelSoon();   // 객실·인원·요약까지 다 그린 뒤에 재야 높이가 맞는다
   document.getElementById('pvFoot').innerHTML =
     `※ 일정·식사는 현지 사정(기상·항공)으로 변경될 수 있습니다. 라운딩 순서와 티오프 시간은 현지에서 확정됩니다.`;
 }
@@ -1199,11 +1213,20 @@ function fitPanel(){
   // 상단 header 는 sticky 라 화면을 계속 가린다 — 그 높이를 빼야 실제로 보이는 높이가 나온다
   const hd=document.querySelector('header');
   const stick=(hd && getComputedStyle(hd).position==='sticky') ? hd.getBoundingClientRect().height : 0;
-  const avail=window.innerHeight-stick-20-fixed;
-  const h=Math.max(30, Math.min(68, Math.floor((avail-(rows-1)*gap)/rows)));
+  const avail=window.innerHeight-stick-34-fixed;
+  const h=Math.max(26, Math.min(68, Math.floor((avail-(rows-1)*gap)/rows)));
   side.style.setProperty('--calh', h+'px');
 }
 function fitPanelSoon(){ fitPanel(); requestAnimationFrame(fitPanel); }
+// 상품을 열면 예약 패널이 화면 맨 위(고정 헤더 아래)에 오도록 맞춘다.
+// 패널 높이는 화면에 맞춰 놨으므로 이 위치에서 예약 진행 버튼까지 전부 보인다.
+function scrollToPanel(){
+  const side=document.querySelector('.pv-side'); if(!side) return;
+  const hd=document.querySelector('header');
+  const off=(hd && getComputedStyle(hd).position==='sticky') ? hd.getBoundingClientRect().height : 0;
+  const y=side.getBoundingClientRect().top+window.scrollY-off-8;
+  window.scrollTo({top:Math.max(0,y), behavior:'smooth'});
+}
 addEventListener('resize', ()=>{ clearTimeout(window.__fitT); window.__fitT=setTimeout(fitPanel,120); });
 
 function renderPvCal(){
@@ -1232,8 +1255,9 @@ function pvPick(ds,isFull){
   pv.date=ds; pv.wait=!!isFull;
   pv.room=null;                     // 날짜가 바뀌면 잔여도 달라지므로 객실을 다시 고른다
   renderPvCal(); renderPvRooms(); pvSyncPrice();
+  fitPanelSoon();
 }
-function pvSetRoom(n){ pv.room=n; renderPvRooms(); pvSyncPrice(); }
+function pvSetRoom(n){ pv.room=n; renderPvRooms(); pvSyncPrice(); fitPanelSoon(); }
 function renderPvRooms(){
   const wrap=document.getElementById('pvRoomWrap'), box=document.getElementById('pvRooms'),
         hint=document.getElementById('pvRoomHint');
