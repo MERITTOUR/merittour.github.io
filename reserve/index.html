@@ -225,15 +225,6 @@
     padding-left:32px;box-shadow:0 2px 10px rgba(26,39,64,.28);}
   .pv-dur.on::before{content:'✓';position:absolute;left:13px;top:50%;transform:translateY(-50%);
     font-size:13px;font-weight:900;}
-  /* 달력 접기 머리줄 — 접혀 있을 때는 고른 일정을 보여주는 요약 줄이 된다 */
-  .pv-caltog{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
-    padding:12px 14px;margin:0 0 14px;border:1px solid var(--line);border-radius:11px;background:#fff;
-    cursor:pointer;font-family:inherit;text-align:left;color:var(--ink);
-    font-size:17px;font-weight:800;line-height:1.35;}
-  .pv-caltog:hover{border-color:var(--navy);}
-  .pv-caltog .ar{flex-shrink:0;font-size:12px;color:var(--muted);font-weight:700;}
-  .pv-caltog.picked{border-color:var(--navy);background:var(--navy);color:#fff;}
-  .pv-caltog.picked .ar{color:rgba(255,255,255,.8);}
   .pv-durs-hint{font-size:12.5px;color:var(--muted);margin-bottom:14px;}
   /* 객실 선택 — 날짜를 고른 뒤 룸타입별 잔여를 보고 고른다 */
   .pv-rooms{display:flex;flex-direction:column;gap:8px;}
@@ -450,10 +441,7 @@
     </div>
 
     <aside class="pv-side">
-      <button type="button" class="pv-caltog" id="pvCalTog" onclick="pvCalToggle()">
-        <span id="pvCalTogT">패키지 일정 선택</span><span class="ar" id="pvCalTogA">▲</span>
-      </button>
-      <div id="pvCalBox">
+      <h3>패키지 일정 선택</h3>
       <div class="pv-durs" id="pvDurs"></div>
       <div class="pv-durs-hint">기간을 고르면 아래 달력에 <b>출발 가능한 날짜</b>가 표시됩니다.</div>
       <div class="cal-nav">
@@ -467,7 +455,6 @@
         <span><i style="background:#fff;border:1px solid var(--line);"></i>예약 가능</span>
         <span><i style="background:#f5f6f8;border:1px solid #e6e9ee;"></i>마감 — 눌러서 대기 신청</span>
       </div>
-      </div><!-- /pvCalBox -->
       <!-- 달력 아래 컨트롤 — 웹에서는 3단(.pv-lower), 모바일에서는 그대로 세로로 쌓인다 -->
       <div class="pv-lower">
         <div id="pvRoomWrap" style="display:none;">
@@ -1088,7 +1075,6 @@ function renderPv(){
   renderPvRooms();
   pvSyncPpl();
   pvSyncPrice();
-  pvCalSet(!pv.date);   // 날짜 전이면 열어 두고, 이미 골랐으면 접어 둔다
   document.getElementById('pvFoot').innerHTML =
     `※ 일정·식사는 현지 사정(기상·항공)으로 변경될 수 있습니다. 라운딩 순서와 티오프 시간은 현지에서 확정됩니다.`;
 }
@@ -1177,28 +1163,8 @@ function pvPick(ds,isFull){
   pv.date=ds; pv.wait=!!isFull;
   pv.room=null;                     // 날짜가 바뀌면 잔여도 달라지므로 객실을 다시 고른다
   renderPvCal(); renderPvRooms(); pvSyncPrice();
-  pvCalSet(false);   // 날짜를 골랐으니 접고 일정표를 보여 준다
 }
 function pvSetRoom(n){ pv.room=n; renderPvRooms(); pvSyncPrice(); }
-// 달력 접기 — 날짜를 고르면 달력이 할 일이 끝나므로(일정표는 박수에만 좌우된다)
-// 자동으로 접고 고른 일정을 요약 줄로 보여준다. 그 줄을 누르면 다시 열린다.
-function pvCalSet(open){
-  pv.calOpen=open;
-  const box=document.getElementById('pvCalBox'), t=document.getElementById('pvCalTogT'),
-        a=document.getElementById('pvCalTogA'), tog=document.getElementById('pvCalTog');
-  if(!box||!t) return;
-  box.style.display = open ? '' : 'none';
-  a.textContent = open ? '▲' : '▼';
-  tog.classList.toggle('picked', !open && !!pv.date);
-  if(open){ t.textContent='패키지 일정 선택'; return; }
-  const it=findResort(pv.key);
-  if(pv.date){
-    const [Y,M,D]=pv.date.split('-').map(Number);
-    const dn=['일','월','화','수','목','금','토'][new Date(Y,M-1,D).getDay()];
-    t.textContent=`${M}월 ${D}일(${dn}) 출발 · ${it.durs[pv.durIdx]} — 눌러서 날짜 변경`;
-  } else t.textContent='패키지 일정 선택 — 눌러서 열기';
-}
-function pvCalToggle(){ pvCalSet(!pv.calOpen); }
 function renderPvRooms(){
   const wrap=document.getElementById('pvRoomWrap'), box=document.getElementById('pvRooms'),
         hint=document.getElementById('pvRoomHint');
