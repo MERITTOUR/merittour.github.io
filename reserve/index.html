@@ -660,6 +660,18 @@ function activeRound(grade, now){
   return PRIORITY_SCHEDULE.find(r=> eligibleRound(r,grade) && roundActive(r,now)) || null;
 }
 function eligibleRound(r, grade){ return isSpecialGrade(grade) ? r.forSpecial : true; }
+// 자격과 무관하게 '지금 열려 있는' 차수 — 자격이 없어서 못 하는 것인지 휴지 기간인지 가른다
+function openRoundNow(now){ return PRIORITY_SCHEDULE.find(r=>roundActive(r, now||simNow())) || null; }
+// 이 회원이 지금 예약을 진행할 수 없는 이유(없으면 null)
+function roundBlock(){
+  if(!AUTH || isFreePeriod()) return null;
+  if(activeRound(AUTH.grade)) return null;
+  const cur=openRoundNow();
+  if(cur && !eligibleRound(cur, AUTH.grade))
+    return `${AUTH.grade}은 ${cur.label}에 참여하실 수 없습니다. `+
+           `${PRIORITY_SCHEDULE.filter(r=>eligibleRound(r,AUTH.grade)).map(r=>r.label).join(' · ')}부터 예약하실 수 있습니다.`;
+  return null;   // 자격은 있는데 지금 열린 차수가 없음 = 휴지 기간
+}
 
 // 회원별 차수 상태 — 배정량은 규칙에서 산출, 데이터는 사용분(used)만
 function quotaFor(acc, now){
@@ -694,7 +706,13 @@ const DEMO_ACCOUNTS = {
   'KIM01087654321':  { name:'김영희', grade:'특별회원',   maxPeople:2,
     memberType:'지정회원', joinedAt:'2021-07-02', designees:0, used:{} },
   'CHOI01011112222': { name:'최민창', grade:'EWRC Ⅱ',    maxPeople:16,
-    memberType:'정회원', joinedAt:'2026-02-11', designees:2, used:{ round2:1 } }
+    memberType:'정회원', joinedAt:'2026-02-11', designees:2, used:{ round2:1 } },
+  // 다이아몬드 1 — 4인 · 전 차수 참여
+  'PARK01055556666': { name:'박정우', grade:'다이아몬드 1', maxPeople:4,
+    memberType:'정회원', joinedAt:'2020-05-08', designees:1, used:{} },
+  // 골드 — 인원은 특별과 같은 2인이지만 차수는 전부 참여한다(특별과 다른 점)
+  'LEE01077778888':  { name:'이수진', grade:'골드',        maxPeople:2,
+    memberType:'정회원', joinedAt:'2022-09-30', designees:0, used:{} }
 };
 const AUTH_KEY = 'mt_reserve_auth';
 let AUTH = null;            // {id, name, grade, maxPeople}
@@ -1296,6 +1314,14 @@ function pvSyncPrice(){
   const box=document.getElementById('pvPrice'), cta=document.getElementById('pvCta');
   cta.classList.remove('wait');
   cta.textContent='예약 진행';
+  // 이 차수에 참여 자격이 없으면 애초에 진행 버튼을 막는다
+  const rb=roundBlock();
+  if(rb){
+    box.className='pv-price wait';
+    box.innerHTML=`예약 불가<small>${rb}</small>`;
+    cta.disabled=true; cta.textContent='예약 불가';
+    return;
+  }
   // 예약 자체가 불가능한 상품은 날짜와 무관하게 막는다
   const blk0=bookBlock(pv.key);
   if(blk0){
@@ -1385,6 +1411,8 @@ function pvGo(){
   if(!pv.date){ return; }
   if(!isFreePeriod()){                       // 우선예약 기간에만 횟수 검사
     const q=myQuota();
+    const rb=roundBlock();
+    if(rb){ showNotice(`<b>예약하실 수 없습니다.</b><br>${rb}`); return; }   // 그 차수 참여 자격 없음
     if(!activeRound(AUTH.grade)){ betweenRoundsNotice(); return; }   // 차수 사이 휴지 기간
     if(quotaLeft(q)<=0){ noQuotaNotice(); return; }
   }
