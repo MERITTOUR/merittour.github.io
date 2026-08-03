@@ -816,10 +816,11 @@ const ROOMS = {
   kuzu:            [{n:'트윈',rm:10,pax:2}],
   kanji:           [{n:'트윈',rm:15,pax:2}],
   shizunoyado:     [{n:'트윈',rm:7,pax:2}],
-  aso_villa:       [{n:'별장',rm:1,pax:8,d:'8인 대형 1동'}],
+  // 독채 별장은 동 단위로 빌려 쪼갤 수 없다 → min=그 동의 정원(캐빈·돔은 2인 여러 동이라 2명부터)
+  aso_villa:       [{n:'별장',rm:1,pax:8,min:8,d:'8인 대형 1동'}],
   sobo_villa:      [{n:'별장',rm:3,pax:2,d:'편백 2인 · 3동'}],
   dome_house:      [{n:'돔하우스',rm:4,pax:2}],
-  sobo5:           [{n:'별장',rm:1,pax:4,d:'편백 4인 독채'}],
+  sobo5:           [{n:'별장',rm:1,pax:4,min:4,d:'편백 4인 독채'}],
   // 포틴힐즈 패밀리룸은 4인실 — 2인이 쓰면 1박·1인당 2,200엔 추가(2027 안내문)
   fourteen_hotel:  [{n:'트윈',rm:13,pax:2},{n:'패밀리룸',rm:19,pax:4,extra:2200}],
   fourteen_caravan:[{n:'트윈',rm:6,pax:2}],
@@ -830,6 +831,8 @@ const ROOMS = {
   miyazaki_kuko:   [{n:'트윈',rm:10,pax:2}]
 };
 function roomsOf(k){ return ROOMS[k] || [{n:'트윈',rm:(RES[k]||{}).rm||10,pax:2}]; }
+// 상품별 최소 예약 인원. 독채 별장은 동 단위라 정원이 곧 최소(히노키빌라 패밀리 4명·프레스티지 8명).
+function minPaxOf(k){ return Math.max(MIN_PEOPLE, ...roomsOf(k).map(r=>r.min||0)); }
 
 // 상품 태그 (제목 뒤 #표기)
 const TAGS = {
@@ -904,16 +907,22 @@ const CHECKS = {
 const pv = { key:null, durIdx:0, y:2026, m:3, date:null, room:null, people:MIN_PEOPLE, wait:false };
 
 function pvPpl(delta){
-  const n = pv.people + delta;
-  if(n < MIN_PEOPLE || n > MEMBER.maxPeople) return;
+  const n = pv.people + delta, lo = minPaxOf(pv.key);
+  if(n < lo || n > MEMBER.maxPeople) return;
   // 인원이 바뀌면 필요 실수도 바뀌므로 객실 칸을 다시 그린다
   pv.people = n; sel.people = n; pplTouched=true; syncFields(); pvSyncPpl(); renderPvRooms(); pvSyncPrice();
 }
 function pvSyncPpl(){
+  const lo = minPaxOf(pv.key);
   document.getElementById('pvPplNum').textContent = pv.people;
-  document.getElementById('pvPplMinus').disabled = (pv.people <= MIN_PEOPLE);
+  document.getElementById('pvPplMinus').disabled = (pv.people <= lo);
   document.getElementById('pvPplPlus').disabled = (pv.people >= MEMBER.maxPeople);
-  document.getElementById('pvPplHint').textContent = `최소 ${MIN_PEOPLE}명 · 최대 ${MEMBER.maxPeople}명 (회원권 기준)`;
+  // 독채는 동 단위라 최소가 올라간다. 회원권 인원이 그보다 적으면 예약 자체가 안 되므로 그 이유를 적는다.
+  document.getElementById('pvPplHint').textContent = (lo > MEMBER.maxPeople)
+    ? `이 상품은 최소 ${lo}명부터 예약 가능합니다 — 회원권 예약 가능 인원(${MEMBER.maxPeople}명)으로는 예약하실 수 없습니다.`
+    : (lo > MIN_PEOPLE
+        ? `최소 ${lo}명 (독채 1동 단위) · 최대 ${MEMBER.maxPeople}명 (회원권 기준)`
+        : `최소 ${MIN_PEOPLE}명 · 최대 ${MEMBER.maxPeople}명 (회원권 기준)`);
 }
 
 function pvNights(it){ // 선택한 기간의 박수
@@ -961,7 +970,8 @@ function pvPricePerson(k,nights,dateStr){
 
 function openProduct(k){
   pv.key=k; pv.durIdx=0; pv.date=null; pv.room=null; pv.y=2026; pv.m=3;
-  pv.people = sel.people || defaultPeople();
+  // 독채 별장은 최소 인원이 회원권 기본값보다 클 수 있어 그 아래로는 내려가지 않게 한다
+  pv.people = Math.max(minPaxOf(k), sel.people || defaultPeople());
   document.getElementById('productView').classList.add('show');
   document.querySelector('section.resorts').style.display='none';
   document.querySelector('.hero').style.display='none';
