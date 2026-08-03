@@ -113,6 +113,21 @@
   .rcard .body{flex:1;min-width:0;}
   .rcard .nm{font-size:17px;font-weight:800;line-height:1.35;}
   .rcard .meta{font-size:13.5px;color:var(--muted);line-height:1.45;margin-top:2px;}
+  /* 시연 계정 안내 — 프로토타입 전용. 실계정 연결 시 통째로 지운다. */
+  .demo-box{border:1px dashed var(--line);border-radius:12px;padding:12px 13px;margin-bottom:16px;background:#fbfcfe;}
+  .demo-t{font-size:12.5px;font-weight:800;color:var(--muted);margin-bottom:9px;}
+  .demo-row{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+    padding:9px 11px;margin-bottom:6px;border:1px solid var(--line);border-radius:9px;background:#fff;
+    cursor:pointer;font-family:inherit;text-align:left;color:var(--ink);}
+  .demo-row:hover{border-color:var(--navy);background:var(--navy-soft);}
+  .demo-row .d-l{display:flex;flex-direction:column;gap:1px;min-width:0;}
+  .demo-row .d-l b{font-size:14.5px;font-weight:800;}
+  .demo-row .d-l small,.demo-row .d-r small{font-size:11.5px;color:var(--muted);}
+  .demo-row .d-r{display:flex;flex-direction:column;gap:1px;text-align:right;white-space:nowrap;
+    font-size:12px;font-weight:700;font-family:ui-monospace,Menlo,monospace;}
+  .demo-n{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:4px;}
+  @media(max-width:480px){ .demo-row{flex-direction:column;align-items:flex-start;gap:3px;}
+    .demo-row .d-r{text-align:left;} }
   .rbadge{display:inline-block;margin-left:7px;padding:2px 8px;border-radius:999px;
     font-size:11.5px;font-weight:800;vertical-align:middle;}
   .rbadge.promo{background:#8B3A2F;color:#fff;}
@@ -1446,6 +1461,15 @@ function logout(){
   b.innerHTML=`<div class="stp-hint">로그아웃되었습니다.</div>
     <button class="opt" onclick="closeSheet()" style="margin-top:14px;justify-content:center;font-weight:800;">확인</button>`;
 }
+// 시연 계정 자동 입력 — 프로토타입이라 아이디를 외우고 있을 이유가 없다
+function demoFill(id){
+  const b=document.getElementById('sheetBody'); if(!b) return;
+  const i=b.querySelector('#loginId'), p=b.querySelector('#loginPw');
+  if(i) i.value=id;
+  if(p) p.value=id.replace(/^[A-Z]+/,'');
+  const e=b.querySelector('#loginErr'); if(e) e.style.display='none';
+  if(p) p.focus();
+}
 function openLogin(msg){
   const b=sheetOpen('로그인');
   b.innerHTML=`
@@ -1454,6 +1478,16 @@ function openLogin(msg){
       <b>메리트투어 홈페이지가 새롭게 단장했습니다.</b><br>
       회원님의 예약과 이용 내역을 한곳에서 확인하실 수 있습니다.<br>
       <b>회원가입 없이</b> 아래 방법으로 바로 로그인하실 수 있습니다.
+    </div>
+    <div class="demo-box">
+      <div class="demo-t">시연용 계정 — 누르면 자동 입력됩니다</div>
+      ${Object.keys(DEMO_ACCOUNTS).map(id=>{
+        const a=DEMO_ACCOUNTS[id], pw=id.replace(/^[A-Z]+/,'');
+        return `<button type="button" class="demo-row" onclick="demoFill('${id}')">
+          <span class="d-l"><b>${a.name}</b><small>${a.grade} · ${a.memberType} · 예약가능 ${a.maxPeople}명</small></span>
+          <span class="d-r">${id}<small>비번 ${pw}</small></span></button>`;
+      }).join('')}
+      <div class="demo-n">실제 회원정보가 아닌 가상 계정입니다. 비밀번호는 아이디 뒤 휴대폰번호와 같습니다.</div>
     </div>
     <label class="grp-label" for="loginId">아이디</label>
     <input class="opt" id="loginId" placeholder="HONG01012345678" autocomplete="username"
