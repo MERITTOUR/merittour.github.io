@@ -188,6 +188,10 @@
   .pv-note{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--bg-alt);
     font-size:15px;color:#4a5a72;line-height:1.6;margin-bottom:26px;}
   .pv-note b{color:var(--ink);}
+  .itin-more td{padding:0!important;background:var(--bg-alt);}
+  .itin-tog{width:100%;padding:10px;border:none;background:none;cursor:pointer;font-family:inherit;
+    font-size:13.5px;font-weight:800;color:var(--navy);display:flex;align-items:center;justify-content:center;gap:6px;}
+  .itin-tog .ar{font-size:11px;}
   .itin{width:100%;border-collapse:collapse;font-size:14px;border:1px solid var(--line);}
   .itin th{background:var(--bg-alt);font-weight:700;padding:11px 8px;border:1px solid var(--line);font-size:13.5px;}
   .itin td{padding:11px 10px;border:1px solid var(--line);vertical-align:top;line-height:1.6;}
@@ -1224,9 +1228,26 @@ function renderItin(it,nights){
            (yama ? `<br><small style="color:var(--muted);">※ 주말(토·일) 슈퍼마켓·온천 유료 셔틀 운행 (현지 사정에 따라 취소될 수 있음)</small>` : '');
       meal=`조식 : ${brk}<br>중식 : ${lunchMid}<br>석식 : ${din}`;
     }
-    html+=`<tr><td class="day">${d}일차</td><td class="mv">${mv}</td><td class="plan">${plan}</td><td class="meal">${meal}</td></tr>`;
+    const isMid = d>1 && d<days;
+    if(isMid && d===2 && days>2){
+      html+=`<tr class="itin-more"><td colspan="4">
+        <button type="button" class="itin-tog" onclick="toggleItinMid()">
+          <span id="itinTogT">체류일 ${days-2}일 펼치기</span> <span class="ar">▾</span></button></td></tr>`;
+    }
+    html+=`<tr${isMid?' class="itin-mid" style="display:none"':''}><td class="day">${d}일차</td><td class="mv">${mv}</td><td class="plan">${plan}</td><td class="meal">${meal}</td></tr>`;
   }
   body.innerHTML=html;
+}
+// 체류일 펼치기/접기 — 출·귀국일만 보이면 일정을 한눈에 파악하기 쉽다
+function toggleItinMid(){
+  const rows=[...document.querySelectorAll('#pvItin .itin-mid')];
+  if(!rows.length) return;
+  const open = rows[0].style.display==='none';
+  rows.forEach(r=>r.style.display = open ? '' : 'none');
+  const t=document.getElementById('itinTogT'), a=document.querySelector('.itin-tog .ar');
+  if(t) t.textContent = open ? `체류일 ${rows.length}일 접기` : `체류일 ${rows.length}일 펼치기`;
+  if(a) a.textContent = open ? '▴' : '▾';
+  fitPanelSoon && fitPanelSoon();
 }
 function pvSetDur(i){ pv.durIdx=i; pv.date=null; pv.room=null; renderPv(); }
 function pvMonth(delta){
@@ -1721,7 +1742,7 @@ function openLogin(msg){
       <div class="demo-n">회원을 고르고 차수를 고르면 <b>바로 로그인</b>되어 그 회원의 그 차수 화면으로 넘어갑니다.<br>
         실제 회원정보가 아닌 가상 계정입니다. 차수는 계정이 아니라 <b>시각</b>으로 정해집니다(<code>?sim=</code>).</div>
     </div>
-    <details style="margin-top:6px;">
+    <details open style="margin-top:6px;">
       <summary style="cursor:pointer;font-size:13px;color:var(--muted);font-weight:700;padding:6px 0;">아이디로 직접 로그인</summary>
       <div style="padding-top:10px;">
         <label class="grp-label" for="loginId">아이디</label>
