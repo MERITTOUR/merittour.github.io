@@ -129,6 +129,8 @@
   .demo-row.on{border-color:var(--navy);background:var(--navy);color:#fff;}
   .demo-row.on .d-l small,.demo-row.on .d-r small{color:rgba(255,255,255,.8);}
   .demo-row.on .d-l b::before{content:'✓ ';font-weight:900;}
+  .bk-cancel{margin-left:auto;flex-shrink:0;align-self:center;padding:7px 12px;border:1px solid var(--line);
+    border-radius:8px;background:#fff;color:#c0392b;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;}
   .demo-n{font-size:11.5px;color:var(--muted);line-height:1.5;margin-top:8px;}
   .demo-n code{font-family:ui-monospace,Menlo,monospace;font-size:11px;}
   @media(max-width:480px){ .demo-row{flex-direction:column;align-items:flex-start;gap:3px;}
@@ -367,6 +369,7 @@
   /* 손가락 기기는 hover 가 눌린 뒤에도 남는다 — 화면이 움직이면 엉뚱한 버튼에 불이 들어오므로
      진짜로 커서가 있는 환경에서만 적용한다 */
   @media (hover:hover){
+    .bk-cancel:hover{border-color:#c0392b;background:#fff5f4;}
     .demo-row:hover{border-color:var(--navy);background:var(--navy-soft);}
     .demo-rd:hover{border-color:var(--navy);background:var(--navy-soft);}
     .hdr-nav-inner a:hover{color:var(--gold-deep);}
@@ -1524,7 +1527,8 @@ function submitReserve(){
   const rows=DEMO_BOOKINGS[AUTH.id]=DEMO_BOOKINGS[AUTH.id]||[];
   const rcur=roomsOf(pv.key).find(r=>r.n===pv.room)||{n:'트윈',pax:2};
   rows.unshift({ no, resort:it.n, period:`${Y}.${String(M).padStart(2,'0')}.${String(D).padStart(2,'0')} 출발 · ${it.durs[pv.durIdx]}`,
-                 people:pv.people, room:`${rcur.n} ${roomsNeeded(pv.people,rcur.pax)}실`, status:'확정', balance:0 });
+                 people:pv.people, room:`${rcur.n} ${roomsNeeded(pv.people,rcur.pax)}실`, status:'확정', balance:0,
+                 usedRound: target ? target.no : null });   // 취소할 때 이 차수 횟수를 돌려준다
   renderAuthUI();
   const left=quotaLeft(myQuota());
   const b=sheetOpen('예약 완료');
@@ -1698,7 +1702,7 @@ function openLogin(msg){
     <div class="stp-hint" style="margin-bottom:14px;">
       <b>메리트투어 홈페이지가 새롭게 단장했습니다.</b><br>
       회원님의 예약과 이용 내역을 한곳에서 확인하실 수 있습니다.<br>
-      <b>회원가입 없이</b> 아래 방법으로 바로 로그인하실 수 있습니다.
+아래에서 <b>회원을 고르고 차수를 고르면</b> 바로 그 화면으로 들어갑니다.
     </div>
     <div class="demo-box">
       <div class="demo-t"><b>①</b> 회원 선택</div>
@@ -1717,18 +1721,21 @@ function openLogin(msg){
       <div class="demo-n">회원을 고르고 차수를 고르면 <b>바로 로그인</b>되어 그 회원의 그 차수 화면으로 넘어갑니다.<br>
         실제 회원정보가 아닌 가상 계정입니다. 차수는 계정이 아니라 <b>시각</b>으로 정해집니다(<code>?sim=</code>).</div>
     </div>
-    <label class="grp-label" for="loginId">아이디</label>
-    <input class="opt" id="loginId" placeholder="HONG01012345678" autocomplete="username"
-      style="font-weight:700;letter-spacing:.02em;" />
-    <div class="sheet-hint" style="margin:-4px 0 12px;">대문자 영문 성 + 휴대폰번호 (예: HONG01012345678)</div>
-    <label class="grp-label" for="loginPw">비밀번호</label>
-    <input class="opt" id="loginPw" type="password" placeholder="01012345678" autocomplete="current-password" />
-    <div class="sheet-hint" style="margin:-4px 0 12px;">휴대폰번호 (예: 01012345678) · 로그인 후 비밀번호 변경을 권장합니다.</div>
-    <div id="loginErr" style="display:none;color:#c0392b;font-size:14px;font-weight:700;margin-bottom:10px;"></div>
-    <button class="opt" id="loginGo" style="justify-content:center;font-weight:800;background:var(--navy);color:#fff;border-color:var(--navy);">로그인</button>
-    <div class="stp-hint" style="margin-top:14px;">
-      아이디·비밀번호가 기억나지 않으시면 메리트투어(${TEL})로 문의해 주세요.
-    </div>`;
+    <details style="margin-top:6px;">
+      <summary style="cursor:pointer;font-size:13px;color:var(--muted);font-weight:700;padding:6px 0;">아이디로 직접 로그인</summary>
+      <div style="padding-top:10px;">
+        <label class="grp-label" for="loginId">아이디</label>
+        <input class="opt" id="loginId" placeholder="HONG01012345678" autocomplete="username"
+          style="font-weight:700;letter-spacing:.02em;" />
+        <div class="sheet-hint" style="margin:-4px 0 12px;">대문자 영문 성 + 휴대폰번호 (예: HONG01012345678)</div>
+        <label class="grp-label" for="loginPw">비밀번호</label>
+        <input class="opt" id="loginPw" type="password" placeholder="01012345678" autocomplete="current-password" />
+        <div class="sheet-hint" style="margin:-4px 0 12px;">휴대폰번호 (예: 01012345678)</div>
+        <div id="loginErr" style="display:none;color:#c0392b;font-size:14px;font-weight:700;margin-bottom:10px;"></div>
+        <button class="opt" id="loginGo" style="justify-content:center;font-weight:800;background:var(--navy);color:#fff;border-color:var(--navy);">로그인</button>
+        <div class="stp-hint" style="margin-top:12px;">아이디·비밀번호가 기억나지 않으시면 메리트투어(${TEL})로 문의해 주세요.</div>
+      </div>
+    </details>`;
   const idEl=b.querySelector('#loginId'), pwEl=b.querySelector('#loginPw');
   const go=()=>doLogin(idEl.value, pwEl.value);
   b.querySelector('#loginGo').onclick=go;
@@ -1789,6 +1796,25 @@ const DEMO_BOOKINGS = {
     { no:'MT-270415-0207', resort:'야마나미 프레스티지', period:'2027.04.15 ~ 04.22 (7박 8일)', people:8, status:'견적', balance:3840000 }
   ]
 };
+// 예약 취소 — 시연을 여러 번 하려면 쓴 차수 횟수도 돌려줘야 한다
+function cancelBooking(no){
+  if(!AUTH) return;
+  const rows=DEMO_BOOKINGS[AUTH.id]||[];
+  const i=rows.findIndex(r=>r.no===no);
+  if(i<0) return;
+  const r=rows[i];
+  if(!confirm(`${r.resort}\n${r.period}\n예약번호 ${no}\n\n이 예약을 취소하시겠습니까?`)) return;
+  rows.splice(i,1);
+  // 우선예약으로 잡은 건이면 그 차수 횟수를 돌려준다
+  if(r.usedRound && AUTH.used && AUTH.used['round'+r.usedRound]>0){
+    AUTH.used['round'+r.usedRound]--;
+    try{ sessionStorage.setItem(AUTH_KEY, JSON.stringify(AUTH)); }catch(e){}
+  }
+  renderAuthUI();
+  openMyBookings();
+  showNotice(`<b>예약이 취소되었습니다.</b> (예약번호 ${no})`+
+    (r.usedRound?`<br>${r.usedRound}차 우선예약 1회가 복구되었습니다. 남은 횟수 <b>${quotaLeft(myQuota())}회</b>`:''));
+}
 function openMyBookings(){
   if(!AUTH){ openLogin('예약 확인은 로그인 후 이용하실 수 있습니다.'); return; }
   const rows=DEMO_BOOKINGS[AUTH.id]||[];
@@ -1802,6 +1828,8 @@ function openMyBookings(){
         <span class="nm">${r.resort} ${badge(r.status)}</span>
         <span class="desc">${r.period} · ${r.people}명${r.room?' · '+r.room:''}<br>예약번호 ${r.no}
           ${r.balance>0?`<br><b style="color:var(--gold-deep);">미결제 잔액 ${r.balance.toLocaleString()}원</b>`:'<br>결제 완료'}</span>
+        ${r.status==='취소' ? '' :
+          `<button type="button" class="bk-cancel" onclick="cancelBooking('${r.no}')">예약 취소</button>`}
       </div>`).join('')
       : `<div class="stp-hint">현재 예약 내역이 없습니다. 아래에서 원하는 골프장을 선택해 예약을 진행해 주세요.</div>`}
     <div class="stp-hint" style="margin-top:12px;">
