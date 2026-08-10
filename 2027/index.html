@@ -201,7 +201,10 @@
   .lodging{list-style:none;margin:0 0 4px;padding:0;
     display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .lodging li{background:var(--surface-warm);border:1px solid var(--line-soft);
-    border-radius:12px;padding:14px 16px}
+    border-radius:12px;padding:14px 16px;
+    /* min-width:auto 로 두면 안쪽 가로 스트립의 전체 폭을 칸이 그대로 받아
+       페이지가 통째로 옆으로 밀린다(900px 화면에서 780px 넘쳤다). */
+    min-width:0}
   .lg-name{font-size:16.5px;font-weight:800;color:var(--ink);
     display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
   .lg-jp{font-size:13px;font-weight:600;color:var(--gold)}
@@ -333,16 +336,27 @@
   .media-body{padding:13px 13px 14px}
 
   /* 사진 격자 — 누르면 크게 본다 */
-  /* 최소 120px — 140px 로 두면 360px 폰에서 6px 이 모자라 1열로 떨어진다.
-     1열이면 6칸짜리 블록이 화면 세 개 길이가 된다. */
-  .shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin:0}
-  .shots>*{aspect-ratio:4/3}
+  /* 숙소마다 **가로 한 줄**. 격자로 쌓으면 구마모토(숙소 일곱)는 펼친 높이가
+     화면 몇 개 길이가 된다. 옆으로 밀어 보는 편이 짧고, 폰에서는 원래 하던 손짓이다.
+     데스크톱에서는 마우스로 끌어서도 밀린다(아래 dragStrip). */
+  .shots{display:flex;gap:8px;margin:0;overflow-x:auto;padding-bottom:2px;
+    scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;overscroll-behavior-x:contain;cursor:grab}
+  .shots.dragging{cursor:grabbing;scroll-snap-type:none}
+  .shots::-webkit-scrollbar{height:6px}
+  .shots::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+  .shots::-webkit-scrollbar-track{background:transparent}
+  .shots>*{flex:none;width:180px;aspect-ratio:4/3;scroll-snap-align:start}
+  /* 크기는 .shots>* 하나가 정한다. 여기서 width:100% 를 또 주면 특이도가 높아
+     그 값이 이겨, 사진이 들어온 칸만 스트립 전체 폭으로 늘어난다(빈 칸은 180px). */
   .shots button{padding:0;border:1px solid var(--line-soft);border-radius:9px;overflow:hidden;
-    background:var(--band);cursor:pointer;display:block;width:100%;font:inherit;
-    position:relative}
+    background:var(--band);cursor:pointer;display:block;font:inherit;position:relative}
   .shots button:hover{border-color:var(--muted)}
   .shots button:focus-visible{outline:2px solid var(--olive);outline-offset:2px}
-  .shots img{display:block;width:100%;height:100%;object-fit:cover}
+  .shots img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none}
+  /* 끄는 중에는 사진이 브라우저 기본 이미지 끌기로 잡히면 안 된다 */
+  .shots.dragging button{pointer-events:none}
+  @media (max-width:560px){ .shots>*{width:150px} }
 
   /* 아직 안 올린 자리 — 어디에 무엇을 넣으면 되는지 그대로 보여 준다.
      빈 칸을 감추면 「사진을 어디에 올려야 하지」를 매번 문서에서 찾아야 한다. */
@@ -360,11 +374,12 @@
      여기 적힌 폴더 이름은 「어디에 올릴지」를 읽는 글자라 장식이 아니다.
      색은 --muted 그대로 두고 굵기로만 앞뒤를 나눈다(대비 5.47). */
   .shot-slot .s-path.dim{font-weight:600}
-  /* 숙소 이름 줄 — 어느 숙소 사진인지 나누는 자리 */
-  .stay-h{font-size:13px;font-weight:800;color:var(--olive-deep);margin:0 0 7px;
-    display:flex;align-items:center;gap:7px}
-  .stay-h::before{content:"";width:12px;height:1.5px;background:var(--olive);flex:none}
-  .media-body .shots+.stay-h{margin-top:14px}
+  /* 사진은 그 숙소 설명 바로 아래에 붙는다 — 카드 밖으로 빼면 어느 숙소
+     이야기인지 눈으로 다시 이어 붙여야 한다. */
+  .lodging li .shots{margin-top:11px}
+  .lodging li .lg-hint{font-size:11.5px;color:var(--muted);margin:7px 0 0;line-height:1.55}
+  .lodging li .lg-hint code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:11px;background:var(--band);border-radius:4px;padding:1px 5px}
   .media-hint{font-size:12px;color:var(--muted);margin:12px 0 0;line-height:1.6}
   .media-hint code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
     background:var(--band);border-radius:4px;padding:1px 5px}
@@ -719,7 +734,7 @@
     <p class="soft" style="margin:12px 0 0;font-size:14px">※ <b style="color:var(--ink)">홀수 인원 추가요금</b> — 간지호텔 · 시즈노야도 료칸 · 야마나미 히노키빌라 캐빈 · 프라이빗 레지던스는 <b>싱글룸이 없어 2인 1실 기준</b>으로 운영되며, 부득이하게 홀수 인원이 되어 <b>1인 단독 사용</b>이 발생하는 경우 <b style="color:var(--ink)">1박·1인당 4,400엔</b>이 추가됩니다.</p>
     </div><!-- /구마모토 -->
 
-    <div class="region" id="r-nagoya" data-stay="hotel:포틴힐즈CC 호텔|caravan:포틴힐즈CC 카라반">
+    <div class="region" id="r-nagoya">
       <div class="r-head">
         <span class="r-name">포틴힐즈CC</span>
         <span class="r-sub">나고야 · 포틴힐즈CC(18홀)</span>
@@ -728,7 +743,6 @@
         <dt>도착 공항</dt><dd>나고야 중부국제공항(NGO) <span class="soft">· 골프장까지 약 1시간 40분</span></dd>
         <dt>출발지</dt><dd>인천 · 김해</dd>
         <dt>체류 일정</dt><dd>목 → 일 3박 · 일 → 목 4박 · 화 → 화 7박</dd>
-        <dt>숙소</dt><dd><b>포틴힐즈CC 호텔</b> 트윈(2인) · 패밀리룸(4인) / <b>포틴힐즈CC 카라반</b> 트윈(2인)</dd>
         <dt>라운딩</dt><dd>포틴힐즈CC · 주중 18홀 + 9홀 서비스 라운딩 · 주말·일본 공휴일 18홀</dd>
         <dt>식사</dt><dd>
           <table class="mt">
@@ -743,13 +757,24 @@
           </div>
           <div class="cav">· 당일 메뉴는 현지 사정에 따라 변경될 수 있습니다.</div></dd>
       </dl>
+      <h3 class="subh" style="margin-top:20px">숙소</h3>
+      <ul class="lodging">
+        <li data-lg="hotel">
+          <div class="lg-name">포틴힐즈CC 호텔</div>
+          <div class="lg-desc">트윈(2인) · 패밀리룸(4인)</div>
+        </li>
+        <li data-lg="caravan">
+          <div class="lg-name">포틴힐즈CC 카라반</div>
+          <div class="lg-desc">트윈(2인)</div>
+        </li>
+      </ul>
       <h3 class="subh" style="margin-top:20px">체재비용 · 송영비</h3>
       <p class="costline">체재비 <b>1박 15,000엔</b> · 왕복 송영비 <b>1인 12,000엔</b></p>
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ 2인이 4인실(패밀리룸)을 이용하시는 경우 1박·1인당 2,200엔이 추가됩니다.</p>
       <p class="soft" style="margin:6px 0 0;font-size:14px">※ 우천으로 라운딩이 어려운 경우 인근 쇼핑몰(에나역 부근)로 차량 안내해 드립니다.</p>
     </div>
 
-    <div class="region" id="r-akiba" data-stay="resort:아키바 리조트">
+    <div class="region" id="r-akiba">
       <div class="r-head">
         <span class="r-name">아키바 리조트</span>
         <span class="r-sub">벳푸 · 벳푸CC(유후 · 츠루미 코스) · 오기야마CC</span>
@@ -758,15 +783,21 @@
         <dt>도착 공항</dt><dd>후쿠오카 공항(FUK) <span class="soft">· 숙소까지 약 2시간</span></dd>
         <dt>출발지</dt><dd>인천 · 김해 · 대구</dd>
         <dt>체류 일정</dt><dd>금 → 월 3박 · 월 → 금 4박</dd>
-        <dt>숙소</dt><dd>아키바 리조트 <b>2인 1실</b> <span class="soft">· 투숙객 전용 온천탕 무료 이용</span></dd>
         <dt>라운딩</dt><dd>벳푸CC / 오기야마CC · 주중·주말 및 일본 공휴일 18홀</dd>
       </dl>
+      <h3 class="subh" style="margin-top:20px">숙소</h3>
+      <ul class="lodging">
+        <li data-lg="resort">
+          <div class="lg-name">아키바 리조트</div>
+          <div class="lg-desc"><b>2인 1실</b> <span class="soft">· 투숙객 전용 온천탕 무료 이용</span></div>
+        </li>
+      </ul>
       <h3 class="subh" style="margin-top:20px">체재비용 · 송영비</h3>
       <p class="costline">체재비 <b>주중 1박 15,000엔</b> / <b>주말 1박 17,000엔</b> · 왕복 송영비 <b>1인 12,000엔</b></p>
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ 체재일 <b style="color:var(--ink)">석식은 패키지에 포함되지 않아, 벳푸 시내에서 자유롭게 식사</b>하실 수 있습니다.</p>
     </div>
 
-    <div class="region" id="r-mutsuki" data-stay="ryokan:무츠키 료칸">
+    <div class="region" id="r-mutsuki">
       <div class="r-head">
         <span class="r-name">무츠키 료칸</span>
         <span class="r-sub">벳푸 · 벳푸CC(유후 · 츠루미 코스) · 오기야마CC</span>
@@ -775,16 +806,22 @@
         <dt>도착 공항</dt><dd>후쿠오카 공항(FUK) <span class="soft">· 숙소까지 약 2시간</span></dd>
         <dt>출발지</dt><dd>인천 · 김해 · 대구</dd>
         <dt>체류 일정</dt><dd>금 → 월 3박 · 월 → 금 4박</dd>
-        <dt>숙소</dt><dd>무츠키 료칸 <b>2인 1실</b> <span class="soft">· 일본 전통 료칸 · 객실이 적어 조기 마감될 수 있습니다</span></dd>
         <dt>라운딩</dt><dd>벳푸CC / 오기야마CC · 주중·주말 및 일본 공휴일 18홀 <span class="soft">· 3박 4일 2색 골프 · 4박 5일 3색 골프</span></dd>
       </dl>
+      <h3 class="subh" style="margin-top:20px">숙소</h3>
+      <ul class="lodging">
+        <li data-lg="ryokan">
+          <div class="lg-name">무츠키 료칸</div>
+          <div class="lg-desc"><b>2인 1실</b> <span class="soft">· 일본 전통 료칸 · 객실이 적어 조기 마감될 수 있습니다</span></div>
+        </li>
+      </ul>
       <h3 class="subh" style="margin-top:20px">투어 요금</h3>
       <p class="soft" style="margin:0 0 8px"><b style="color:var(--ink)">항공 · 숙박 · 골프가 모두 포함된</b> 1인 금액입니다.</p>
       <p class="costline">3박 4일 <b>1,450,000원</b> · 4박 5일 <b>1,660,000원</b> <span class="tbd">2027 확정 예정</span></p>
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ 상기 금액 외에 항공 요금 및 환율 변동에 따라 일부 금액 차이가 발생할 수 있습니다.</p>
     </div>
 
-    <div class="region" id="r-ibaraki" data-stay="lodge:골프장 내 숙소">
+    <div class="region" id="r-ibaraki">
       <div class="r-head">
         <span class="r-name">시로사토CC</span>
         <span class="r-sub">이바라키 · 시로사토CC(18홀)</span>
@@ -793,16 +830,22 @@
         <dt>도착 공항</dt><dd>나리타 공항(NRT) <span class="soft">· 골프장까지 약 1시간 30분</span></dd>
         <dt>출발지</dt><dd>인천 · 김해</dd>
         <dt>체류 일정</dt><dd>일 → 토 6박</dd>
-        <dt>숙소</dt><dd>골프장 내 숙소 <b>2인 1실</b></dd>
         <dt>라운딩</dt><dd>시로사토CC · 주중 18홀 + 9홀 서비스 라운딩 · 주말·일본 공휴일 18홀</dd>
         <dt>식사</dt><dd>조식 뷔페 · 중식 메인+뷔페 · 석식 요일별 세트메뉴</dd>
       </dl>
+      <h3 class="subh" style="margin-top:20px">숙소</h3>
+      <ul class="lodging">
+        <li data-lg="lodge">
+          <div class="lg-name">골프장 내 숙소</div>
+          <div class="lg-desc"><b>2인 1실</b></div>
+        </li>
+      </ul>
       <h3 class="subh" style="margin-top:20px">체재비용 · 송영비</h3>
       <p class="costline">체재비 <b>1박 16,000엔</b> · 왕복 송영비 <b>1인 12,000엔</b></p>
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ 기본 2인 1실 구성으로 싱글룸이 없습니다. 부득이하게 단독 사용 시 1박당 2,200엔이 추가됩니다. 2인 플레이 시 2BAG 차지가 현지에서 발생합니다.</p>
     </div>
 
-    <div class="region" id="r-nagano" data-stay="onsen-hotel:스가다이라 고원 온천호텔|mansion:스가다이라 맨션">
+    <div class="region" id="r-nagano">
       <div class="r-head">
         <span class="r-name">스가다이라 고원</span>
         <span class="r-sub">나가노 · 스가다이라 그린CC(18홀)</span>
@@ -811,17 +854,26 @@
         <dt>도착 공항</dt><dd>니가타 공항(KIJ) <span class="soft">· 골프장까지 약 3시간 30분~4시간</span></dd>
         <dt>출발지</dt><dd>인천</dd>
         <dt>체류 일정</dt><dd>목 5박 · 화 7박 · 목 7박 · 화 14박 · 목 14박</dd>
-        <dt>숙소</dt><dd><b>스가다이라 고원 온천호텔</b> <span class="soft">(골프장에서 약 15분)</span> / <b>스가다이라 맨션</b></dd>
         <dt>코스</dt><dd>해발 약 <b>1,600m</b> 고원 지대 <span class="soft">· 여름에도 시원한 기온에서 라운딩하실 수 있는 일본 대표 고원 골프장</span></dd>
         <dt>라운딩</dt><dd>스가다이라 그린CC · 전 일정 18홀 + 9홀 서비스 라운딩</dd>
         <dt>식사</dt><dd>조식·중식·석식 클럽하우스 <span class="soft">· 도착일 중식은 기내식으로 대체됩니다</span></dd>
       </dl>
+      <h3 class="subh" style="margin-top:20px">숙소</h3>
+      <ul class="lodging">
+        <li data-lg="onsen-hotel">
+          <div class="lg-name">스가다이라 고원 온천호텔</div>
+          <div class="lg-desc"><span class="soft">골프장에서 약 15분</span></div>
+        </li>
+        <li data-lg="mansion">
+          <div class="lg-name">스가다이라 맨션</div>
+        </li>
+      </ul>
       <h3 class="subh" style="margin-top:20px">투어 요금</h3>
       <p class="costline"><b>골프 · 숙박이 포함된</b> 1인 금액으로 안내됩니다. <span class="tbd">2027 확정 예정</span></p>
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ 자세한 내용은 별도 상품 안내를 참고하시거나 문의해 주세요.</p>
     </div>
 
-    <div class="region" id="r-miyazaki" data-stay="lodge:골프장 숙소">
+    <div class="region" id="r-miyazaki">
       <div class="r-head">
         <span class="r-name">미야자키 국제공항CC</span>
         <span class="r-sub">미야자키 · 국제공항CC(18홀)</span>
@@ -830,15 +882,21 @@
         <dt>도착 공항</dt><dd>미야자키 공항(KMI) <span class="soft">· 골프장까지 약 30분</span></dd>
         <dt>출발지</dt><dd>인천</dd>
         <dt>체류 일정</dt><dd>일 → 금 5박</dd>
-        <dt>숙소</dt><dd>골프장 숙소 <b>2인 1실</b> 배정</dd>
         <dt>라운딩</dt><dd>미야자키 국제공항CC · 월~목 18홀 + 9홀 서비스 라운딩 <span class="soft">· 출·귀국일 라운딩 없음</span></dd>
       </dl>
+      <h3 class="subh" style="margin-top:20px">숙소</h3>
+      <ul class="lodging">
+        <li data-lg="lodge">
+          <div class="lg-name">골프장 숙소</div>
+          <div class="lg-desc"><b>2인 1실</b> 배정</div>
+        </li>
+      </ul>
       <h3 class="subh" style="margin-top:20px">체재비용 · 송영비</h3>
       <p class="costline">체재비 <b>1박 17,000엔</b> · 왕복 송영비 <b>1인 5,000엔</b></p>
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ <b style="color:var(--ink)">체재일 중식은 포함되어 있지 않습니다.</b></p>
     </div>
 
-    <div class="region" id="r-kl" data-stay="resort:닐라이스프링스 리조트">
+    <div class="region" id="r-kl">
       <div class="r-head">
         <span class="r-name">닐라이스프링스 리조트</span>
         <span class="r-sub">말레이시아 쿠알라룸푸르 · 닐라이스프링스CC(18홀)</span>
@@ -849,8 +907,14 @@
         <dt>도착 공항</dt><dd>쿠알라룸푸르 국제공항(KUL)</dd>
         <dt>출발지</dt><dd>인천</dd>
         <dt>체류 일정</dt><dd>일정 자유 구성 <span class="soft">· 원하시는 박수로 문의해 주세요</span></dd>
-        <dt>숙소</dt><dd>닐라이스프링스 리조트 <b>2인 1실</b></dd>
       </dl>
+      <h3 class="subh" style="margin-top:20px">숙소</h3>
+      <ul class="lodging">
+        <li data-lg="resort">
+          <div class="lg-name">닐라이스프링스 리조트</div>
+          <div class="lg-desc"><b>2인 1실</b></div>
+        </li>
+      </ul>
       <h3 class="subh" style="margin-top:20px">체재비용 · 송영비</h3>
       <p class="costline">2027 시즌 요금 <span class="tbd">확정 예정</span> — 확정 전에는 문의해 주시면 개별 안내드립니다.</p>
     </div>
@@ -1093,42 +1157,26 @@
 (function () {
   'use strict';
   var SHOTS = 4;                       // 숙소 한 곳 · 골프장 한 곳당 최대 사진 수
+  /* 숙소 사진은 접는 블록이 아니라 **그 숙소 카드 안**, 설명 바로 아래에 붙는다.
+     따로 빼 두면 어느 숙소 이야기인지 눈으로 다시 이어 붙여야 한다.
+     골프장은 지역에 하나뿐이라 예전처럼 접어서 둔다. */
   var KINDS = [
-    { dir: 'stay', ico: '🏨', label: '숙소 정보 보기' },
     { dir: 'golf', ico: '⛳', label: '골프장 정보 보기' }
   ];
 
-  /* 숙소는 **한 곳씩** 따로 올린다. 지역에 묶어 두면 프레스티지 사진과 료칸
-     사진이 한 줄에 섞여 어느 숙소인지 알 수 없다.
-     마크업이 두 가지라 읽는 곳도 두 곳이다 —
-       ① 구마모토처럼 숙소 카드가 있는 지역 : <li data-lg="키"> + .lg-name
-       ② 숙소를 한 줄로 적은 지역          : <div class="region" data-stay="키:이름|키:이름">
-     ①은 카드에 적힌 이름을 그대로 쓰므로 이름이 두 곳에 생기지 않는다. */
-  function staysOf(sec) {
-    var out = [];
-    var cards = sec.querySelectorAll('li[data-lg]');
-    if (cards.length) {
-      Array.prototype.forEach.call(cards, function (li) {
-        var nm = li.querySelector('.lg-name');
-        var t = nm ? nm.cloneNode(true) : null;
-        if (t) { var jp = t.querySelector('.lg-jp'); if (jp) jp.remove(); }
-        out.push({ dir: li.getAttribute('data-lg'),
-                   name: (t ? t.textContent : '').replace(/\s+/g, ' ').trim() });
-      });
-      return out;
-    }
-    (sec.getAttribute('data-stay') || '').split('|').forEach(function (pair) {
-      var i = pair.indexOf(':');
-      if (i < 0) return;
-      out.push({ dir: pair.slice(0, i).trim(), name: pair.slice(i + 1).trim() });
-    });
-    return out;
-  }
-
-  /* 영상 — 지역별로 유튜브 주소를 넣으면 그 지역에만 생긴다.
+  /* 영상 — 지역별로 유튜브 주소를 넣으면 그 지역 골프장 블록에만 생긴다.
      주소는 어떤 형태든 된다(youtu.be/xxxx · watch?v=xxxx · /embed/xxxx).
-     예) VIDEO.kumamoto = { stay: 'https://youtu.be/xxxxxxxxxxx' }; */
+     예) VIDEO.kumamoto = { golf: 'https://youtu.be/xxxxxxxxxxx' }; */
   var VIDEO = {};
+
+  function lgName(li) {
+    var nm = li.querySelector('.lg-name');
+    if (!nm) return '';
+    var t = nm.cloneNode(true);
+    var jp = t.querySelector('.lg-jp');
+    if (jp) jp.remove();                       // 일본어 이름은 alt 에 넣지 않는다
+    return t.textContent.replace(/\s+/g, ' ').trim();
+  }
 
   function pad(n) { return n < 10 ? '0' + n : String(n); }
   function ytId(url) {
@@ -1204,6 +1252,46 @@
     else if (e.key === 'ArrowRight') { step(1); }
   });
 
+  /* ── 마우스로 끌어서 옆으로 ──
+     터치는 브라우저가 알아서 밀어 준다. 데스크톱은 휠만으로는 가로로 안 움직여서
+     끌기를 붙인다. 조금 움직인 것은 끌기가 아니라 클릭이므로, 문턱(6px)을 넘긴
+     뒤에야 끌기로 보고 그때 뒤따르는 클릭 한 번을 막는다 — 안 막으면 사진을
+     밀었을 뿐인데 크게 보기가 열린다. */
+  function dragStrip(el) {
+    var down = false, moved = false, x0 = 0, left0 = 0, id = null;
+    el.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0 && e.pointerType === 'mouse') return;
+      if (e.pointerType === 'touch') return;          // 터치는 브라우저에 맡긴다
+      down = true; moved = false; x0 = e.clientX; left0 = el.scrollLeft; id = e.pointerId;
+    });
+    el.addEventListener('pointermove', function (e) {
+      if (!down || e.pointerId !== id) return;
+      var dx = e.clientX - x0;
+      if (!moved) {
+        if (Math.abs(dx) < 6) return;
+        moved = true;
+        el.classList.add('dragging');
+        try { el.setPointerCapture(id); } catch (err) {}
+      }
+      el.scrollLeft = left0 - dx;
+      e.preventDefault();
+    });
+    function end(e) {
+      if (!down || (e && e.pointerId !== id)) return;
+      down = false;
+      if (!moved) return;
+      try { el.releasePointerCapture(id); } catch (err) {}
+      el.classList.remove('dragging');
+      // 이 뒤에 오는 클릭 한 번만 삼킨다
+      var eat = function (ev) { ev.stopPropagation(); ev.preventDefault(); };
+      el.addEventListener('click', eat, true);
+      setTimeout(function () { el.removeEventListener('click', eat, true); }, 0);
+    }
+    el.addEventListener('pointerup', end);
+    el.addEventListener('pointercancel', end);
+    el.addEventListener('dragstart', function (e) { e.preventDefault(); });
+  }
+
   /* ── 사진 한 묶음(숙소 한 곳 또는 골프장) ── */
   /* count 를 올려 주면 블록 제목 옆 「N장」이 늘어난다. */
   function buildShots(grid, key, dir, alt, count) {
@@ -1243,8 +1331,51 @@
     }
   }
 
+  /* ── 지나가면 다시 접는다 ──
+     열어 둔 블록을 그대로 두면, 구마모토처럼 숙소가 일곱인 곳은 펼친 높이가
+     화면 몇 개 길이가 되어 그 아래 요금·일정을 찾기까지 한참을 굴려야 한다.
+     화면에서 벗어나면 스스로 접는다. 되돌아왔을 때 다시 펼치지는 않는다 —
+     읽던 사람이 접은 것이 아니므로 임의로 다시 열면 더 놀란다.
+
+     ※ 열려 있는 동안에는 접지 않는다(rootMargin 으로 여유를 둔다). 블록 자체가
+       화면보다 길어서, 안을 훑는 중에 접히면 보던 사진이 사라진다.
+     ※ 위로 지나친 블록을 접으면 그만큼 아래 내용이 위로 올라와 화면이 튄다.
+       줄어든 높이만큼 스크롤을 되돌려 제자리에 두고 접는다. */
+  var foldWatch = (typeof IntersectionObserver === 'function')
+    ? new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          var d = e.target;
+          if (e.isIntersecting || !d.open) return;
+          var above = e.boundingClientRect.bottom < 0;   // 위로 지나쳤나
+          var h0 = d.offsetHeight;
+          d.open = false;
+          var lost = h0 - d.offsetHeight;
+          if (above && lost > 0) window.scrollBy(0, -lost);
+        });
+      }, { rootMargin: '160px 0px 160px 0px', threshold: 0 })
+    : null;
+  function watchFold(d) { if (foldWatch) foldWatch.observe(d); }
+
+  /* 화면에 가까워지면 한 번만 부른다. 관찰을 못 쓰는 브라우저에서는 바로 부른다 —
+     사진이 안 나오는 것보다 조금 더 받는 편이 낫다. */
+  var nearWatch = (typeof IntersectionObserver === 'function')
+    ? new IntersectionObserver(function (entries, obs) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          obs.unobserve(e.target);
+          var fn = e.target.__near;
+          if (fn) { e.target.__near = null; fn(); }
+        });
+      }, { rootMargin: '400px 0px 400px 0px', threshold: 0 })
+    : null;
+  function whenNear(el, fn) {
+    if (!nearWatch) { fn(); return; }
+    el.__near = fn;
+    nearWatch.observe(el);
+  }
+
   /* ── 블록 하나 ── */
-  function buildFold(key, kind, regionName, stays) {
+  function buildFold(key, kind, regionName) {
     var d = document.createElement('details');
     d.className = 'media-fold';
 
@@ -1258,9 +1389,8 @@
     body.className = 'media-body';
     var hint = document.createElement('p');
     hint.className = 'media-hint';
-    hint.innerHTML = '올리실 곳 <code>2027/photos/' + key + '/</code> 아래에 '
-                   + '점선에 적힌 폴더를 만들고 <code>01.webp</code> 부터 넣으시면 됩니다 · '
-                   + (kind.dir === 'stay' ? '숙소마다 ' : '') + SHOTS + '장까지';
+    hint.innerHTML = '올리실 곳 <code>2027/photos/' + key + '/' + kind.dir + '/</code> · '
+                   + '<code>01.webp</code> 부터 ' + SHOTS + '장까지';
     d.appendChild(body);
 
     var total = 0;
@@ -1277,25 +1407,11 @@
       if (!d.open || loaded) return;
       loaded = true;
 
-      if (kind.dir === 'golf') {
-        var g = document.createElement('div');
-        g.className = 'shots';
-        body.appendChild(g);
-        buildShots(g, key, 'golf', regionName + ' 골프장', count);
-      } else {
-        /* 숙소는 한 곳씩 이름을 달아 나눈다 — 어느 숙소 사진인지 알아야
-           올릴 때도 볼 때도 헷갈리지 않는다. */
-        stays.forEach(function (st) {
-          var h = document.createElement('p');
-          h.className = 'stay-h';
-          h.textContent = st.name;
-          body.appendChild(h);
-          var g = document.createElement('div');
-          g.className = 'shots';
-          body.appendChild(g);
-          buildShots(g, key, st.dir, st.name, count);
-        });
-      }
+      var g = document.createElement('div');
+      g.className = 'shots';
+      body.appendChild(g);
+      dragStrip(g);
+      buildShots(g, key, kind.dir, regionName + ' 골프장', count);
       body.appendChild(hint);
     });
     return d;
@@ -1309,12 +1425,28 @@
     var nameEl = head.querySelector('.r-name');
     var regionName = nameEl ? nameEl.textContent.trim() : '';
 
-    var stays = staysOf(sec);
+    /* 숙소 카드마다 사진 줄을 설명 아래에 붙인다.
+       ※ 사진은 **그 카드가 화면에 가까워질 때** 만든다. 문서를 여는 순간 다
+         만들면 숙소 16곳 × 4장 = 64장을 한꺼번에 받는다(다 채우면 12MB 남짓).
+         카드는 접혀 있지 않으므로 접힘에 기대던 예전 방식이 통하지 않는다. */
+    Array.prototype.forEach.call(sec.querySelectorAll('li[data-lg]'), function (li) {
+      var dir = li.getAttribute('data-lg');
+      var g = document.createElement('div');
+      g.className = 'shots';
+      li.appendChild(g);
+      dragStrip(g);
+      var hint = document.createElement('p');
+      hint.className = 'lg-hint';
+      hint.innerHTML = '<code>2027/photos/' + key + '/' + dir + '/</code> 에 '
+                     + '<code>01.webp</code> 부터 ' + SHOTS + '장까지';
+      li.appendChild(hint);
+      whenNear(li, function () { buildShots(g, key, dir, lgName(li), function () {}); });
+    });
+
     var box = document.createElement('div');
     box.className = 'media';
     KINDS.forEach(function (kind) {
-      if (kind.dir === 'stay' && !stays.length) return;   // 숙소를 안 적어 둔 지역
-      var fold = buildFold(key, kind, regionName, stays);
+      var fold = buildFold(key, kind, regionName);
       var url = VIDEO[key] && VIDEO[key][kind.dir];
       if (url) {
         var id = ytId(url);
@@ -1335,6 +1467,7 @@
         fold.querySelector('.media-body').appendChild(v);
       }
       box.appendChild(fold);
+      watchFold(fold);
     });
     head.parentNode.insertBefore(box, head.nextSibling);
   });
