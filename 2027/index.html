@@ -6,17 +6,19 @@
 <meta name="robots" content="noindex">
 <title>2027 골프 패키지 예약 안내 · 메리트투어</title>
 <style>
-  /* ── 세이지 라이트 · 고정 ──
-     기기 다크모드에 따라 같은 안내문이 초록/베이지로 갈려 보이던 것을 막기 위해
-     @media (prefers-color-scheme:dark) 분기를 두지 않는다. 새 다크 분기를 넣지 말 것.
+  /* ── 베이지 라이트 · 고정 ──
+     기기 다크모드에 따라 같은 안내문이 갈려 보이지 않게 @media (prefers-color-scheme:dark)
+     분기를 두지 않는다. 새 다크 분기를 넣지 말 것.
+     바탕이 세이지(연한 초록)였을 때는 글자(올리브·골드)와 색 계열이 같아 덜 떨어져 보였다.
+     바탕만 베이지로 옮기고 글자색은 그대로 둬 색상 대비를 만든다.
      인쇄 시 배경색이 빠져도 요금표가 읽히고, 밝은 곳(골프장·차 안)에서 반사가 적다.
-     대비비 — 본문 15.61 · 보조문 7.66 · 버튼 글자 5.75 (WCAG AA 통과) */
+     대비비 — 본문 13.70 · 보조문 6.72 · 라벨 5.01 · 골드 5.13 (전부 WCAG AA 통과) */
   :root{
-    --paper:#E7EDE0; --surface:#FFFFFF; --surface-warm:#F3F7EC; --olive-dim:#EDF2E6;
+    --paper:#F4F0E4; --surface:#FFFFFF; --surface-warm:#FBF8F0; --band:#EDE7D6;
     --ink:#1E2618; --ink-soft:#4C573F; --muted:#5F6B47;
-    --line:#D3DDC8; --line-soft:#DDE6D0;
+    --line:#DFD8C5; --line-soft:#E9E3D2;
     --olive:#5A6C3E; --olive-deep:#47562F;
-    --gold:#7F6019; --gold-soft:#9E7C33; --member-bg:#FBF5E7; --member-line:#E7D6AC;
+    --gold:#7F6019; --gold-soft:#9E7C33; --member-bg:#FFFDF7; --member-line:#D3BA85;
     --sans:'Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic','Pretendard',system-ui,sans-serif;
     --serif:'Iowan Old Style','Palatino Linotype','Palatino',Georgia,serif;
     --maxw:720px;
@@ -50,7 +52,9 @@
   .hero p.lead{font-size:16.5px;color:var(--ink-soft);margin:16px 0 0;max-width:52ch}
 
   /* ── 기본 포함 콜아웃 ── */
-  .included{margin:24px 0 0;background:color-mix(in srgb,var(--olive) 8%,var(--surface));
+  /* 베이지 바탕에서 올리브를 흰색에 섞으면 회녹색 카드가 되어 혼자 차가워 보인다 —
+     표 머리·안내 박스와 같은 따뜻한 띠(--band)를 쓰고 테두리로만 올리브를 남긴다. */
+  .included{margin:24px 0 0;background:var(--band);
     border:1px solid color-mix(in srgb,var(--olive) 24%,var(--line));
     border-radius:14px;padding:18px 22px}
   .included .inc-tag{display:inline-flex;align-items:center;gap:7px;
@@ -87,7 +91,7 @@
   .mt th:first-child,.mt td:first-child{padding-left:0}
   .mt th:last-child,.mt td:last-child{padding-right:0}
   .mt thead th{font-size:11.5px;font-weight:800;color:var(--muted);letter-spacing:.04em;
-    border-bottom:1.5px solid var(--line);padding-bottom:7px;background:var(--olive-dim)}
+    border-bottom:1.5px solid var(--line);padding-bottom:7px;background:var(--band)}
   .mt tbody th{font-weight:800;color:var(--ink);white-space:nowrap;width:1%;padding-right:14px}
   .mt td{color:var(--ink-soft);font-weight:500}
   .mt td b{color:var(--ink);font-weight:700}
@@ -95,7 +99,7 @@
 
   /* 표 밖으로 뺀 예외(.note) · 맨 아래 단서(.cav)
      ※ 좁은 화면 규칙보다 먼저 둔다 — 뒤에 두면 같은 순위라 media query 를 덮어쓴다. */
-  .note{margin-top:12px;padding:11px 13px;border-radius:9px;background:var(--olive-dim);
+  .note{margin-top:12px;padding:11px 13px;border-radius:9px;background:var(--band);
     border:1px solid var(--line);font-size:12.5px;line-height:1.7;color:var(--ink-soft);font-weight:500}
   .note b{color:var(--ink)}
   .note .k{display:inline-block;min-width:62px;padding-right:8px;font-weight:800;color:var(--olive)}
@@ -417,7 +421,7 @@
     <div class="member">
       <p class="tag">Members First</p>
       <h2>회원님의 <em>한 해</em>를 준비합니다.</h2>
-            <p>메리트투어 골프 상품은 <b>회원 우선 예약제</b>로 운영됩니다. 객실과 라운딩, 항공 좌석까지
+            <p>골프 상품은 모두 <b>회원 우선 예약제</b>로 운영됩니다. 객실과 라운딩, 항공 좌석까지
                회원님 예약을 기준으로 미리 준비합니다. 올해도 잘 준비하겠습니다.</p>
 
       <ul class="principles">
