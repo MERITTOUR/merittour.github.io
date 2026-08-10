@@ -629,10 +629,12 @@ function allItems(){ return CAT.flatMap(g=>g.venues.flatMap(v=>v.items)); }
 function venueOf(k){ for(const g of CAT) for(const v of g.venues) if(v.items.some(i=>i.k===k)) return v; return null; }
 function regionOf(k){ for(const g of CAT) for(const v of g.venues) if(v.items.some(i=>i.k===k)) return g; return null; }
 
+// 손님에게 보이는 표기는 출발 공항으로 통일한다(인천 · 김해 · 대구).
+// id 는 dep:[...] 와 맞물린 내부 키라 그대로 둔다 — 바꾸면 상품 매칭이 어긋난다.
 const ORIGINS = [
-  {id:'서울', name:'서울 출발', airport:'인천공항'},
-  {id:'부산', name:'부산 출발', airport:'김해공항'},
-  {id:'대구', name:'대구 출발', airport:'대구공항'},
+  {id:'서울', name:'인천 출발', sub:'서울 · 수도권'},
+  {id:'부산', name:'김해 출발', sub:'부산 · 경남'},
+  {id:'대구', name:'대구 출발', sub:'대구 · 경북'},
 ];
 
 // ============================================================
@@ -810,7 +812,7 @@ function openSheet(kind){
   let html = '<div class="sheet-hint">고르시면 바로 적용되고 다음으로 넘어갑니다.</div>';
   if(kind==='origin'){
     html += ORIGINS.map(o=>`<button class="opt${sel.origin===o.id?' selected':''}" data-v="${o.id}">
-      <span>${o.name}</span><span class="sub">${o.airport}</span></button>`).join('');
+      <span>${o.name}</span><span class="sub">${o.sub}</span></button>`).join('');
   } else if(kind==='resort'){
     const groups = catByOrigin(sel.origin);
     html += groups.map(g=>`<div class="grp-label">${g.region}</div>`+
@@ -1040,7 +1042,7 @@ const CHECKS = {
     '2인부터 예약 가능'
   ],
   yamanami:['조식 · 중식 매일 뷔페식(중식은 한식 위주) + 석식 요일 메뉴',
-            '도착일 점심 — 서울 출발팀 카츠카레(라운딩 직행) / 부산 출발팀은 저녁 식사부터',
+            '도착일 점심 — 인천 출발팀 카츠카레(라운딩 직행) / 김해 출발팀은 저녁 식사부터',
             '전기카트 유료 사전 신청 가능 (1일 1대 2,000엔)'],
   kuzu:['조식 · 중식 매일 뷔페식 + 석식 요일 메뉴',
         '전기카트 유료 사전 신청 가능 (1일 1대 2,000엔)'],
@@ -1223,7 +1225,7 @@ function renderItin(it,nights){
            (yama && fromSeoul
              ? `점심식사 후 <span class="g">라운딩</span> (일몰 전까지 · 최대 18홀)<br><small style="color:var(--muted);">※ 일몰 시간·현지 사정에 따라 라운딩 시간이 짧아질 수 있습니다.</small><br>`
              : `<small style="color:var(--muted);">※ 도착일 라운딩 여부는 항공 시간·현지 일몰에 따라 확정됩니다.</small><br>`)+
-           (yama && !fromSeoul ? `호텔 체크인<br><small style="color:var(--muted);">※ 부산 출발팀은 저녁 식사부터 일정이 시작됩니다.</small><br>` : '')+
+           (yama && !fromSeoul ? `호텔 체크인<br><small style="color:var(--muted);">※ 김해 출발팀은 저녁 식사부터 일정이 시작됩니다.</small><br>` : '')+
            (noDin ? `호텔 체크인 · 자유시간<br><small style="color:var(--muted);">※ 석식은 벳푸 시내에서 자유롭게 드십니다.</small>` : `호텔 체크인 · 석식 및 자유시간`);
       meal=`중식 : ${lunch1}<br>석식 : ${din}`;
     } else if(d===days){
