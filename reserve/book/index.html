@@ -2497,7 +2497,7 @@ const RESORTS = {
     airport: '인천',
     roomMode: 'single',
     rooms: [{ id: 'std', name: '트윈 객실', cap: 2, total: 10 }],
-    note: '출·귀국일 라운드 없음 · 체재일 중식 미포함'
+    note: '출·귀국일 라운딩 없음 · 체재일 중식 미포함'
   },
 
   // ====== 나가노 — 스가다이라 (확정 패키지 + 룸 선택) ======
@@ -2620,7 +2620,7 @@ function getHolidaysInTrip(startDateStr, nights) {
   return result;
 }
 
-// v9 — 우부야마 자선대회 (10/7 라운드 불가)
+// v9 — 우부야마 자선대회 (10/7 라운딩 불가)
 const UBUYAMA_DATE = '2026-10-07';
 function isUbuyamaInRange(startDateStr, nights) {
   const [y, m, d] = startDateStr.split('-').map(Number);
@@ -3990,7 +3990,7 @@ function renderCalendar() {
       const inTripCls = (state.date && tripDateSet.has(dateStr) && dateStr !== state.date) ? ' in-trip' : '';
       badges.push(`<span class="cal-badge cal-holiday${inTripCls}" title="${holiday}">공휴일</span>`);
     }
-    if (ubuyamaIn) badges.push(`<span class="cal-badge cal-ubuyama" title="우부야마 자선대회 (10/7) 라운드 불가">⚠</span>`);
+    if (ubuyamaIn) badges.push(`<span class="cal-badge cal-ubuyama" title="우부야마 자선대회 (10/7) 라운딩 불가">⚠</span>`);
 
     if (isPast || !validDow) {
       cell.classList.add('inactive');
@@ -4136,7 +4136,7 @@ function renderCalendar() {
           // 정상 진행 (선택 룸 그대로)
           state.date = dateStr;
           if (ubuyamaIn) {
-            alert('🟥 우부야마 자선 골프대회 안내\n\n선택하신 일정에 2026년 10월 7일(수)이 포함되어 있습니다.\n해당 날짜는 우부야마 자선 골프대회로 라운드가 불가능하며, 쇼핑·관광 등으로 대체 운영됩니다.');
+            alert('🟥 우부야마 자선 골프대회 안내\n\n선택하신 일정에 2026년 10월 7일(수)이 포함되어 있습니다.\n해당 날짜는 우부야마 자선 골프대회로 라운딩이 불가능하며, 쇼핑·관광 등으로 대체 운영됩니다.');
           }
           renderCalendar();
           showSchedInfo();
@@ -4809,7 +4809,7 @@ function renderSummary() {
   const tripHolidayRow = tripHolidaysAfter.length > 0
     ? `<div class="summary-row"><span class="k">일정 중 공휴일</span><span class="v" style="color:#92400E;">📅 ${tripHolidaysAfter.map(h => { const [, hm, hd] = h.date.split('-'); return `${+hm}/${+hd} ${h.name}`; }).join(', ')}<br/><small style="color:#78350F;font-weight:600;">공휴일에는 라운딩이 주말과 동일하게 진행됩니다</small></span></div>`
     : '';
-  const ubuyamaRow = ubuyamaIn ? `<div class="summary-row"><span class="k">⚠ 우부야마</span><span class="v" style="color:#B91C1C;">10/7 자선대회 라운드 불가 — 쇼핑·관광 대체</span></div>` : '';
+  const ubuyamaRow = ubuyamaIn ? `<div class="summary-row"><span class="k">⚠ 우부야마</span><span class="v" style="color:#B91C1C;">10/7 자선대회 라운딩 불가 — 쇼핑·관광 대체</span></div>` : '';
   // v10 — 회원권 복수 보유 시 합계까지 표시
   const ms = LOGIN_USER.memberships || [];
   let memberValueHtml;
