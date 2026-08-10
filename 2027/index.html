@@ -314,25 +314,17 @@
     section{scroll-margin-top:56px}
   }
 
-  /* ── 지역 사진·영상 ──
-     「숙소 정보 보기 / 골프장 정보 보기」를 접어 둔다. 요금표를 찾는 손님의
-     스크롤을 사진으로 늘리지 않으면서, 보고 싶은 사람은 눌러서 본다.
-     접혀 있으면 안쪽 <img> 가 아직 없으므로 열기 전에는 한 장도 받지 않는다. */
-  .media{margin:4px 0 20px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start}
-  .media-fold{flex:1 1 240px;min-width:0;border:1px solid var(--line);
-    border-radius:12px;background:var(--surface-warm);overflow:hidden}
-  /* 연 블록은 그 줄을 통째로 쓴다. 닫힌 블록 옆에 끼어 있으면 폭이 절반이 되어
-     화면 중간 크기(약 560px)에서 사진이 한 줄에 한 장만 들어갔다. */
-  .media-fold[open]{flex-basis:100%}
-  .media-fold>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:9px;
-    padding:12px 15px;font-size:14.5px;font-weight:800;color:var(--olive-deep)}
-  .media-fold>summary::-webkit-details-marker{display:none}
-  .media-fold>summary::after{content:"▾";margin-left:auto;font-size:11px;color:var(--muted)}
-  .media-fold[open]>summary::after{content:"▴"}
-  .media-fold>summary .mf-ico{font-size:15px;line-height:1}
-  .media-fold>summary .mf-n{font-size:11.5px;font-weight:700;color:var(--muted);
-    font-variant-numeric:tabular-nums}
-  .media-fold[open]>summary{border-bottom:1px solid var(--line-soft)}
+  /* ── 골프장 사진 ──
+     숙소 카드와 똑같이 **항상 열려 있다**(`.media-open`). 접어 두면 사진이
+     있는지조차 눌러 봐야 알고, 지역마다 하나뿐이라 접어서 아낄 높이도 얼마 없다.
+     사진은 이 블록이 화면에 가까워질 때 만든다 — 접힘에 기대지 않는다. */
+  .media{margin:4px 0 20px}
+  .media-open{min-width:0;border:1px solid var(--line);border-radius:12px;
+    background:var(--surface-warm);overflow:hidden}
+  .mo-head{display:flex;align-items:center;gap:9px;padding:12px 15px;
+    font-size:14.5px;font-weight:800;color:var(--olive-deep);
+    border-bottom:1px solid var(--line-soft)}
+  .mo-head .mf-ico{font-size:15px;line-height:1}
   .media-body{padding:13px 13px 14px}
 
   /* 사진 격자 — 누르면 크게 본다 */
@@ -1161,7 +1153,7 @@
      따로 빼 두면 어느 숙소 이야기인지 눈으로 다시 이어 붙여야 한다.
      골프장은 지역에 하나뿐이라 예전처럼 접어서 둔다. */
   var KINDS = [
-    { dir: 'golf', ico: '⛳', label: '골프장 정보 보기' }
+    { dir: 'golf', ico: '⛳', label: '골프장' }
   ];
 
   /* 영상 — 지역별로 유튜브 주소를 넣으면 그 지역 골프장 블록에만 생긴다.
@@ -1331,31 +1323,6 @@
     }
   }
 
-  /* ── 지나가면 다시 접는다 ──
-     열어 둔 블록을 그대로 두면, 구마모토처럼 숙소가 일곱인 곳은 펼친 높이가
-     화면 몇 개 길이가 되어 그 아래 요금·일정을 찾기까지 한참을 굴려야 한다.
-     화면에서 벗어나면 스스로 접는다. 되돌아왔을 때 다시 펼치지는 않는다 —
-     읽던 사람이 접은 것이 아니므로 임의로 다시 열면 더 놀란다.
-
-     ※ 열려 있는 동안에는 접지 않는다(rootMargin 으로 여유를 둔다). 블록 자체가
-       화면보다 길어서, 안을 훑는 중에 접히면 보던 사진이 사라진다.
-     ※ 위로 지나친 블록을 접으면 그만큼 아래 내용이 위로 올라와 화면이 튄다.
-       줄어든 높이만큼 스크롤을 되돌려 제자리에 두고 접는다. */
-  var foldWatch = (typeof IntersectionObserver === 'function')
-    ? new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          var d = e.target;
-          if (e.isIntersecting || !d.open) return;
-          var above = e.boundingClientRect.bottom < 0;   // 위로 지나쳤나
-          var h0 = d.offsetHeight;
-          d.open = false;
-          var lost = h0 - d.offsetHeight;
-          if (above && lost > 0) window.scrollBy(0, -lost);
-        });
-      }, { rootMargin: '160px 0px 160px 0px', threshold: 0 })
-    : null;
-  function watchFold(d) { if (foldWatch) foldWatch.observe(d); }
-
   /* 화면에 가까워지면 한 번만 부른다. 관찰을 못 쓰는 브라우저에서는 바로 부른다 —
      사진이 안 나오는 것보다 조금 더 받는 편이 낫다. */
   var nearWatch = (typeof IntersectionObserver === 'function')
@@ -1374,45 +1341,37 @@
     nearWatch.observe(el);
   }
 
-  /* ── 블록 하나 ── */
-  function buildFold(key, kind, regionName) {
-    var d = document.createElement('details');
-    d.className = 'media-fold';
+  /* ── 골프장 사진 ──
+     숙소 카드와 똑같이 **항상 열려 있다.** 접어 두면 사진이 있는지조차 눌러 봐야
+     알고, 지역마다 하나뿐이라 접어서 아낄 높이도 얼마 없다. */
+  function buildGolf(key, kind, regionName) {
+    var d = document.createElement('div');
+    d.className = 'media-open';
 
-    var sm = document.createElement('summary');
-    sm.innerHTML = '<span class="mf-ico" aria-hidden="true">' + kind.ico + '</span>'
-                 + '<span>' + kind.label + '</span>'
-                 + '<span class="mf-n" hidden></span>';
-    d.appendChild(sm);
+    var h = document.createElement('div');
+    h.className = 'mo-head';
+    h.innerHTML = '<span class="mf-ico" aria-hidden="true">' + kind.ico + '</span>'
+                + '<span>' + kind.label + '</span>';
+    d.appendChild(h);
 
     var body = document.createElement('div');
     body.className = 'media-body';
-    var hint = document.createElement('p');
-    hint.className = 'media-hint';
-    hint.innerHTML = '올리실 곳 <code>2027/photos/' + key + '/' + kind.dir + '/</code> · '
-                   + '<code>01.webp</code> 부터 ' + SHOTS + '장까지';
     d.appendChild(body);
 
-    var total = 0;
-    function count(n) {
-      total += n;
-      var el = sm.querySelector('.mf-n');
-      el.hidden = false;
-      el.textContent = total + '장';
-    }
+    var g = document.createElement('div');
+    g.className = 'shots';
+    body.appendChild(g);
+    dragStrip(g);
 
-    /* 열 때 한 번만 불러온다. 접혀 있는 동안에는 아무것도 받지 않는다. */
-    var loaded = false;
-    d.addEventListener('toggle', function () {
-      if (!d.open || loaded) return;
-      loaded = true;
+    var hint = document.createElement('p');
+    hint.className = 'media-hint';
+    hint.innerHTML = '<code>2027/photos/' + key + '/' + kind.dir + '/</code> 에 '
+                   + '<code>01.webp</code> 부터 ' + SHOTS + '장까지';
+    body.appendChild(hint);
 
-      var g = document.createElement('div');
-      g.className = 'shots';
-      body.appendChild(g);
-      dragStrip(g);
-      buildShots(g, key, kind.dir, regionName + ' 골프장', count);
-      body.appendChild(hint);
+    /* 숙소 카드와 같은 규칙 — 화면에 가까워질 때 만든다. */
+    whenNear(d, function () {
+      buildShots(g, key, kind.dir, regionName + ' 골프장', function () {});
     });
     return d;
   }
@@ -1446,7 +1405,7 @@
     var box = document.createElement('div');
     box.className = 'media';
     KINDS.forEach(function (kind) {
-      var fold = buildFold(key, kind, regionName);
+      var fold = buildGolf(key, kind, regionName);
       var url = VIDEO[key] && VIDEO[key][kind.dir];
       if (url) {
         var id = ytId(url);
@@ -1467,7 +1426,6 @@
         fold.querySelector('.media-body').appendChild(v);
       }
       box.appendChild(fold);
-      watchFold(fold);
     });
     head.parentNode.insertBefore(box, head.nextSibling);
   });
