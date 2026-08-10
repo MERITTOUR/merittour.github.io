@@ -353,14 +353,19 @@
      흐리게 둘 이유도 없다 — 색은 --muted 로 두고 크기로만 앞세운다. */
   .shot-slot .s-plus{font-size:17px;line-height:1}
   .shot-slot .s-path{font-size:10.5px;font-weight:700;letter-spacing:.01em;
-    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;white-space:nowrap;
-    padding:0 4px;text-align:center;line-height:1.45;max-width:100%;overflow:hidden;
-    text-overflow:ellipsis}
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    padding:0 4px;text-align:center;line-height:1.45;max-width:100%;
+    overflow-wrap:anywhere}
   /* 반투명(color-mix … transparent)으로 흐리게 했더니 대비가 2.96 까지 떨어졌다.
      여기 적힌 폴더 이름은 「어디에 올릴지」를 읽는 글자라 장식이 아니다.
      색은 --muted 그대로 두고 굵기로만 앞뒤를 나눈다(대비 5.47). */
   .shot-slot .s-path.dim{font-weight:600}
-  .media-hint{font-size:12px;color:var(--muted);margin:9px 0 0;line-height:1.6}
+  /* 숙소 이름 줄 — 어느 숙소 사진인지 나누는 자리 */
+  .stay-h{font-size:13px;font-weight:800;color:var(--olive-deep);margin:0 0 7px;
+    display:flex;align-items:center;gap:7px}
+  .stay-h::before{content:"";width:12px;height:1.5px;background:var(--olive);flex:none}
+  .media-body .shots+.stay-h{margin-top:14px}
+  .media-hint{font-size:12px;color:var(--muted);margin:12px 0 0;line-height:1.6}
   .media-hint code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;
     background:var(--band);border-radius:4px;padding:1px 5px}
 
@@ -629,19 +634,19 @@
 
     <h3 class="subh" style="margin-top:24px">리조트 내 별장</h3>
     <ul class="lodging">
-      <li>
+      <li data-lg="prestige">
         <div class="lg-name">야마나미 프레스티지 <span class="lg-jp">YAMANAMI PRESTIGE HOUSE · 4 Suites</span></div>
         <div class="lg-desc">8인 대형 별장 1동 <span class="lg-old">아소별장 · 관내별장</span></div>
       </li>
-      <li>
+      <li data-lg="hinoki-cabin">
         <div class="lg-name">야마나미 히노키빌라 – 캐빈 <span class="lg-jp">HINOKI VILLAS Cabin</span></div>
         <div class="lg-desc">편백으로 지은 2인 별장 3동 <span class="lg-old">소보별장 · 통나무집</span></div>
       </li>
-      <li>
+      <li data-lg="hinoki-family">
         <div class="lg-name">야마나미 히노키빌라 – 패밀리 <span class="lg-jp">HINOKI VILLAS Family Villa</span></div>
         <div class="lg-desc">편백으로 지은 4인 독채 별장 1동 <span style="color:var(--olive-deep);font-weight:800;font-size:12px;letter-spacing:.03em">NEW · 신규</span></div>
       </li>
-      <li>
+      <li data-lg="residence">
         <div class="lg-name">야마나미 프라이빗 레지던스 <span class="lg-jp">YAMANAMI PRIVATE RESIDENCE</span></div>
         <div class="lg-desc"><b style="color:var(--gold);font-weight:800">장기 체류 프라이빗 레지던스</b> · 2인 1동 독채 <span class="lg-old">쿠주힐즈</span></div>
       </li>
@@ -649,11 +654,11 @@
 
     <h3 class="subh" style="margin-top:28px">호텔</h3>
     <ul class="lodging">
-      <li>
+      <li data-lg="hotel">
         <div class="lg-name">야마나미 호텔 <span class="lg-jp">YAMANAMI HOTEL · 트윈룸</span></div>
         <div class="lg-desc">골프장에 바로 붙은 리조트 본관 · <b>2인 1실 트윈</b> · 표고 743m, 아소 오악과 구주 연산이 한눈에 들어오는 유리 타워 · 온천 대욕장</div>
       </li>
-      <li>
+      <li data-lg="guernsey">
         <div class="lg-name">간지호텔 <span class="lg-jp">ザ・ガンジー · THE GUERNSEY HOTEL &amp; RESORT</span></div>
         <div class="lg-desc">아소쿠주 국립공원 표고 1,100m의 <b>온천 리조트</b> · 호텔 온천 외에 근처 에메랄드빛 <b>아카가와 온천</b>도 이용 가능 <span class="soft">(입욕료 별도)</span> · 구주고원CC와 아소 야마나미CC를 함께 도는 2색 골프</div>
       </li>
@@ -661,7 +666,7 @@
 
     <h3 class="subh" style="margin-top:28px">료칸</h3>
     <ul class="lodging">
-      <li>
+      <li data-lg="shizunoyado">
         <div class="lg-name">시즈노야도 료칸 <span class="lg-jp">満願寺温泉 志津の宿</span></div>
         <div class="lg-desc">약 700년을 이어온 <b>만간지 천연온천</b>을 원천 그대로 흘려 쓰는 <b>일본 전통 료칸</b> · 다다미 객실 2인 1실 · 구로카와 온천에서 차로 10분, 조용한 산촌에서의 휴식</div>
       </li>
@@ -714,7 +719,7 @@
     <p class="soft" style="margin:12px 0 0;font-size:14px">※ <b style="color:var(--ink)">홀수 인원 추가요금</b> — 간지호텔 · 시즈노야도 료칸 · 야마나미 히노키빌라 캐빈 · 프라이빗 레지던스는 <b>싱글룸이 없어 2인 1실 기준</b>으로 운영되며, 부득이하게 홀수 인원이 되어 <b>1인 단독 사용</b>이 발생하는 경우 <b style="color:var(--ink)">1박·1인당 4,400엔</b>이 추가됩니다.</p>
     </div><!-- /구마모토 -->
 
-    <div class="region" id="r-nagoya">
+    <div class="region" id="r-nagoya" data-stay="hotel:포틴힐즈CC 호텔|caravan:포틴힐즈CC 카라반">
       <div class="r-head">
         <span class="r-name">포틴힐즈CC</span>
         <span class="r-sub">나고야 · 포틴힐즈CC(18홀)</span>
@@ -744,7 +749,7 @@
       <p class="soft" style="margin:6px 0 0;font-size:14px">※ 우천으로 라운딩이 어려운 경우 인근 쇼핑몰(에나역 부근)로 차량 안내해 드립니다.</p>
     </div>
 
-    <div class="region" id="r-akiba">
+    <div class="region" id="r-akiba" data-stay="resort:아키바 리조트">
       <div class="r-head">
         <span class="r-name">아키바 리조트</span>
         <span class="r-sub">벳푸 · 벳푸CC(유후 · 츠루미 코스) · 오기야마CC</span>
@@ -761,7 +766,7 @@
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ 체재일 <b style="color:var(--ink)">석식은 패키지에 포함되지 않아, 벳푸 시내에서 자유롭게 식사</b>하실 수 있습니다.</p>
     </div>
 
-    <div class="region" id="r-mutsuki">
+    <div class="region" id="r-mutsuki" data-stay="ryokan:무츠키 료칸">
       <div class="r-head">
         <span class="r-name">무츠키 료칸</span>
         <span class="r-sub">벳푸 · 벳푸CC(유후 · 츠루미 코스) · 오기야마CC</span>
@@ -779,7 +784,7 @@
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ 상기 금액 외에 항공 요금 및 환율 변동에 따라 일부 금액 차이가 발생할 수 있습니다.</p>
     </div>
 
-    <div class="region" id="r-ibaraki">
+    <div class="region" id="r-ibaraki" data-stay="lodge:골프장 내 숙소">
       <div class="r-head">
         <span class="r-name">시로사토CC</span>
         <span class="r-sub">이바라키 · 시로사토CC(18홀)</span>
@@ -797,7 +802,7 @@
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ 기본 2인 1실 구성으로 싱글룸이 없습니다. 부득이하게 단독 사용 시 1박당 2,200엔이 추가됩니다. 2인 플레이 시 2BAG 차지가 현지에서 발생합니다.</p>
     </div>
 
-    <div class="region" id="r-nagano">
+    <div class="region" id="r-nagano" data-stay="onsen-hotel:스가다이라 고원 온천호텔|mansion:스가다이라 맨션">
       <div class="r-head">
         <span class="r-name">스가다이라 고원</span>
         <span class="r-sub">나가노 · 스가다이라 그린CC(18홀)</span>
@@ -816,7 +821,7 @@
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ 자세한 내용은 별도 상품 안내를 참고하시거나 문의해 주세요.</p>
     </div>
 
-    <div class="region" id="r-miyazaki">
+    <div class="region" id="r-miyazaki" data-stay="lodge:골프장 숙소">
       <div class="r-head">
         <span class="r-name">미야자키 국제공항CC</span>
         <span class="r-sub">미야자키 · 국제공항CC(18홀)</span>
@@ -833,7 +838,7 @@
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ <b style="color:var(--ink)">체재일 중식은 포함되어 있지 않습니다.</b></p>
     </div>
 
-    <div class="region" id="r-kl">
+    <div class="region" id="r-kl" data-stay="resort:닐라이스프링스 리조트">
       <div class="r-head">
         <span class="r-name">닐라이스프링스 리조트</span>
         <span class="r-sub">말레이시아 쿠알라룸푸르 · 닐라이스프링스CC(18홀)</span>
@@ -1087,11 +1092,38 @@
      영상은 썸네일을 누를 때만 플레이어를 끼운다. */
 (function () {
   'use strict';
-  var SHOTS = 6;                       // 한 블록에 보일 최대 사진 수
+  var SHOTS = 4;                       // 숙소 한 곳 · 골프장 한 곳당 최대 사진 수
   var KINDS = [
     { dir: 'stay', ico: '🏨', label: '숙소 정보 보기' },
     { dir: 'golf', ico: '⛳', label: '골프장 정보 보기' }
   ];
+
+  /* 숙소는 **한 곳씩** 따로 올린다. 지역에 묶어 두면 프레스티지 사진과 료칸
+     사진이 한 줄에 섞여 어느 숙소인지 알 수 없다.
+     마크업이 두 가지라 읽는 곳도 두 곳이다 —
+       ① 구마모토처럼 숙소 카드가 있는 지역 : <li data-lg="키"> + .lg-name
+       ② 숙소를 한 줄로 적은 지역          : <div class="region" data-stay="키:이름|키:이름">
+     ①은 카드에 적힌 이름을 그대로 쓰므로 이름이 두 곳에 생기지 않는다. */
+  function staysOf(sec) {
+    var out = [];
+    var cards = sec.querySelectorAll('li[data-lg]');
+    if (cards.length) {
+      Array.prototype.forEach.call(cards, function (li) {
+        var nm = li.querySelector('.lg-name');
+        var t = nm ? nm.cloneNode(true) : null;
+        if (t) { var jp = t.querySelector('.lg-jp'); if (jp) jp.remove(); }
+        out.push({ dir: li.getAttribute('data-lg'),
+                   name: (t ? t.textContent : '').replace(/\s+/g, ' ').trim() });
+      });
+      return out;
+    }
+    (sec.getAttribute('data-stay') || '').split('|').forEach(function (pair) {
+      var i = pair.indexOf(':');
+      if (i < 0) return;
+      out.push({ dir: pair.slice(0, i).trim(), name: pair.slice(i + 1).trim() });
+    });
+    return out;
+  }
 
   /* 영상 — 지역별로 유튜브 주소를 넣으면 그 지역에만 생긴다.
      주소는 어떤 형태든 된다(youtu.be/xxxx · watch?v=xxxx · /embed/xxxx).
@@ -1172,8 +1204,47 @@
     else if (e.key === 'ArrowRight') { step(1); }
   });
 
+  /* ── 사진 한 묶음(숙소 한 곳 또는 골프장) ── */
+  /* count 를 올려 주면 블록 제목 옆 「N장」이 늘어난다. */
+  function buildShots(grid, key, dir, alt, count) {
+    var shown = [];                      // 라이트박스가 넘길 목록(실제로 있는 것만)
+    for (var i = 1; i <= SHOTS; i++) {
+      (function (n) {
+        var path = './photos/' + key + '/' + dir + '/' + pad(n) + '.webp';
+        var cell = document.createElement('div');
+        /* 폴더와 파일 이름을 두 줄로 나눈다 — 한 줄로 두면 좁은 칸에서
+           「04.web / p」 처럼 낱말 가운데가 잘린다. */
+        /* 칸에는 **폴더 이름만** 적는다. 지역까지 붙이면 좁은 칸에서 잘려
+           hinoki-cabin 과 hinoki-family 가 둘 다 「hinoki-…」로 보인다.
+           앞에 붙는 경로는 아래 안내줄에 한 번만 적는다. */
+        cell.innerHTML = '<div class="shot-slot"><span class="s-plus" aria-hidden="true">＋</span>'
+                       + '<span class="s-path dim">' + dir + '</span>'
+                       + '<span class="s-path">' + pad(n) + '.webp</span></div>';
+        grid.appendChild(cell);
+
+        var probe = new Image();
+        probe.addEventListener('load', function () {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.setAttribute('aria-label', alt + ' 사진 ' + n + ' 크게 보기');
+          var im = document.createElement('img');
+          im.src = path; im.alt = alt; im.loading = 'lazy'; im.decoding = 'async';
+          btn.appendChild(im);
+          btn.addEventListener('click', function () {
+            openLb(shown, shown.map(function (s) { return s.src; }).indexOf(path), btn);
+          });
+          cell.replaceWith(btn);
+          shown.push({ src: path, alt: alt });
+          shown.sort(function (a, b) { return a.src < b.src ? -1 : 1; });  // 파일 이름 순서 그대로
+          count(1);
+        });
+        probe.src = path;
+      })(i);
+    }
+  }
+
   /* ── 블록 하나 ── */
-  function buildFold(key, kind, regionName) {
+  function buildFold(key, kind, regionName, stays) {
     var d = document.createElement('details');
     d.className = 'media-fold';
 
@@ -1185,16 +1256,20 @@
 
     var body = document.createElement('div');
     body.className = 'media-body';
-    var grid = document.createElement('div');
-    grid.className = 'shots';
-    body.appendChild(grid);
-
     var hint = document.createElement('p');
     hint.className = 'media-hint';
-    hint.innerHTML = '점선 자리에 적힌 이름 그대로 올리시면 이 자리에 바로 나타납니다 · '
-                   + '<code>' + SHOTS + '장까지</code>';
-    body.appendChild(hint);
+    hint.innerHTML = '올리실 곳 <code>2027/photos/' + key + '/</code> 아래에 '
+                   + '점선에 적힌 폴더를 만들고 <code>01.webp</code> 부터 넣으시면 됩니다 · '
+                   + (kind.dir === 'stay' ? '숙소마다 ' : '') + SHOTS + '장까지';
     d.appendChild(body);
+
+    var total = 0;
+    function count(n) {
+      total += n;
+      var el = sm.querySelector('.mf-n');
+      el.hidden = false;
+      el.textContent = total + '장';
+    }
 
     /* 열 때 한 번만 불러온다. 접혀 있는 동안에는 아무것도 받지 않는다. */
     var loaded = false;
@@ -1202,42 +1277,26 @@
       if (!d.open || loaded) return;
       loaded = true;
 
-      var shown = [];                    // 라이트박스가 넘길 목록(실제로 있는 것만)
-      var slots = [];
-      for (var i = 1; i <= SHOTS; i++) {
-        (function (n) {
-          var path = './photos/' + key + '/' + kind.dir + '/' + pad(n) + '.webp';
-          var cell = document.createElement('div');
-          /* 폴더와 파일 이름을 두 줄로 나눈다 — 한 줄로 두면 좁은 칸에서
-             「04.web / p」 처럼 낱말 가운데가 잘린다. */
-          cell.innerHTML = '<div class="shot-slot"><span class="s-plus" aria-hidden="true">＋</span>'
-                         + '<span class="s-path dim">' + key + '/' + kind.dir + '</span>'
-                         + '<span class="s-path">' + pad(n) + '.webp</span></div>';
-          grid.appendChild(cell);
-          slots.push(cell);
-
-          var probe = new Image();
-          probe.addEventListener('load', function () {
-            var alt = regionName + ' ' + (kind.dir === 'stay' ? '숙소' : '골프장');
-            var btn = document.createElement('button');
-            btn.type = 'button';
-            btn.setAttribute('aria-label', alt + ' 사진 ' + n + ' 크게 보기');
-            var im = document.createElement('img');
-            im.src = path; im.alt = alt; im.loading = 'lazy'; im.decoding = 'async';
-            btn.appendChild(im);
-            btn.addEventListener('click', function () {
-              openLb(shown, shown.map(function (s) { return s.src; }).indexOf(path), btn);
-            });
-            cell.replaceWith(btn);
-            shown.push({ src: path, alt: alt });
-            shown.sort(function (a, b) { return a.src < b.src ? -1 : 1; });  // 파일 이름 순서 그대로
-            var n2 = sm.querySelector('.mf-n');
-            n2.hidden = false;
-            n2.textContent = shown.length + '장';
-          });
-          probe.src = path;
-        })(i);
+      if (kind.dir === 'golf') {
+        var g = document.createElement('div');
+        g.className = 'shots';
+        body.appendChild(g);
+        buildShots(g, key, 'golf', regionName + ' 골프장', count);
+      } else {
+        /* 숙소는 한 곳씩 이름을 달아 나눈다 — 어느 숙소 사진인지 알아야
+           올릴 때도 볼 때도 헷갈리지 않는다. */
+        stays.forEach(function (st) {
+          var h = document.createElement('p');
+          h.className = 'stay-h';
+          h.textContent = st.name;
+          body.appendChild(h);
+          var g = document.createElement('div');
+          g.className = 'shots';
+          body.appendChild(g);
+          buildShots(g, key, st.dir, st.name, count);
+        });
       }
+      body.appendChild(hint);
     });
     return d;
   }
@@ -1250,10 +1309,12 @@
     var nameEl = head.querySelector('.r-name');
     var regionName = nameEl ? nameEl.textContent.trim() : '';
 
+    var stays = staysOf(sec);
     var box = document.createElement('div');
     box.className = 'media';
     KINDS.forEach(function (kind) {
-      var fold = buildFold(key, kind, regionName);
+      if (kind.dir === 'stay' && !stays.length) return;   // 숙소를 안 적어 둔 지역
+      var fold = buildFold(key, kind, regionName, stays);
       var url = VIDEO[key] && VIDEO[key][kind.dir];
       if (url) {
         var id = ytId(url);
