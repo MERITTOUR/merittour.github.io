@@ -176,6 +176,33 @@
   .promo-t{color:#8B3A2F;} .no-t{color:#8a94a3;font-weight:700;}
   .rcard .go{flex-shrink:0;color:var(--muted);font-size:17px;font-weight:800;}
 
+  /* ===== 예약 완료 화면 =====
+     시트로 띄우면 닫혔을 때 달력 화면이 그대로 남아 다 된 것인지 아닌지가 애매했다.
+     화면 하나로 끝을 맺고 「홈으로」로 마무리한다. */
+  #doneView{display:none;max-width:620px;margin:0 auto;padding:38px 22px 60px;}
+  #doneView.show{display:block;}
+  .dn-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:32px 28px 26px;
+    box-shadow:0 10px 34px rgba(26,39,64,.10);text-align:center;}
+  .dn-mark{width:58px;height:58px;border-radius:50%;background:#eaf7f0;color:#15803D;
+    font-size:30px;font-weight:800;line-height:58px;margin:0 auto 14px;}
+  .dn-h{font-size:23px;font-weight:800;letter-spacing:-.01em;margin-bottom:6px;}
+  .dn-no{font-size:15px;color:var(--muted-strong);margin-bottom:20px;}
+  .dn-no b{color:var(--ink);font-weight:800;font-variant-numeric:tabular-nums;}
+  .dn-tb{width:100%;border-collapse:collapse;text-align:left;margin-bottom:18px;}
+  .dn-tb tr+tr .dn-k,.dn-tb tr+tr .dn-v{border-top:1px solid var(--line-soft);}
+  .dn-k{padding:10px 14px 10px 0;font-size:14px;font-weight:700;color:var(--muted-strong);white-space:nowrap;}
+  .dn-v{padding:10px 0;font-size:15.5px;font-weight:800;color:var(--ink);}
+  .dn-note{background:var(--navy-soft);border-radius:12px;padding:14px 16px;font-size:14px;
+    line-height:1.65;color:var(--ink);text-align:left;margin-bottom:20px;}
+  .dn-btns{display:flex;flex-direction:column;gap:9px;}
+  .dn-go{padding:17px;border:2px solid var(--navy);border-radius:12px;background:var(--navy);color:#fff;
+    font-size:18px;font-weight:800;cursor:pointer;font-family:inherit;
+    box-shadow:0 8px 20px rgba(26,39,64,.28);transition:background .18s,box-shadow .18s,transform .08s;}
+  .dn-go:active{transform:translateY(2px);box-shadow:0 3px 10px rgba(26,39,64,.26);}
+  .dn-sub{padding:14px;border:2px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);
+    font-size:15.5px;font-weight:700;cursor:pointer;font-family:inherit;}
+  @media(max-width:560px){ #doneView{padding:22px 16px 48px;} .dn-card{padding:26px 20px 22px;} }
+
   /* ===== 상품 상세 (좌 설명 / 우 달력) ===== */
   #productView{display:none;max-width:1160px;margin:0 auto;padding:26px 22px 40px;}
   #productView.show{display:block;}
@@ -417,6 +444,8 @@
     .search .go:hover{background:#4a556c;}
     .search .go.ready:hover{background:var(--navy-deep);box-shadow:0 11px 26px rgba(26,39,64,.36);}
     .search .go.ready:hover .go-arrow{transform:translateX(3px);}
+    .dn-go:hover{background:var(--navy-deep);box-shadow:0 11px 26px rgba(26,39,64,.34);}
+    .dn-sub:hover{border-color:var(--navy);background:var(--navy-soft);}
     .rcard:hover{border-color:var(--navy);background:var(--navy-soft);}
   
   
@@ -496,7 +525,7 @@
         <button type="button" class="sfield" id="fPpl" onclick="openSheet('ppl')">
           <span class="ic">👥</span><span class="val ph" id="vPpl">인원</span><span class="arrow">▼</span>
         </button>
-        <button type="button" class="go" id="goBtn" onclick="doSearch()"><span class="go-label">검색하기<span class="go-arrow" aria-hidden="true">→</span></span><span class="sub" id="goSub">출발지부터 골라주세요</span></button>
+        <button type="button" class="go" id="goBtn" onclick="doSearch()"><span class="go-label">예약하기<span class="go-arrow" aria-hidden="true">→</span></span><span class="sub" id="goSub">출발지부터 골라주세요</span></button>
       </div>
     </div>
   </div>
@@ -510,6 +539,8 @@
 </section>
 
 <!-- ===== 상품 상세 (좌: 설명·일정표 / 우: 예약 가능 달력) ===== -->
+<section id="doneView"></section>
+
 <section id="productView">
   <button class="pv-back" onclick="closeProduct()">‹ 목록으로</button>
   <h1 class="pv-title" id="pvTitle"></h1>
@@ -705,6 +736,7 @@ function simNow(){ return _simNow || new Date(); }
 function simNowSet(iso){ _simNow = iso? new Date(iso) : null; renderAuthUI(); }
 
 function isSpecialGrade(grade){ return /특별/.test(String(grade||'')); }
+function originName(id){ const o=ORIGINS.find(x=>x.id===id); return o ? o.name : '—'; }
 // 횟수 부여 = 오픈 시각을 지나면 이후로도 유지(누적) / 접수 가능 = 그 차수의 시간대 안
 function roundOpen(r, now){ return now >= new Date(r.opensAt); }
 function roundActive(r, now){ return now >= new Date(r.opensAt) && now < new Date(r.closesAt); }
@@ -896,7 +928,8 @@ function openSheet(kind){
           : `최소 ${MIN_PEOPLE}명부터 예약 가능합니다.`}<br>
         ${AUTH ? `${MEMBER.name} 회원님의 <b>예약 가능 인원은 최대 ${MEMBER.maxPeople}명</b>이며, 기본값으로 채워 뒀습니다.`
                : `로그인하시면 <b>회원권 기준 예약 가능 인원</b>이 적용됩니다. (현재 최대 ${MEMBER.maxPeople}명)`}</div>
-      <button class="opt" id="pplDone" style="margin-top:16px;justify-content:center;font-weight:800;">선택 완료</button>`;
+      <div id="pplSum"></div>
+      <button class="opt" id="pplDone" style="margin-top:14px;justify-content:center;font-weight:800;">날짜 고르기 →</button>`;
   }
   body.innerHTML = html;
   if(kind==='ppl'){
@@ -906,8 +939,31 @@ function openSheet(kind){
     const sync=()=>{ num.textContent=cur; minus.disabled=(cur<=lo); plus.disabled=(cur>=hi); };
     minus.onclick=()=>{ if(cur>lo){ cur--; sync(); } };
     plus.onclick=()=>{ if(cur<hi){ cur++; sync(); } };
-    body.querySelector('#pplDone').onclick=()=>{ sel.people=cur; pplTouched=true; syncFields(); closeSheet(); };
-    sync();
+    /* 마지막 단계라 여기서 고른 것을 한 번 훑어 보여 준다 — 이 뒤로는 달력이라
+       「내가 뭘 골랐더라」를 확인하려면 되돌아 나와야 했다. */
+    const sum=body.querySelector('#pplSum');
+    const drawSum=()=>{
+      const it=findResort(sel.resortKey);
+      const row=(k,v)=>`<tr><td style="padding:4px 14px 4px 0;color:var(--muted-strong);font-weight:700;white-space:nowrap">${k}</td>`
+                      +`<td style="padding:4px 0;font-weight:800;color:var(--ink)">${v}</td></tr>`;
+      sum.innerHTML=`<div style="margin-top:16px;border-top:1px solid var(--line);padding-top:13px">
+        <div style="font-size:13px;font-weight:800;color:var(--muted-strong);margin-bottom:6px">고르신 내용</div>
+        <table style="font-size:15px;border-collapse:collapse">
+          ${row('출발지', originName(sel.origin))}
+          ${row('골프장', it ? it.n : '—')}
+          ${row('기간',   (it && sel.durIdx!=null) ? it.durs[sel.durIdx] : '—')}
+          ${row('인원',   cur + '명')}
+        </table></div>`;
+    };
+    const sync0=sync;
+    const syncAll=()=>{ sync0(); drawSum(); };
+    minus.onclick=()=>{ if(cur>lo){ cur--; syncAll(); } };
+    plus.onclick =()=>{ if(cur<hi){ cur++; syncAll(); } };
+    /* 「선택 완료」로 닫기만 하면 다시 예약 버튼을 눌러야 했다 — 바로 달력으로 보낸다. */
+    body.querySelector('#pplDone').onclick=()=>{
+      sel.people=cur; pplTouched=true; syncFields(); closeSheet(); doSearch();
+    };
+    syncAll();
     document.getElementById('sheetMask').classList.add('show');
     return;
   }
@@ -962,7 +1018,7 @@ function syncFields(){
     : !sel.resortKey ? '어디로 가시나요?'
     : sel.durIdx==null ? '얼마나 머무시나요?'
     : !sel.people ? '몇 분이 가시나요?'
-    : '눌러서 예약 진행';
+    : '날짜를 고르러 갑니다';
 
   const go=document.getElementById('goBtn');
   if(go){
@@ -1704,23 +1760,53 @@ function submitReserve(){
                  usedRound: target ? target.no : null });   // 취소할 때 이 차수 횟수를 돌려준다
   renderAuthUI();
   const left=quotaLeft(myQuota());
-  const b=sheetOpen('예약 완료');
-  b.innerHTML=`
-    <div class="opt stack" style="cursor:default;border-color:#15803D;background:#F0FDF4;">
-      <span class="nm">예약이 완료되었습니다</span>
-      <span class="desc">${it.n} · ${M}월 ${D}일 출발 · ${pv.people}명<br>예약번호 <b>${no}</b></span>
-    </div>
-    <div class="stp-hint" style="margin-top:12px;">
-      ${free?'자유예약 기간이라 예약 횟수는 차감되지 않습니다.'
-             :`${target?`${target.label} 1회를 사용하셨습니다. `:''}남은 예약 가능 횟수 <b>${left}회</b>`}<br>
-      <b>예약 후 1주일 이내</b> 예약금(1인 300,000원) 입금으로 예약이 확정됩니다.<br>
-      입금 안내와 확정서는 카카오톡 채널 「메리트투어」 또는 문자로 발송됩니다.
-    </div>
-    <button class="opt" onclick="closeSheet();openMyBookings();" style="margin-top:14px;justify-content:center;font-weight:800;background:var(--navy);color:#fff;border-color:var(--navy);">예약 내역 보기</button>
-    <button class="opt" onclick="closeSheet();closeProduct();" style="justify-content:center;font-weight:700;">목록으로</button>`;
-  showNotice(`<b>예약이 완료되었습니다.</b> (예약번호 ${no})<br>${it.n} · ${M}월 ${D}일 · ${pv.people}명<br>
-    ${free?'자유예약 기간 · 횟수 차감 없음'
-          :`${target?`${target.label} 1회 사용 · `:''}남은 예약 가능 횟수 <b>${left}회</b>`}`);
+  /* 예약을 마치면 **화면 하나로** 끝을 맺는다. 예전에는 시트로 떴다가 닫히면
+     달력 화면이 그대로 남아, 다 된 것인지 아닌지가 애매했다. */
+  showDone({ no, it, Y, M, D, people:pv.people,
+             room:`${rcur.n} ${roomsNeeded(pv.people,rcur.pax)}실`,
+             dur: it.durs[pv.durIdx], free, target, left });
+}
+
+/* ── 예약 완료 화면 ── */
+function showDone(d){
+  closeSheet();
+  document.getElementById('productView').classList.remove('show');
+  const v=document.getElementById('doneView');
+  const row=(k,val)=>`<tr><td class="dn-k">${k}</td><td class="dn-v">${val}</td></tr>`;
+  v.innerHTML=`
+    <div class="dn-card">
+      <div class="dn-mark" aria-hidden="true">✓</div>
+      <h2 class="dn-h">예약이 완료되었습니다</h2>
+      <p class="dn-no">예약번호 <b>${d.no}</b></p>
+      <table class="dn-tb">
+        ${row('골프장', d.it.n)}
+        ${row('출발일', `${d.Y}.${String(d.M).padStart(2,'0')}.${String(d.D).padStart(2,'0')} · ${d.dur}`)}
+        ${row('인원',   `${d.people}명`)}
+        ${row('객실',   d.room)}
+        ${row('우선예약', d.free ? '자유예약 기간 · 횟수 차감 없음'
+             : `${d.target?`${d.target.label} 1회 사용 · `:''}남은 <b>${d.left}회</b>`)}
+      </table>
+      <div class="dn-note">
+        <b>예약 후 1주일 이내</b> 예약금(1인 300,000원) 입금으로 예약이 확정됩니다.<br>
+        입금 안내와 확정서는 카카오톡 채널 「메리트투어」 또는 문자로 발송됩니다.
+      </div>
+      <div class="dn-btns">
+        <button type="button" class="dn-go" onclick="goHome()">홈으로</button>
+        <button type="button" class="dn-sub" onclick="openMyBookings()">예약 내역 보기</button>
+      </div>
+    </div>`;
+  v.classList.add('show');
+  window.scrollTo({top:0,behavior:'auto'});
+}
+/* 홈 = 처음 검색 화면. 고른 것은 지우고 돌아간다 — 남겨 두면 방금 잡은 예약이
+   그대로 다시 잡히는 것처럼 보인다. */
+function goHome(){
+  document.getElementById('doneView').classList.remove('show');
+  document.querySelector('section.resorts').style.display='';
+  document.querySelector('.hero').style.display='';
+  sel.resortKey=null; sel.durIdx=null;
+  syncFields();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 
