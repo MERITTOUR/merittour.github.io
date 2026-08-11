@@ -198,8 +198,13 @@
   /* ── 숙소 & 체류 일정 ── */
   .subh{font-size:14px;font-weight:800;color:var(--gold);letter-spacing:.02em;
     margin:0 0 13px;text-transform:none}
+  /* **한 줄에 카드 하나.** 예전에는 두 칸(1fr 1fr)이었는데, 카드 안에 사진 줄이
+     들어온 뒤로는 폭이 절반이라 네 칸 중 두 칸만 보이고 나머지가 잘렸다.
+     아직 안 올린 자리를 한눈에 보여 주는 것이 이 점선의 목적이라, 밀어야 보이면
+     목적을 잃는다. 카드 자체는 짧으므로(이름·설명·사진 한 줄) 한 줄씩 두어도
+     길어지는 만큼의 손해가 크지 않다. */
   .lodging{list-style:none;margin:0 0 4px;padding:0;
-    display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    display:grid;grid-template-columns:1fr;gap:10px}
   .lodging li{background:var(--surface-warm);border:1px solid var(--line-soft);
     border-radius:12px;padding:14px 16px;
     /* min-width:auto 로 두면 안쪽 가로 스트립의 전체 폭을 칸이 그대로 받아
@@ -338,7 +343,10 @@
   .shots::-webkit-scrollbar{height:6px}
   .shots::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
   .shots::-webkit-scrollbar-track{background:transparent}
-  .shots>*{flex:none;width:180px;aspect-ratio:4/3;scroll-snap-align:start}
+  /* 카드 폭에 4장이 딱 맞게 — 칸 4개 + 사이 간격 3개(8px)를 뺀 값을 넷으로 나눈다.
+     넓은 카드에서는 잘리는 칸이 없고, 좁아지면 130px 에서 멈춰 밀어 보게 된다. */
+  .shots>*{flex:none;aspect-ratio:4/3;scroll-snap-align:start;
+    width:clamp(130px, calc((100% - 24px) / 4), 190px)}
   /* 크기는 .shots>* 하나가 정한다. 여기서 width:100% 를 또 주면 특이도가 높아
      그 값이 이겨, 사진이 들어온 칸만 스트립 전체 폭으로 늘어난다(빈 칸은 180px). */
   .shots button{padding:0;border:1px solid var(--line-soft);border-radius:9px;overflow:hidden;
@@ -348,7 +356,9 @@
   .shots img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none}
   /* 끄는 중에는 사진이 브라우저 기본 이미지 끌기로 잡히면 안 된다 */
   .shots.dragging button{pointer-events:none}
-  @media (max-width:560px){ .shots>*{width:150px} }
+  /* 폰에서는 네 칸을 다 담으면 한 칸이 70px 대로 줄어 무엇인지 안 보인다.
+     두 칸을 온전히 보이고 세 번째를 살짝 걸치게 둔다 — 밀 수 있다는 표시가 된다. */
+  @media (max-width:560px){ .shots>*{width:clamp(126px, calc((100% - 40px) / 2), 160px)} }
 
   /* 아직 안 올린 자리 — 어디에 무엇을 넣으면 되는지 그대로 보여 준다.
      빈 칸을 감추면 「사진을 어디에 올려야 하지」를 매번 문서에서 찾아야 한다. */
@@ -417,7 +427,6 @@
     .facts dt{padding-bottom:0;border-top:1px solid var(--line-soft)}
     .facts dd{padding-top:2px;border-top:none}
     .member{padding:24px 20px}
-    .lodging{grid-template-columns:1fr}
     .grades{grid-template-columns:1fr}
   }
 
