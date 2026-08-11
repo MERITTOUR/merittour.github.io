@@ -17,6 +17,10 @@
     --navy:#1a2740; --navy-deep:#0f1b33; --navy-soft:#eef2f7;
     --gold:#B8935A; --gold-deep:#8a6a2e;
     --ink:#1a2740; --muted:#6a7a92; --line:#e0e4ec; --line-soft:#eef0f4;
+    /* --muted 는 흰 바탕에서 4.36 이라 작은 글자에 쓰면 WCAG AA(4.5)에 못 미친다.
+       새로 넣는 작은 안내 글자는 이쪽(5.40)을 쓴다. 기존 --muted 자리는 그대로 뒀다 —
+       한꺼번에 바꾸면 화면 전체 인상이 달라져 따로 볼 일이다. */
+    --muted-strong:#5f6b7d;
     --bg:#ffffff; --bg-alt:#f7f8fa;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -315,6 +319,13 @@
   .cal-nav button:disabled{opacity:.35;cursor:not-allowed;}
   .cal-nav .ym{font-size:clamp(15px,min(1.7vw,1.9vh),21px);font-weight:800;}
   .cal-dows,.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+  /* 달력 위에서 좌우로 밀면 달이 바뀐다.
+     touch-action:pan-y — 세로는 브라우저(페이지 스크롤)에 맡기고 가로만 우리가 받는다.
+     이걸 안 두면 달력 위에서 미는 순간 뒤 페이지가 따라 움직여 「달력은 안 먹힌다」가 된다. */
+  .cal-days{touch-action:pan-y;transition:transform .18s ease-out;will-change:transform;}
+  .cal-days.dragging{transition:none;cursor:grabbing;}
+  .cal-swipe-hint{font-size:12px;color:var(--muted-strong);text-align:center;margin:7px 0 0;font-weight:600;}
+  @media (prefers-reduced-motion:reduce){ .cal-days{transition:none;} }
   .cal-dows div{text-align:center;font-size:clamp(11px,min(1.15vw,1.3vh),14.5px);font-weight:700;color:var(--muted);
     padding:clamp(3px,.55vh,8px) 0;}
   .cal-dows div.sun{color:#c0392b;} .cal-dows div.sat{color:#2471a3;}
@@ -532,6 +543,7 @@
       </div>
       <div class="cal-dows"><div class="sun">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div class="sat">토</div></div>
       <div class="cal-days" id="pvDays"></div>
+      <p class="cal-swipe-hint">달력을 <b>좌우로 밀면</b> 달이 바뀝니다</p>
       <div class="pv-legend">
         <span><i style="background:#fff;border:1px solid var(--line);"></i>예약 가능</span>
         <span><i style="background:#f5f6f8;border:1px solid #e6e9ee;"></i>마감 — 눌러서 대기 신청</span>
@@ -1188,6 +1200,8 @@ function openProduct(k){
   // 독채 별장은 최소 인원이 회원권 기본값보다 클 수 있어 그 아래로는 내려가지 않게 한다
   pv.people = Math.min(maxPaxOf(k), Math.max(minPaxOf(k), sel.people || defaultPeople()));
   document.getElementById('productView').classList.add('show');
+  const days=document.getElementById('pvDays');
+  if(days && !days.__swipe){ days.__swipe=1; calSwipe(days); }   // 한 번만 건다
   setTimeout(scrollToPanel, 90);
   document.querySelector('section.resorts').style.display='none';
   document.querySelector('.hero').style.display='none';
@@ -1310,7 +1324,77 @@ function pvMonth(delta){
   if(m<1){m=12;y--;} if(m>12){m=1;y++;}
   if(y<2027||(y===2027&&m<3)){y=2027;m=3;}
   if(y>2027){y=2027;m=12;}
+  const same = (y===pv.y && m===pv.m);
   pv.y=y; pv.m=m; renderPvCal();
+  return !same;                       // 실제로 달이 바뀌었나(끝에서는 false)
+}
+
+/* ── 달력을 좌우로 밀어 달 바꾸기 ──
+   ‹ › 버튼만 있어서, 달력 위에서 미는 사람은 아무 반응도 못 봤다. 게다가 오른쪽
+   패널이 sticky 라 미는 힘이 그대로 뒤 페이지로 가서 「달력은 안 먹히고 뒤가
+   움직인다」가 됐다.
+
+   가로로 미는 동안에는 페이지를 붙잡아 둔다(pointermove 에서 preventDefault +
+   CSS touch-action:pan-y). 세로로 밀면 손을 떼고 페이지에 맡긴다 — 달력이 화면을
+   많이 차지하므로 여기서 세로 스크롤을 막으면 아래를 못 본다.
+
+   트랙패드 옆쓸기(가로 휠)도 같은 동작으로 받는다. 노트북에서 「드래그」는 보통 이것이다. */
+function calSwipe(el){
+  let x0=0, y0=0, on=false, lock=null, moved=false, pid=null;
+
+  function reset(){
+    el.style.transform=''; el.classList.remove('dragging');
+    on=false; lock=null;
+  }
+  el.addEventListener('pointerdown', e=>{
+    if(e.pointerType==='mouse' && e.button!==0) return;
+    on=true; lock=null; moved=false; pid=e.pointerId; x0=e.clientX; y0=e.clientY;
+  });
+  el.addEventListener('pointermove', e=>{
+    if(!on || e.pointerId!==pid) return;
+    const dx=e.clientX-x0, dy=e.clientY-y0;
+    if(!lock){
+      if(Math.abs(dx)<10 && Math.abs(dy)<10) return;      // 흔들림은 무시
+      lock = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      if(lock==='y'){ on=false; return; }                 // 세로는 페이지에 맡긴다
+      el.classList.add('dragging');
+      try{ el.setPointerCapture(pid); }catch(err){}
+    }
+    e.preventDefault();
+    moved=true;
+    // 손을 따라오되 끝까지 끌려가지는 않게(고무줄) — 끝 달에서는 덜 움직인다
+    const edge = (dx>0 && pv.y===2027 && pv.m<=3) || (dx<0 && pv.y===2027 && pv.m>=12);
+    const k = edge ? .12 : .34;
+    el.style.transform = 'translateX(' + Math.max(-64, Math.min(64, dx*k)) + 'px)';
+  }, {passive:false});
+
+  function end(e){
+    if(!on || (e && e.pointerId!==pid)) return;
+    const dx = e ? e.clientX-x0 : 0;
+    const wasX = lock==='x' && moved;
+    try{ el.releasePointerCapture(pid); }catch(err){}
+    reset();
+    if(!wasX) return;
+    if(Math.abs(dx) > 46) pvMonth(dx<0 ? 1 : -1);
+    // 끌고 나서 따라오는 클릭 한 번을 삼킨다 — 안 삼키면 민 자리의 날짜가 골라진다
+    const eat = ev => { ev.stopPropagation(); ev.preventDefault(); };
+    el.addEventListener('click', eat, true);
+    setTimeout(()=>el.removeEventListener('click', eat, true), 0);
+  }
+  el.addEventListener('pointerup', end);
+  el.addEventListener('pointercancel', end);
+  el.addEventListener('dragstart', e=>e.preventDefault());
+
+  /* 트랙패드 옆쓸기 — 한 번 쓸면 한 달만 넘어가게 잠깐 잠근다(안 그러면 서너 달이 훅 지나간다) */
+  let wheelLock=0;
+  el.addEventListener('wheel', e=>{
+    if(Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;   // 세로가 우세하면 페이지에 맡긴다
+    e.preventDefault();
+    const now = e.timeStamp;
+    if(now - wheelLock < 320) return;
+    wheelLock = now;
+    pvMonth(e.deltaX > 0 ? 1 : -1);
+  }, {passive:false});
 }
 // 예약 패널 전체(기간·달력·객실·인원·예약 진행)가 한 화면에 들어오도록 날짜 칸 높이를 정한다.
 // 패널 위에 헤더·제목이 얼마나 있는지는 CSS 가 알 수 없어 실제 높이를 재서 맞춘다.
