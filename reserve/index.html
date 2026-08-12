@@ -739,14 +739,16 @@ const ORIGINS = [
 // 우선예약 차수 스케줄 — 차수마다 24시간 접수 창이 열리고, 횟수는 누적된다
 //   1차 10/12 10:00 ~ 10/13 10:00  +1회
 //   2차 10/14 10:00 ~ 10/15 10:00  +2회
-//   3차 10/16 10:00 ~ 10/17 10:00  +2회 (특별회원은 3차만 참여)
+//   3차 10/16 10:00 ~ 10/17 10:00  +2회
+//   ※ 특별 회원권은 **우선예약 대상이 아니다** — 차수와 무관하게 자유예약 기간부터
+//     일반 고객과 같은 조건으로 예약한다. (예전에는 3차만 참여였다)
 //   · 차수 사이(13~14일·15~16일)는 접수 휴지 기간 — 예약 진행 불가, 다음 차수 안내
 //   · 부여된 횟수는 소멸하지 않고 다음 차수로 누적된다(1차 미사용 시 2차에 3회)
 // ============================================================
 const PRIORITY_SCHEDULE = [
-  { no:1, label:'1차 우선예약', opensAt:'2026-10-12T10:00:00', closesAt:'2026-10-13T10:00:00', grants:1, forSpecial:false },
-  { no:2, label:'2차 우선예약', opensAt:'2026-10-14T10:00:00', closesAt:'2026-10-15T10:00:00', grants:2, forSpecial:false },
-  { no:3, label:'3차 우선예약', opensAt:'2026-10-16T10:00:00', closesAt:'2026-10-17T10:00:00', grants:2, forSpecial:true  }
+  { no:1, label:'1차 우선예약', opensAt:'2026-10-12T10:00:00', closesAt:'2026-10-13T10:00:00', grants:1 },
+  { no:2, label:'2차 우선예약', opensAt:'2026-10-14T10:00:00', closesAt:'2026-10-15T10:00:00', grants:2 },
+  { no:3, label:'3차 우선예약', opensAt:'2026-10-16T10:00:00', closesAt:'2026-10-17T10:00:00', grants:2 }
 ];
 const FREE_OPEN_AT = '2026-10-17T10:00:00'; // 자유예약(잔여 개방) — 3차 종료와 동시에 시작
 
@@ -766,17 +768,20 @@ function activeRound(grade, now){
   now = now || simNow();
   return PRIORITY_SCHEDULE.find(r=> eligibleRound(r,grade) && roundActive(r,now)) || null;
 }
-function eligibleRound(r, grade){ return isSpecialGrade(grade) ? r.forSpecial : true; }
+// 특별 회원권은 어느 차수에도 해당하지 않는다 — 우선예약 자체가 대상이 아니다
+function eligibleRound(r, grade){ return !isSpecialGrade(grade); }
 // 자격과 무관하게 '지금 열려 있는' 차수 — 자격이 없어서 못 하는 것인지 휴지 기간인지 가른다
 function openRoundNow(now){ return PRIORITY_SCHEDULE.find(r=>roundActive(r, now||simNow())) || null; }
 // 이 회원이 지금 예약을 진행할 수 없는 이유(없으면 null)
 function roundBlock(){
   if(!AUTH || isFreePeriod()) return null;
+  /* 특별 회원권은 차수와 무관하게 막는다. 「지금 열린 차수」로 따지면
+     휴지 기간에는 통과해 「접수 시간이 아닙니다」로 흘러가는데,
+     그 회원에게는 애초에 올 차수가 없다 — 기다리면 되는 것처럼 읽힌다. */
+  if(isSpecialGrade(AUTH.grade))
+    return `${AUTH.grade}은 우선예약 대상이 아닙니다. `+
+           `자유예약이 시작되는 ${fmtOpen(FREE_OPEN_AT)}부터 잔여 객실에 한해 예약하실 수 있습니다.`;
   if(activeRound(AUTH.grade)) return null;
-  const cur=openRoundNow();
-  if(cur && !eligibleRound(cur, AUTH.grade))
-    return `${AUTH.grade}은 ${cur.label}에 참여하실 수 없습니다. `+
-           `${PRIORITY_SCHEDULE.filter(r=>eligibleRound(r,AUTH.grade)).map(r=>r.label).join(' · ')}부터 예약하실 수 있습니다.`;
   return null;   // 자격은 있는데 지금 열린 차수가 없음 = 휴지 기간
 }
 
@@ -823,6 +828,8 @@ function fmtOpen(iso){
 const DEMO_ACCOUNTS = {
   'HONG01012345678': { name:'홍길동', grade:'EWRC이용권', maxPeople:4,
     memberType:'정회원', joinedAt:'2019-03-14', designees:1, used:{ round1:1 } },
+  // 특별회원 — 우선예약 대상이 아니다. 어느 차수로 들어와도 막히고,
+  // 자유예약(10/17 10:00)부터 일반 예약과 같은 조건으로 예약한다.
   'KIM01087654321':  { name:'김영희', grade:'특별회원',   maxPeople:2,
     memberType:'지정회원', joinedAt:'2021-07-02', designees:0, used:{} },
   'CHOI01011112222': { name:'최민창', grade:'EWRC Ⅱ',    maxPeople:16,
@@ -1929,6 +1936,17 @@ function renderQuotaChip(){
     </div>`;
     return;
   }
+  /* 특별 회원권은 우선예약 대상이 아니다 — 차수 잔여를 0으로 죽 늘어놓으면
+     「내 것도 언젠가 열리나」로 읽힌다. 한 줄로 자유예약을 가리킨다. */
+  if(isSpecialGrade(AUTH.grade)){
+    el.style.display='block';
+    el.innerHTML=`<div style="display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;background:rgba(15,27,51,.42);
+      border:1px solid rgba(232,217,184,.55);border-radius:999px;padding:9px 16px;margin-bottom:16px;font-size:14.5px;">
+      <b style="color:#e8d9b8;">우선예약 대상 아님</b>
+      <span style="color:rgba(255,255,255,.82);">${AUTH.grade}은 자유예약 기간부터 예약하실 수 있습니다.</span>
+    </div><div style="font-size:13.5px;color:rgba(255,255,255,.8);margin:-8px 0 16px;">자유예약 <b>${fmtOpen(FREE_OPEN_AT)}</b>부터 · 잔여 객실에 한해 횟수 제한 없이</div>`;
+    return;
+  }
   const q=myQuota(), left=quotaLeft(q);
   /* 칩도 차수마다 잔여를 따로 적으면 「1차 잔여 1 · 2차 잔여 1」처럼 읽혀
      합쳐서 몇 회인지가 안 보인다. 열린 차수는 누적으로 적는다. */
@@ -2056,7 +2074,7 @@ function openLogin(msg){
       }).join('')}
       <div class="demo-t" style="margin:12px 0 7px;"><b>②</b> 차수 선택 <span id="demoStep" style="font-weight:600;color:#8B3A2F"></span></div>
       <div class="demo-rounds">
-        ${PRIORITY_SCHEDULE.map(r=>`<button type="button" class="demo-rd" onclick="demoJump('${r.opensAt}')">${r.no}차<small>+${r.grants}회${r.forSpecial?' · 특별회원':''}</small></button>`).join('')}
+        ${PRIORITY_SCHEDULE.map(r=>`<button type="button" class="demo-rd" onclick="demoJump('${r.opensAt}')">${r.no}차<small>+${r.grants}회</small></button>`).join('')}
         <button type="button" class="demo-rd" onclick="demoJump('${FREE_OPEN_AT}')">자유예약<small>제한 없음</small></button>
         <button type="button" class="demo-rd" onclick="demoJump('')">현재<small>시각 되돌림</small></button>
       </div>
@@ -2101,7 +2119,9 @@ function doLogin(rawId, pw){
       <span class="nm">${AUTH.name} 회원님, 환영합니다</span>
       <span class="desc">${AUTH.grade} · 예약 가능 인원 최대 ${AUTH.maxPeople}명<br>
         ${isFreePeriod() ? '<b>자유예약 기간</b> — 잔여 객실에 한해 횟수 제한 없이 예약하실 수 있습니다.'
-          : `남은 예약 가능 횟수 <b>${quotaLeft(myQuota())}회</b>${isSpecialGrade(AUTH.grade)?' (특별회원 · 3차 우선예약만)':''}`}</span>
+          : isSpecialGrade(AUTH.grade)
+            ? `<b>우선예약 대상이 아닙니다.</b> 자유예약 ${fmtOpen(FREE_OPEN_AT)}부터 예약하실 수 있습니다.`
+            : `남은 예약 가능 횟수 <b>${quotaLeft(myQuota())}회</b>`}</span>
     </div>
     <div class="stp-hint" style="margin-top:12px;">보안을 위해 로그인 후 비밀번호 변경을 권장드립니다.</div>
     <button class="opt" onclick="closeSheet()" style="margin-top:14px;justify-content:center;font-weight:800;">예약 시작하기</button>`;
@@ -2203,14 +2223,17 @@ function openMyPage(){
         ${AUTH.designees?`<br>회원대우(지정인) ${AUTH.designees}명`:''}</span>
     </div>
 
-    <div class="grp-label">${isFreePeriod()?'예약 기간':`우선예약 — 지금 예약 가능 ${quotaLeft(q)}회`}</div>
+    <div class="grp-label">${isFreePeriod()?'예약 기간':(isSpecialGrade(AUTH.grade)?'예약 기간':`우선예약 — 지금 예약 가능 ${quotaLeft(q)}회`)}</div>
     ${isFreePeriod() ? `<div class="opt stack" style="cursor:default;">
         <span class="nm" style="font-size:15.5px;">자유예약 기간</span>
         <span class="desc">우선예약이 종료되어 <b>예약 횟수 제한이 없습니다.</b> 잔여 객실이 있으면 바로 예약하실 수 있습니다.</span>
-      </div>` : [q.round1,q.round2,q.round3].map(r=>{
-      if(!r.eligible) return `<div class="opt stack" style="cursor:default;opacity:.55;">
-        <span class="nm" style="font-size:15.5px;">${r.label} — 해당 없음</span>
-        <span class="desc">특별회원은 3차 우선예약에만 참여하실 수 있습니다.</span></div>`;
+      </div>`
+      : isSpecialGrade(AUTH.grade) ? `<div class="opt stack" style="cursor:default;">
+        <span class="nm" style="font-size:15.5px;">우선예약 대상 아님</span>
+        <span class="desc">${AUTH.grade}은 우선예약 차수에 참여하지 않습니다.
+          <b>자유예약 ${fmtOpen(FREE_OPEN_AT)}</b>부터 일반 예약과 같은 조건으로 예약하실 수 있습니다.</span>
+      </div>`
+      : [q.round1,q.round2,q.round3].map(r=>{
       if(!r.opened) return `<div class="opt stack" style="cursor:default;">
         <span class="nm" style="font-size:15.5px;">${r.label} — ${fmtOpen(r.opensAt)} ~ ${fmtOpen(r.closesAt)}</span>
         <span class="desc">접수 시작 시 <b>+${r.grants}회</b>가 추가됩니다.</span></div>`;
@@ -2219,8 +2242,8 @@ function openMyPage(){
         <span class="nm" style="font-size:15.5px;">${r.label} ${r.used} / ${r.total}회 사용${r.active?' · 접수 중':''}</span>
         <span class="desc">${r.active?`${fmtOpen(r.closesAt)}까지 접수 · `:'접수 종료 (횟수는 유지) · '}${left?`${left}회 남았습니다.`:'배정 횟수를 모두 사용하셨습니다.'}${bar(r.used,r.total)}</span>
       </div>`; }).join('')}
-    ${isFreePeriod() ? '' : `<div class="stp-hint" style="margin-top:8px;">
-      차수마다 24시간 접수 창이 열리고 횟수가 누적됩니다 — 1차 +1회 · 2차 +2회 · 3차 +2회 (총 5회).${isSpecialGrade(AUTH.grade)?' 특별회원은 3차 +2회.':''}<br>
+    ${(isFreePeriod()||isSpecialGrade(AUTH.grade)) ? '' : `<div class="stp-hint" style="margin-top:8px;">
+      차수마다 24시간 접수 창이 열리고 횟수가 누적됩니다 — 1차 +1회 · 2차 +2회 · 3차 +2회 (총 5회).<br>
       차수 사이에는 접수가 닫히지만 <b>남은 횟수는 그대로 유지</b>되어 다음 차수에 사용하실 수 있습니다.<br>
       자유예약은 ${fmtOpen(FREE_OPEN_AT)}부터 잔여 객실에 한해 가능합니다.
     </div>`}
