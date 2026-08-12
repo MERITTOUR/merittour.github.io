@@ -1557,6 +1557,15 @@ function scrollToPanel(){
 }
 addEventListener('resize', ()=>{ clearTimeout(window.__fitT); window.__fitT=setTimeout(fitPanel,120); });
 
+/* 새 안내문 띠(assets/fresh.js)를 언제 미룰지 알려 준다.
+   상품 화면·시트·완료 화면에서는 새로고침하면 고른 것이 다 날아간다.
+   목록만 보고 있을 때만 알린다 — 놀고 있는 탭은 대개 그 상태다. */
+window.MT_FRESH_BUSY = function(){
+  const on = id => { const e=document.getElementById(id); return !!e && e.classList.contains('show'); };
+  const done = document.getElementById('doneView');
+  return on('productView') || on('sheetMask') || !!(done && done.innerHTML.trim());
+};
+
 function renderPvCal(){
   const it=findResort(pv.key); const dows=pvDows(it);
   document.getElementById('pvYm').textContent=`${pv.y}.${String(pv.m).padStart(2,'0')}`;
@@ -2295,5 +2304,7 @@ if(new URLSearchParams(location.search).get('demo')==='1') setTimeout(demoRoundN
 applyDefaultPeople();   // 첫 화면부터 회원권 기준 인원이 채워져 있게
 syncFields();
 </script>
+<!-- 열어 둔 탭이 옛 안내문을 들고 있지 않게 — 돌아올 때 서버에 한 번 물어본다 -->
+<script defer src="/assets/fresh.js"></script>
 </body>
 </html>

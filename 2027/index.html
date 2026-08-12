@@ -1209,6 +1209,8 @@
     if (lb) return;
     lb = document.createElement('div');
     lb.className = 'lb';
+    /* 새 안내문 띠(assets/fresh.js)는 사진을 크게 본 위에 겹치면 안 된다 */
+    window.MT_FRESH_BUSY = function () { return !lb.hidden; };
     lb.hidden = true;
     lb.setAttribute('role', 'dialog');
     lb.setAttribute('aria-modal', 'true');
@@ -1473,5 +1475,7 @@
 })();
 </script>
 
+<!-- 열어 둔 탭이 옛 안내문을 들고 있지 않게 — 돌아올 때 서버에 한 번 물어본다 -->
+<script defer src="/assets/fresh.js"></script>
 </body>
 </html>
