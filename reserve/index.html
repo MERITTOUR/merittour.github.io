@@ -16,11 +16,12 @@
   :root{
     --navy:#1a2740; --navy-deep:#0f1b33; --navy-soft:#eef2f7;
     --gold:#B8935A; --gold-deep:#8a6a2e;
-    --ink:#1a2740; --muted:#6a7a92; --line:#e0e4ec; --line-soft:#eef0f4;
-    /* --muted 는 흰 바탕에서 4.36 이라 작은 글자에 쓰면 WCAG AA(4.5)에 못 미친다.
-       새로 넣는 작은 안내 글자는 이쪽(5.40)을 쓴다. 기존 --muted 자리는 그대로 뒀다 —
-       한꺼번에 바꾸면 화면 전체 인상이 달라져 따로 볼 일이다. */
-    --muted-strong:#5f6b7d;
+    --ink:#1a2740; --line:#e0e4ec; --line-soft:#eef0f4;
+    /* 보조 글자색. 예전 #6a7a92 는 흰 바탕에서 4.36 이라 작은 글자 33종이
+       WCAG AA(4.5)에 못 미쳤다 — 시니어가 쓰는 화면이라 그대로 둘 수 없었다.
+       흰 5.65 · 회색 카드(#f7f8fa) 5.32 · 노란 띠(#fffbe6) 5.43 · 남색 연한 바탕 5.03.
+       --muted-strong 은 이 값으로 갈음돼 없앴다. */
+    --muted:#5c687a;
     --bg:#ffffff; --bg-alt:#f7f8fa;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -28,7 +29,7 @@
   body{font-family:'Pretendard',-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
     color:var(--ink);background:var(--bg);font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;}
   a{color:inherit;text-decoration:none;}
-  .proto-watermark{position:fixed;top:8px;right:8px;z-index:200;background:rgba(220,38,38,.92);color:#fff;
+  .proto-watermark{position:fixed;top:8px;right:8px;z-index:200;background:rgba(185,28,28,.95);color:#fff;
     padding:5px 12px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.5px;box-shadow:0 2px 8px rgba(0,0,0,.2);pointer-events:none;}
 
   /* ===== HEADER ===== */
@@ -172,8 +173,8 @@
   .rbadge{display:inline-block;margin-left:7px;padding:2px 8px;border-radius:999px;
     font-size:11.5px;font-weight:800;vertical-align:middle;}
   .rbadge.promo{background:#8B3A2F;color:#fff;}
-  .rbadge.no{background:#f1f3f6;color:#8a94a3;border:1px solid var(--line);}
-  .promo-t{color:#8B3A2F;} .no-t{color:#8a94a3;font-weight:700;}
+  .rbadge.no{background:#f1f3f6;color:#5f6979;border:1px solid var(--line);}   /* 2.76 → 4.99 */
+  .promo-t{color:#8B3A2F;} .no-t{color:#5f6979;font-weight:700;}                /* 3.07 → 5.55 */
   .rcard .go{flex-shrink:0;color:var(--muted);font-size:17px;font-weight:800;}
 
   /* ===== 예약 완료 화면 =====
@@ -186,11 +187,11 @@
   .dn-mark{width:58px;height:58px;border-radius:50%;background:#eaf7f0;color:#15803D;
     font-size:30px;font-weight:800;line-height:58px;margin:0 auto 14px;}
   .dn-h{font-size:23px;font-weight:800;letter-spacing:-.01em;margin-bottom:6px;}
-  .dn-no{font-size:15px;color:var(--muted-strong);margin-bottom:20px;}
+  .dn-no{font-size:15px;color:var(--muted);margin-bottom:20px;}
   .dn-no b{color:var(--ink);font-weight:800;font-variant-numeric:tabular-nums;}
   .dn-tb{width:100%;border-collapse:collapse;text-align:left;margin-bottom:18px;}
   .dn-tb tr+tr .dn-k,.dn-tb tr+tr .dn-v{border-top:1px solid var(--line-soft);}
-  .dn-k{padding:10px 14px 10px 0;font-size:14px;font-weight:700;color:var(--muted-strong);white-space:nowrap;}
+  .dn-k{padding:10px 14px 10px 0;font-size:14px;font-weight:700;color:var(--muted);white-space:nowrap;}
   .dn-v{padding:10px 0;font-size:15.5px;font-weight:800;color:var(--ink);}
   .dn-note{background:var(--navy-soft);border-radius:12px;padding:14px 16px;font-size:14px;
     line-height:1.65;color:var(--ink);text-align:left;margin-bottom:20px;}
@@ -351,20 +352,25 @@
      이걸 안 두면 달력 위에서 미는 순간 뒤 페이지가 따라 움직여 「달력은 안 먹힌다」가 된다. */
   .cal-days{touch-action:pan-y;transition:transform .18s ease-out;will-change:transform;}
   .cal-days.dragging{transition:none;cursor:grabbing;}
-  .cal-swipe-hint{font-size:12px;color:var(--muted-strong);text-align:center;margin:7px 0 0;font-weight:600;}
+  .cal-swipe-hint{font-size:12px;color:var(--muted);text-align:center;margin:7px 0 0;font-weight:600;}
   @media (prefers-reduced-motion:reduce){ .cal-days{transition:none;} }
   .cal-dows div{text-align:center;font-size:clamp(11px,min(1.15vw,1.3vh),14.5px);font-weight:700;color:var(--muted);
     padding:clamp(3px,.55vh,8px) 0;}
   .cal-dows div.sun{color:#c0392b;} .cal-dows div.sat{color:#2471a3;}
   .cal-day{min-height:var(--calh,clamp(34px,min(6.2vw,6.0vh),68px));border-radius:9px;display:flex;flex-direction:column;
     align-items:center;justify-content:center;
-    gap:1px;font-size:clamp(13px,min(1.45vw,1.6vh),18.5px);color:#c8cdd6;background:#fff;border:1px solid transparent;}
+    /* 예전 #c8cdd6 은 대비 1.6 이라 날짜가 거의 안 보였다. 4.58 로 올리되,
+       고를 수 있는 날짜는 --ink + 굵게 + 테두리 + 「N실」이라 여전히 구분된다. */
+    gap:1px;font-size:clamp(13px,min(1.45vw,1.6vh),18.5px);color:#6d7686;background:#fff;border:1px solid transparent;}
   .cal-day.on{color:var(--ink);font-weight:700;border-color:var(--line);cursor:pointer;background:#fff;}
   .cal-day.on .rm{font-size:clamp(9.5px,min(1.02vw,1.15vh),13px);font-weight:700;color:#1f7a4d;}
   /* 마감일도 클릭 가능 → 예약 대기 신청 (엠클릭 「대기」 구분값 활용) */
-  .cal-day.full{color:#8a93a3;background:#f5f6f8;border-color:#e6e9ee;cursor:pointer;}
+  .cal-day.full{color:#66707f;background:#f5f6f8;border-color:#e6e9ee;cursor:pointer;}   /* 2.86 → 4.64 · 눌러서 대기 신청하는 칸이라 읽혀야 한다 */
   .cal-day.full .rm{font-size:11px;color:#c0392b;font-weight:700;}
-  .cal-day.sel{background:var(--navy);border-color:var(--navy);color:#fff;}
+  /* 고른 날짜는 hover 보다 세야 한다. .cal-day.on:hover 가 (0,3,0) 이라
+     같은 특이도의 .cal-day.sel 이 져서, 고른 날짜에 마우스를 올리면 바탕이
+     연한 남색으로 바뀌고 흰 글자가 남아 숫자가 사라졌다(대비 1.12). */
+  .cal-day.sel,.cal-day.on.sel{background:var(--navy);border-color:var(--navy);color:#fff;}
   .cal-day.sel .rm{color:#e8d9b8;}
   .cal-day.full.sel{background:var(--gold-deep);border-color:var(--gold-deep);color:#fff;}
   .cal-day.full.sel .rm{color:#fff;}
@@ -453,7 +459,7 @@
     .pv-back:hover{color:var(--navy);}
     .pv-dur:hover{border-color:var(--navy);color:var(--ink);}
     .pv-room:hover:not(:disabled){border-color:var(--navy);}
-    .cal-day.on:hover{border-color:var(--navy);background:var(--navy-soft);}
+    .cal-day.on:not(.sel):hover{border-color:var(--navy);background:var(--navy-soft);}
     .cal-day.full:hover{border-color:var(--gold-deep);background:#fdf8f0;}
     .opt:hover{border-color:var(--navy);background:var(--navy-soft);}
   }
@@ -944,10 +950,10 @@ function openSheet(kind){
     const sum=body.querySelector('#pplSum');
     const drawSum=()=>{
       const it=findResort(sel.resortKey);
-      const row=(k,v)=>`<tr><td style="padding:4px 14px 4px 0;color:var(--muted-strong);font-weight:700;white-space:nowrap">${k}</td>`
+      const row=(k,v)=>`<tr><td style="padding:4px 14px 4px 0;color:var(--muted);font-weight:700;white-space:nowrap">${k}</td>`
                       +`<td style="padding:4px 0;font-weight:800;color:var(--ink)">${v}</td></tr>`;
       sum.innerHTML=`<div style="margin-top:16px;border-top:1px solid var(--line);padding-top:13px">
-        <div style="font-size:13px;font-weight:800;color:var(--muted-strong);margin-bottom:6px">고르신 내용</div>
+        <div style="font-size:13px;font-weight:800;color:var(--muted);margin-bottom:6px">고르신 내용</div>
         <table style="font-size:15px;border-collapse:collapse">
           ${row('출발지', originName(sel.origin))}
           ${row('골프장', it ? it.n : '—')}
@@ -1935,10 +1941,10 @@ function demoRoundNotice(){
     /* 「이월」은 앞 차수에서 **안 쓰고 남은** 양이다. 배정량(prev.total)을 그대로
        쓰면 1차를 다 썼는데도 「이월 1」로 떠서 없는 횟수를 있는 것처럼 읽힌다. */
     const carry = Math.max(0, prev.total - prev.used);
-    const st = !s.eligible ? '<b style="color:#8a94a3">자격 없음</b>'
-             : !s.opened   ? '<span style="color:#8a94a3">아직 안 열림</span>'
+    const st = !s.eligible ? '<b style="color:var(--muted)">자격 없음</b>'
+             : !s.opened   ? '<span style="color:var(--muted)">아직 안 열림</span>'
              : `${c.used}/${c.total}회 사용`
-               + (carry>0 ? `<span style="color:#8a94a3"> (이번 차수 +${s.total} · 이월 ${carry})</span>` : '')
+               + (carry>0 ? `<span style="color:var(--muted)"> (이번 차수 +${s.total} · 이월 ${carry})</span>` : '')
                + (s.active?' <b style="color:#1f7a4d">· 접수 중</b>':'');
     return `<tr><td style="padding:3px 10px 3px 0;font-weight:700">${r.label}</td><td style="padding:3px 0">${st}</td></tr>`;
   }).join('');
