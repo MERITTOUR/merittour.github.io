@@ -234,13 +234,24 @@
     .pv-lower>#pvRoomWrap{grid-column:1 / -1;}
   }
   @media(max-width:420px){ .pv-lower{grid-template-columns:1fr;} }
-  /* 폰은 상단 헤더까지 화면을 가려 달력+컨트롤을 한 번에 다 담기 어렵다.
-     예약 진행 버튼만 화면 아래에 고정해 어디까지 스크롤하든 바로 누를 수 있게 한다. */
+  /* ── 예약 진행 버튼은 늘 화면 안에 ──
+     달력이 화면을 다 쓰는 폭에서는 버튼이 접힌 아래로 밀려, 날짜를 고른 뒤
+     한참 굴려야 눌렀다. 폰만 고정해 뒀는데 데스크톱이 더 심했다.
+
+     화면 밖으로 밀릴 때만 붙인다(stickCta). 원래 자리가 화면에 들어오면 떼어
+     제자리로 돌린다 — 스크롤 끝까지 갔는데도 떠 있으면 같은 버튼이 두 개로 보인다.
+     자리(#pvCtaSlot)는 높이를 그대로 남겨 붙는 순간 화면이 튀지 않게 한다. */
+  /* 흰 테두리를 두른다 — 버튼 색이 푸터(같은 남색)와 같아서, 문서 끝에서는
+     버튼이 푸터에 묻혀 어디를 눌러야 할지 안 보였다. 흰 바탕 위에서는 티가 안 난다. */
+  .pv-cta.stuck{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;
+    width:min(520px,calc(100vw - 32px));z-index:130;margin:0;
+    box-shadow:0 0 0 3px rgba(255,255,255,.92), 0 10px 28px rgba(15,27,51,.34);}
+  body.cta-stuck .fabs{bottom:82px;}
+  /* 자리(#pvCtaSlot)는 버튼이 떠 있는 동안에도 같은 높이를 지킨다 — 붙였다 떼는 순간
+     문서 높이가 달라지면 스크롤이 밀리고, 그 밀린 위치로 다시 재느라 붙었다 떨어졌다를
+     반복한다. 패널에 따로 여백을 두지는 않는다(빈 칸만 남고 달력만 좁아졌다). */
   @media(max-width:560px){
-    .pv-side{padding-bottom:76px;}
-    .pv-cta{position:fixed;left:12px;right:12px;bottom:12px;width:auto;z-index:130;margin:0;
-      box-shadow:0 8px 24px rgba(15,27,51,.28);}
-    .fabs{bottom:78px;}
+    .pv-cta.stuck{left:12px;right:12px;transform:none;width:auto;}
   }
   .pv-sec-t{font-size:17px;font-weight:800;border-left:4px solid var(--navy);padding-left:10px;margin:0 0 12px;}
   .pv-note{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--bg-alt);
@@ -399,6 +410,10 @@
 
   /* ===== 푸터 ===== */
   footer{background:var(--navy);color:rgba(255,255,255,.8);padding:34px 22px;text-align:center;font-size:13.5px;line-height:1.9;margin-top:30px;}
+  /* 상품 화면에서는 예약 진행 버튼이 화면 아래에 떠 있을 수 있다 — 문서 끝에 자리를 비워
+     전화번호가 버튼에 영영 가리지 않게 한다. 「떠 있을 때만」으로 묶으면 안 된다.
+     맨 아래에서 여백이 사라지는 순간 스크롤이 밀려 붙었다 떨어졌다를 반복한다. */
+  body.pv-open footer{padding-bottom:96px;}
   footer .flogo{display:block;margin:0 auto 14px;}
   footer .flogo svg{height:34px;width:auto;display:block;margin:0 auto;}
   footer .flogo svg polygon, footer .flogo svg path, footer .flogo svg rect{fill:#fff;}
@@ -606,7 +621,7 @@
         <div>
           <div class="pv-price-lbl">선택 일정</div>
           <div class="pv-price ph" id="pvPrice">출발 날짜를 선택해주세요.</div>
-          <button class="pv-cta" id="pvCta" disabled onclick="pvGo()">예약 진행</button>
+          <div id="pvCtaSlot"><button class="pv-cta" id="pvCta" disabled onclick="pvGo()">예약 진행</button></div>
         </div>
       </div>
     </aside>
@@ -1285,6 +1300,7 @@ function openProduct(k){
 }
 function closeProduct(){
   document.getElementById('productView').classList.remove('show');
+  stickCta();                       // 떠 있던 버튼을 떼고 FAB 자리도 되돌린다
   document.querySelector('section.resorts').style.display='';
   document.querySelector('.hero').style.display='';
   window.scrollTo({top:0,behavior:'auto'});
@@ -1489,7 +1505,47 @@ function fitPanel(){
   const h=Math.max(26, Math.min(68, Math.floor((avail-(rows-1)*gap)/rows)));
   side.style.setProperty('--calh', h+'px');
 }
-function fitPanelSoon(){ fitPanel(); requestAnimationFrame(fitPanel); }
+function fitPanelSoon(){ fitPanel(); requestAnimationFrame(fitPanel); stickCta(); requestAnimationFrame(stickCta); }
+
+/* 예약 진행 버튼은 상품 화면을 보는 동안 늘 화면 안에 있어야 한다.
+   원래 자리가 통째로 보일 때만 제자리에 두고, 그 밖에는 화면 아래에 붙인다. */
+function stickCta(){
+  const cta=document.getElementById('pvCta'), slot=document.getElementById('pvCtaSlot');
+  const view=document.getElementById('productView');
+  if(!cta||!slot) return;
+  const on = !!(view && view.classList.contains('show'));
+  document.body.classList.toggle('pv-open', on);   // 문서 끝 여백 — 스크롤과 무관하게 켜고 끈다
+  if(!on){
+    cta.classList.remove('stuck'); slot.style.minHeight=''; document.body.classList.remove('cta-stuck'); return;
+  }
+  /* 자리 높이는 제자리에 있을 때만 다시 잰다 — 떠 있는 동안 재면 0 이 나와 자리가 접힌다.
+     자리가 접히면 그 위 내용이 올라와 판정이 흔들리고, 붙었다 떨어졌다를 반복한다. */
+  if(!cta.classList.contains('stuck')){
+    const nh=(cta.offsetHeight||55)+'px';
+    if(slot.style.minHeight!==nh) slot.style.minHeight=nh;
+  }
+  const hd=document.querySelector('header');
+  const top=(hd && getComputedStyle(hd).position==='sticky') ? hd.getBoundingClientRect().height : 0;
+  const r=slot.getBoundingClientRect();
+  /* 「아래로 밀렸는가」만 보면 안 된다 — 지나쳐 올라간 뒤에도 떼어 버려
+     버튼이 화면 위로 사라졌다(폰에서 맨 아래까지 굴리면 버튼이 없어졌다).
+     위(고정 헤더 아래)로도 아래로도 안 걸릴 때에만 제자리에 둔다. */
+  const home = r.top >= top && r.bottom <= window.innerHeight - 14;
+  cta.classList.toggle('stuck', !home);
+  document.body.classList.toggle('cta-stuck', !home);
+}
+/* 스크롤에 바로 따라붙게 한다. 타이머로 미루면 굴리는 동안 잠깐씩 어긋나
+   「맨 아래까지 갔는데 아직 떠 있다」가 된다. 그리기 직전에 한 번만 계산한다. */
+addEventListener('scroll', ()=>{
+  if(window.__ctaRaf) return;
+  window.__ctaRaf = requestAnimationFrame(()=>{ window.__ctaRaf=0; stickCta(); });
+}, {passive:true});
+/* 폭이 바뀌면 버튼 높이도 바뀐다(폰에서 글자가 작아진다) — 떼고 다시 재게 한다. */
+addEventListener('resize', ()=>{
+  const cta=document.getElementById('pvCta');
+  if(cta) cta.classList.remove('stuck');
+  stickCta();
+});
 // 상품을 열면 예약 패널이 화면 맨 위(고정 헤더 아래)에 오도록 맞춘다.
 // 패널 높이는 화면에 맞춰 놨으므로 이 위치에서 예약 진행 버튼까지 전부 보인다.
 function scrollToPanel(){
@@ -1777,6 +1833,7 @@ function submitReserve(){
 function showDone(d){
   closeSheet();
   document.getElementById('productView').classList.remove('show');
+  stickCta();                         // 완료 화면에는 떠 있는 예약 버튼이 남으면 안 된다
   const v=document.getElementById('doneView');
   const row=(k,val)=>`<tr><td class="dn-k">${k}</td><td class="dn-v">${val}</td></tr>`;
   v.innerHTML=`
