@@ -10,11 +10,11 @@ GitHub 웹에서 이 폴더 → **Add file → Upload files** 로 드래그하�
 | 파일명 | 숙소 |
 |---|---|
 | `yamanami.webp` | 야마나미 호텔 |
-| `kuzu.webp` | 야마나미 프라이빗 레지던스 |
-| `aso_villa.webp` | 야마나미 프레스티지 |
-| `sobo_villa.webp` | 야마나미 히노키빌라 - 캐빈 |
-| `sobo5.webp` | 야마나미 히노키빌라 - 패밀리 |
-| `dome_house.webp` | 야마나미 포레스트 돔 |
+| `kuzu.webp` | 쿠주 레지던스 |
+| `aso_villa.webp` | 프레스티지 하우스 |
+| `sobo_villa.webp` | 히노키 캐빈 |
+| `sobo5.webp` | 소보 패밀리 |
+| `dome_house.webp` | 돔스테이 |
 | `kanji.webp` | 간지호텔 |
 | `shizunoyado.webp` | 시즈노야도 료칸 |
 | `fourteen_hotel.webp` | 포틴힐즈CC 호텔 |
