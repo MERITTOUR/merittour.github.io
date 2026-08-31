@@ -9,7 +9,7 @@
 GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 
 ```
-2027/photos/kumamoto/prestige/01.webp    ← 프레스티지 하우스
+2027/photos/kumamoto/prestige/01.webp    ← 아소 프레스티지
 2027/photos/kumamoto/prestige/02.webp       …원하는 만큼 이어서
 2027/photos/kumamoto/guernsey/01.webp    ← 간지호텔
 2027/photos/kumamoto/golf/01.webp        ← 골프장(지역 하나)
@@ -25,7 +25,7 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 
 | 지역 | 폴더 | 숙소 | 폴더 |
 |---|---|---|---|
-| 구마모토 · 아소 야마나미 | `kumamoto` | 프레스티지 하우스 | `prestige` |
+| 구마모토 · 아소 야마나미 | `kumamoto` | 아소 프레스티지 | `prestige` |
 | | | 히노키 캐빈 | `hinoki-cabin` |
 | | | 소보 패밀리 | `sobo-family` |
 | | | 쿠주 프라이빗 레지던스 | `kuju` |
@@ -52,7 +52,7 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 
 ```html
 <li data-lg="prestige">
-  <div class="lg-name">프레스티지 하우스 <span class="lg-jp">PRESTIGE HOUSE</span></div>
+  <div class="lg-name">아소 프레스티지 <span class="lg-jp">ASO PRESTIGE</span></div>
   <div class="lg-desc">8인 대형 별장 1동</div>
 </li>
 ```
