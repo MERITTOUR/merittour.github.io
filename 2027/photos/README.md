@@ -26,7 +26,7 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 | 지역 | 폴더 | 숙소 | 폴더 |
 |---|---|---|---|
 | 구마모토 · 아소 야마나미 | `kumamoto` | 아소 프레스티지 | `prestige` |
-| | | 히노키 캐빈 | `hinoki-cabin` |
+| | | 히노키 스테이 | `hinoki-stay` |
 | | | 소보 패밀리 | `sobo-family` |
 | | | 쿠주 프라이빗 레지던스 | `kuju` |
 | | | 돔스테이 | `dome` |
