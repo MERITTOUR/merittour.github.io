@@ -28,7 +28,7 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 |---|---|---|---|
 | 구마모토 · 아소 야마나미 | `kumamoto` | 아소 프레스티지 | `prestige` |
 | | | 히노키 스테이 | `hinoki-stay` |
-| | | 소보 패밀리 | `sobo-family` |
+| | | 소보 테라스 | `sobo-terrace` |
 | | | 쿠주 프라이빗 레지던스 | `kuju` |
 | | | 돔스테이 | `dome` |
 | | | 야마나미 호텔 | `hotel` |
