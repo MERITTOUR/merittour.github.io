@@ -13,7 +13,7 @@ GitHub 웹에서 이 폴더 → **Add file → Upload files** 로 드래그하�
 | `kuzu.webp` | 쿠주 프라이빗 레지던스 |
 | `aso_villa.webp` | 아소 프레스티지 |
 | `sobo_villa.webp` | 히노키 스테이 |
-| `sobo5.webp` | 소보 패밀리 |
+| `sobo5.webp` | 소보 테라스 |
 | `dome_house.webp` | 돔스테이 |
 | `kanji.webp` | 간지호텔 |
 | `shizunoyado.webp` | 시즈노야도 료칸 |
