@@ -99,14 +99,16 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 ## 영상
 
 4K 영상은 한 편에 수백 MB라 저장소에 넣지 않습니다. **유튜브에 올리고 주소만** 넣습니다.
-안내문 스크립트 아래쪽 `VIDEO` 에 적으면 그 지역·그 블록에만 생깁니다.
+안내문 스크립트 아래쪽 `VIDEO` 에 지역마다 하나씩 적으면, 그 지역 **골프장 사진 블록 위에 「영상」 블록**이 생깁니다.
 
 ```js
 var VIDEO = {
-  kumamoto: { stay: 'https://youtu.be/xxxxxxxxxxx',
-              golf: 'https://youtu.be/yyyyyyyyyyy' }
+  kumamoto: { url: 'https://www.youtube.com/watch?v=xxxxxxxxxxx', label: '아소 야마나미 리조트 영상 · 4K' },
+  nagoya:   { url: 'https://youtu.be/yyyyyyyyyyy',                label: '포틴힐즈CC 영상' }
 };
 ```
+
+지금 들어 있는 것: 구마모토(아소 야마나미 리조트 · 4K). 나고야 포틴힐즈는 주소가 오면 넣습니다.
 
 주소는 어떤 형태든 됩니다(`youtu.be/…` · `watch?v=…` · `/embed/…`).
 
