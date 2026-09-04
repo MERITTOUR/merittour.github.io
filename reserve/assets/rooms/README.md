@@ -22,7 +22,7 @@ GitHub 웹에서 이 폴더 → **Add file → Upload files** 로 드래그하�
 | `akiba.webp` | 아키바 리조트 |
 | `mutsuki.webp` | 무츠키 료칸 |
 | `shirosato.webp` | 시로사토CC |
-| `fukuroda.webp` | 후쿠로다노타키CC 골프텔 |
+| `fukuroda.webp` | 후쿠로다노타키CC 호텔 |
 | `sugadaira_onsen.webp` | 스가다이라 고원 온천호텔 |
 | `miyazaki_kuko.webp` | 미야자키 국제공항CC |
 
