@@ -105,6 +105,20 @@
   .note{margin-top:12px;padding:11px 13px;border-radius:9px;background:var(--band);
     border:1px solid var(--line);font-size:12.5px;line-height:1.7;color:var(--ink-soft);font-weight:500}
   .note b{color:var(--ink)}
+  /* 꼭 봐야 하는 안내 — 포틴힐즈 우선예약 회원권 제한처럼 다른 등급 회원도 놓치면 안 되는 것.
+     .soft ※ 줄은 흘려 읽혀서 골드 왼쪽 띠를 두른 상자로 올린다(Min · 2026-09). */
+  .callout{margin:16px 0 0;padding:16px 18px;border-radius:12px;background:var(--band);
+    border:1.5px solid var(--gold);border-left-width:6px;font-size:15px;line-height:1.7;color:var(--ink)}
+  .callout .co-tag{display:block;font-size:12.5px;font-weight:800;letter-spacing:.04em;color:var(--olive-deep);margin-bottom:6px}
+  .callout b{color:var(--ink)}
+  .callout ul{margin:4px 0 0;padding-left:18px}
+  .callout li{margin:4px 0}
+  /* 상시예약 기간 오픈 예정 — 사진·요금 없이 이름만. 지역 블록(.region)이 아니라 사진 자리도 안 생긴다 */
+  .later{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+  .later li{padding:14px 16px;border:1px dashed var(--line);border-radius:12px}
+  .lt-name{font-weight:800;font-size:15.5px;color:var(--ink)}
+  .lt-sub{font-weight:600;font-size:13px;color:var(--gold);margin-left:8px}
+  .lt-desc{margin-top:4px;font-size:13.5px;color:var(--ink-soft);line-height:1.6}
   .note .k{display:inline-block;min-width:62px;padding-right:8px;font-weight:800;color:var(--olive)}
   .cav{margin-top:9px;font-size:11.5px;color:var(--muted);line-height:1.6;font-weight:500}
 
@@ -470,8 +484,9 @@
     <a href="#r-akiba" data-t="r-akiba">벳푸 · 아키바</a>
     <a href="#r-mutsuki" data-t="r-mutsuki">벳푸 · 무츠키</a>
     <a href="#r-ibaraki" data-t="r-ibaraki">이바라키 · 시로사토</a>
-    <a href="#r-nagano" data-t="r-nagano">나가노 · 스가다이라</a>
+    <a href="#r-fukuroda" data-t="r-fukuroda">이바라키 · 후쿠로다노타키</a>
     <a href="#r-miyazaki" data-t="r-miyazaki">미야자키 · 국제공항</a>
+    <a href="#r-nagano" data-t="r-nagano">나가노 · 스가다이라</a>
     <a href="#r-kl" data-t="r-kl">쿠알라룸푸르</a>
   </div>
   <a href="#s-04" data-t="s-04"><b>04</b>요금 · 환율 안내</a>
@@ -581,7 +596,13 @@
     <p class="soft" style="margin:14px 0 0;font-size:14px">※ 회차가 닫히면 다음 회차가 열릴 때까지 화면에 <b style="color:var(--ink)">예약 마감</b>으로 표시됩니다. 자리가 없어진 것이 아니라 <b style="color:var(--ink)">앞 회차 예약을 정리하는 시간</b>이며, 다음 회차 오전 10시에 다시 열립니다.</p>
     <p class="soft" style="margin:8px 0 0;font-size:14px">※ 같은 기간에 함께 가시는 경우, 각자 로그인하신 뒤 동일 기간으로 예약하여 주시기 바랍니다.</p>
     <p class="soft" style="margin:8px 0 0;font-size:14px">※ 3차가 닫힌 뒤에는 <b style="color:var(--ink)">상시예약 기간</b>으로 이어져, 잔여 일정을 횟수 제한 없이 예약하실 수 있습니다. 상시예약 기간에도 예약은 <b style="color:var(--ink)">회원님 이름으로 진행</b>되며, 함께 가시는 분은 회원님 예약에 더해 모십니다.</p>
-    <p class="soft" style="margin:8px 0 0;font-size:14px">※ <b style="color:var(--ink)">포틴힐즈CC(나고야)</b>는 골프장과의 계약 조건에 따라, 우선예약 기간에는 <b style="color:var(--ink)">EWRC이용권 · EWRCⅡ 회원님</b>께서 예약하실 수 있습니다. 그 밖의 회원님께서는 상시예약 기간부터 예약하실 수 있습니다.</p>
+    <div class="callout">
+      <span class="co-tag">우선예약 기간에 꼭 확인하실 사항</span>
+      <ul>
+        <li><b>포틴힐즈CC(나고야)</b>는 골프장과의 계약 조건에 따라, 우선예약 기간에는 <b>EWRC이용권 · EWRCⅡ 회원님</b>께서 예약하실 수 있습니다. 그 밖의 회원님께서는 <b>상시예약 기간부터</b> 예약하실 수 있습니다.</li>
+        <li><b>나가노 스가다이라</b>와 <b>쿠알라룸푸르 닐라이스프링스</b>는 우선예약 기간에는 접수하지 않으며, <b>상시예약 기간에 오픈</b>될 예정입니다.</li>
+      </ul>
+    </div>
   </section>
 
   <section class="reveal" id="s-03">
@@ -593,9 +614,10 @@
       <a href="#r-akiba">벳푸 · 아키바 리조트</a>
       <a href="#r-mutsuki">벳푸 · 무츠키 료칸</a>
       <a href="#r-ibaraki">이바라키 · 시로사토</a>
-      <a href="#r-nagano">나가노 · 스가다이라</a>
+      <a href="#r-fukuroda">이바라키 · 후쿠로다노타키</a>
       <a href="#r-miyazaki">미야자키 · 국제공항CC</a>
-      <a href="#r-kl">쿠알라룸푸르 · 닐라이스프링스</a>
+      <a href="#r-nagano">나가노 · 스가다이라 <span class="soft">(상시예약 오픈 예정)</span></a>
+      <a href="#r-kl">쿠알라룸푸르 · 닐라이스프링스 <span class="soft">(상시예약 오픈 예정)</span></a>
     </nav>
 
     <div class="region" id="r-kumamoto">
@@ -702,7 +724,7 @@
     <ul class="lodging">
       <li data-lg="shizunoyado">
         <div class="lg-name">시즈노야도 료칸 <span class="lg-jp">満願寺温泉 志津の宿</span></div>
-        <div class="lg-desc"><b>700년 넘게 이어온 만간지 온천</b>을 그대로 쓰는 <b>일본 전통 료칸</b> · 다다미 객실 2인 1실 · 구로카와 온천에서 차로 10분, 조용한 산촌에 있습니다</div>
+        <div class="lg-desc"><b>700년 넘게 이어온 만간지 온천</b>을 그대로 쓰는 <b>일본 전통 료칸</b> · 다다미 객실 2인 1실 · 아소 야마나미 리조트에서 차로 30분, 조용한 산촌에 있습니다</div>
       </li>
     </ul>
 
@@ -758,8 +780,11 @@
         <span class="r-name">포틴힐즈CC</span>
         <span class="r-sub">나고야 · 포틴힐즈CC(18홀)</span>
       </div>
-      <p class="soft" style="margin:0 0 12px;font-size:14.5px">※ 골프장과의 계약 조건에 따라, <b style="color:var(--ink)">우선예약 기간에는 EWRC이용권 · EWRCⅡ 회원님</b>께서 예약하실 수 있습니다.
-         그 밖의 회원님께서는 <b style="color:var(--ink)">상시예약 기간</b>부터 예약하실 수 있습니다.</p>
+      <div class="callout" style="margin:0 0 14px">
+        <span class="co-tag">우선예약 기간 안내</span>
+        골프장과의 계약 조건에 따라, <b>우선예약 기간에는 EWRC이용권 · EWRCⅡ 회원님</b>께서 예약하실 수 있습니다.
+        그 밖의 회원님께서는 <b>상시예약 기간부터</b> 예약하실 수 있습니다.
+      </div>
       <dl class="facts">
         <dt>도착 공항</dt><dd>나고야 중부국제공항(NGO) <span class="soft">· 골프장까지 약 1시간 40분</span></dd>
         <dt>출발지</dt><dd>인천 · 김해</dd>
@@ -866,32 +891,28 @@
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ 기본 2인 1실 구성으로 싱글룸이 없습니다. 부득이하게 단독 사용 시 1박당 2,200엔이 추가됩니다. 2인 플레이 시 2BAG 차지가 현지에서 발생합니다.</p>
     </div>
 
-    <div class="region" id="r-nagano">
+    <!-- 2027 미진행이었다가 재개(2026-09). 요금·식사·9홀 서비스·이동 시간은 확정 전 — 확정되면 칩을 값으로 바꾼다. -->
+    <div class="region" id="r-fukuroda">
       <div class="r-head">
-        <span class="r-name">스가다이라 고원</span>
-        <span class="r-sub">나가노 · 스가다이라 그린CC(18홀)</span>
+        <span class="r-name">후쿠로다노타키CC</span>
+        <span class="r-sub">이바라키 · 후쿠로다노타키CC(18홀) <span class="tbd">세부 내용 확정 예정</span></span>
       </div>
       <dl class="facts">
-        <dt>도착 공항</dt><dd>니가타 공항(KIJ) <span class="soft">· 골프장까지 약 3시간 30분~4시간</span></dd>
-        <dt>출발지</dt><dd>인천</dd>
-        <dt>체류 일정</dt><dd>목 5박 · 화 7박 · 목 7박 · 화 14박 · 목 14박</dd>
-        <dt>코스</dt><dd>해발 약 <b>1,600m</b> 고원 지대 <span class="soft">· 여름에도 시원한 기온에서 라운딩하실 수 있는 일본 대표 고원 골프장</span></dd>
-        <dt>라운딩</dt><dd>스가다이라 그린CC · 전 일정 18홀 + 9홀 서비스 라운딩</dd>
-        <dt>식사</dt><dd>조식·중식·석식 클럽하우스 <span class="soft">· 도착일 중식은 기내식으로 대체됩니다</span></dd>
+        <dt>도착 공항</dt><dd>나리타 공항(NRT)</dd>
+        <dt>출발지</dt><dd>인천 · 김해</dd>
+        <dt>체류 일정</dt><dd>월 → 월 7박</dd>
+        <dt>라운딩</dt><dd>후쿠로다노타키CC 18홀 <span class="soft">· 9홀 서비스 · 주말 운영 방식</span> <span class="tbd">확정 예정</span></dd>
+        <dt>식사</dt><dd><span class="tbd">확정 예정</span></dd>
       </dl>
       <h3 class="subh" style="margin-top:20px">숙소</h3>
       <ul class="lodging">
-        <li data-lg="onsen-hotel">
-          <div class="lg-name">스가다이라 고원 온천호텔</div>
-          <div class="lg-desc"><span class="soft">골프장에서 약 15분</span></div>
-        </li>
-        <li data-lg="mansion">
-          <div class="lg-name">스가다이라 맨션</div>
+        <li data-lg="lodge">
+          <div class="lg-name">후쿠로다노타키CC 골프텔</div>
+          <div class="lg-desc">골프장 안 숙소 · <b>2인 1실</b></div>
         </li>
       </ul>
-      <h3 class="subh" style="margin-top:20px">투어 요금</h3>
-      <p class="costline"><b>골프 · 숙박이 포함된</b> 1인 금액으로 안내됩니다. <span class="tbd">2027 확정 예정</span></p>
-      <p class="soft" style="margin:10px 0 0;font-size:14px">※ 자세한 내용은 별도 상품 안내를 참고하시거나 문의하여 주시기 바랍니다.</p>
+      <h3 class="subh" style="margin-top:20px">체재비용 · 송영비</h3>
+      <p class="costline">2027 시즌 요금 <span class="tbd">확정 예정</span> — 확정 전에는 문의해 주시면 개별 안내드립니다.</p>
     </div>
 
     <div class="region" id="r-miyazaki">
@@ -917,28 +938,19 @@
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ <b style="color:var(--ink)">체재일 중식은 포함되어 있지 않습니다.</b></p>
     </div>
 
-    <div class="region" id="r-kl">
-      <div class="r-head">
-        <span class="r-name">닐라이스프링스 리조트</span>
-        <span class="r-sub">말레이시아 쿠알라룸푸르 · 닐라이스프링스CC(18홀)</span>
-      </div>
-      <p class="soft" style="margin:0 0 12px;font-size:14.5px">※ 이 상품은 <b style="color:var(--ink)">우선예약 대상이 아닙니다.</b>
-         <b style="color:var(--ink)">상시예약 기간</b>에 상품이 오픈됩니다.</p>
-      <dl class="facts">
-        <dt>도착 공항</dt><dd>쿠알라룸푸르 국제공항(KUL)</dd>
-        <dt>출발지</dt><dd>인천</dd>
-        <dt>체류 일정</dt><dd>일정 자유 구성 <span class="soft">· 원하시는 박수로 문의하여 주시기 바랍니다</span></dd>
-      </dl>
-      <h3 class="subh" style="margin-top:20px">숙소</h3>
-      <ul class="lodging">
-        <li data-lg="resort">
-          <div class="lg-name">닐라이스프링스 리조트</div>
-          <div class="lg-desc"><b>2인 1실</b></div>
-        </li>
-      </ul>
-      <h3 class="subh" style="margin-top:20px">체재비용 · 송영비</h3>
-      <p class="costline">2027 시즌 요금 <span class="tbd">확정 예정</span> — 확정 전에는 문의해 주시면 개별 안내드립니다.</p>
-    </div>
+    <!-- 우선예약 기간에는 접수하지 않는 두 곳 — 사진·요금 없이 이름만(Min · 2026-09). .region 이 아니라 사진 자리도 안 생긴다. -->
+    <h3 class="subh" style="margin-top:32px">상시예약 기간 오픈 예정</h3>
+    <p class="soft" style="margin:0 0 12px">아래 두 곳은 <b style="color:var(--ink)">우선예약 기간에는 접수하지 않으며</b>, 상시예약 기간에 상품이 오픈될 예정입니다. 자세한 일정과 요금은 오픈 시 안내드립니다.</p>
+    <ul class="later">
+      <li id="r-nagano">
+        <div class="lt-name">스가다이라 고원 <span class="lt-sub">나가노 · 스가다이라 그린CC(18홀)</span></div>
+        <div class="lt-desc">해발 약 1,600m 고원 코스 · 인천 출발 · 스가다이라 고원 온천호텔 · 5박 · 7박 · 14박 일정</div>
+      </li>
+      <li id="r-kl">
+        <div class="lt-name">닐라이스프링스 리조트 <span class="lt-sub">말레이시아 쿠알라룸푸르 · 닐라이스프링스CC(18홀)</span></div>
+        <div class="lt-desc">인천 출발 · 일정 자유 구성 · 원하시는 박수로 문의하여 주시기 바랍니다</div>
+      </li>
+    </ul>
 
     <h3 class="subh" style="margin-top:32px">일본 공휴일 · 성수기 안내</h3>
     <p class="soft" style="margin:0 0 12px">아래는 <b style="color:var(--ink)">전 지역 상품에 공통</b>으로 적용됩니다.</p>
@@ -1591,7 +1603,10 @@
       }
       box.appendChild(fold);
     });
-    head.parentNode.insertBefore(box, head.nextSibling);
+    /* 골프장 사진은 머리 바로 아래. 머리 다음에 꼭 봐야 하는 안내(.callout)가 있으면 그 아래에 —
+       사진에 밀려 안내가 내려가면 안 된다(포틴힐즈). */
+    var anchor = (head.nextElementSibling && head.nextElementSibling.classList.contains('callout')) ? head.nextElementSibling : head;
+    anchor.parentNode.insertBefore(box, anchor.nextSibling);
   });
 })();
 </script>
