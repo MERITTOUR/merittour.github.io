@@ -35,7 +35,7 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 | 구마모토 · 아소 야마나미 | `kumamoto` | 아소 프레스티지 | `prestige` |
 | | | 히노키 스테이 | `hinoki-stay` |
 | | | 소보 테라스 | `sobo-terrace` |
-| | | 쿠주 프라이빗 레지던스 | `kuju` |
+| | | 쿠주힐즈 | `kuju` |
 | | | 돔스테이 | `dome` |
 | | | 야마나미 호텔 | `hotel` |
 | | | 간지호텔 | `guernsey` |
@@ -51,6 +51,22 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 골프장 사진은 지역마다 `golf` 하나입니다.
 나가노 스가다이라 · 쿠알라룸푸르 닐라이스프링스는 **상시예약 기간 오픈 예정**이라 안내문 맨 아래에 이름만 두고
 **사진 자리를 두지 않습니다**(2026-09). 올려도 나타나지 않습니다.
+
+### 바로 올리는 링크
+
+아래 링크를 열면 **그 폴더의 Upload files 화면이 바로** 뜹니다 — 폴더가 아직 없어도 첫 업로드 때 생깁니다.
+파일 이름을 `01.webp` `02.webp` … 로 맞춰 끌어다 놓고 아래 **Commit changes** 를 누르면 끝입니다.
+(엉뚱한 자리에 올라가는 일을 막으려면 저장소를 뒤져 들어가지 말고 이 링크로 여세요)
+
+| 지역 | 숙소 | 골프장 |
+|---|---|---|
+| 구마모토 · 아소 야마나미 | [아소 프레스티지](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/prestige) · [히노키 스테이](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/hinoki-stay) · [소보 테라스](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/sobo-terrace) · [쿠주힐즈](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/kuju) · [돔스테이](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/dome) · [야마나미 호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/hotel) · [간지호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/guernsey) · [시즈노야도 료칸](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/shizunoyado) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/golf) |
+| 나고야 · 포틴힐즈 | [포틴힐즈CC 호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/nagoya/hotel) · [포틴힐즈CC 카라반](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/nagoya/caravan) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/nagoya/golf) |
+| 벳푸 · 아키바 리조트 | [아키바 리조트](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/akiba/resort) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/akiba/golf) |
+| 벳푸 · 무츠키 료칸 | [무츠키 료칸](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/mutsuki/ryokan) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/mutsuki/golf) |
+| 이바라키 · 시로사토 | [골프장 내 숙소](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/ibaraki/lodge) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/ibaraki/golf) |
+| 이바라키 · 후쿠로다노타키 | [후쿠로다노타키CC 골프텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/fukuroda/lodge) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/fukuroda/golf) |
+| 미야자키 · 국제공항CC | [골프장 숙소](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/miyazaki/lodge) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/miyazaki/golf) |
 
 ### 숙소를 더하거나 뺄 때
 
