@@ -348,7 +348,7 @@
     width:clamp(130px, calc((100% - 24px) / 4), 190px)}
   /* 크기는 .shots>* 하나가 정한다. 여기서 width:100% 를 또 주면 특이도가 높아
      그 값이 이겨, 사진이 들어온 칸만 스트립 전체 폭으로 늘어난다(빈 칸은 180px). */
-  .shots button{padding:0;border:1px solid var(--line-soft);border-radius:9px;overflow:hidden;
+  .shots button{padding:0;border:1px solid var(--line-soft);border-radius:9px;overflow:hidden;background:var(--band);
     background:var(--band);cursor:pointer;display:block;font:inherit;position:relative}
   .shots button:hover{border-color:var(--muted)}
   .shots button:focus-visible{outline:2px solid var(--olive);outline-offset:2px}
@@ -1364,7 +1364,8 @@
       btn.type = 'button';
       btn.setAttribute('aria-label', alt + ' 사진 ' + n + ' 크게 보기');
       var im = document.createElement('img');
-      im.src = path; im.alt = alt; im.loading = 'lazy'; im.decoding = 'async';
+      im.alt = ''; im.decoding = 'async';   // 이름은 버튼의 aria-label 에 있다 — alt 를 주면 받기 전 글자가 비친다
+      whenSeen(im, path);
       btn.appendChild(im);
       btn.addEventListener('click', function () {
         openLb(shown, shown.map(function (x) { return x.src; }).indexOf(path), btn);
@@ -1375,13 +1376,30 @@
     }
 
     /* 01 부터 하나씩 두드린다. 있으면 붙이고 다음 번호로, 없으면 거기서 멈춘다.
-       한꺼번에 24장을 두드리면 숙소 16곳이면 384번이 되고 대부분 헛걸음이다. */
+       한꺼번에 상한만큼 두드리면 숙소 16곳이면 수백 번이 되고 대부분 헛걸음이다. */
     function probe(n) {
       if (n > SHOT_MAX) { tail(n); return; }
-      var img = new Image();
-      img.addEventListener('load',  function () { addPhoto(n); probe(n + 1); });
-      img.addEventListener('error', function () { tail(n); });
-      img.src = pathOf(n);
+      exists(pathOf(n), function (yes) {
+        if (yes) { addPhoto(n); probe(n + 1); } else { tail(n); }
+      });
+    }
+
+    /* 사진은 **그 칸이 보이게 될 때** 받는다. 스트립을 뿌리로 두고 재므로 옆으로 밀려
+       잘린 칸은 안 받고, 가로 240px(한 칸 남짓) 앞서 받아 밀 때 빈 칸이 비치지 않는다.
+       관찰을 못 쓰는 브라우저는 바로 받는다. */
+    var seen = (typeof IntersectionObserver === 'function')
+      ? new IntersectionObserver(function (entries, obs) {
+          entries.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            obs.unobserve(e.target);
+            e.target.src = e.target.getAttribute('data-src');
+          });
+        }, { root: grid, rootMargin: '0px 240px 0px 240px', threshold: 0 })
+      : null;
+    function whenSeen(im, path) {
+      if (!seen) { im.src = path; return; }
+      im.setAttribute('data-src', path);
+      seen.observe(im);
     }
 
     /* 마지막 사진 뒤에 빈 자리를 붙인다. 한 장도 없으면 SHOT_MIN 개,
@@ -1392,6 +1410,27 @@
     }
 
     probe(1);
+  }
+
+  /* ── 있는지 두드리기 ──
+     예전에는 new Image() 로 두드렸는데, 그것이 곧 **내려받기**라 카드가 화면에 가까워지는
+     순간 그 숙소 사진을 전부 받았다(야마나미 호텔 26장 ≈ 10MB · 구마모토 한 지역 ≈ 48MB).
+     HEAD 로 물으면 있는지만 답이 온다(수백 바이트). 파일 미리보기(file:)·fetch 가 없는
+     브라우저·HEAD 를 거절하는 서버(404 이외의 실패)는 예전처럼 이미지로 두드린다 —
+     최악의 경우가 예전 동작이다. */
+  function exists(path, cb) {
+    function byImage() {
+      var img = new Image();
+      img.addEventListener('load',  function () { cb(true); });
+      img.addEventListener('error', function () { cb(false); });
+      img.src = path;
+    }
+    if (location.protocol === 'file:' || typeof fetch !== 'function') { byImage(); return; }
+    fetch(path, { method: 'HEAD' }).then(function (r) {
+      if (r.ok) cb(true);
+      else if (r.status === 404) cb(false);
+      else byImage();
+    }, byImage);
   }
 
   /* 화면에 가까워지면 한 번만 부른다. 관찰을 못 쓰는 브라우저에서는 바로 부른다 —
