@@ -9,6 +9,9 @@
 장수는 제한이 없습니다 — 한 장만 올려도 되고 열 장을 올려도 됩니다.
 GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 
+**번호 순서 = 숙소 외관 → 객실 → 식당 → 욕실·온천 → 로비·매점·세탁 같은 시설**(2026-09). 크게 보기가
+번호 순서대로 넘어가니 이 순서로 번호를 매겨 올리세요. 이미 올라간 사진도 이 순서로 매겨 두었습니다.
+
 ```
 2027/photos/kumamoto/prestige/01.webp    ← 아소 프레스티지
 2027/photos/kumamoto/prestige/02.webp       …원하는 만큼 이어서
@@ -45,7 +48,7 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 | 벳푸 · 아키바 리조트 | `akiba` | 아키바 리조트 | `resort` |
 | 벳푸 · 무츠키 료칸 | `mutsuki` | 무츠키 료칸 | `ryokan` |
 | 이바라키 · 시로사토 | `ibaraki` | 골프장 내 숙소 | `lodge` |
-| 이바라키 · 후쿠로다노타키 | `fukuroda` | 후쿠로다노타키CC 골프텔 | `lodge` |
+| 이바라키 · 후쿠로다노타키 | `fukuroda` | 후쿠로다노타키CC 호텔 | `lodge` |
 | 미야자키 · 국제공항CC | `miyazaki` | 골프장 숙소 | `lodge` |
 
 골프장 사진은 지역마다 `golf` 하나입니다.
@@ -69,7 +72,7 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 | 벳푸 · 아키바 리조트 | [아키바 리조트](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/akiba/resort) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/akiba/golf) |
 | 벳푸 · 무츠키 료칸 | [무츠키 료칸](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/mutsuki/ryokan) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/mutsuki/golf) |
 | 이바라키 · 시로사토 | [골프장 내 숙소](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/ibaraki/lodge) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/ibaraki/golf) |
-| 이바라키 · 후쿠로다노타키 | [후쿠로다노타키CC 골프텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/fukuroda/lodge) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/fukuroda/golf) |
+| 이바라키 · 후쿠로다노타키 | [후쿠로다노타키CC 호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/fukuroda/lodge) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/fukuroda/golf) |
 | 미야자키 · 국제공항CC | [골프장 숙소](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/miyazaki/lodge) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/miyazaki/golf) |
 
 ### 숙소를 더하거나 뺄 때
