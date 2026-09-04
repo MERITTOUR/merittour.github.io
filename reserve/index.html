@@ -357,6 +357,13 @@
     cursor:pointer;font-size:17px;color:var(--navy);font-family:inherit;}
   .cal-nav button:disabled{opacity:.35;cursor:not-allowed;}
   .cal-nav .ym{font-size:clamp(15px,min(1.7vw,1.9vh),21px);font-weight:800;}
+  /* 달 이름을 눌러 바로 건너뛴다. 글자 크기는 예전 span 과 같게 두고 화살표만 붙인다. */
+  .cal-nav select.ym{appearance:none;-webkit-appearance:none;border:1px solid var(--line);border-radius:9px;
+    background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%231a2740' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 11px center;
+    padding:6px 30px 6px 13px;color:var(--navy);font-family:inherit;cursor:pointer;line-height:1.2;}
+  .cal-nav select.ym:focus{outline:2px solid var(--navy);outline-offset:2px;}
+  .month-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px;}
+  .month-grid .opt.mo{padding:15px 6px;justify-content:center;text-align:center;font-weight:800;}
   .cal-dows,.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
   /* 달력 위에서 좌우로 밀면 달이 바뀐다.
      touch-action:pan-y — 세로는 브라우저(페이지 스크롤)에 맡기고 가로만 우리가 받는다.
@@ -531,11 +538,14 @@
   <div class="hero-inner">
     <div class="hero-copy">
       <h1 id="heroH1">회원님,<br><span class="u">이번 라운딩은 어디로 가시겠습니까?</span></h1>
-      <p>출발지 · 골프장 · 일정 · 인원만 고르면 바로 예약으로 이어집니다.</p>
+      <p>출발지 · 출발월 · 골프장 · 일정 · 인원만 고르면 바로 예약으로 이어집니다.</p>
       <div id="quotaChip" style="display:none;"></div>
       <div class="search">
         <button type="button" class="sfield" id="fOrigin" onclick="openSheet('origin')">
           <span class="ic">✈️</span><span class="val ph" id="vOrigin">출발지</span><span class="arrow">▼</span>
+        </button>
+        <button type="button" class="sfield" id="fMonth" onclick="openSheet('month')">
+          <span class="ic">📅</span><span class="val ph" id="vMonth">희망 출발월</span><span class="arrow">▼</span>
         </button>
         <button type="button" class="sfield" id="fResort" onclick="openSheet('resort')">
           <span class="ic">🏨</span><span class="val ph" id="vResort">골프장 · 호텔</span><span class="arrow">▼</span>
@@ -590,7 +600,7 @@
       <div class="pv-durs-hint">기간을 고르면 아래 달력에 <b>출발 가능한 날짜</b>가 표시됩니다.</div>
       <div class="cal-nav">
         <button type="button" id="pvPrev" onclick="pvMonth(-1)">‹</button>
-        <span class="ym" id="pvYm"></span>
+        <select class="ym" id="pvYm" onchange="pvGoMonth(this.value)" aria-label="달 바로 이동"></select>
         <button type="button" id="pvNext" onclick="pvMonth(1)">›</button>
       </div>
       <div class="cal-dows"><div class="sun">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div class="sat">토</div></div>
@@ -851,7 +861,9 @@ let pplTouched = false;
 function defaultPeople(){ return Math.max(MIN_PEOPLE, MEMBER.maxPeople || MIN_PEOPLE); }
 function applyDefaultPeople(){ if(!pplTouched) sel.people = defaultPeople(); }
 
-const sel = { origin:null, resortKey:null, durIdx:null, people:null };
+const sel = { origin:null, month:undefined, resortKey:null, durIdx:null, people:null };
+const SEASON_MONTHS = [3,4,5,6,7,8,9,10,11,12];   // 2027 시즌 = 3월~12월 (pvMonth 의 경계와 같다)
+function monthLabel(m){ return m ? `2027년 ${m}월 출발` : '아무 때나 · 가장 빠른 날부터'; }
 
 function catByOrigin(o){
   return CAT.map(g=>({ ...g,
@@ -915,17 +927,26 @@ function renderResortCards(){
 // ===== 선택 시트 =====
 let sheetKind = null;
 function openSheet(kind){
-  if(kind==='resort' && !sel.origin){ openSheet('origin'); return; }
-  if(kind==='dur' && !sel.resortKey){ openSheet(sel.origin?'resort':'origin'); return; }
-  if(kind==='ppl' && !sel.resortKey){ openSheet(sel.origin?'resort':'origin'); return; }
+  /* 출발지 → 출발월 → 골프장 → 기간 → 인원 순으로만 연다. 앞 단계가 비어 있으면 그리로 보낸다. */
+  const back = !sel.origin ? 'origin' : sel.month===undefined ? 'month' : !sel.resortKey ? 'resort' : null;
+  if(kind==='month' && !sel.origin){ openSheet('origin'); return; }
+  if(kind==='resort' && (!sel.origin || sel.month===undefined)){ openSheet(back); return; }
+  if((kind==='dur' || kind==='ppl') && !sel.resortKey){ openSheet(back); return; }
   sheetKind = kind;
-  const title = {origin:'어디서 출발하시나요?', resort:'어디로 가시나요?', dur:'얼마나 머무시나요?', ppl:'몇 분이 가시나요?'}[kind];
+  const title = {origin:'어디서 출발하시나요?', month:'언제 출발하시나요?', resort:'어디로 가시나요?', dur:'얼마나 머무시나요?', ppl:'몇 분이 가시나요?'}[kind];
   document.getElementById('sheetTitle').textContent = title;
   const body = document.getElementById('sheetBody');
   let html = '<div class="sheet-hint">고르시면 바로 적용되고 다음으로 넘어갑니다.</div>';
   if(kind==='origin'){
     html += ORIGINS.map(o=>`<button class="opt${sel.origin===o.id?' selected':''}" data-v="${o.id}">
       <span>${o.name}</span><span class="sub">${o.sub}</span></button>`).join('');
+  } else if(kind==='month'){
+    /* 달을 미리 고르면 달력이 그 달에서 열린다 — 시니어 회원이 ‹ › 를 여러 번 누르지 않게.
+       「아무 때나」는 가장 빠른 달(3월)에서 연다. 상품을 거르는 조건은 아니다. */
+    html += `<button class="opt${sel.month===null?' selected':''}" data-v="">
+      <span>아무 때나</span><span class="sub">가장 빠른 날부터 보여 드립니다</span></button>`;
+    html += '<div class="month-grid">' + SEASON_MONTHS.map(m=>`<button class="opt mo${sel.month===m?' selected':''}" data-v="${m}">
+      <span>${m}월</span></button>`).join('') + '</div>';
   } else if(kind==='resort'){
     const groups = catByOrigin(sel.origin);
     html += groups.map(g=>`<div class="grp-label">${g.region}</div>`+
@@ -978,6 +999,7 @@ function openSheet(kind){
         <div style="font-size:13px;font-weight:800;color:var(--muted);margin-bottom:6px">고르신 내용</div>
         <table style="font-size:15px;border-collapse:collapse">
           ${row('출발지', originName(sel.origin))}
+          ${row('출발월', sel.month===undefined ? '—' : monthLabel(sel.month))}
           ${row('골프장', it ? it.n : '—')}
           ${row('기간',   (it && sel.durIdx!=null) ? it.durs[sel.durIdx] : '—')}
           ${row('인원',   cur + '명')}
@@ -1003,8 +1025,10 @@ document.getElementById('sheetMask').onclick = (e)=>{ if(e.target.id==='sheetMas
 
 function pickOpt(v){
   if(sheetKind==='origin'){
-    if(sel.origin !== v){ sel.resortKey=null; sel.durIdx=null; } // 출발지 바뀌면 하위 초기화
+    if(sel.origin !== v){ sel.resortKey=null; sel.durIdx=null; } // 출발지 바뀌면 하위 초기화(출발월은 무관하니 둔다)
     sel.origin = v;
+  } else if(sheetKind==='month'){
+    sel.month = v==='' ? null : parseInt(v,10);
   } else if(sheetKind==='resort'){
     if(sel.resortKey !== v){ sel.durIdx=null; }
     sel.resortKey = v;
@@ -1017,7 +1041,8 @@ function pickOpt(v){
   closeSheet();
   // 선택 즉시 다음 필드 자동 오픈 (적용 버튼 없이 select→select)
   setTimeout(()=>{
-    if(sheetKind==='origin') openSheet('resort');
+    if(sheetKind==='origin') openSheet('month');
+    else if(sheetKind==='month') openSheet('resort');
     else if(sheetKind==='resort') openSheet('dur');
     else if(sheetKind==='dur' && !pplTouched) openSheet('ppl');
     // 인원까지 고르면 검색 버튼만 강조
@@ -1028,6 +1053,9 @@ function syncFields(){
   const vo=document.getElementById('vOrigin'), vr=document.getElementById('vResort'), vd=document.getElementById('vDur');
   if(sel.origin){ const o=ORIGINS.find(x=>x.id===sel.origin); vo.textContent=o.name; vo.classList.remove('ph'); }
   else { vo.textContent='출발지'; vo.classList.add('ph'); }
+  const vm=document.getElementById('vMonth');
+  if(sel.month!==undefined){ vm.textContent=monthLabel(sel.month); vm.classList.remove('ph'); }
+  else { vm.textContent='희망 출발월'; vm.classList.add('ph'); }
   const it = sel.resortKey ? findResort(sel.resortKey) : null;
   if(it){ vr.textContent=it.n; vr.classList.remove('ph'); } else { vr.textContent='골프장 · 호텔'; vr.classList.add('ph'); }
   if(it && sel.durIdx!=null){ vd.textContent=it.durs[sel.durIdx]; vd.classList.remove('ph'); }
@@ -1035,14 +1063,16 @@ function syncFields(){
   const vp=document.getElementById('vPpl');
   if(sel.people){ vp.textContent=`총 ${sel.people}명`; vp.classList.remove('ph'); }
   else { vp.textContent='인원'; vp.classList.add('ph'); }
-  document.getElementById('fResort').disabled = !sel.origin;
+  document.getElementById('fMonth').disabled  = !sel.origin;
+  document.getElementById('fResort').disabled = !sel.origin || sel.month===undefined;
   document.getElementById('fDur').disabled = !sel.resortKey;
   document.getElementById('fPpl').disabled = !sel.resortKey;
   const sub=document.getElementById('goSub');
-  const done = !!(sel.origin && sel.resortKey && sel.durIdx!=null && sel.people);
+  const done = !!(sel.origin && sel.month!==undefined && sel.resortKey && sel.durIdx!=null && sel.people);
   /* 「4개 중 N개」 식의 진행 표시는 두지 않는다 — 인원은 회원권에서 미리 채워져
      아무것도 안 골랐는데 「1개 선택」으로 떠서 되레 헷갈린다. 다음에 할 일만 적는다. */
   sub.textContent = !sel.origin ? '어디서 출발하시나요?'
+    : sel.month===undefined ? '언제 출발하시나요?'
     : !sel.resortKey ? '어디로 가시나요?'
     : sel.durIdx==null ? '얼마나 머무시나요?'
     : !sel.people ? '몇 분이 가시나요?'
@@ -1072,6 +1102,7 @@ function goToBook(extra){
 }
 function doSearch(){
   if(!sel.origin){ openSheet('origin'); return; }
+  if(sel.month===undefined){ openSheet('month'); return; }
   if(!sel.resortKey){ openSheet('resort'); return; }
   // 상품 상세(좌 설명 / 우 달력)로 이동 — 고른 기간을 그대로 반영
   openProduct(sel.resortKey);
@@ -1293,7 +1324,8 @@ function pvPricePerson(k,nights,dateStr){
 }
 
 function openProduct(k){
-  pv.key=k; pv.durIdx=0; pv.date=null; pv.room=null; pv.y=2027; pv.m=3;
+  pv.key=k; pv.durIdx=0; pv.date=null; pv.room=null; pv.y=2027;
+  pv.m = (sel.month && SEASON_MONTHS.includes(sel.month)) ? sel.month : 3;   // 희망 출발월에서 연다
   // 독채 별장은 최소 인원이 회원권 기본값보다 클 수 있어 그 아래로는 내려가지 않게 한다
   pv.people = Math.min(maxPaxOf(k), Math.max(minPaxOf(k), sel.people || defaultPeople()));
   document.getElementById('productView').classList.add('show');
@@ -1417,6 +1449,7 @@ function toggleItinMid(){
   fitPanelSoon && fitPanelSoon();
 }
 function pvSetDur(i){ pv.durIdx=i; pv.date=null; pv.room=null; renderPv(); }
+function pvGoMonth(m){ m=parseInt(m,10); if(!SEASON_MONTHS.includes(m)) return; pv.y=2027; pv.m=m; renderPvCal(); }
 function pvMonth(delta){
   let y=pv.y, m=pv.m+delta;
   if(m<1){m=12;y--;} if(m>12){m=1;y++;}
@@ -1575,7 +1608,11 @@ window.MT_FRESH_BUSY = function(){
 
 function renderPvCal(){
   const it=findResort(pv.key); const dows=pvDows(it);
-  document.getElementById('pvYm').textContent=`${pv.y}.${String(pv.m).padStart(2,'0')}`;
+  /* 달 이름은 <select> 다 — 누르면 시즌 안 열 달이 펼쳐져 바로 건너뛴다.
+     ‹ › 로 여섯 번 누르는 대신 한 번에 간다. 선택지는 처음 한 번만 만든다. */
+  const ym=document.getElementById('pvYm');
+  if(!ym.options.length) ym.innerHTML = SEASON_MONTHS.map(m=>`<option value="${m}">2027.${String(m).padStart(2,'0')}</option>`).join('');
+  ym.value=String(pv.m);
   document.getElementById('pvPrev').disabled=(pv.y===2027&&pv.m<=3);
   document.getElementById('pvNext').disabled=(pv.y===2027&&pv.m>=12);
   const first=new Date(pv.y,pv.m-1,1), last=new Date(pv.y,pv.m,0);
