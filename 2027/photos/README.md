@@ -58,6 +58,10 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 파일 이름을 `01.webp` `02.webp` … 로 맞춰 끌어다 놓고 아래 **Commit changes** 를 누르면 끝입니다.
 (엉뚱한 자리에 올라가는 일을 막으려면 저장소를 뒤져 들어가지 말고 이 링크로 여세요)
 
+⚠ **파일만 끌어다 놓으세요 — 폴더째 끌면 안 됩니다.** 링크가 이미 그 폴더를 가리키고 있어서, `nagoya/hotel/` 폴더째
+끌면 `nagoya/hotel/nagoya/hotel/01.webp` 처럼 한 단계 더 깊어져 안내문이 못 찾습니다(2026-09 포틴힐즈에서 한 번 —
+제자리로 옮겨 두었습니다). 숙소가 여럿이면 **링크를 숙소마다 따로 열어** 그 숙소 파일만 올리세요.
+
 | 지역 | 숙소 | 골프장 |
 |---|---|---|
 | 구마모토 · 아소 야마나미 | [아소 프레스티지](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/prestige) · [히노키 스테이](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/hinoki-stay) · [소보 테라스](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/sobo-terrace) · [쿠주힐즈](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/kuju) · [돔스테이](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/dome) · [야마나미 호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/hotel) · [간지호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/guernsey) · [시즈노야도 료칸](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/shizunoyado) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/golf) |
