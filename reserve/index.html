@@ -761,13 +761,13 @@ const ORIGINS = [
 //   · 부여된 횟수는 소멸하지 않고 다음 차수로 누적된다(1차 미사용 시 2차에 3회)
 // ============================================================
 const PRIORITY_SCHEDULE = [
-  { no:1, label:'1차 우선예약', opensAt:'2026-10-12T10:00:00', closesAt:'2026-10-13T10:00:00', grants:1 },
-  { no:2, label:'2차 우선예약', opensAt:'2026-10-14T10:00:00', closesAt:'2026-10-15T10:00:00', grants:2 },
-  { no:3, label:'3차 우선예약', opensAt:'2026-10-16T10:00:00', closesAt:'2026-10-17T10:00:00', grants:2 }
+  { no:1, label:'1차 우선예약', opensAt:'2026-10-19T10:00:00', closesAt:'2026-10-20T10:00:00', grants:1 },
+  { no:2, label:'2차 우선예약', opensAt:'2026-10-21T10:00:00', closesAt:'2026-10-22T10:00:00', grants:2 },
+  { no:3, label:'3차 우선예약', opensAt:'2026-10-23T10:00:00', closesAt:'2026-10-24T10:00:00', grants:2 }
 ];
-const FREE_OPEN_AT = '2026-10-17T10:00:00'; // 상시예약(잔여 개방) — 3차 종료와 동시에 시작
+const FREE_OPEN_AT = '2026-10-24T10:00:00'; // 상시예약(잔여 개방) — 3차 종료와 동시에 시작
 
-// 시연용 시각 시뮬레이션: ?sim=2026-10-13T10:00 또는 simNowSet('...')
+// 시연용 시각 시뮬레이션: ?sim=2026-10-20T10:00 또는 simNowSet('...')
 let _simNow = null;
 (function(){ const q=new URLSearchParams(location.search).get('sim'); if(q) _simNow=new Date(q); })();
 function simNow(){ return _simNow || new Date(); }
