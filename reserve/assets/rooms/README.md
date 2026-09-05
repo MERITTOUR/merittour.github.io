@@ -10,7 +10,7 @@ GitHub 웹에서 이 폴더 → **Add file → Upload files** 로 드래그하�
 | 파일명 | 숙소 |
 |---|---|
 | `yamanami.webp` | 야마나미 호텔 |
-| `kuzu.webp` | 쿠주힐즈 |
+| `kuzu.webp` | 쿠주 타운하우스 |
 | `aso_villa.webp` | 아소 프레스티지 |
 | `sobo_villa.webp` | 히노키 스테이 |
 | `sobo5.webp` | 소보 테라스 |

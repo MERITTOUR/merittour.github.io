@@ -38,7 +38,7 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 | 구마모토 · 아소 야마나미 | `kumamoto` | 아소 프레스티지 | `prestige` |
 | | | 히노키 스테이 | `hinoki-stay` |
 | | | 소보 테라스 | `sobo-terrace` |
-| | | 쿠주힐즈 | `kuju` |
+| | | 쿠주 타운하우스 | `kuju` |
 | | | 돔스테이 | `dome` |
 | | | 야마나미 호텔 | `hotel` |
 | | | 간지호텔 | `guernsey` |
@@ -67,7 +67,7 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 
 | 지역 | 숙소 | 골프장 |
 |---|---|---|
-| 구마모토 · 아소 야마나미 | [아소 프레스티지](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/prestige) · [히노키 스테이](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/hinoki-stay) · [소보 테라스](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/sobo-terrace) · [쿠주힐즈](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/kuju) · [돔스테이](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/dome) · [야마나미 호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/hotel) · [간지호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/guernsey) · [시즈노야도 료칸](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/shizunoyado) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/golf) |
+| 구마모토 · 아소 야마나미 | [아소 프레스티지](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/prestige) · [히노키 스테이](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/hinoki-stay) · [소보 테라스](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/sobo-terrace) · [쿠주 타운하우스](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/kuju) · [돔스테이](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/dome) · [야마나미 호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/hotel) · [간지호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/guernsey) · [시즈노야도 료칸](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/shizunoyado) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/kumamoto/golf) |
 | 나고야 · 포틴힐즈 | [포틴힐즈CC 호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/nagoya/hotel) · [포틴힐즈CC 카라반](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/nagoya/caravan) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/nagoya/golf) |
 | 벳푸 · 아키바 리조트 | [아키바 리조트](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/akiba/resort) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/akiba/golf) |
 | 벳푸 · 무츠키 료칸 | [무츠키 료칸](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/mutsuki/ryokan) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/mutsuki/golf) |
