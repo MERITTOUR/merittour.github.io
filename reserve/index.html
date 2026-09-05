@@ -757,13 +757,13 @@ const ORIGINS = [
 //   3차 10/16 10:00 ~ 10/17 10:00  +2회
 //   ※ 특별 회원권은 **우선예약 대상이 아니다** — 차수와 무관하게 상시예약 기간부터
 //     일반 고객과 같은 조건으로 예약한다. (예전에는 3차만 참여였다)
-//   · 차수 사이(20~21일·22~23일)와 3차 종료 뒤 상시예약 전까지는 접수 휴지 기간 — 예약 진행 불가, 다음 차수 안내
+//   · 차수 사이(27~28일·29~30일)와 3차 종료 뒤 상시예약 전까지는 접수 휴지 기간 — 예약 진행 불가, 다음 차수 안내
 //   · 부여된 횟수는 소멸하지 않고 다음 차수로 누적된다(1차 미사용 시 2차에 3회)
 // ============================================================
 const PRIORITY_SCHEDULE = [
-  { no:1, label:'1차 우선예약', opensAt:'2026-10-19T10:00:00', closesAt:'2026-10-20T10:00:00', grants:1 },
-  { no:2, label:'2차 우선예약', opensAt:'2026-10-21T10:00:00', closesAt:'2026-10-22T10:00:00', grants:2 },
-  { no:3, label:'3차 우선예약', opensAt:'2026-10-23T10:00:00', closesAt:'2026-10-24T10:00:00', grants:2 }
+  { no:1, label:'1차 우선예약', opensAt:'2026-10-26T10:00:00', closesAt:'2026-10-27T10:00:00', grants:1 },
+  { no:2, label:'2차 우선예약', opensAt:'2026-10-28T10:00:00', closesAt:'2026-10-29T10:00:00', grants:2 },
+  { no:3, label:'3차 우선예약', opensAt:'2026-10-30T10:00:00', closesAt:'2026-10-31T10:00:00', grants:2 }
 ];
 // 상시예약(잔여 개방) — 3차 종료와 동시가 아니라 우선예약을 다 정리한 뒤 11월 말 오픈 예정(2026-09 · Min).
 //   FREE_OPEN_AT 은 확정 전 자리값(판정·시뮬레이션용). 화면에는 FREE_OPEN_LABEL 을 보여 주고,
@@ -772,7 +772,7 @@ const FREE_OPEN_AT = '2026-11-30T10:00:00';
 const FREE_OPEN_LABEL = '11월 말(예정)';
 function freeOpenText(){ return FREE_OPEN_LABEL || fmtOpen(FREE_OPEN_AT); }
 
-// 시연용 시각 시뮬레이션: ?sim=2026-10-20T10:00 또는 simNowSet('...')
+// 시연용 시각 시뮬레이션: ?sim=2026-10-27T10:00 또는 simNowSet('...')
 let _simNow = null;
 (function(){ const q=new URLSearchParams(location.search).get('sim'); if(q) _simNow=new Date(q); })();
 function simNow(){ return _simNow || new Date(); }
