@@ -757,7 +757,7 @@ const ORIGINS = [
 //   3차 10/16 10:00 ~ 10/17 10:00  +2회
 //   ※ 특별 회원권은 **우선예약 대상이 아니다** — 차수와 무관하게 상시예약 기간부터
 //     일반 고객과 같은 조건으로 예약한다. (예전에는 3차만 참여였다)
-//   · 차수 사이(13~14일·15~16일)는 접수 휴지 기간 — 예약 진행 불가, 다음 차수 안내
+//   · 차수 사이(20~21일·22~23일)와 3차 종료 뒤 상시예약 전까지는 접수 휴지 기간 — 예약 진행 불가, 다음 차수 안내
 //   · 부여된 횟수는 소멸하지 않고 다음 차수로 누적된다(1차 미사용 시 2차에 3회)
 // ============================================================
 const PRIORITY_SCHEDULE = [
@@ -765,7 +765,12 @@ const PRIORITY_SCHEDULE = [
   { no:2, label:'2차 우선예약', opensAt:'2026-10-21T10:00:00', closesAt:'2026-10-22T10:00:00', grants:2 },
   { no:3, label:'3차 우선예약', opensAt:'2026-10-23T10:00:00', closesAt:'2026-10-24T10:00:00', grants:2 }
 ];
-const FREE_OPEN_AT = '2026-10-24T10:00:00'; // 상시예약(잔여 개방) — 3차 종료와 동시에 시작
+// 상시예약(잔여 개방) — 3차 종료와 동시가 아니라 우선예약을 다 정리한 뒤 11월 말 오픈 예정(2026-09 · Min).
+//   FREE_OPEN_AT 은 확정 전 자리값(판정·시뮬레이션용). 화면에는 FREE_OPEN_LABEL 을 보여 주고,
+//   날짜가 확정되면 FREE_OPEN_AT 을 맞춘 뒤 FREE_OPEN_LABEL 을 '' 로 두면 날짜가 그대로 찍힌다.
+const FREE_OPEN_AT = '2026-11-30T10:00:00';
+const FREE_OPEN_LABEL = '11월 말(예정)';
+function freeOpenText(){ return FREE_OPEN_LABEL || fmtOpen(FREE_OPEN_AT); }
 
 // 시연용 시각 시뮬레이션: ?sim=2026-10-20T10:00 또는 simNowSet('...')
 let _simNow = null;
@@ -797,14 +802,14 @@ function priorityBlock(k){
   const p=priorityOnly(k);
   if(!p || !AUTH || p.grades.map(gradeKey).includes(gradeKey(AUTH.grade))) return null;
   return (p.block || `이 상품은 우선예약 기간에 ${p.grades.join('·')} 회원님께서 예약하실 수 있습니다. `)+
-         `회원님께서는 상시예약이 시작되는 ${fmtOpen(FREE_OPEN_AT)}부터 예약하실 수 있습니다.`;
+         `회원님께서는 상시예약이 시작되는 ${freeOpenText()}부터 예약하실 수 있습니다.`;
 }
 // 상품 상세 체크 항목에 붙는 안내 — 상시예약이 시작되면 제한이 풀리므로 그때는 적지 않는다
 function priorityNotes(k){
   const p=priorityOnly(k);
   if(!p) return [];
-  return [p.note ? `${p.note}${fmtOpen(FREE_OPEN_AT)}부터 예약하실 수 있습니다`
-                 : `우선예약 기간에는 <b>${p.grades.join('·')}</b> 회원님께서 예약하실 수 있습니다 (골프장 계약 조건) · 상시예약 ${fmtOpen(FREE_OPEN_AT)}부터 전 회원`];
+  return [p.note ? `${p.note}${freeOpenText()}부터 예약하실 수 있습니다`
+                 : `우선예약 기간에는 <b>${p.grades.join('·')}</b> 회원님께서 예약하실 수 있습니다 (골프장 계약 조건) · 상시예약 ${freeOpenText()}부터 전 회원`];
 }
 function originName(id){ const o=ORIGINS.find(x=>x.id===id); return o ? o.name : '—'; }
 // 횟수 부여 = 오픈 시각을 지나면 이후로도 유지(누적) / 접수 가능 = 그 차수의 시간대 안
@@ -827,7 +832,7 @@ function roundBlock(){
      그 회원에게는 애초에 올 차수가 없다 — 기다리면 되는 것처럼 읽힌다. */
   if(isSpecialGrade(AUTH.grade))
     return `${AUTH.grade}은 우선예약 대상이 아닙니다. `+
-           `상시예약이 시작되는 ${fmtOpen(FREE_OPEN_AT)}부터 잔여 객실에 한해 예약하실 수 있습니다.`;
+           `상시예약이 시작되는 ${freeOpenText()}부터 잔여 객실에 한해 예약하실 수 있습니다.`;
   if(activeRound(AUTH.grade)) return null;
   return null;   // 자격은 있는데 지금 열린 차수가 없음 = 휴지 기간
 }
@@ -1849,7 +1854,7 @@ function betweenRoundsNotice(){
     <div class="stp-hint">
       지금은 <b>우선예약 접수 시간이 아닙니다.</b><br>
       ${nx?`${nx.label} 접수는 <b>${fmtOpen(nx.opensAt)} ~ ${fmtOpen(nx.closesAt)}</b> 입니다.`
-          :`우선예약 접수가 모두 끝났습니다. 상시예약은 <b>${fmtOpen(FREE_OPEN_AT)}</b>부터입니다.`}<br>
+          :`우선예약 접수가 모두 끝났습니다. 상시예약은 <b>${freeOpenText()}</b>부터입니다.`}<br>
       보유하신 예약 가능 횟수(<b>${quotaLeft(myQuota())}회</b>)는 그대로 유지됩니다.
     </div>
     <button class="opt" onclick="closeSheet();openMyPage();" style="margin-top:14px;justify-content:center;font-weight:800;">마이페이지에서 확인</button>`;
@@ -2031,7 +2036,7 @@ function renderQuotaChip(){
       border:1px solid rgba(232,217,184,.55);border-radius:999px;padding:9px 16px;margin-bottom:16px;font-size:14.5px;">
       <b style="color:#e8d9b8;">우선예약 대상 아님</b>
       <span style="color:rgba(255,255,255,.82);">${AUTH.grade}은 상시예약 기간부터 예약하실 수 있습니다.</span>
-    </div><div style="font-size:13.5px;color:rgba(255,255,255,.8);margin:-8px 0 16px;">상시예약 <b>${fmtOpen(FREE_OPEN_AT)}</b>부터 · 잔여 객실에 한해 횟수 제한 없이</div>`;
+    </div><div style="font-size:13.5px;color:rgba(255,255,255,.8);margin:-8px 0 16px;">상시예약 <b>${freeOpenText()}</b>부터 · 잔여 객실에 한해 횟수 제한 없이</div>`;
     return;
   }
   const q=myQuota(), left=quotaLeft(q);
@@ -2051,7 +2056,7 @@ function renderQuotaChip(){
       act ? `<b>${act.label} 접수 중</b> · ${fmtOpen(act.closesAt)}까지`+
             (nx?` · 다음 ${nx.label} ${fmtOpen(nx.opensAt)} ~ ${fmtOpen(nx.closesAt)} · +${nx.grants}회`:'')
       : nx ? `지금은 접수 시간이 아닙니다 · ${nx.label} <b>${fmtOpen(nx.opensAt)} ~ ${fmtOpen(nx.closesAt)}</b> · +${nx.grants}회 추가`
-      : `우선예약 접수 종료 · 상시예약 <b>${fmtOpen(FREE_OPEN_AT)}</b>부터`}</div>`;
+      : `우선예약 접수 종료 · 상시예약 <b>${freeOpenText()}</b>부터`}</div>`;
 }
 function onAuthClick(){ AUTH ? logout() : openLogin(); }
 function logout(){
@@ -2207,7 +2212,7 @@ function doLogin(rawId, pw){
       <span class="desc">${AUTH.grade} · 예약 가능 인원 최대 ${AUTH.maxPeople}명<br>
         ${isFreePeriod() ? '<b>상시예약 기간</b> — 잔여 객실에 한해 횟수 제한 없이 예약하실 수 있습니다.'
           : isSpecialGrade(AUTH.grade)
-            ? `<b>우선예약 대상이 아닙니다.</b> 상시예약 ${fmtOpen(FREE_OPEN_AT)}부터 예약하실 수 있습니다.`
+            ? `<b>우선예약 대상이 아닙니다.</b> 상시예약 ${freeOpenText()}부터 예약하실 수 있습니다.`
             : `남은 예약 가능 횟수 <b>${quotaLeft(myQuota())}회</b>`}</span>
     </div>
     <div class="stp-hint" style="margin-top:12px;">보안을 위해 로그인 후 비밀번호 변경을 권장드립니다.</div>
@@ -2319,7 +2324,7 @@ function openMyPage(){
       : isSpecialGrade(AUTH.grade) ? `<div class="opt stack" style="cursor:default;">
         <span class="nm" style="font-size:15.5px;">우선예약 대상 아님</span>
         <span class="desc">${AUTH.grade}은 우선예약 차수에 참여하지 않습니다.
-          <b>상시예약 ${fmtOpen(FREE_OPEN_AT)}</b>부터 일반 예약과 같은 조건으로 예약하실 수 있습니다.</span>
+          <b>상시예약 ${freeOpenText()}</b>부터 일반 예약과 같은 조건으로 예약하실 수 있습니다.</span>
       </div>`
       : [q.round1,q.round2,q.round3].map(r=>{
       if(!r.opened) return `<div class="opt stack" style="cursor:default;">
@@ -2333,7 +2338,7 @@ function openMyPage(){
     ${(isFreePeriod()||isSpecialGrade(AUTH.grade)) ? '' : `<div class="stp-hint" style="margin-top:8px;">
       차수마다 24시간 접수 창이 열리고 횟수가 누적됩니다 — 1차 +1회 · 2차 +2회 · 3차 +2회 (총 5회).<br>
       차수 사이에는 접수가 닫히지만 <b>남은 횟수는 그대로 유지</b>되어 다음 차수에 사용하실 수 있습니다.<br>
-      상시예약은 ${fmtOpen(FREE_OPEN_AT)}부터 잔여 객실에 한해 가능합니다.
+      상시예약은 ${freeOpenText()}부터 잔여 객실에 한해 가능합니다.
     </div>`}
 
     <div class="grp-label">예약 내역</div>
