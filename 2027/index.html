@@ -107,6 +107,8 @@
   .mt thead th{font-size:11.5px;font-weight:800;color:var(--muted);letter-spacing:.04em;
     border-bottom:1.5px solid var(--line);padding-bottom:7px;background:var(--band)}
   .mt tbody th{font-weight:800;color:var(--ink);white-space:nowrap;width:1%;padding-right:14px}
+  /* 공휴일 표는 날짜 칸이 길어(5월 3일(월) ~ 5일(수)) 폰에서 이름 칸이 좁아진다 — 날짜 칸만 줄바꿈 허용 */
+  #holidays tbody th{white-space:normal;width:42%}
   .mt td{color:var(--ink-soft);font-weight:500}
   .mt td b{color:var(--ink);font-weight:700}
   .mt tbody tr:last-child th,.mt tbody tr:last-child td{border-bottom:none}
@@ -575,14 +577,14 @@
   <section class="reveal" id="s-02">
     <div class="kicker"><span class="no">02</span><h2>예약 오픈 일정</h2></div>
     <dl class="facts">
-      <dt>오픈 일시</dt><dd><b>2026년 10월 19일(월) 오전 10시</b></dd>
+      <dt>오픈 일시</dt><dd><b>2026년 10월 19일(월) 오전&nbsp;10시</b></dd>
       <dt>접수 방법</dt><dd>메리트투어 예약 홈페이지 <a href="https://www.merittour.co.kr" style="color:var(--olive-deep);font-weight:800;text-decoration:none">www.merittour.co.kr</a>
         <div class="note"><div>※ 예약 홈페이지는 <b>우선예약 기간 오픈 전에 전면 개편</b>될 예정입니다. 새 화면과 이용 방법은 오픈 전에 다시 안내드립니다.</div></div></dd>
       <dt>로그인 방법</dt><dd>회원가입 없이 아래 방법으로 바로 로그인하실 수 있습니다.
         <table class="mt" style="margin-top:8px">
           <tbody>
-            <tr><th style="width:84px">아이디</th><td>대문자 영문 성 + 휴대폰번호 <span class="soft">(예: HONG01012345678)</span></td></tr>
-            <tr><th>비밀번호</th><td>휴대폰번호 <span class="soft">(예: 01012345678)</span></td></tr>
+            <tr><th style="width:84px">아이디</th><td>대문자 영문 성 + 휴대폰번호 <span class="soft">(예:&nbsp;HONG01012345678)</span></td></tr>
+            <tr><th>비밀번호</th><td>휴대폰번호 <span class="soft">(예:&nbsp;01012345678)</span></td></tr>
           </tbody>
         </table>
         <div class="cav">· 로그인 후 비밀번호 변경을 권장드립니다.<br>· 로그인이 되지 않는 경우 메리트투어 <a href="https://pf.kakao.com/_dxhWus/chat" target="_blank" rel="noopener" style="color:var(--olive-deep);font-weight:800">카카오톡 채널</a>로 문의하여 주시기 바랍니다.</div></dd>
@@ -590,14 +592,14 @@
     </dl>
 
     <h3 class="subh" style="margin-top:26px">예약 회차</h3>
-    <p class="soft" style="margin:0 0 14px">각 회차는 <b style="color:var(--ink)">오전 10시에 열려 다음 날 오전 10시에 닫힙니다.</b></p>
+    <p class="soft" style="margin:0 0 14px">각 회차는 <b style="color:var(--ink)">오전&nbsp;10시에 열려 다음 날 오전&nbsp;10시에 닫힙니다.</b></p>
     <dl class="facts">
-      <dt>1차</dt><dd>10월 19일(월) 오전 10시 ~ 20일(화) 오전 10시 · <b>1회 예약 가능</b></dd>
-      <dt>2차</dt><dd>10월 21일(수) 오전 10시 ~ 22일(목) 오전 10시 · <b>2회 예약 가능</b></dd>
-      <dt>3차</dt><dd>10월 23일(금) 오전 10시 ~ 24일(토) 오전 10시 · <b>2회 예약 가능</b></dd>
+      <dt>1차</dt><dd>10월 19일(월) 오전&nbsp;10시 ~ 20일(화) 오전&nbsp;10시 · <b>1회 예약 가능</b></dd>
+      <dt>2차</dt><dd>10월 21일(수) 오전&nbsp;10시 ~ 22일(목) 오전&nbsp;10시 · <b>2회 예약 가능</b></dd>
+      <dt>3차</dt><dd>10월 23일(금) 오전&nbsp;10시 ~ 24일(토) 오전&nbsp;10시 · <b>2회 예약 가능</b></dd>
       <dt>합계</dt><dd><b>총 5회 예약 가능</b></dd>
     </dl>
-    <p class="soft" style="margin:14px 0 0;font-size:14px">※ 회차가 닫히면 다음 회차가 열릴 때까지 화면에 <b style="color:var(--ink)">예약 마감</b>으로 표시됩니다. 자리가 없어진 것이 아니라 <b style="color:var(--ink)">앞 회차 예약을 정리하는 시간</b>이며, 다음 회차 오전 10시에 다시 열립니다.</p>
+    <p class="soft" style="margin:14px 0 0;font-size:14px">※ 회차가 닫히면 다음 회차가 열릴 때까지 화면에 <b style="color:var(--ink)">예약 마감</b>으로 표시됩니다. 자리가 없어진 것이 아니라 <b style="color:var(--ink)">앞 회차 예약을 정리하는 시간</b>이며, 다음 회차 오전&nbsp;10시에 다시 열립니다.</p>
     <p class="soft" style="margin:8px 0 0;font-size:14px">※ 같은 기간에 함께 가시는 경우, 각자 로그인하신 뒤 동일 기간으로 예약하여 주시기 바랍니다.</p>
     <p class="soft" style="margin:8px 0 0;font-size:14px">※ 우선예약 접수가 모두 끝나 정리된 뒤, <b style="color:var(--ink)">11월 말</b>에 <b style="color:var(--ink)">상시예약 기간</b>이 열릴 예정입니다. 3차가 닫힌 뒤 상시예약이 열릴 때까지는 예약 마감으로 표시됩니다. 상시예약 기간에는 잔여 일정을 횟수 제한 없이 예약하실 수 있으며, 예약은 <b style="color:var(--ink)">회원님 성함으로 진행</b>되고 함께 가시는 분은 회원님 예약에 더해 모십니다.</p>
     <div class="callout">
@@ -631,20 +633,20 @@
       <span class="r-sub">구마모토 · 아소 야마나미CC(27홀) / 구주고원CC(18홀)</span>
     </div>
     <dl class="facts">
-      <dt>도착 공항</dt><dd>구마모토 공항(KMJ) <span class="soft">· 리조트까지 약 1시간</span></dd>
+      <dt>도착 공항</dt><dd>구마모토 공항(KMJ) <span class="soft">· 리조트까지 약&nbsp;1시간</span></dd>
       <dt>출발지</dt><dd>인천 · 김해</dd>
       <dt>라운딩</dt><dd>
         <table class="mt mt-fold" style="--kw:86px">
           <thead><tr><th></th><th>주중</th><th>주말 · 일본 공휴일</th></tr></thead>
           <tbody>
             <tr><th>아소 <br>야마나미</th>
-              <td data-k="주중">아소 야마나미CC <b>18홀 + 9홀</b> 서비스 라운딩</td>
+              <td data-k="주중">아소 야마나미CC <b>18홀&nbsp;+&nbsp;9홀</b> 서비스&nbsp;라운딩</td>
               <td data-k="주말·공휴일">아소 야마나미CC <b>18홀</b></td></tr>
             <tr><th>간지호텔</th>
-              <td data-k="주중">구주고원CC <b>18홀 + 9홀</b> 서비스 라운딩</td>
+              <td data-k="주중">구주고원CC <b>18홀&nbsp;+&nbsp;9홀</b> 서비스&nbsp;라운딩</td>
               <td data-k="주말·공휴일">아소 야마나미CC <b>18홀</b></td></tr>
             <tr><th>시즈노야도 <br>료칸</th>
-              <td data-k="주중">아소 야마나미CC <b>18홀 + 9홀</b> 서비스 라운딩</td>
+              <td data-k="주중">아소 야마나미CC <b>18홀&nbsp;+&nbsp;9홀</b> 서비스&nbsp;라운딩</td>
               <td data-k="주말·공휴일">아소 야마나미CC <b>18홀</b></td></tr>
           </tbody>
         </table>
@@ -684,7 +686,7 @@
             <tr><th>아소 프레스티지</th>
               <td>체재일 동안 <b>무료 제공 혜택</b></td></tr>
             <tr><th>그 밖의 숙소</th>
-              <td><b>1일 1대 2,000엔</b></td></tr>
+              <td><b>1일&nbsp;1대&nbsp;2,000엔</b></td></tr>
           </tbody>
         </table></dd>
     </dl>
@@ -693,23 +695,23 @@
     <ul class="lodging">
       <li data-lg="prestige">
         <div class="lg-name">아소 프레스티지 <span class="lg-jp">ASO PRESTIGE · 4 Suites</span></div>
-        <div class="lg-desc">아소산 속, 소중한 분들과 함께 머무는 <b>8인 별장</b> · 1동 · 전용 가라오케 · 야마나미 호텔에서 200m · 이동용 카트 제공</div>
+        <div class="lg-desc">아소산 속, 소중한 분들과 함께 머무는 <b>8인&nbsp;별장</b> · 1동 · 전용 가라오케 · 야마나미 호텔에서 200m · 이동용 카트&nbsp;제공</div>
       </li>
       <li data-lg="hinoki-stay">
         <div class="lg-name">히노키 스테이 <span class="lg-jp">HINOKI STAY</span></div>
-        <div class="lg-desc">편백으로 지은 <b>2인 별장</b> · 3동 · 야마나미 호텔에서 70m · 이동용 카트 제공</div>
+        <div class="lg-desc">편백으로 지은 <b>2인&nbsp;별장</b> · 3동 · 야마나미 호텔에서 70m · 이동용 카트&nbsp;제공</div>
       </li>
       <li data-lg="sobo-terrace">
         <div class="lg-name">소보 테라스 <span class="lg-jp">SOBO TERRACE</span></div>
-        <div class="lg-desc">네 분만을 위한 <b>4인 독채 별장</b> · 1동 · 야마나미 호텔에서 70m · 이동용 카트 제공 <span style="color:var(--olive-deep);font-weight:800;font-size:12px;letter-spacing:.03em">NEW · 신규</span></div>
+        <div class="lg-desc">네 분만을 위한 <b>4인&nbsp;독채 별장</b> · 1동 · 야마나미 호텔에서 70m · 이동용 카트&nbsp;제공 <span style="color:var(--olive-deep);font-weight:800;font-size:12px;letter-spacing:.03em">NEW · 신규</span></div>
       </li>
       <li data-lg="dome">
         <div class="lg-name">돔스테이 <span class="lg-jp">DOME STAY</span></div>
-        <div class="lg-desc">아소 코스 옆 아늑한 <b>2인 돔형 숙소</b> · 4동 · 야마나미 호텔에서 200m · 이동용 카트 제공</div>
+        <div class="lg-desc">아소 코스 옆 아늑한 <b>2인&nbsp;돔형 숙소</b> · 4동 · 야마나미 호텔에서 200m · 이동용 카트&nbsp;제공</div>
       </li>
       <li data-lg="kuju">
         <div class="lg-name">쿠주 타운하우스 <span class="lg-jp">KUJU TOWNHOUSE</span></div>
-        <div class="lg-desc"><b style="color:var(--gold);font-weight:800">장기숙박 이용권 회원님 전용</b> · 쿠주 코스 옆 2025년 신축 별장형 롯지 · 침실 · 주방 · 세탁기를 갖춘 단독주택 · 2인 1동 · 야마나미 호텔에서 차로 2분 · 이동 송영 서비스 제공</div>
+        <div class="lg-desc"><b style="color:var(--gold);font-weight:800">장기숙박 이용권 회원님 전용</b> · 쿠주 코스 옆 2025년 신축 별장형 롯지 · 침실 · 주방 · 세탁기를 갖춘 단독주택 · 2인&nbsp;1동 · 야마나미 호텔에서 차로 2분 · 이동 송영 서비스&nbsp;제공</div>
       </li>
     </ul>
 
@@ -717,7 +719,7 @@
     <ul class="lodging">
       <li data-lg="hotel">
         <div class="lg-name">야마나미 호텔 <span class="lg-jp">YAMANAMI HOTEL</span></div>
-        <div class="lg-desc">골프장과 바로 연결된 리조트 본관 · 창밖으로 펼쳐지는 아소산 전경 · <b>2인 1실 트윈</b> · 온천 대욕장</div>
+        <div class="lg-desc">골프장과 바로 연결된 리조트 본관 · 창밖으로 펼쳐지는 아소산 전경 · <b>2인&nbsp;1실 트윈</b> · 온천&nbsp;대욕장</div>
       </li>
       <li data-lg="guernsey">
         <div class="lg-name">간지호텔 <span class="lg-jp">ザ・ガンジー · THE GUERNSEY HOTEL &amp; RESORT</span></div>
@@ -729,28 +731,28 @@
     <ul class="lodging">
       <li data-lg="shizunoyado">
         <div class="lg-name">시즈노야도 료칸 <span class="lg-jp">満願寺温泉 志津の宿</span></div>
-        <div class="lg-desc"><b>700년 넘게 이어온 만간지 온천</b>을 그대로 쓰는 <b>일본 전통 료칸</b> · 다다미 객실 2인 1실 · 아소 야마나미 리조트에서 차로 30분, 조용한 산촌에 있습니다</div>
+        <div class="lg-desc"><b>700년 넘게 이어온 만간지 온천</b>을 그대로 쓰는 <b>일본 전통 료칸</b> · 다다미 객실 2인&nbsp;1실 · 아소 야마나미 리조트에서 차로 30분, 조용한 산촌에 있습니다</div>
       </li>
     </ul>
 
     <h3 class="subh" style="margin-top:28px">체류 일정</h3>
-    <p class="soft" style="margin:0 0 16px">숙소별로 아래 체류 일정(입실요일 → 퇴실요일)으로 예약이 진행됩니다.</p>
+    <p class="soft" style="margin:0 0 16px">숙소별로 아래 체류 일정(입실요일&nbsp;→&nbsp;퇴실요일)으로 예약이 진행됩니다.</p>
 
     <div class="stay-grp">
       <p class="stay-lbl">독채 숙소 · 간지호텔 · 시즈노야도 료칸</p>
       <div class="patterns">
-        <div class="pat"><b>목 → 일</b><span>3박</span></div>
-        <div class="pat"><b>일 → 목</b><span>4박</span></div>
-        <div class="pat"><b>일 → 일</b><span>7박</span></div>
+        <div class="pat"><b>목&nbsp;→&nbsp;일</b><span>3박</span></div>
+        <div class="pat"><b>일&nbsp;→&nbsp;목</b><span>4박</span></div>
+        <div class="pat"><b>일&nbsp;→&nbsp;일</b><span>7박</span></div>
       </div>
     </div>
 
     <div class="stay-grp">
       <p class="stay-lbl">야마나미 호텔</p>
       <div class="patterns">
-        <div class="pat"><b>목 → 일</b><span>3박</span></div>
-        <div class="pat"><b>일 → 목</b><span>4박</span></div>
-        <div class="pat"><b>수 → 수</b><span>7박</span></div>
+        <div class="pat"><b>목&nbsp;→&nbsp;일</b><span>3박</span></div>
+        <div class="pat"><b>일&nbsp;→&nbsp;목</b><span>4박</span></div>
+        <div class="pat"><b>수&nbsp;→&nbsp;수</b><span>7박</span></div>
       </div>
     </div>
 
@@ -761,7 +763,7 @@
       <tbody>
         <tr><th>야마나미 호텔</th>
           <td data-k="체재비"><b>15,000엔</b></td>
-          <td data-k="비고">싱글룸 요청 시 1박 · 1인당 <b>2,200엔</b> 추가</td></tr>
+          <td data-k="비고">싱글룸 요청 시 1박 · 1인당 <b>2,200엔</b>&nbsp;추가</td></tr>
         <tr><th>간지호텔 · <br>시즈노야도 료칸</th>
           <td data-k="체재비"><b>17,000엔</b></td>
           <td data-k="비고"></td></tr>
@@ -774,10 +776,10 @@
       </tbody>
     </table>
     <div class="note">
-      <div><span class="k">공항 송영</span> 왕복 <b>1인 6,000엔</b></div>
+      <div><span class="k">공항 송영</span> 왕복 <b>1인&nbsp;6,000엔</b></div>
     </div>
     <div class="cav">· 주류는 현지 사정에 따라 다른 종류의 주류로 제공될 수 있습니다.</div>
-    <p class="soft" style="margin:12px 0 0;font-size:14px">※ <b style="color:var(--ink)">홀수 인원 추가요금</b> — 간지호텔 · 시즈노야도 료칸 · 히노키 스테이 · 쿠주 타운하우스는 <b>싱글룸이 없어 2인 1실 기준</b>으로 운영되며, 부득이하게 홀수 인원이 되어 <b>1인 단독 사용</b>이 발생하는 경우 <b style="color:var(--ink)">1박·1인당 4,400엔</b>이 추가됩니다.</p>
+    <p class="soft" style="margin:12px 0 0;font-size:14px">※ <b style="color:var(--ink)">홀수 인원 추가요금</b> — 간지호텔 · 시즈노야도 료칸 · 히노키 스테이 · 쿠주 타운하우스는 <b>싱글룸이 없어 2인&nbsp;1실 기준</b>으로 운영되며, 부득이하게 홀수 인원이 되어 <b>1인 단독 사용</b>이 발생하는 경우 <b style="color:var(--ink)">1박·1인당&nbsp;4,400엔</b>이 추가됩니다.</p>
     </div><!-- /구마모토 -->
 
     <div class="region" id="r-nagoya">
@@ -791,15 +793,15 @@
         그 밖의 회원님께서는 <b>상시예약 기간부터</b> 예약하실 수 있습니다.
       </div>
       <dl class="facts">
-        <dt>도착 공항</dt><dd>나고야 중부국제공항(NGO) <span class="soft">· 골프장까지 약 1시간 40분</span></dd>
+        <dt>도착 공항</dt><dd>나고야 중부국제공항(NGO) <span class="soft">· 골프장까지 약&nbsp;1시간&nbsp;40분</span></dd>
         <dt>출발지</dt><dd>인천 · 김해</dd>
-        <dt>체류 일정</dt><dd>목 → 일 3박 · 일 → 목 4박 · 일 → 일 7박</dd>
-        <dt>라운딩</dt><dd>포틴힐즈CC · 주중 18홀 + 9홀 서비스 라운딩 · 주말·일본 공휴일 18홀</dd>
+        <dt>체류 일정</dt><dd>목&nbsp;→&nbsp;일 3박 · 일&nbsp;→&nbsp;목 4박 · 일&nbsp;→&nbsp;일 7박</dd>
+        <dt>라운딩</dt><dd>포틴힐즈CC · 주중 18홀&nbsp;+&nbsp;9홀 서비스&nbsp;라운딩 · 주말·일본 공휴일&nbsp;18홀</dd>
         <dt>식사</dt><dd>
           <table class="mt">
             <tbody>
               <tr><th>조식</th><td>매일 <b>뷔페</b></td></tr>
-              <tr><th>중식</th><td>체류일 — <b>목 · 일 단품메뉴</b> / 그 밖의 요일 <b>뷔페</b></td></tr>
+              <tr><th>중식</th><td>체류일 — <b>목 · 일 단품메뉴</b> / 그 밖의 요일&nbsp;<b>뷔페</b></td></tr>
               <tr><th>석식</th><td><b>요일별 메뉴</b></td></tr>
             </tbody>
           </table>
@@ -820,8 +822,8 @@
         </li>
       </ul>
       <h3 class="subh" style="margin-top:20px">체재비용 · 송영비</h3>
-      <p class="costline">체재비 <b>1박 15,000엔</b> · 왕복 송영비 <b>1인 12,000엔</b></p>
-      <p class="soft" style="margin:10px 0 0;font-size:14px">※ 2인이 4인실(패밀리룸)을 이용하시는 경우 1박·1인당 2,200엔이 추가됩니다.</p>
+      <p class="costline">체재비 <b>1박&nbsp;15,000엔</b> · 왕복 송영비 <b>1인&nbsp;12,000엔</b></p>
+      <p class="soft" style="margin:10px 0 0;font-size:14px">※ 2인이 4인실(패밀리룸)을 이용하시는 경우 1박·1인당&nbsp;2,200엔이 추가됩니다.</p>
       <p class="soft" style="margin:6px 0 0;font-size:14px">※ 우천으로 라운딩이 어려운 경우 인근 쇼핑몰(에나역 부근)로 차량 안내해 드립니다.</p>
     </div>
 
@@ -831,20 +833,20 @@
         <span class="r-sub">벳푸 · 벳푸CC(유후 · 츠루미 코스) · 오기야마CC</span>
       </div>
       <dl class="facts">
-        <dt>도착 공항</dt><dd>후쿠오카 공항(FUK) <span class="soft">· 숙소까지 약 2시간</span></dd>
+        <dt>도착 공항</dt><dd>후쿠오카 공항(FUK) <span class="soft">· 숙소까지 약&nbsp;2시간</span></dd>
         <dt>출발지</dt><dd>인천 · 김해 · 대구</dd>
-        <dt>체류 일정</dt><dd>금 → 월 3박 · 월 → 금 4박</dd>
-        <dt>라운딩</dt><dd>벳푸CC / 오기야마CC · 주중·주말 및 일본 공휴일 18홀</dd>
+        <dt>체류 일정</dt><dd>금&nbsp;→&nbsp;월 3박 · 월&nbsp;→&nbsp;금 4박</dd>
+        <dt>라운딩</dt><dd>벳푸CC / 오기야마CC · 주중·주말 및 일본 공휴일&nbsp;18홀</dd>
       </dl>
       <h3 class="subh" style="margin-top:20px">숙소</h3>
       <ul class="lodging">
         <li data-lg="resort">
           <div class="lg-name">아키바 리조트</div>
-          <div class="lg-desc"><b>2인 1실</b> <span class="soft">· 투숙객 전용 온천탕 무료 이용</span></div>
+          <div class="lg-desc"><b>2인&nbsp;1실</b> <span class="soft">· 투숙객 전용 온천탕 무료 이용</span></div>
         </li>
       </ul>
       <h3 class="subh" style="margin-top:20px">체재비용 · 송영비</h3>
-      <p class="costline">체재비 <b>주중 1박 15,000엔</b> / <b>주말 1박 17,000엔</b> · 왕복 송영비 <b>1인 12,000엔</b></p>
+      <p class="costline">체재비 <b>주중&nbsp;1박&nbsp;15,000엔</b> / <b>주말&nbsp;1박&nbsp;17,000엔</b> · 왕복 송영비 <b>1인&nbsp;12,000엔</b></p>
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ 체재일 <b style="color:var(--ink)">석식은 투어 요금에 포함되지 않아, 벳푸 시내에서 자유롭게 식사</b>하실 수 있습니다.</p>
     </div>
 
@@ -854,22 +856,22 @@
         <span class="r-sub">이바라키 · 시로사토CC(18홀)</span>
       </div>
       <dl class="facts">
-        <dt>도착 공항</dt><dd>나리타 공항(NRT) <span class="soft">· 골프장까지 약 1시간 30분</span></dd>
+        <dt>도착 공항</dt><dd>나리타 공항(NRT) <span class="soft">· 골프장까지 약&nbsp;1시간&nbsp;30분</span></dd>
         <dt>출발지</dt><dd>인천 · 김해</dd>
-        <dt>체류 일정</dt><dd>일 → 토 6박</dd>
-        <dt>라운딩</dt><dd>시로사토CC · 주중·주말 및 일본 공휴일 18홀 <span class="soft">· 9홀 추가 시 현지에서 추가 비용이 발생합니다</span></dd>
-        <dt>식사</dt><dd>조식 뷔페 · 중식 메인+뷔페 · 석식 요일별 세트메뉴</dd>
+        <dt>체류 일정</dt><dd>일&nbsp;→&nbsp;토 6박</dd>
+        <dt>라운딩</dt><dd>시로사토CC · 주중·주말 및 일본 공휴일&nbsp;18홀 <span class="soft">· 9홀 추가 시 현지에서 추가 비용이 발생합니다</span></dd>
+        <dt>식사</dt><dd>조식 뷔페 · 중식 메인+뷔페 · 석식 요일별&nbsp;세트메뉴</dd>
       </dl>
       <h3 class="subh" style="margin-top:20px">숙소</h3>
       <ul class="lodging">
         <li data-lg="lodge">
           <div class="lg-name">골프장 안 숙소</div>
-          <div class="lg-desc"><b>2인 1실</b></div>
+          <div class="lg-desc"><b>2인&nbsp;1실</b></div>
         </li>
       </ul>
       <h3 class="subh" style="margin-top:20px">체재비용 · 송영비</h3>
-      <p class="costline">체재비 <b>1박 16,000엔</b> · 왕복 송영비 <b>1인 12,000엔</b></p>
-      <p class="soft" style="margin:10px 0 0;font-size:14px">※ 기본 2인 1실 구성으로 싱글룸이 없습니다. 부득이하게 단독 사용 시 1박당 2,200엔이 추가됩니다. 2인 플레이 시 2BAG 차지가 현지에서 발생합니다.</p>
+      <p class="costline">체재비 <b>1박&nbsp;16,000엔</b> · 왕복 송영비 <b>1인&nbsp;12,000엔</b></p>
+      <p class="soft" style="margin:10px 0 0;font-size:14px">※ 기본 2인&nbsp;1실 구성으로 싱글룸이 없습니다. 부득이하게 단독 사용 시 1박당 2,200엔이 추가됩니다. 2인 플레이 시 2BAG 차지가 현지에서 발생합니다.</p>
     </div>
 
     <!-- 2027 미진행이었다가 재개(2026-09). 체재비 16,000엔 · 왕복 송영비 12,000엔 · 주중·주말 18홀 · 나리타에서 약 2시간 30분 확정, 식사는 일단 시로사토와 동일(2026-09-07 · Min). 9홀 서비스는 없다(9홀 추가는 현지 추가 비용). -->
@@ -879,21 +881,21 @@
         <span class="r-sub">이바라키 · 후쿠로다노타키CC(18홀)</span>
       </div>
       <dl class="facts">
-        <dt>도착 공항</dt><dd>나리타 공항(NRT) <span class="soft">· 골프장까지 약 2시간 30분</span></dd>
+        <dt>도착 공항</dt><dd>나리타 공항(NRT) <span class="soft">· 골프장까지 약&nbsp;2시간&nbsp;30분</span></dd>
         <dt>출발지</dt><dd>인천 · 김해</dd>
-        <dt>체류 일정</dt><dd>월 → 월 7박</dd>
-        <dt>라운딩</dt><dd>후쿠로다노타키CC · 주중·주말 및 일본 공휴일 18홀 <span class="soft">· 9홀 추가 시 현지에서 추가 비용이 발생합니다</span></dd>
-        <dt>식사</dt><dd>조식 뷔페 · 중식 메인+뷔페 · 석식 요일별 세트메뉴</dd>
+        <dt>체류 일정</dt><dd>월&nbsp;→&nbsp;월 7박</dd>
+        <dt>라운딩</dt><dd>후쿠로다노타키CC · 주중·주말 및 일본 공휴일&nbsp;18홀 <span class="soft">· 9홀 추가 시 현지에서 추가 비용이 발생합니다</span></dd>
+        <dt>식사</dt><dd>조식 뷔페 · 중식 메인+뷔페 · 석식 요일별&nbsp;세트메뉴</dd>
       </dl>
       <h3 class="subh" style="margin-top:20px">숙소</h3>
       <ul class="lodging">
         <li data-lg="lodge">
           <div class="lg-name">후쿠로다노타키CC 호텔</div>
-          <div class="lg-desc">골프장 안 숙소 · <b>2인 1실</b></div>
+          <div class="lg-desc">골프장 안 숙소 · <b>2인&nbsp;1실</b></div>
         </li>
       </ul>
       <h3 class="subh" style="margin-top:20px">체재비용 · 송영비</h3>
-      <p class="costline">체재비 <b>1박 16,000엔</b> · 왕복 송영비 <b>1인 12,000엔</b></p>
+      <p class="costline">체재비 <b>1박&nbsp;16,000엔</b> · 왕복 송영비 <b>1인&nbsp;12,000엔</b></p>
     </div>
 
     <div class="region" id="r-miyazaki">
@@ -902,40 +904,40 @@
         <span class="r-sub">미야자키 · 국제공항CC(18홀)</span>
       </div>
       <dl class="facts">
-        <dt>도착 공항</dt><dd>미야자키 공항(KMI) <span class="soft">· 골프장까지 약 30분</span></dd>
+        <dt>도착 공항</dt><dd>미야자키 공항(KMI) <span class="soft">· 골프장까지 약&nbsp;30분</span></dd>
         <dt>출발지</dt><dd>인천</dd>
-        <dt>체류 일정</dt><dd>일 → 금 5박</dd>
-        <dt>라운딩</dt><dd>미야자키 국제공항CC · 월~목 18홀 + 9홀 서비스 라운딩 <span class="soft">· 출·귀국일 라운딩 없음</span></dd>
+        <dt>체류 일정</dt><dd>일&nbsp;→&nbsp;금 5박</dd>
+        <dt>라운딩</dt><dd>미야자키 국제공항CC · 월~목 18홀&nbsp;+&nbsp;9홀 서비스&nbsp;라운딩 <span class="soft">· 출·귀국일 라운딩&nbsp;없음</span></dd>
       </dl>
       <h3 class="subh" style="margin-top:20px">숙소</h3>
       <ul class="lodging">
         <li data-lg="lodge">
           <div class="lg-name">골프장 숙소</div>
-          <div class="lg-desc"><b>2인 1실</b> 배정</div>
+          <div class="lg-desc"><b>2인&nbsp;1실</b> 배정</div>
         </li>
       </ul>
       <h3 class="subh" style="margin-top:20px">체재비용 · 송영비</h3>
-      <p class="costline">체재비 <b>1박 17,000엔</b> · 왕복 송영비 <b>1인 5,000엔</b></p>
+      <p class="costline">체재비 <b>1박&nbsp;17,000엔</b> · 왕복 송영비 <b>1인&nbsp;5,000엔</b></p>
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ <b style="color:var(--ink)">체재일 중식은 포함되어 있지 않습니다.</b></p>
     </div>
 
     <!-- 우선예약 기간에는 접수하지 않는 네 곳 — 사진·요금 없이 이름만(Min · 2026-09 · 무츠키 료칸·그랜드 머큐어는 2026-09-07 추가). .region 이 아니라 사진 자리도 안 생긴다.
          무츠키 료칸 블록(요금·사진 9장)은 git 이력에 있고 사진은 photos/mutsuki/ryokan/ 에 그대로 — 상시예약 오픈 때 블록을 되살리면 다시 보인다.
-         그랜드 머큐어는 전단(4박 5일 일→목 · 1인 166만 원부터 · 벳푸CC 3회 + 오기야마CC 1회 · 조·석식 뷔페 · 중식 불포함)만 있고 블록은 아직 없다. -->
+         그랜드 머큐어는 전단(4박 5일 일→목 · 1인&nbsp;166만 원부터 · 벳푸CC 3회 + 오기야마CC 1회 · 조·석식 뷔페 · 중식 불포함)만 있고 블록은 아직 없다. -->
     <h3 class="subh" style="margin-top:32px">상시예약 기간 오픈 예정</h3>
     <p class="soft" style="margin:0 0 12px">아래 네 곳은 <b style="color:var(--ink)">우선예약 기간에는 접수하지 않으며</b>, 상시예약 기간에 상품이 오픈될 예정입니다. 자세한 일정과 요금은 오픈 시 안내드립니다.</p>
     <ul class="later">
       <li id="r-mutsuki">
         <div class="lt-name">무츠키 료칸 <span class="lt-sub">벳푸 · 벳푸CC(유후 · 츠루미 코스) · 오기야마CC</span></div>
-        <div class="lt-desc">일본 전통 료칸 · 인천 · 김해 · 대구 출발 · 3박 · 4박 일정 · 항공 · 숙박 · 골프 포함</div>
+        <div class="lt-desc">일본 전통 료칸 · 인천 · 김해 · 대구 출발 · 3박 · 4박&nbsp;일정 · 항공 · 숙박 · 골프 포함</div>
       </li>
       <li id="r-mercure">
         <div class="lt-name">그랜드 머큐어 벳푸 베이 리조트 &amp; 스파 <span class="lt-sub">벳푸 · 벳푸CC(유후 · 츠루미 코스) · 오기야마CC</span></div>
-        <div class="lt-desc">5성급 리조트 호텔 · 벳푸만이 보이는 오션뷰 노천온천 &amp; 스파 · 조 · 석식 프리미엄 뷔페 · 인천 · 김해 · 대구 출발 · 4박 5일(일 → 목) · 항공 · 숙박 · 골프 포함</div>
+        <div class="lt-desc">5성급 리조트 호텔 · 벳푸만이 보이는 오션뷰 노천온천 &amp; 스파 · 조 · 석식 프리미엄 뷔페 · 인천 · 김해 · 대구 출발 · 4박 5일(일&nbsp;→&nbsp;목) · 항공 · 숙박 · 골프 포함</div>
       </li>
       <li id="r-nagano">
         <div class="lt-name">스가다이라 고원 <span class="lt-sub">나가노 · 스가다이라 그린CC(18홀)</span></div>
-        <div class="lt-desc">해발 약 1,600m 고원 코스 · 인천 출발 · 스가다이라 고원 온천호텔 · 5박 · 7박 · 14박 일정</div>
+        <div class="lt-desc">해발 약&nbsp;1,600m 고원 코스 · 인천 출발 · 스가다이라 고원 온천호텔 · 5박 · 7박 · 14박&nbsp;일정</div>
       </li>
       <li id="r-kl">
         <div class="lt-name">닐라이스프링스 리조트 <span class="lt-sub">말레이시아 쿠알라룸푸르 · 닐라이스프링스CC(18홀)</span></div>
@@ -950,19 +952,20 @@
       <li>일본 공휴일 외에도 아래 기간은 일본 여행 성수기로 분류됩니다.
         <span class="soft"><br>· <b style="color:var(--ink)">골든위크</b> 4월 29일 ~ 5월 10일경 &nbsp;·&nbsp; <b style="color:var(--ink)">오봉연휴</b> 8월 8일 ~ 8월 16일</span></li>
       <li>연휴·성수기이거나 <b>항공사에서 좌석 확정을 앞당겨 요청</b>하는 경우, <b>명단 제출과 예약 확정이 평수기보다 이르게</b> 진행됩니다. 좌석 상황에 따라 요금이 달라지거나 조기 발권이 필요할 수 있으니 협조 부탁드립니다.</li>
-      <li>2027년 일본 공휴일은 <b>아래 표</b>와 같습니다. <span class="soft">(이용 대상 기간인 3월 ~ 12월 · 일본 정부 공고 기준)</span></li>
-      <li><b>9홀 서비스 라운딩</b>은 리조트에서 제공하는 서비스로, <b>기상·코스 상황·예약 혼잡 등 현지 사정에 따라 운영되지 않는 날</b>이 있을 수 있습니다. 서비스로 제공되는 라운딩이므로 별도 환불 대상은 아닙니다.</li>
+      <li>2027년 일본 공휴일은 <b>아래 표</b>와 같습니다. <span class="soft">(이용 대상 기간인 3월 ~ 12월 · 일본 정부 공고&nbsp;기준)</span></li>
+      <li><b>9홀 서비스&nbsp;라운딩</b>은 리조트에서 제공하는 서비스로, <b>기상·코스 상황·예약 혼잡 등 현지 사정에 따라 운영되지 않는 날</b>이 있을 수 있습니다. 서비스로 제공되는 라운딩이므로 별도 환불 대상은 아닙니다.</li>
       <li>골프장은 <b>대회 개최 및 현지 사정에 따라 일정이 예고 없이 변경</b>될 수 있으며, 상기 요금과 운영 내용도 현지 사정에 따라 일부 변경될 수 있습니다.</li>
     </ul>
     <!-- 2027년 일본 공휴일(内閣府 「国民の祝日」 · 춘분 3/21 · 추분 9/23 은 2026-02 관보 확정). 이용 대상 기간(3~12월)만 적는다. 해마다 표를 갈아 끼운다. -->
     <table class="mt" id="holidays" style="margin-top:14px">
-      <thead><tr><th style="width:168px">2027년 일본 공휴일</th><th>이름</th></tr></thead>
+      <thead><tr><th style="width:42%">2027년 일본 공휴일</th><th>이름</th></tr></thead>
       <tbody>
-        <tr><th>3월 21일(일)</th><td>춘분의 날 <span class="soft">· 22일(월) 대체휴일</span></td></tr>
-        <tr><th>4월 29일(목)</th><td>쇼와의 날 <span class="soft">· 골든위크 시작</span></td></tr>
-        <tr><th>5월 3일(월) ~ 5일(수)</th><td>헌법기념일 · 녹색의 날 · 어린이날</td></tr>
+        <tr><th>3월 21일(일)</th><td>춘분의 날</td></tr>
+        <tr><th>3월 22일(월)</th><td>대체휴일 <span class="soft">· 춘분의 날이 일요일이라 하루 쉽니다</span></td></tr>
+        <tr><th>4월 29일(목)</th><td>쇼와의 날 <span class="soft">· 골든위크&nbsp;시작</span></td></tr>
+        <tr><th>5월 3일(월) ~ 5일(수)</th><td>헌법기념일 · 녹색의 날 ·&nbsp;어린이날</td></tr>
         <tr><th>7월 19일(월)</th><td>바다의 날</td></tr>
-        <tr><th>8월 11일(수)</th><td>산의 날 <span class="soft">· 오봉연휴로 이어집니다</span></td></tr>
+        <tr><th>8월 11일(수)</th><td>산의 날 <span class="soft">· 오봉연휴로&nbsp;이어집니다</span></td></tr>
         <tr><th>9월 20일(월)</th><td>경로의 날</td></tr>
         <tr><th>9월 23일(목)</th><td>추분의 날</td></tr>
         <tr><th>10월 11일(월)</th><td>스포츠의 날</td></tr>
@@ -979,7 +982,7 @@
       항공 · 숙박 · 골프를 <b style="color:var(--ink)">하나의 1인 금액으로 정한 상품</b>은 안내된 원화 금액을 기준으로 하며, 자세한 기준은 해당 상품 안내에서 따로 알려 드립니다.</p>
     <ul class="notes">
       <li>체재비는 <b>1인 · 1박 기준</b>, 송영비는 <b>1인 · 왕복 기준</b>이며, 모두 <b>출발 전 원화로 정산</b>됩니다. 지상비와 현지 비용까지 미리 정산되므로 <b>현지에서 따로 결제하실 일 없이</b> 여행에만 집중하실 수 있습니다. 출발 1개월 전까지 완납하여 주시기 바랍니다.</li>
-      <li>지상비 및 현지 비용은 <b>출발월의 두 달 전 1일 기준 하나은행 ‘현찰 살 때’ 최초 회차 환율</b>을 적용하여 원화 금액으로 산정됩니다. <span class="soft">(예: 6월 출발 상품 → 4월 1일 환율 적용)</span></li>
+      <li>지상비 및 현지 비용은 <b>출발월의 두 달 전 1일&nbsp;기준 하나은행 ‘현찰 살 때’ 최초 회차 환율</b>을 적용하여 원화 금액으로 산정됩니다. <span class="soft">(예:&nbsp;6월 출발 상품 → 4월 1일&nbsp;환율 적용)</span></li>
       <li><b>환율을 미리 고시하는 이유</b> — 예약·계약 시점에 원화 금액을 확정해 드리므로, 이후 환율이 변동하더라도 <b>추가 부담이나 재정산이 없습니다.</b> 모든 회원님께 <b>같은 기준</b>을 적용하는 공정하고 예측 가능한 방식입니다.</li>
       <li>계약 체결 시 안내된 원화 금액이 기준이 되며, <b>이후 환율 변동에 따른 추가 정산은 발생하지 않습니다.</b></li>
       <li>항공요금은 <b>항공권 발권 시점의 실제 운임</b> 기준으로 확정되며, 항공사 정책에 따라 운임 변동이 반영될 수 있습니다.</li>
@@ -996,7 +999,7 @@
         <span class="node" aria-hidden="true"></span>
         <p class="when">예약 후 1주일 이내</p>
         <h3>예약금 입금</h3>
-        <p><span class="amt">1인당 30만 원</span> — 예약금 입금으로 예약이 확정됩니다. <span class="soft">(예: 4인 예약 시 <b>120만 원</b>)</span></p>
+        <p><span class="amt">1인당&nbsp;30만 원</span> — 예약금 입금으로 예약이 확정됩니다. <span class="soft">(예:&nbsp;4인 예약 시 <b>120만 원</b>)</span></p>
       </li>
       <li>
         <span class="node" aria-hidden="true"></span>
