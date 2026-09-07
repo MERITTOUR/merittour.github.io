@@ -788,9 +788,12 @@ function isSpecialGrade(grade){ return /특별/.test(String(grade||'')); }
 const PRIORITY_ONLY = {
   fourteen_hotel:   { grades:['EWRC이용권','EWRCⅡ'], badge:'우선예약 EWRC 전용' },
   fourteen_caravan: { grades:['EWRC이용권','EWRCⅡ'], badge:'우선예약 EWRC 전용' },
-  // 허용 회원권이 없는 상품 = 우선예약 기간에는 아무도 못 잡는다. 스가다이라는 2027 우선예약 때
-  // 열지 않고 상시예약 기간에 오픈한다(2026-09 확정 · 닐라이스프링스도 같지만 /reserve/ 에는 없다).
+  // 허용 회원권이 없는 상품 = 우선예약 기간에는 아무도 못 잡는다. 스가다이라·무츠키 료칸은 2027 우선예약 때
+  // 열지 않고 상시예약 기간에 오픈한다(2026-09 확정 · 무츠키는 2026-09-07 · 닐라이스프링스도 같지만 /reserve/ 에는 없다).
   sugadaira_onsen:  { grades:[], badge:'상시예약 오픈 예정',
+    block:'이 상품은 상시예약 기간에 오픈될 예정입니다. ',
+    note:'우선예약 기간에는 접수하지 않습니다 · 상시예약 ' },
+  mutsuki:          { grades:[], badge:'상시예약 오픈 예정',
     block:'이 상품은 상시예약 기간에 오픈될 예정입니다. ',
     note:'우선예약 기간에는 접수하지 않습니다 · 상시예약 ' }
 };
@@ -1171,7 +1174,7 @@ const RES = {
   aso_villa:{t:18000,s:6000,rm:1},   sobo_villa:{t:15000,s:6000,rm:3},
   dome_house:{t:15000,s:6000,rm:4},  sobo5:{t:15000,s:6000,rm:1},
   fourteen_hotel:{t:15000,s:12000,rm:32}, fourteen_caravan:{t:15000,s:12000,rm:6},
-  akiba:{t:15000,tWe:17000,s:12000,rm:15}, mutsuki:{pkg:{3:1450000,4:1660000},rm:4},
+  akiba:{t:15000,tWe:17000,s:12000,rm:15}, mutsuki:{pkg:{3:1450000,4:1660000},rm:4}, // 무츠키 = 우선예약 기간 접수 없음(PRIORITY_ONLY)
   shirosato:{t:16000,s:12000,rm:20},
   fukuroda:{t:16000,s:12000,rm:20},  // 2027 재개 · 사내 예약 도구(v15)의 값 — 확정 예정
   sugadaira_onsen:{s:0,rm:35},       // 골프·숙박 포함 패키지 · 2027 요금 확정 예정 · 우선예약 기간 접수 없음(PRIORITY_ONLY)
