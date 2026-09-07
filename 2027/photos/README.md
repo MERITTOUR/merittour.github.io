@@ -47,7 +47,7 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 | | | 포틴힐즈CC 카라반 | `caravan` |
 | 벳푸 · 아키바 리조트 | `akiba` | 아키바 리조트 | `resort` |
 | 벳푸 · 무츠키 료칸 | `mutsuki` | 무츠키 료칸 | `ryokan` |
-| 이바라키 · 시로사토 | `ibaraki` | 골프장 내 숙소 | `lodge` |
+| 이바라키 · 시로사토 | `ibaraki` | 골프장 안 숙소 | `lodge` |
 | 이바라키 · 후쿠로다노타키 | `fukuroda` | 후쿠로다노타키CC 호텔 | `lodge` |
 | 미야자키 · 국제공항CC | `miyazaki` | 골프장 숙소 | `lodge` |
 
@@ -72,7 +72,7 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 | 나고야 · 포틴힐즈 | [포틴힐즈CC 호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/nagoya/hotel) · [포틴힐즈CC 카라반](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/nagoya/caravan) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/nagoya/golf) |
 | 벳푸 · 아키바 리조트 | [아키바 리조트](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/akiba/resort) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/akiba/golf) |
 | 벳푸 · 무츠키 료칸 | [무츠키 료칸](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/mutsuki/ryokan) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/mutsuki/golf) |
-| 이바라키 · 시로사토 | [골프장 내 숙소](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/ibaraki/lodge) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/ibaraki/golf) |
+| 이바라키 · 시로사토 | [골프장 안 숙소](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/ibaraki/lodge) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/ibaraki/golf) |
 | 이바라키 · 후쿠로다노타키 | [후쿠로다노타키CC 호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/fukuroda/lodge) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/fukuroda/golf) |
 | 미야자키 · 국제공항CC | [골프장 숙소](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/miyazaki/lodge) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/miyazaki/golf) |
 
