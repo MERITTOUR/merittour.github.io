@@ -21,6 +21,7 @@ GitHub 웹에서 이 폴더 → **Add file → Upload files** 로 드래그하�
 | `fourteen_caravan.webp` | 포틴힐즈CC 카라반 |
 | `akiba.webp` | 아키바 리조트 |
 | `mutsuki.webp` | 무츠키 료칸 |
+| `mercure.webp` | 그랜드 머큐어 벳푸 베이 리조트 & 스파 |
 | `shirosato.webp` | 시로사토CC |
 | `fukuroda.webp` | 후쿠로다노타키CC 호텔 |
 | `sugadaira_onsen.webp` | 스가다이라 고원 온천호텔 |
