@@ -729,8 +729,9 @@ const CAT = [
     ]}
   ]},
   { region:'미야자키', sub:'규슈 남부 · 온난', venues:[
-    { v:'미야자키 국제공항CC', vsub:'공항에서 약 30분 · 페어웨이 진입 가능', items:[
-      {k:'miyazaki_kuko', n:'미야자키 국제공항CC', dep:['서울'], std:true, meta:'국제공항CC 18홀 · 골프장 숙소 2인 1실', desc:'공항 바로 앞 호텔 · 온난한 남규슈', durs:['5박 6일 (일 출발)']}
+    // 2027 확정(2026-09-08 · Min): 골프장 2곳(국제공항CC 2회 · 레인보우CC 2회) · 호텔 2곳(국제공항CC 호텔 2박 → 시내 호텔 3박). 일정표는 renderItin 의 전용 표.
+    { v:'미야자키 국제공항CC · 레인보우CC', vsub:'공항에서 약 30분 · 골프장 2곳 · 호텔 2곳', items:[
+      {k:'miyazaki_kuko', n:'국제공항CC 호텔 · 미야자키 시내 호텔', dep:['서울'], std:true, meta:'국제공항CC 2회 · 레인보우CC 2회 · 트윈 2인 1실', desc:'골프장 안 호텔 2박 + 미야자키 시내 호텔 3박 · 2색 골프', durs:['5박 6일 (일 출발)']}
     ]}
   ]}
 ];// 평탄화 헬퍼 — 기존 로직(검색·상세)이 쓰던 item 목록
@@ -1255,7 +1256,7 @@ const TAGS = {
   shirosato:['18홀','관동'],
   fukuroda:['18홀','관동','호텔','2027재개'],
   sugadaira_onsen:['고원','온천','18+9홀'],
-  miyazaki_kuko:['공항인접','남규슈','페어웨이진입','중식불포함']
+  miyazaki_kuko:['2색골프','호텔2곳','남규슈','중식일부불포함']
 };
 // 라운딩 규칙 — 2027 가이드 「골프 플레이」 문안 기준
 //   야마나미 계열은 주중 아소 야마나미CC(27홀) 중심 · 주말·일본공휴일 18홀
@@ -1270,7 +1271,7 @@ const ROUND = {
   shirosato:        {main:'시로사토CC 18홀 라운딩',                    note:'주중·주말·일본공휴일 모두 18홀 · 9홀 추가 시 현지에서 추가 비용 발생'},
   fukuroda:         {main:'후쿠로다노타키CC 18홀 라운딩',              note:'주중·주말·일본공휴일 모두 18홀 · 9홀 추가 시 현지에서 추가 비용 발생'},
   sugadaira_onsen:  {main:'스가다이라 그린CC 전 일정 18홀 + 9홀(서비스)', note:'해발 약 1,600m 고원 코스'},
-  miyazaki_kuko:    {main:'국제공항CC 월~목 18홀 + 9홀(서비스)',      note:'출·귀국일 라운딩 없음'}
+  miyazaki_kuko:    {main:'국제공항CC 2회 · 레인보우CC 2회 — 18홀 + 9홀(서비스)', note:'월·화 국제공항CC(숙소를 옮기는 화요일은 18홀) · 수·목 레인보우CC · 주말·일본공휴일 18홀 · 출·귀국일 라운딩 없음'}
 };
 function roundOf(k){ return ROUND[k] || ROUND._yama; }
 // 도착 공항 → 숙소 이동 시간 (2027 가이드 「도착 공항」) · 미지정은 야마나미 기준
@@ -1329,7 +1330,10 @@ const CHECKS = {
             '골프장 안 호텔 · 2인 1실'],
   sugadaira_onsen:['조식 · 중식 · 석식 클럽하우스 · 도착일 중식은 기내식 대체',
                    '골프 · 숙박이 포함된 1인 금액 · 2027 요금 확정 예정'],
-  miyazaki_kuko:['체재일 중식은 포함되어 있지 않습니다']
+  miyazaki_kuko:['골프장 안 국제공항CC 호텔 2박(일·월) + 미야자키 시내 호텔 3박(화~목) · 2인 1실',
+                 '조식 매일 호텔식 · 중식은 레인보우CC 라운딩일(수·목) 클럽식, 국제공항CC 라운딩일(월·화)은 불포함 · 석식은 월 호텔식 · 화 특식, 도착일·수·목은 불포함(자유식)',
+                 '도착일 저녁은 크로스몰에서 개별 식사 (1인 1,500엔 식비 지급)',
+                 '단독 사용 시 1박 25,000원 추가 · 2인 플레이 시 주말·일본공휴일 2백 차지 (국제공항CC 20,000원 · 레인보우CC 10,000원)']
 };
 
 const pv = { key:null, durIdx:0, y:2027, m:3, date:null, room:null, people:MIN_PEOPLE, wait:false };
@@ -1478,9 +1482,12 @@ function renderItin(it,nights){
   const roundLine = `<span class="g">${rd.main}</span>`+
     (rd.note ? `<br><small style="color:var(--muted);">${rd.note}</small>` : '');
   const days=nights+1; let html='';
+  const miya = pv.key==='miyazaki_kuko' ? itinMiyazaki(airOut) : null;
   for(let d=1;d<=days;d++){
     let mv='', plan='', meal='';
-    if(d===1){
+    if(miya && miya[d-1]){
+      [mv,plan,meal]=miya[d-1];
+    } else if(d===1){
       mv=`단체 항공<br>(편명 추후 안내)<br><small>${airOut} 개별 수속</small><br><br>현지 송영 차량`;
       // 도착일 라운딩은 야마나미 계열 서울 출발만 (부산·대구 출발과 타 지역은 체크인 후 석식부터)
       plan=`${airOut} 출발 · 개별 수속<br>현지 공항 도착 · 입국 수속<br>숙소로 이동 (${moveOf(pv.key)})<br><br>`+
@@ -1509,6 +1516,29 @@ function renderItin(it,nights){
     html+=`<tr${isMid?' class="itin-mid" style="display:none"':''}><td class="day">${d}일차</td><td class="mv">${mv}</td><td class="plan">${plan}</td><td class="meal">${meal}</td></tr>`;
   }
   body.innerHTML=html;
+}
+// 미야자키 — 골프장 2곳 · 호텔 2곳(2027 확정): 일 도착 → 국제공항CC 호텔 2박 → 화 라운딩 뒤 시내 호텔 3박 → 금 귀국.
+//   날짜별 코스·호텔·식사가 다 달라 일반 규칙으로 못 만든다. [이동, 일정, 식사] 6일치.
+function itinMiyazaki(airOut){
+  const G=s=>`<span class="g">${s}</span>`, S=s=>`<small style="color:var(--muted);">${s}</small>`;
+  const rainbow=['현지 송영 차량',
+    `아침식사 후 레인보우CC로 이동<br>${G('레인보우CC 18홀 + 9홀(서비스)')}<br>${S('주말·일본공휴일 18홀')}<br>미야자키 시내에서 개별 석식 후 휴식`,
+    '조식 : 호텔식<br>중식 : 클럽식<br>석식 : 불포함 (시내 자유식)'];
+  return [
+    [`단체 항공<br>(편명 추후 안내)<br><small>${airOut} 개별 수속</small><br><br>현지 송영 차량`,
+     `${airOut} 출발 · 개별 수속<br>미야자키 공항 도착 · 입국 수속<br>크로스몰 경유 — 개별 석식 (1인 1,500엔 식비 지급)<br>국제공항CC 호텔 체크인 (공항에서 약 30분)`,
+     '중식 : 불포함<br>석식 : 불포함 (크로스몰 개별 식사)'],
+    ['현지 송영 차량<br>또는 도보 이동',
+     `아침식사 후 ${G('국제공항CC 18홀 + 9홀(서비스)')}<br>${S('주말·일본공휴일 18홀')}<br>라운딩 후 호텔 휴식 · 석식 및 자유시간`,
+     '조식 : 호텔식<br>중식 : 불포함<br>석식 : 호텔식'],
+    ['현지 송영 차량',
+     `아침식사 후 ${G('국제공항CC 18홀')}<br>라운딩 후 미야자키 시내 호텔로 이동<br>석식(특식) 후 휴식<br>${S('※ 특식은 현지 사정에 따라 바뀔 수 있습니다.')}`,
+     '조식 : 호텔식<br>중식 : 불포함<br>석식 : 특식'],
+    rainbow, rainbow,
+    ['현지 송영 차량<br><br>단체 항공<br>(편명 추후 안내)',
+     `아침식사 후 체크아웃 · 로비 집합<br>니토리몰 경유 (쇼핑 · 자유시간)<br>미야자키 공항 이동 · 출국 수속<br>${G('귀국')}`,
+     '조식 : 호텔식<br>중식 : 불포함']
+  ];
 }
 // 체류일 펼치기/접기 — 출·귀국일만 보이면 일정을 한눈에 파악하기 쉽다
 function toggleItinMid(){
