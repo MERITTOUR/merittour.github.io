@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>가입 서류 작성 안내 · 메리트투어</title>
+<meta name="description" content="EWRC Ⅱ 회원권 · 쿠주 타운하우스 장기숙박 이용권 가입 서류 — 서류마다 채우실 곳과 작성 예시, 은행 등록, 보내실 곳">
+<style>
+  :root{
+    --ink:#1a2740; --ink-soft:#3a4a63; --muted:#6a7a92; --muted-2:#8a96ab;
+    --line:#e0e4ec; --line-soft:#e8ebf0; --bg:#f7f8fa; --card:#ffffff; --gold:#B8935A; --gold-deep:#9a7740;
+    --red:#d2413a; --red-bg:#fff5f4; --blue:#1d4ed8; --green:#2e7d4f;
+    --sans:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","맑은 고딕","Malgun Gothic",sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.7;font-size:16px;word-break:keep-all;-webkit-text-size-adjust:100%}
+  a{color:inherit}
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px 80px}
+
+  /* 머리 */
+  .top{background:var(--ink);color:#fff;padding:34px 18px 26px}
+  .top .in{max-width:760px;margin:0 auto}
+  .top .eyebrow{font-size:12px;letter-spacing:.14em;color:#c9b489;font-weight:700}
+  .top h1{margin:6px 0 8px;font-size:26px;line-height:1.3;font-weight:800}
+  .top p{margin:0;font-size:14px;color:#c8d0dd}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:14px 0 0;font-size:13px;color:#e6eaf1}
+  .legend .box{display:inline-block;width:14px;height:14px;border:2px solid var(--red);border-radius:3px;vertical-align:-2px;margin-right:6px;background:#fff}
+  .legend .ink{color:#9dc0ff;font-weight:800}
+  .legend .seal-ex{display:inline-block;width:16px;height:16px;border:1.5px solid var(--red);border-radius:50%;color:var(--red);font-size:9px;line-height:13px;text-align:center;vertical-align:-3px;margin-right:4px;font-weight:800}
+
+  /* 탭 */
+  .tabs{position:sticky;top:0;z-index:10;background:var(--bg);padding:12px 0 8px;display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{flex:none;border:1px solid var(--line);background:#fff;color:var(--ink-soft);border-radius:999px;padding:9px 15px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+  .tab.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .panel{display:none}
+  .panel.on{display:block}
+
+  h2{font-size:19px;margin:30px 0 10px;padding-left:12px;border-left:4px solid var(--gold);line-height:1.35}
+  h2 .n{color:var(--gold);font-size:13px;letter-spacing:.08em;display:block;margin-bottom:2px}
+  .lead{margin:0 0 14px;color:var(--ink-soft);font-size:15px}
+
+  /* 준비물 체크리스트 */
+  .check{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+  .check li{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;gap:12px;align-items:flex-start}
+  .check .no{flex:none;width:28px;height:28px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:2px}
+  .check .no.att{background:#fff;color:var(--gold-deep);border:2px solid var(--gold)}
+  .check b{color:var(--ink)}
+  .check .sub{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+  .check .warn{color:var(--red);font-weight:700}
+
+  /* 서류 카드 */
+  .doc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 16px;margin:14px 0}
+  .doc h3{margin:0 0 4px;font-size:17px}
+  .doc h3 .no{display:inline-block;width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;font-size:13px;text-align:center;line-height:26px;margin-right:8px;vertical-align:2px}
+  .doc .what{margin:0 0 12px;font-size:14px;color:var(--muted)}
+  .doc .cap{font-size:12.5px;color:var(--muted-2);margin:8px 0 0}
+  .points{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:6px}
+  .points li{padding-left:22px;position:relative;font-size:14.5px;color:var(--ink-soft)}
+  .points li::before{content:"✓";position:absolute;left:0;top:0;color:var(--green);font-weight:800}
+  .points li.no::before{content:"✕";color:var(--red)}
+  .points li.i::before{content:"·";color:var(--gold);font-size:22px;line-height:1;top:-1px}
+
+  /* 서식 흉내 */
+  .form{border:1px solid #cfd5df;border-radius:6px;background:#fff;font-size:14px;overflow:hidden}
+  .form .ttl{background:#eef1f5;padding:7px 12px;font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.04em;border-bottom:1px solid #cfd5df}
+  .frow{display:grid;grid-template-columns:110px 1fr;border-bottom:1px solid #e3e7ee}
+  .frow:last-child{border-bottom:none}
+  .frow .k{background:#f5f7fa;padding:9px 10px;font-size:12.5px;color:var(--muted);font-weight:700;border-right:1px solid #e3e7ee;display:flex;align-items:center}
+  .frow .v{padding:9px 12px;min-height:40px;display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px}
+  .ink{color:var(--blue);font-weight:700;font-family:"Nanum Pen Script","Apple SD Gothic Neo",var(--sans)}
+  .ink.en{letter-spacing:.04em}
+  .seal{display:inline-flex;width:24px;height:24px;border:1.6px solid var(--red);border-radius:50%;color:var(--red);font-size:10px;align-items:center;justify-content:center;font-weight:800;margin-left:6px;background:var(--red-bg)}
+  .sign{color:var(--blue);font-style:italic;font-weight:700}
+  .box{border:2px solid var(--red);border-radius:6px;margin:10px 0 0}
+  .box .form{border:none;border-radius:0}
+  .box-label{font-size:12px;color:var(--red);font-weight:800;padding:4px 10px 0}
+  .printed{color:var(--muted-2);font-size:13px}
+  .chk{display:inline-block;width:16px;height:16px;border:1.5px solid #555;border-radius:2px;vertical-align:-3px;margin-right:4px;text-align:center;line-height:13px;font-size:12px}
+  .chk.on{background:var(--blue);border-color:var(--blue);color:#fff}
+  .keep{background:#fff9ec;border:1px dashed var(--gold);border-radius:8px;padding:8px 12px;font-size:13.5px;color:var(--ink-soft);margin-top:10px}
+
+  /* 절차 */
+  .steps{list-style:none;margin:0;padding:0;counter-reset:s}
+  .steps li{position:relative;padding:0 0 14px 44px;counter-increment:s}
+  .steps li::before{content:counter(s);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:50%;background:#fff;border:2px solid var(--ink);color:var(--ink);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+  .steps li::after{content:"";position:absolute;left:14px;top:32px;bottom:-2px;width:2px;background:var(--line)}
+  .steps li:last-child::after{display:none}
+  .steps b{color:var(--ink)}
+  .steps .sub{display:block;font-size:13px;color:var(--muted)}
+
+  /* 정보 상자 */
+  .info{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;font-size:14.5px;margin:10px 0}
+  .info dl{margin:0;display:grid;grid-template-columns:96px 1fr;gap:6px 12px}
+  .info dt{color:var(--muted);font-weight:700;font-size:13px}
+  .info dd{margin:0}
+  .callout{border-left:4px solid var(--gold);background:#fffaf1;padding:12px 14px;border-radius:0 10px 10px 0;font-size:14.5px;margin:12px 0}
+  .callout b{color:var(--ink)}
+  .qa{display:grid;gap:6px;margin-top:8px}
+  .qa div{display:grid;grid-template-columns:84px 1fr;gap:10px;font-size:14px}
+  .qa span:first-child{color:var(--muted);font-weight:700}
+
+  /* 뒤로 · 인쇄 */
+  .top-back{position:fixed;left:14px;bottom:16px;z-index:20;background:#fff;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:10px 14px;font-size:13px;font-weight:800;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.1)}
+  .print{position:fixed;right:14px;bottom:16px;z-index:20;background:var(--ink);color:#fff;border:none;border-radius:999px;padding:10px 14px;font:inherit;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.15)}
+  footer{margin-top:40px;font-size:12.5px;color:var(--muted-2);text-align:center;line-height:1.8}
+  @media (max-width:480px){ .frow{grid-template-columns:92px 1fr} .info dl{grid-template-columns:82px 1fr} .top h1{font-size:23px} }
+  @media print{
+    body{background:#fff} .tabs,.top-back,.print{display:none!important} .panel{display:block!important;page-break-before:always} .panel:first-of-type{page-break-before:auto}
+    .top{background:#fff;color:#000;padding:0 0 10px} .top p,.top .eyebrow,.legend{color:#333}
+  }
+</style>
+</head>
+<body>
+<a class="top-back" href="../">← 회사소개</a>
+<button class="print" type="button" onclick="window.print()">인쇄</button>
+
+<div class="top"><div class="in">
+  <div class="eyebrow">MERITTOUR · 가입 서류 안내</div>
+  <h1>가입 서류 작성 안내</h1>
+  <p>서류마다 <b style="color:#fff">회원님께서 직접 채우실 곳</b>만 골라 예시와 함께 보여 드립니다. 나머지 칸은 인쇄되어 있거나 메리트투어가 채웁니다.</p>
+  <div class="legend">
+    <span><span class="box"></span>빨간 테두리 = 채우실 곳</span>
+    <span><span class="ink">파란 글씨</span> = 작성 예시(가상의 이름·번호)</span>
+    <span><span class="seal-ex">인</span>= 인감도장 · <i>기울인 글씨</i> = 자필 서명</span>
+  </div>
+</div></div>
+
+<div class="wrap">
+  <div class="tabs" role="tablist">
+    <button class="tab on" type="button" data-t="ewrc" role="tab">EWRC Ⅱ 회원권</button>
+    <button class="tab" type="button" data-t="kuju" role="tab">쿠주 타운하우스 · 개인</button>
+    <button class="tab" type="button" data-t="corp" role="tab">쿠주 타운하우스 · 법인</button>
+  </div>
+
+  <!-- ══════════════ EWRC Ⅱ ══════════════ -->
+  <section class="panel on" id="ewrc">
+    <h2><span class="n">01</span>준비하실 것</h2>
+    <p class="lead">메리트투어가 서류 ①~⑤를 등기우편으로 보내 드립니다. 아래를 모두 갖추어 한 봉투에 넣어 보내 주세요.</p>
+    <ul class="check">
+      <li><span class="no">①</span><div><b>입회신청서</b> 1부<span class="sub">공란 없이 기입 · 자필 서명 · 성함 옆 인감 날인</span></div></li>
+      <li><span class="no">②</span><div><b>위임장</b> 1부<span class="sub">위임인 성명 · 주민등록번호 · 주소 · 성명 옆 인감 날인</span></div></li>
+      <li><span class="no">③</span><div><b>개인(신용)정보 수집·이용 동의서</b> 1부 (KB국민은행 서식)<span class="sub">「동의함」 두 곳 체크 · 본인 성명 옆 인감 날인</span></div></li>
+      <li><span class="no">④</span><div><b>외화송금신청서</b> 1부 (KB국민은행 서식)<span class="sub">「보내시는 분」 칸과 맨 아래 신청인란만</span></div></li>
+      <li><span class="no">⑤</span><div><b>회원가입계약서</b> 2부 중 1부<span class="sub">가입계약자란 기입 · 인감 날인 · <b>1부는 회원님이 보관</b></span></div></li>
+      <li><span class="no att">ⓐ</span><div><b>개인 인감증명서</b> 1부 (원본)<span class="sub"><span class="warn">최근 1개월 이내 발급 · 「금융기관 제출용」</span> · 온라인 발급분은 안 됩니다</span></div></li>
+      <li><span class="no att">ⓑ</span><div><b>여권 사본</b> 1부<span class="sub">부부 회원은 배우자 여권 사본 1부를 함께</span></div></li>
+      <li><span class="no att">ⓒ</span><div><b>신분증 사본</b> 1부 (주민등록증 또는 운전면허증)<span class="sub"><span class="warn">휴대폰으로 찍은 사진은 안 됩니다</span> — 복사본으로</span></div></li>
+      <li><span class="no att">ⓓ</span><div><b>KB국민은행 방문 — CDD·EDD 등록</b><span class="sub">신분증 지참 · 등록 확인 후 메리트투어로 전화 (아래 05 참고)</span></div></li>
+    </ul>
+
+    <h2><span class="n">02</span>서류별 채우실 곳</h2>
+    <p class="lead">각 서류에서 빨간 테두리 안만 채우시면 됩니다. 예시의 이름·번호·주소는 모두 가상입니다.</p>
+
+    <div class="doc">
+      <h3><span class="no">①</span>입회신청서</h3>
+      <p class="what">회원 정보를 등록하는 서류입니다. 모든 칸을 빠짐없이 적어 주세요.</p>
+      <div class="box"><div class="box-label">공란 없이 기입</div>
+        <div class="form">
+          <div class="frow"><div class="k">성명 · 한글</div><div class="v"><span class="ink">홍길동</span></div></div>
+          <div class="frow"><div class="k">성명 · 영문</div><div class="v"><span class="ink en">HONG GILDONG</span><span class="printed">여권과 같은 철자로</span></div></div>
+          <div class="frow"><div class="k">생년월일</div><div class="v"><span class="ink">1960년 5월 15일</span></div></div>
+          <div class="frow"><div class="k">주민등록번호</div><div class="v"><span class="ink">600515-1234567</span></div></div>
+          <div class="frow"><div class="k">성별</div><div class="v"><span class="ink">남</span><span class="printed">해당하는 쪽에 동그라미</span></div></div>
+          <div class="frow"><div class="k">핸드폰번호</div><div class="v"><span class="ink">010-1234-5678</span></div></div>
+          <div class="frow"><div class="k">이메일</div><div class="v"><span class="ink">hong@example.com</span></div></div>
+          <div class="frow"><div class="k">팩스</div><div class="v"><span class="printed">없으면 「없음」</span></div></div>
+          <div class="frow"><div class="k">자택주소</div><div class="v"><span class="ink">서울특별시 강남구 테헤란로 100, 101동 1001호 (역삼동, 예시아파트)</span></div></div>
+        </div>
+      </div>
+      <div class="box"><div class="box-label">맨 아래</div>
+        <div class="form">
+          <div class="frow"><div class="k">[서명]</div><div class="v"><span class="sign">홍길동</span><span class="printed">반드시 자필 서명</span></div></div>
+          <div class="frow"><div class="k">성함 (인)</div><div class="v"><span class="ink">홍길동</span><span class="seal">인</span><span class="printed">인감도장 날인 필수</span></div></div>
+        </div>
+      </div>
+      <ul class="points">
+        <li>영문 성명은 여권과 똑같이 적어 주세요.</li>
+        <li class="i">「20 년 월 일」 날짜 칸은 비워 두셔도 됩니다.</li>
+      </ul>
+    </div>
+
+    <div class="doc">
+      <h3><span class="no">②</span>위임장</h3>
+      <p class="what">회원권 구입에 따른 매매신고와 해외송금을 메리트투어가 대신 처리할 수 있게 위임하는 서류입니다.</p>
+      <div class="box"><div class="box-label">위임인 (회원님)</div>
+        <div class="form">
+          <div class="frow"><div class="k">성명 (인)</div><div class="v"><span class="ink">홍길동</span><span class="seal">인</span><span class="printed">인감도장 날인 필수</span></div></div>
+          <div class="frow"><div class="k">주민등록번호</div><div class="v"><span class="ink">600515-1234567</span></div></div>
+          <div class="frow"><div class="k">주소</div><div class="v"><span class="ink">서울특별시 강남구 테헤란로 100, 101동 1001호 (역삼동, 예시아파트)</span></div></div>
+        </div>
+      </div>
+      <ul class="points">
+        <li class="i">대리인(㈜메리트투어 · 사업자등록번호 · 주소)은 인쇄되어 있습니다. 손대지 않으셔도 됩니다.</li>
+        <li class="i">아래 「20 년 월 일」은 비워 두셔도 됩니다.</li>
+      </ul>
+    </div>
+
+    <div class="doc">
+      <h3><span class="no">③</span>개인(신용)정보 수집·이용 동의서</h3>
+      <p class="what">KB국민은행 서식입니다. 해외송금을 위해 은행이 회원님 정보를 확인하는 데 동의하는 서류입니다.</p>
+      <div class="box"><div class="box-label">두 곳 체크 + 성명</div>
+        <div class="form">
+          <div class="frow"><div class="k">고유식별정보</div><div class="v"><span class="chk">&nbsp;</span>동의하지 않음 &nbsp; <span class="chk on">✓</span><b>동의함</b></div></div>
+          <div class="frow"><div class="k">개인(신용)정보</div><div class="v"><span class="chk">&nbsp;</span>동의하지 않음 &nbsp; <span class="chk on">✓</span><b>동의함</b></div></div>
+          <div class="frow"><div class="k">본인 성명</div><div class="v"><span class="ink">홍길동</span><span class="seal">인</span><span class="printed">(서명) 자리에 인감 날인</span></div></div>
+        </div>
+      </div>
+      <ul class="points">
+        <li class="i">「대리인 성명」 줄과 날짜는 비워 두셔도 됩니다.</li>
+      </ul>
+    </div>
+
+    <div class="doc">
+      <h3><span class="no">④</span>외화송금신청서</h3>
+      <p class="what">KB국민은행 서식입니다. 받는 곳(SaiZen Co., Ltd. · The Higo Bank)과 송금 사유는 인쇄되어 있습니다.</p>
+      <div class="box"><div class="box-label">「보내시는 분」 칸만</div>
+        <div class="form">
+          <div class="frow"><div class="k">성명 · 한글</div><div class="v"><span class="ink">홍길동</span></div></div>
+          <div class="frow"><div class="k">성명 · 영문</div><div class="v"><span class="ink en">HONG GILDONG</span></div></div>
+          <div class="frow"><div class="k">주민(사업자)번호</div><div class="v"><span class="ink">600515-1234567</span></div></div>
+          <div class="frow"><div class="k">주소</div><div class="v"><span class="ink">서울특별시 강남구 테헤란로 100, 101동 1001호</span></div></div>
+          <div class="frow"><div class="k">TEL</div><div class="v"><span class="ink">010-1234-5678</span></div></div>
+        </div>
+      </div>
+      <div class="box"><div class="box-label">맨 아래 신청인(Applicant)</div>
+        <div class="form">
+          <div class="frow"><div class="k">신청인</div><div class="v"><span class="ink">홍길동</span><span class="seal">인</span><span class="printed">성함 + 인감도장</span></div></div>
+        </div>
+      </div>
+      <ul class="points">
+        <li class="no">송금액 · 송금 방법 · 예금청구서 · 대리인란 · 신청일은 적지 않습니다.</li>
+        <li class="i">「여권번호」 칸은 외국인·재외동포용이라 비워 둡니다.</li>
+      </ul>
+    </div>
+
+    <div class="doc">
+      <h3><span class="no">⑤</span>회원가입계약서 (2부)</h3>
+      <p class="what">제1조~제12조가 인쇄된 계약서입니다. 마지막 장의 가입계약자란만 채우시면 됩니다.</p>
+      <div class="box"><div class="box-label">마지막 장 · 가입계약자</div>
+        <div class="form">
+          <div class="frow"><div class="k">성명</div><div class="v"><span class="ink">홍길동</span><span class="printed">서명㊞ 자리에</span><span class="seal">인</span></div></div>
+          <div class="frow"><div class="k">주민등록번호</div><div class="v"><span class="ink">600515-1234567</span></div></div>
+          <div class="frow"><div class="k">휴대폰번호</div><div class="v"><span class="ink">010-1234-5678</span></div></div>
+        </div>
+      </div>
+      <div class="keep">📎 2부 모두 같은 자리를 채우신 뒤, <b>1부는 회원님이 보관</b>하시고 <b>1부만 보내 주세요.</b></div>
+      <ul class="points">
+        <li class="i">계약서 전문은 <a href="../#membership">회사소개의 「회원가입 계약서 전문 보기」</a>에서 미리 읽어 보실 수 있습니다.</li>
+      </ul>
+    </div>
+
+    <h2><span class="n">03</span>가입 절차</h2>
+    <ol class="steps">
+      <li><b>메리트투어가 서류 ①~⑤를 등기우편으로 보내 드립니다.</b></li>
+      <li><b>준비물 ⓐⓑⓒ와 함께 한 봉투에 넣어 등기우편으로 보내 주세요.</b><span class="sub">보내실 곳은 아래 06</span></li>
+      <li><b>서류 발송 후 입회금을 입금해 주세요.</b><span class="sub">700만 원 · <span style="color:var(--red);font-weight:700">회원님 개인 명의로</span> 입금(개인 기명 회원권)</span></li>
+      <li><b>가까운 KB국민은행에서 CDD·EDD 등록 후 메리트투어로 전화 주세요.</b><span class="sub">아래 05</span></li>
+      <li><b>서류 확인과 입금이 끝나면 회원 가입이 완료됩니다.</b></li>
+      <li><b>예약 홈페이지 아이디·비밀번호 안내 문자를 받으시면 바로 예약하실 수 있습니다.</b></li>
+      <li><b>회원증서는 제작 후 자택으로 보내 드립니다.</b><span class="sub">제작 기간 약 2주</span></li>
+    </ol>
+
+    <h2><span class="n">04</span>입회금 입금</h2>
+    <div class="info"><dl>
+      <dt>입회금</dt><dd><b>700만 원</b> <span class="printed">(소멸성 · 개인 기명)</span></dd>
+      <dt>입금 계좌</dt><dd><b>국민은행 817201-04-109230</b></dd>
+      <dt>예금주</dt><dd>주식회사 메리트투어</dd>
+      <dt>입금 명의</dt><dd><b style="color:var(--red)">회원님 개인 명의</b>로 입금해 주세요.</dd>
+    </dl></div>
+
+    <div data-cdd></div>
+    <div data-send></div>
+  </section>
+
+  <!-- ══════════════ 쿠주 타운하우스 · 개인 ══════════════ -->
+  <section class="panel" id="kuju">
+    <h2><span class="n">01</span>준비하실 것</h2>
+    <p class="lead">메리트투어가 서류 ①~④를 등기우편으로 보내 드립니다. 아래를 모두 갖추어 한 봉투에 넣어 보내 주세요.</p>
+    <ul class="check">
+      <li><span class="no">①</span><div><b>장기 숙박형 숙소 이용 계약서</b> 2부 중 1부<span class="sub">「갑」(계약 회원)란 기입 · 성명 옆 인감 날인 · <b>1부는 회원님이 보관</b></span></div></li>
+      <li><span class="no">②</span><div><b>위임장</b> 1부<span class="sub">위임인 성명 · 주민등록번호 · 주소 · 성명 옆 인감 날인</span></div></li>
+      <li><span class="no">③</span><div><b>개인(신용)정보 수집·이용 동의서</b> 1부 (KB국민은행 서식)<span class="sub">「동의함」 두 곳 체크 · 본인 성명 옆 인감 날인</span></div></li>
+      <li><span class="no">④</span><div><b>외화송금신청서</b> 1부 (KB국민은행 서식)<span class="sub">「보내시는 분」 칸과 맨 아래 신청인란만</span></div></li>
+      <li><span class="no att">ⓐ</span><div><b>개인 인감증명서</b> 1부 (원본)<span class="sub"><span class="warn">최근 1개월 이내 발급 · 「금융기관 제출용」</span> · 온라인 발급분은 안 됩니다</span></div></li>
+      <li><span class="no att">ⓑ</span><div><b>여권 사본</b> 1부<span class="sub">부부 회원은 배우자 여권 사본 1부를 함께</span></div></li>
+      <li><span class="no att">ⓒ</span><div><b>신분증 사본</b> 1부 (주민등록증 또는 운전면허증)<span class="sub"><span class="warn">휴대폰으로 찍은 사진은 안 됩니다</span> — 복사본으로</span></div></li>
+      <li><span class="no att">ⓓ</span><div><b>KB국민은행 방문 — CDD·EDD 등록</b><span class="sub">신분증 지참 · 등록 확인 후 메리트투어로 전화 (아래 05 참고)</span></div></li>
+    </ul>
+
+    <h2><span class="n">02</span>서류별 채우실 곳</h2>
+    <p class="lead">각 서류에서 빨간 테두리 안만 채우시면 됩니다. 예시의 이름·번호·주소는 모두 가상입니다.</p>
+
+    <div class="doc">
+      <h3><span class="no">①</span>장기 숙박형 숙소 이용 계약서 (2부)</h3>
+      <p class="what">제1조~제9조와 첨부 1-1(숙소 안내 및 이용 규정)이 인쇄된 계약서입니다. 마지막 장의 「갑」 &lt;계약 회원&gt; 란만 채우시면 됩니다.</p>
+      <div class="box"><div class="box-label">마지막 장 · “갑” 〈계약 회원〉</div>
+        <div class="form">
+          <div class="frow"><div class="k">성명</div><div class="v"><span class="ink">홍길동</span><span class="printed">서명㊞ 자리에</span><span class="seal">인</span></div></div>
+          <div class="frow"><div class="k">주민등록번호</div><div class="v"><span class="ink">600515-1234567</span></div></div>
+          <div class="frow"><div class="k">휴대폰번호</div><div class="v"><span class="ink">010-1234-5678</span></div></div>
+        </div>
+      </div>
+      <div class="keep">📎 2부 모두 같은 자리를 채우신 뒤, <b>1부는 회원님이 보관</b>하시고 <b>1부만 보내 주세요.</b></div>
+      <ul class="points">
+        <li class="i">계약서 전문은 <a href="../#longstay">회사소개의 「장기숙박 계약서 전문 보기」</a>에서 미리 읽어 보실 수 있습니다.</li>
+      </ul>
+    </div>
+
+    <div class="doc">
+      <h3><span class="no">②</span>위임장</h3>
+      <p class="what">예탁보증금의 해외송금을 메리트투어가 대신 처리할 수 있게 위임하는 서류입니다.</p>
+      <div class="box"><div class="box-label">위임인 (회원님)</div>
+        <div class="form">
+          <div class="frow"><div class="k">성명 (인)</div><div class="v"><span class="ink">홍길동</span><span class="seal">인</span><span class="printed">인감도장 날인 필수</span></div></div>
+          <div class="frow"><div class="k">주민등록번호</div><div class="v"><span class="ink">600515-1234567</span></div></div>
+          <div class="frow"><div class="k">주소</div><div class="v"><span class="ink">서울특별시 강남구 테헤란로 100, 101동 1001호 (역삼동, 예시아파트)</span></div></div>
+        </div>
+      </div>
+      <ul class="points">
+        <li class="i">대리인(㈜메리트투어 · 법인등록번호 · 주소)은 인쇄되어 있습니다.</li>
+        <li class="i">아래 「20 년 월 일」은 비워 두셔도 됩니다.</li>
+      </ul>
+    </div>
+
+    <div class="doc">
+      <h3><span class="no">③</span>개인(신용)정보 수집·이용 동의서</h3>
+      <p class="what">KB국민은행 서식입니다. 해외송금을 위해 은행이 회원님 정보를 확인하는 데 동의하는 서류입니다.</p>
+      <div class="box"><div class="box-label">두 곳 체크 + 성명</div>
+        <div class="form">
+          <div class="frow"><div class="k">고유식별정보</div><div class="v"><span class="chk">&nbsp;</span>동의하지 않음 &nbsp; <span class="chk on">✓</span><b>동의함</b></div></div>
+          <div class="frow"><div class="k">개인(신용)정보</div><div class="v"><span class="chk">&nbsp;</span>동의하지 않음 &nbsp; <span class="chk on">✓</span><b>동의함</b></div></div>
+          <div class="frow"><div class="k">본인 성명</div><div class="v"><span class="ink">홍길동</span><span class="seal">인</span><span class="printed">(서명) 자리에 인감 날인</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc">
+      <h3><span class="no">④</span>외화송금신청서</h3>
+      <p class="what">KB국민은행 서식입니다. 받는 곳(SaiZen Co., Ltd. · The Higo Bank)과 송금 사유(장기숙박회원권)는 인쇄되어 있습니다.</p>
+      <div class="box"><div class="box-label">「보내시는 분」 칸만</div>
+        <div class="form">
+          <div class="frow"><div class="k">성명 · 한글</div><div class="v"><span class="ink">홍길동</span></div></div>
+          <div class="frow"><div class="k">성명 · 영문</div><div class="v"><span class="ink en">HONG GILDONG</span></div></div>
+          <div class="frow"><div class="k">주민(사업자)번호</div><div class="v"><span class="ink">600515-1234567</span></div></div>
+          <div class="frow"><div class="k">주소</div><div class="v"><span class="ink">서울특별시 강남구 테헤란로 100, 101동 1001호</span></div></div>
+          <div class="frow"><div class="k">TEL</div><div class="v"><span class="ink">010-1234-5678</span></div></div>
+        </div>
+      </div>
+      <div class="box"><div class="box-label">맨 아래 신청인(Applicant)</div>
+        <div class="form">
+          <div class="frow"><div class="k">신청인</div><div class="v"><span class="ink">홍길동</span><span class="seal">인</span><span class="printed">성함 + 인감도장</span></div></div>
+        </div>
+      </div>
+      <ul class="points">
+        <li class="no">송금액 · 송금 방법 · 예금청구서 · 대리인란 · 신청일은 적지 않습니다.</li>
+      </ul>
+    </div>
+
+    <h2><span class="n">03</span>가입 절차</h2>
+    <ol class="steps">
+      <li><b>메리트투어가 서류 ①~④를 등기우편으로 보내 드립니다.</b></li>
+      <li><b>준비물 ⓐⓑⓒ와 함께 한 봉투에 넣어 등기우편으로 보내 주세요.</b><span class="sub">보내실 곳은 아래 06</span></li>
+      <li><b>서류 발송 후 예탁보증금을 입금해 주세요.</b><span class="sub">5,000만 원 · <span style="color:var(--red);font-weight:700">회원님 개인 명의로</span> 입금</span></li>
+      <li><b>가까운 KB국민은행에서 CDD·EDD 등록 후 메리트투어로 전화 주세요.</b><span class="sub">아래 05</span></li>
+      <li><b>서류 확인과 입금이 끝나면 가입이 완료됩니다.</b></li>
+      <li><b>예약 홈페이지 아이디·비밀번호 안내 문자를 받으시면 바로 예약하실 수 있습니다.</b></li>
+      <li><b>증서는 제작 후 자택으로 보내 드립니다.</b><span class="sub">제작 기간 약 2주</span></li>
+    </ol>
+
+    <h2><span class="n">04</span>예탁보증금 입금</h2>
+    <div class="info"><dl>
+      <dt>예탁보증금</dt><dd><b>5,000만 원</b> <span class="printed">(반환형 · 계약 5년)</span></dd>
+      <dt>입금 계좌</dt><dd><b>국민은행 817201-04-109230</b></dd>
+      <dt>예금주</dt><dd>주식회사 메리트투어</dd>
+      <dt>입금 명의</dt><dd><b style="color:var(--red)">회원님 개인 명의</b>로 입금해 주세요.</dd>
+    </dl></div>
+
+    <div data-cdd></div>
+    <div data-send></div>
+  </section>
+
+  <!-- ══════════════ 쿠주 타운하우스 · 법인 ══════════════ -->
+  <section class="panel" id="corp">
+    <h2><span class="n">01</span>준비하실 것</h2>
+    <p class="lead">법인 명의로 가입하실 때는 법인용 계약서를 보내 드리며, 도장은 모두 <b>법인 인감</b>입니다.</p>
+    <ul class="check">
+      <li><span class="no">①</span><div><b>장기 숙박형 숙소 이용 계약서(법인)</b> 2부 중 1부<span class="sub">「갑」란에 법인명 · 법인등록번호 · 휴대폰번호 · 법인 인감 날인 · <b>1부는 보관</b></span></div></li>
+      <li><span class="no">②</span><div><b>위임장</b> 1부<span class="sub">위임인 법인명 · 법인등록번호 · 주소 · 법인 인감 날인</span></div></li>
+      <li><span class="no">③</span><div><b>개인(신용)정보 수집·이용 동의서</b> 1부<span class="sub">「동의함」 두 곳 체크 · 성명 옆 법인 인감 날인</span></div></li>
+      <li><span class="no">④</span><div><b>외화송금신청서</b> 1부<span class="sub">「보내시는 분」 칸 · 맨 아래 신청인란에 법인 인감 · <b>대리인란에 대표(사내)이사 서명</b></span></div></li>
+      <li><span class="no att">ⓐ</span><div><b>법인 인감증명서</b> 1부 (원본)<span class="sub"><span class="warn">최근 1개월 이내 발급</span></span></div></li>
+      <li><span class="no att">ⓑ</span><div><b>법인 등기부등본</b> 1부 (원본)<span class="sub"><span class="warn">최근 1개월 이내 발급</span></span></div></li>
+      <li><span class="no att">ⓒ</span><div><b>사업자등록증</b> 사본 1부</div></li>
+      <li><span class="no att">ⓓ</span><div><b>주주명부</b> 1부 (원본)<span class="sub">법인 인감 날인 · <span class="warn">최근 1개월 이내 발급</span></span></div></li>
+      <li><span class="no att">ⓔ</span><div><b>대표(사내)이사 여권 사본</b> 1부</div></li>
+      <li><span class="no att">ⓕ</span><div><b>대표(사내)이사 신분증 사본</b> 1부<span class="sub"><span class="warn">휴대폰으로 찍은 사진은 안 됩니다</span> — 주민등록증 또는 운전면허증</span></div></li>
+      <li><span class="no att">ⓖ</span><div><b>KB국민은행 방문 — CDD·EDD 「법인」 등록</b><span class="sub">대표(사내)이사 또는 대리인 방문 · 지참 서류가 다르니 <span class="warn">방문하실 지점에 먼저 확인</span> 후 등록 · 등록 확인 후 메리트투어로 전화</span></div></li>
+    </ul>
+
+    <h2><span class="n">02</span>서류별 채우실 곳</h2>
+    <p class="lead">예시의 회사명·번호·주소는 모두 가상입니다.</p>
+
+    <div class="doc">
+      <h3><span class="no">①</span>장기 숙박형 숙소 이용 계약서(법인) (2부)</h3>
+      <div class="box"><div class="box-label">마지막 장 · “갑” 〈계약 회원〉</div>
+        <div class="form">
+          <div class="frow"><div class="k">법인명</div><div class="v"><span class="ink">주식회사 예시상사</span><span class="seal">인</span><span class="printed">법인 인감</span></div></div>
+          <div class="frow"><div class="k">법인등록번호</div><div class="v"><span class="ink">110111-1234567</span></div></div>
+          <div class="frow"><div class="k">휴대폰번호</div><div class="v"><span class="ink">010-1234-5678</span><span class="printed">담당자 연락처</span></div></div>
+        </div>
+      </div>
+      <div class="keep">📎 2부 모두 채우신 뒤 <b>1부는 보관</b>하시고 <b>1부만 보내 주세요.</b></div>
+    </div>
+
+    <div class="doc">
+      <h3><span class="no">②</span>위임장</h3>
+      <div class="box"><div class="box-label">위임인 (법인)</div>
+        <div class="form">
+          <div class="frow"><div class="k">법인명 (인)</div><div class="v"><span class="ink">주식회사 예시상사</span><span class="seal">인</span><span class="printed">법인 인감</span></div></div>
+          <div class="frow"><div class="k">법인등록번호</div><div class="v"><span class="ink">110111-1234567</span></div></div>
+          <div class="frow"><div class="k">주소</div><div class="v"><span class="ink">서울특별시 강남구 테헤란로 100, 5층 (역삼동, 예시빌딩)</span></div></div>
+        </div>
+      </div>
+      <ul class="points">
+        <li class="i">대리인(㈜메리트투어 · 법인등록번호 · 주소)은 인쇄되어 있습니다. 아래 날짜는 비워 두셔도 됩니다.</li>
+      </ul>
+    </div>
+
+    <div class="doc">
+      <h3><span class="no">③</span>개인(신용)정보 수집·이용 동의서</h3>
+      <div class="box"><div class="box-label">두 곳 체크 + 성명</div>
+        <div class="form">
+          <div class="frow"><div class="k">고유식별정보</div><div class="v"><span class="chk">&nbsp;</span>동의하지 않음 &nbsp; <span class="chk on">✓</span><b>동의함</b></div></div>
+          <div class="frow"><div class="k">개인(신용)정보</div><div class="v"><span class="chk">&nbsp;</span>동의하지 않음 &nbsp; <span class="chk on">✓</span><b>동의함</b></div></div>
+          <div class="frow"><div class="k">본인 성명</div><div class="v"><span class="ink">주식회사 예시상사</span><span class="seal">인</span><span class="printed">법인 인감</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="doc">
+      <h3><span class="no">④</span>외화송금신청서</h3>
+      <p class="what">받는 곳(SaiZen Co., Ltd. · The Higo Bank)과 송금 사유는 인쇄되어 있습니다.</p>
+      <div class="box"><div class="box-label">「보내시는 분」 칸만</div>
+        <div class="form">
+          <div class="frow"><div class="k">성명(업체명) · 한글</div><div class="v"><span class="ink">주식회사 예시상사</span></div></div>
+          <div class="frow"><div class="k">영문</div><div class="v"><span class="ink en">YESI CORP.</span></div></div>
+          <div class="frow"><div class="k">사업자번호</div><div class="v"><span class="ink">123-45-67890</span></div></div>
+          <div class="frow"><div class="k">주소</div><div class="v"><span class="ink">서울특별시 강남구 테헤란로 100, 5층</span></div></div>
+          <div class="frow"><div class="k">TEL</div><div class="v"><span class="ink">02-1234-5678</span></div></div>
+        </div>
+      </div>
+      <div class="box"><div class="box-label">맨 아래</div>
+        <div class="form">
+          <div class="frow"><div class="k">신청인</div><div class="v"><span class="ink">주식회사 예시상사</span><span class="seal">인</span><span class="printed">법인 인감</span></div></div>
+          <div class="frow"><div class="k">대리인</div><div class="v"><span class="sign">홍길동</span><span class="printed">대표(사내)이사 자필 서명</span></div></div>
+        </div>
+      </div>
+      <ul class="points">
+        <li class="no">송금액 · 송금 방법 · 예금청구서 · 신청일은 적지 않습니다.</li>
+      </ul>
+    </div>
+
+    <h2><span class="n">03</span>가입 절차</h2>
+    <ol class="steps">
+      <li><b>메리트투어가 서류 ①~④(법인용)를 등기우편으로 보내 드립니다.</b></li>
+      <li><b>준비물 ⓐ~ⓕ와 함께 한 봉투에 넣어 등기우편으로 보내 주세요.</b></li>
+      <li><b>서류 발송 후 예탁보증금을 입금해 주세요.</b><span class="sub">5,000만 원 · <span style="color:var(--red);font-weight:700">법인명으로</span> 입금</span></li>
+      <li><b>가까운 KB국민은행에서 CDD·EDD 「법인」 등록 후 메리트투어로 전화 주세요.</b><span class="sub">대표(사내)이사 또는 대리인이 방문 · 지참 서류는 지점에 먼저 확인</span></li>
+      <li><b>서류 확인과 입금이 끝나면 가입이 완료됩니다.</b></li>
+      <li><b>예약 홈페이지 아이디·비밀번호 안내 문자를 받으시면 바로 예약하실 수 있습니다.</b></li>
+      <li><b>증서는 제작 후 법인 주소로 보내 드립니다.</b><span class="sub">제작 기간 약 2주</span></li>
+    </ol>
+
+    <h2><span class="n">04</span>예탁보증금 입금</h2>
+    <div class="info"><dl>
+      <dt>예탁보증금</dt><dd><b>5,000만 원</b> <span class="printed">(반환형 · 계약 5년)</span></dd>
+      <dt>입금 계좌</dt><dd><b>국민은행 817201-04-109230</b></dd>
+      <dt>예금주</dt><dd>주식회사 메리트투어</dd>
+      <dt>입금 명의</dt><dd><b style="color:var(--red)">법인명</b>으로 입금해 주세요.</dd>
+    </dl></div>
+
+    <div data-cdd="corp"></div>
+    <div data-send></div>
+  </section>
+
+  <!-- 공통 블록 원본 (JS 가 각 탭에 복사) -->
+  <template id="tpl-cdd">
+    <h2><span class="n">05</span>KB국민은행 CDD·EDD 등록</h2>
+    <p class="lead">가입금(예탁보증금)은 메리트투어가 KB국민은행을 통해 일본 SaiZen(아소 야마나미 리조트)으로 송금합니다. 해외송금 규정에 따라 보내시는 분(회원님)의 고객확인 등록이 은행에 먼저 되어 있어야 합니다.</p>
+    <div class="info">
+      <dl>
+        <dt>어디서</dt><dd>가까운 <b>KB국민은행 어느 지점이든</b> 됩니다. 국민은행 계좌가 없으셔도 등록만 하실 수 있습니다.</dd>
+        <dt>무엇을</dt><dd><b>신분증(주민등록증 또는 운전면허증)</b>만 지참하세요. 가입 서류는 가져가지 않으셔도 됩니다.</dd>
+        <dt>CDD · EDD</dt><dd>자금세탁방지법에 따른 은행의 고객확인제도입니다. CDD = 고객확인, EDD = 강화된 고객확인.</dd>
+      </dl>
+    </div>
+    <div class="callout"><b>은행원이 물어보면 이렇게 답해 주세요.</b>
+      <div class="qa">
+        <div><span>방문 목적</span><span>해외송금을 위한 CDD·EDD 등록</span></div>
+        <div><span>송금 주체</span><span>㈜메리트투어가 대리 송금</span></div>
+        <div><span>송금 대상</span><span>일본 SaiZen Co., Ltd. (아소 야마나미 리조트)</span></div>
+        <div><span>송금 용도</span><span data-purpose>해외 골프장 회원권 구입</span></div>
+      </div>
+    </div>
+    <div class="callout" data-corp-only hidden><b>법인 등록은 지점에 먼저 확인해 주세요.</b> 대표(사내)이사 또는 대리인이 방문하며, 방문하시는 분에 따라 지참 서류가 다릅니다. 방문 전에 그 지점에 「법인 CDD·EDD 등록에 필요한 서류」를 물어보신 뒤 준비해 가세요.</div>
+    <div class="info">등록 중 조금이라도 막히시면 <b>바로 메리트투어(02-365-9800)로 전화 주세요.</b> 은행 담당자와 직접 통화하여 안내해 드립니다. 최근 해외송금 확인 절차가 강화되어 추가 질문을 받으시는 경우가 있습니다.<br><b>등록이 끝나면 메리트투어로 전화 부탁드립니다.</b></div>
+  </template>
+  <template id="tpl-send">
+    <h2><span class="n">06</span>보내실 곳 · 문의</h2>
+    <div class="info"><dl>
+      <dt>받는 곳</dt><dd>(우 04001) 서울특별시 마포구 월드컵북로 15 (서교동) 엠지엘빌딩 6층 601호<br><b>㈜메리트투어</b> 앞 · 등기우편</dd>
+      <dt>전화</dt><dd><a href="tel:0223659800" style="text-decoration:none;font-weight:700">02-365-9800</a> <span class="printed">(평일 09:00~18:00)</span> · 팩스 02-365-9801</dd>
+      <dt>카카오톡</dt><dd><a href="https://pf.kakao.com/_dxhWus/chat" target="_blank" rel="noopener" style="font-weight:700">메리트투어 채널 상담</a></dd>
+    </dl></div>
+  </template>
+
+  <footer>예시에 적힌 이름 · 번호 · 주소는 모두 가상입니다. 서류 원본이 이 안내와 다르면 원본을 따릅니다.<br>㈜메리트투어 · 02-365-9800</footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  /* 공통 블록(은행 등록 · 보내실 곳)을 각 탭에 채운다 — 송금 용도만 탭마다 다르다 */
+  var purpose = { ewrc: '해외 골프장 회원권 구입', kuju: '해외 장기숙박 이용권(예탁보증금) 송금', corp: '해외 장기숙박 이용권(예탁보증금) 송금 · 법인' };
+  document.querySelectorAll('[data-cdd]').forEach(function (slot) {
+    var frag = document.getElementById('tpl-cdd').content.cloneNode(true);
+    var sec = slot.closest('.panel').id;
+    frag.querySelector('[data-purpose]').textContent = purpose[sec] || purpose.ewrc;
+    var corp = frag.querySelector('[data-corp-only]'); if (sec === 'corp') corp.hidden = false;
+    slot.replaceWith(frag);
+  });
+  document.querySelectorAll('[data-send]').forEach(function (slot) { slot.replaceWith(document.getElementById('tpl-send').content.cloneNode(true)); });
+
+  /* 탭 — #ewrc · #kuju · #corp 로 바로 열 수 있다 */
+  var tabs = document.querySelectorAll('.tab'), panels = document.querySelectorAll('.panel');
+  function show(id, push) {
+    tabs.forEach(function (t) { t.classList.toggle('on', t.dataset.t === id); t.setAttribute('aria-selected', t.dataset.t === id ? 'true' : 'false'); });
+    panels.forEach(function (p) { p.classList.toggle('on', p.id === id); });
+    if (push && history.replaceState) history.replaceState(null, '', '#' + id);
+  }
+  tabs.forEach(function (t) { t.addEventListener('click', function () { show(t.dataset.t, true); window.scrollTo({ top: 0, behavior: 'smooth' }); }); });
+  var h = location.hash.replace('#', '');
+  if (h === 'kuju' || h === 'corp' || h === 'ewrc') show(h, false);
+  window.addEventListener('hashchange', function () { var x = location.hash.replace('#', ''); if (document.getElementById(x) && document.getElementById(x).classList.contains('panel')) show(x, false); });
+})();
+</script>
+<script defer src="/assets/fresh.js"></script>
+</body>
+</html>
