@@ -49,7 +49,8 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 | 벳푸 · 무츠키 료칸 | `mutsuki` | 무츠키 료칸 | `ryokan` |
 | 이바라키 · 시로사토 | `ibaraki` | 골프장 안 숙소 | `lodge` |
 | 이바라키 · 후쿠로다노타키 | `fukuroda` | 후쿠로다노타키CC 호텔 | `lodge` |
-| 미야자키 · 국제공항CC | `miyazaki` | 골프장 숙소 | `lodge` |
+| 미야자키 · 국제공항CC · 레인보우CC | `miyazaki` | 국제공항CC 호텔 | `hotel` |
+| | | 미야자키 시내 호텔 | `city` |
 
 골프장 사진은 지역마다 `golf` 하나입니다.
 나가노 스가다이라 · 쿠알라룸푸르 닐라이스프링스 · 벳푸 무츠키 료칸 · 벳푸 그랜드 머큐어 벳푸 베이 리조트 & 스파는 **상시예약 기간 오픈 예정**이라
@@ -74,7 +75,7 @@ GitHub 웹에서 **Add file → Upload files** 로 드래그하면 됩니다.
 | 벳푸 · 무츠키 료칸 | [무츠키 료칸](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/mutsuki/ryokan) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/mutsuki/golf) |
 | 이바라키 · 시로사토 | [골프장 안 숙소](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/ibaraki/lodge) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/ibaraki/golf) |
 | 이바라키 · 후쿠로다노타키 | [후쿠로다노타키CC 호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/fukuroda/lodge) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/fukuroda/golf) |
-| 미야자키 · 국제공항CC | [골프장 숙소](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/miyazaki/lodge) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/miyazaki/golf) |
+| 미야자키 · 국제공항CC · 레인보우CC | [국제공항CC 호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/miyazaki/hotel) · [미야자키 시내 호텔](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/miyazaki/city) | [골프장](https://github.com/MERITTOUR/merittour.github.io/upload/main/2027/photos/miyazaki/golf) |
 
 ### 숙소를 더하거나 뺄 때
 
