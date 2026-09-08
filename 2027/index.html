@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <title>2027 시즌 골프 패키지 예약 안내 · 메리트투어</title>
 <meta name="description" content="회원 우선 예약제 · 우선예약 2026년 10월 19일(월) 오전 10시 오픈 · 전 지역 골프 상품 · 요금 · 환율 · 예약 절차 안내">
-<!-- 카카오톡·문자로 링크를 보낼 때 뜨는 미리보기(제목·설명·사진). og.jpg 는 photos/kumamoto/golf/05.webp(아소산·야마나미 호텔·코스)를 1200×630 으로 잘라 만든 것 -->
+<!-- 링크 미리보기(카카오톡·문자) — og.jpg 는 1200×630 JPEG -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="메리트투어 · MERITTOUR">
 <meta property="og:title" content="2027 시즌 골프 패키지 예약 안내">
@@ -17,16 +17,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="ko_KR">
 <style>
-  /* ── 베이지 라이트 · 고정 ──
-     기기 다크모드에 따라 같은 안내문이 갈려 보이지 않게 @media (prefers-color-scheme:dark)
-     분기를 두지 않는다. 새 다크 분기를 넣지 말 것.
-     바탕이 세이지(연한 초록)였을 때는 글자(올리브·골드)와 색 계열이 같아 덜 떨어져 보였다.
-     바탕만 베이지로 옮기고 글자색은 그대로 둬 색상 대비를 만든다.
-     인쇄 시 배경색이 빠져도 요금표가 읽히고, 밝은 곳(골프장·차 안)에서 반사가 적다.
-     대비비 — 본문 13.96 · 보조문 6.85 · 라벨 5.10 · 골드 5.23 · **최저 4.62**
-     (574개 요소 전수 측정, WCAG AA 미달 0건)
-     ※ 잴 때 **반투명 배경은 아래 배경과 겹친 색으로** 잴 것. 안 겹치면 .tbd 처럼
-       띠와 글자가 같은 색이라 1.00 이 나오거나, 4.47 을 4.62 로 잘못 읽는다. */
+  /* ── 베이지 라이트 · 고정 — 다크모드 분기를 두지 않는다(기기 설정에 따라 안내문이 달리 보이지 않게) ── */
   :root{
     --paper:#F6F2E8; --surface:#FFFFFF; --surface-warm:#FCFAF4; --band:#EDE7D6;
     --ink:#1E2618; --ink-soft:#4C573F; --muted:#5F6B47;
@@ -66,8 +57,6 @@
   .hero p.lead{font-size:16.5px;color:var(--ink-soft);margin:16px 0 0;max-width:52ch}
 
   /* ── 기본 포함 콜아웃 ── */
-  /* 베이지 바탕에서 올리브를 흰색에 섞으면 회녹색 카드가 되어 혼자 차가워 보인다 —
-     표 머리·안내 박스와 같은 따뜻한 띠(--band)를 쓰고 테두리로만 올리브를 남긴다. */
   .included{margin:24px 0 0;background:var(--band);
     border:1px solid color-mix(in srgb,var(--olive) 24%,var(--line));
     border-radius:14px;padding:18px 22px}
@@ -96,10 +85,7 @@
     font-weight:600;color:var(--ink)}
   .facts dt:first-of-type,.facts dd:first-of-type{border-top:none}
 
-  /* ── 표(숙소 × 항목) ──
-     숙소 3곳 × 조·중·석식처럼 2차원인 정보를 들여쓰기 문단으로 눕히면
-     읽는 사람이 「지금 어느 숙소 얘기지」를 계속 붙들어야 한다. 본 규칙은 표로,
-     예외(도착일 출발지별 등)는 표 밖 .note 로, 단서는 맨 아래 .cav 로 뺀다. */
+  /* ── 표(숙소 × 항목) — 본 규칙은 표, 예외는 .note, 단서는 .cav ── */
   .mt{width:100%;border-collapse:collapse;font-size:13.5px;margin:0}
   .mt th,.mt td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
   .mt th:first-child,.mt td:first-child{padding-left:0}
@@ -113,13 +99,11 @@
   .mt td b{color:var(--ink);font-weight:700}
   .mt tbody tr:last-child th,.mt tbody tr:last-child td{border-bottom:none}
 
-  /* 표 밖으로 뺀 예외(.note) · 맨 아래 단서(.cav)
-     ※ 좁은 화면 규칙보다 먼저 둔다 — 뒤에 두면 같은 순위라 media query 를 덮어쓴다. */
+  /* 표 밖 예외(.note) · 단서(.cav) — 좁은 화면 규칙보다 먼저 둔다(뒤에 두면 media query 를 덮어쓴다) */
   .note{margin-top:12px;padding:11px 13px;border-radius:9px;background:var(--band);
     border:1px solid var(--line);font-size:12.5px;line-height:1.7;color:var(--ink-soft);font-weight:500}
   .note b{color:var(--ink)}
-  /* 꼭 봐야 하는 안내 — 포틴힐즈 우선예약 회원권 제한처럼 다른 등급 회원도 놓치면 안 되는 것.
-     .soft ※ 줄은 흘려 읽혀서 골드 왼쪽 띠를 두른 상자로 올린다(Min · 2026-09). */
+  /* 꼭 봐야 하는 안내 — 골드 왼쪽 띠 상자 */
   .callout{margin:16px 0 0;padding:16px 18px;border-radius:12px;background:var(--band);
     border:1.5px solid var(--gold);border-left-width:6px;font-size:15px;line-height:1.7;color:var(--ink)}
   .callout .co-tag{display:block;font-size:12.5px;font-weight:800;letter-spacing:.04em;color:var(--olive-deep);margin-bottom:6px}
@@ -135,9 +119,7 @@
   .note .k{display:inline-block;min-width:62px;padding-right:8px;font-weight:800;color:var(--olive)}
   .cav{margin-top:9px;font-size:11.5px;color:var(--muted);line-height:1.6;font-weight:500}
 
-  /* 좁은 화면에서는 3열 이상 표를 접어 숙소별 카드로 바꾼다(.mt-fold).
-     4열 표를 390px 에 밀어 넣으면 「조식」이 세로로 쪼개진다.
-     tbody th 의 width:1% 은 !important 없이는 안 눌린다. */
+  /* 좁은 화면: 3열 이상 표를 접어 숙소별 카드로(.mt-fold). tbody th 의 width:1% 은 !important 없이는 안 눌린다 */
   @media (max-width:560px){
     .mt-fold,.mt-fold tbody,.mt-fold tr,.mt-fold td,.mt-fold th{display:block;width:auto}
     .mt-fold thead{display:none}
@@ -161,9 +143,7 @@
   }
 
   /* ── 미정값(확정 후 채움) ── */
-  /* 띠를 12% 로 깔았더니 골드 글자가 자기 배경에 묻혀 대비가 4.47 이었다(AA 4.5 미달).
-     예전 측정이 4.62 로 나온 것은 **반투명 띠를 아래 배경과 겹치지 않고** 재서다.
-     8% 로 낮춰 4.70. 띠를 더 진하게 만들 때는 반드시 겹친 색으로 다시 잴 것. */
+  /* 띠 8% — 더 진하게 할 때는 아래 배경과 겹친 색으로 대비(AA 4.5)를 다시 잴 것 */
   .tbd{display:inline;color:var(--gold);font-weight:700;
     background:color-mix(in srgb,var(--gold) 8%,transparent);
     padding:1px 7px;border-radius:5px;
@@ -225,16 +205,12 @@
   /* ── 숙소 & 체류 일정 ── */
   .subh{font-size:14px;font-weight:800;color:var(--gold);letter-spacing:.02em;
     margin:0 0 13px;text-transform:none}
-  /* **한 줄에 카드 하나.** 예전에는 두 칸(1fr 1fr)이었는데, 카드 안에 사진 줄이
-     들어온 뒤로는 폭이 절반이라 네 칸 중 두 칸만 보이고 나머지가 잘렸다.
-     카드 자체는 짧으므로(이름·설명·사진 한 줄) 한 줄씩 두어도 길어지는 만큼의
-     손해가 크지 않다. */
+  /* 한 줄에 카드 하나 — 두 칸이면 카드 안 사진 줄이 잘린다 */
   .lodging{list-style:none;margin:0 0 4px;padding:0;
     display:grid;grid-template-columns:1fr;gap:10px}
   .lodging li{background:var(--surface-warm);border:1px solid var(--line-soft);
     border-radius:12px;padding:14px 16px;
-    /* min-width:auto 로 두면 안쪽 가로 스트립의 전체 폭을 칸이 그대로 받아
-       페이지가 통째로 옆으로 밀린다(900px 화면에서 780px 넘쳤다). */
+    /* min-width:auto 면 안쪽 가로 스트립 폭을 칸이 그대로 받아 페이지가 옆으로 밀린다 */
     min-width:0}
   .lg-name{font-size:16.5px;font-weight:800;color:var(--ink);
     display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
@@ -317,14 +293,10 @@
   .rail a:hover{color:var(--ink-soft);border-left-color:var(--muted)}
   .rail a.on{color:var(--olive-deep);border-left-color:var(--olive);font-weight:800}
   .rail a.on b{opacity:1}
-  /* 지역 목록은 **늘 펼쳐 둔다.** 03 을 볼 때만 열리게 했더니, 다른 절에 있는
-     동안에는 어떤 지역이 있는지조차 보이지 않아 목차를 두 번 눌러야 했다.
-     (접었다 폈다 하는 움직임 자체도 옆에서 계속 어른거렸다) */
+  /* 지역 목록은 늘 펼쳐 둔다 */
   .rail-sub a{font-size:11.5px;padding:4px 0 4px 24px}
 
-  /* ── 좁은 화면(1160px 미만): 목차를 접지 않고 상단에 한 줄로 모두 펼친다 ──
-     오른쪽 세로 레일을 모바일에 그대로 두면 폭의 40%를 가리고 본문과 겹친다.
-     대신 화면 상단에 붙는 가로 스크롤 칩 줄로 15개 항목을 전부 노출한다. */
+  /* ── 좁은 화면(1160px 미만): 오른쪽 레일 대신 상단 가로 칩 줄에 전부 펼친다 ── */
   .tocbar{display:none}
   @media (max-width:1159px){
     .tocbar{display:block;position:sticky;top:0;z-index:25;
@@ -344,10 +316,7 @@
     section{scroll-margin-top:56px}
   }
 
-  /* ── 골프장 사진 ──
-     숙소 카드와 똑같이 **항상 열려 있다**(`.media-open`). 접어 두면 사진이
-     있는지조차 눌러 봐야 알고, 지역마다 하나뿐이라 접어서 아낄 높이도 얼마 없다.
-     사진은 이 블록이 화면에 가까워질 때 만든다 — 접힘에 기대지 않는다. */
+  /* ── 골프장 사진 — 항상 열려 있다(.media-open) · 화면에 가까워질 때 만든다 ── */
   .media{margin:4px 0 20px}
   .media>*+*{margin-top:10px}   /* 영상 블록과 골프장 블록이 테두리째 맞붙지 않게 */
   .media-open{min-width:0;border:1px solid var(--line);border-radius:12px;
@@ -359,9 +328,7 @@
   .media-body{padding:13px 13px 14px}
 
   /* 사진 격자 — 누르면 크게 본다 */
-  /* 숙소마다 **가로 한 줄**. 격자로 쌓으면 구마모토(숙소 일곱)는 펼친 높이가
-     화면 몇 개 길이가 된다. 옆으로 밀어 보는 편이 짧고, 폰에서는 원래 하던 손짓이다.
-     데스크톱에서는 마우스로 끌어서도 밀린다(아래 dragStrip). */
+  /* 숙소마다 가로 한 줄 — 데스크톱은 끌어서 민다(dragStrip) */
   .shots{display:flex;gap:8px;margin:0;overflow-x:auto;padding-bottom:2px;
     scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch;
     scrollbar-width:thin;overscroll-behavior-x:contain;cursor:grab}
@@ -369,12 +336,10 @@
   .shots::-webkit-scrollbar{height:6px}
   .shots::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
   .shots::-webkit-scrollbar-track{background:transparent}
-  /* 카드 폭에 4장이 딱 맞게 — 칸 4개 + 사이 간격 3개(8px)를 뺀 값을 넷으로 나눈다.
-     넓은 카드에서는 잘리는 칸이 없고, 좁아지면 130px 에서 멈춰 밀어 보게 된다. */
+  /* 카드 폭에 4칸 — 칸 4개 + 간격 3개(8px)를 넷으로 나눈 값 · 좁아지면 130px 에서 멈춰 밀어 본다 */
   .shots>*{flex:none;aspect-ratio:4/3;scroll-snap-align:start;
     width:clamp(130px, calc((100% - 24px) / 4), 190px)}
-  /* 크기는 .shots>* 하나가 정한다. 여기서 width:100% 를 또 주면 특이도가 높아
-     그 값이 이겨, 칸이 스트립 전체 폭으로 늘어난다. */
+  /* 칸 크기는 .shots>* 하나가 정한다 — 여기에 width:100% 를 또 주면 그 값이 이긴다 */
   .shots button{padding:0;border:1px solid var(--line-soft);border-radius:9px;overflow:hidden;background:var(--band);
     background:var(--band);cursor:pointer;display:block;font:inherit;position:relative}
   .shots button:hover{border-color:var(--muted)}
@@ -382,20 +347,15 @@
   .shots img{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none}
   /* 끄는 중에는 사진이 브라우저 기본 이미지 끌기로 잡히면 안 된다 */
   .shots.dragging button{pointer-events:none}
-  /* 폰에서는 네 칸을 다 담으면 한 칸이 70px 대로 줄어 무엇인지 안 보인다.
-     두 칸을 온전히 보이고 세 번째를 살짝 걸치게 둔다 — 밀 수 있다는 표시가 된다. */
+  /* 폰: 두 칸을 온전히, 세 번째를 살짝 걸치게 — 밀 수 있다는 표시 */
   @media (max-width:560px){ .shots>*{width:clamp(126px, calc((100% - 40px) / 2), 160px)} }
 
-  /* 사진이 없으면 줄·블록·상자를 통째로 숨긴다 — 회원에게 보내는 공식 안내문이라
-     빈 자리(＋ 칸)나 「어디에 올리세요」 같은 직원용 안내를 두지 않는다(2026-09 · Min).
-     .shots 는 display:flex 라 UA 의 [hidden] 규칙이 지므로 여기서 다시 잠근다. */
+  /* 사진이 없으면 줄·블록·상자를 통째로 숨긴다 — 빈 자리를 두지 않는다. .shots 는 display:flex 라 [hidden] 을 여기서 다시 잠근다 */
   .shots[hidden],.media[hidden],.media-open[hidden]{display:none}
-  /* 사진은 그 숙소 설명 바로 아래에 붙는다 — 카드 밖으로 빼면 어느 숙소
-     이야기인지 눈으로 다시 이어 붙여야 한다. */
+  /* 사진은 그 숙소 설명 바로 아래 */
   .lodging li .shots{margin-top:11px}
 
-  /* 영상 — 썸네일을 누를 때만 플레이어를 끼운다. 처음부터 iframe 을 박으면
-     지역마다 유튜브 스크립트가 붙어 문서가 무거워진다. */
+  /* 영상 — 썸네일을 누를 때만 플레이어를 끼운다 */
   .media-vid{margin:10px 0 0;position:relative;border-radius:10px;overflow:hidden;
     border:1px solid var(--line-soft);background:var(--band);aspect-ratio:16/9;
     display:flex;align-items:center;justify-content:center;cursor:pointer;width:100%;padding:0}
@@ -536,10 +496,6 @@
       <p class="tag">Members First</p>
       <h2>회원님의 <em>한 해</em>를 준비합니다.</h2>
             <p>골프 상품은 모두 <b>회원 우선 예약제</b>로 운영됩니다.</p>
-
-      <!-- 원칙은 둘이면 된다. 예전에는 셋이었는데 1번과 3번이 같은 말이었고
-           (둘 다 「회원 예약이 기준」), 1번은 위 리드와도 겹쳤다.
-           같은 말을 세 번 하면 셋 다 흘려 읽힌다. -->
       <ul class="principles">
         <li>
           <h3><span class="dot" aria-hidden="true"></span>같은 조건이면 먼저 예약하신 순서대로</h3>
@@ -873,8 +829,6 @@
       <p class="costline">체재비 <b>1박&nbsp;16,000엔</b> · 왕복 송영비 <b>1인&nbsp;12,000엔</b></p>
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ 기본 2인&nbsp;1실 구성으로 싱글룸이 없습니다. 부득이하게 단독 사용 시 1박당 2,200엔이 추가됩니다. 2인 플레이 시 2BAG 차지가 현지에서 발생합니다.</p>
     </div>
-
-    <!-- 2027 미진행이었다가 재개(2026-09). 체재비 16,000엔 · 왕복 송영비 12,000엔 · 주중·주말 18홀 · 나리타에서 약 2시간 30분 확정, 식사는 일단 시로사토와 동일(2026-09-07 · Min). 9홀 서비스는 없다(9홀 추가는 현지 추가 비용). -->
     <div class="region" id="r-fukuroda">
       <div class="r-head">
         <span class="r-name">후쿠로다노타키CC</span>
@@ -921,9 +875,7 @@
       <p class="soft" style="margin:10px 0 0;font-size:14px">※ <b style="color:var(--ink)">체재일 중식은 포함되어 있지 않습니다.</b></p>
     </div>
 
-    <!-- 우선예약 기간에는 접수하지 않는 네 곳 — 사진·요금 없이 이름만(Min · 2026-09 · 무츠키 료칸·그랜드 머큐어는 2026-09-07 추가). .region 이 아니라 사진 자리도 안 생긴다.
-         무츠키 료칸 블록(요금·사진 9장)은 git 이력에 있고 사진은 photos/mutsuki/ryokan/ 에 그대로 — 상시예약 오픈 때 블록을 되살리면 다시 보인다.
-         그랜드 머큐어는 전단(4박 5일 일→목 · 1인&nbsp;166만 원부터 · 벳푸CC 3회 + 오기야마CC 1회 · 조·석식 뷔페 · 중식 불포함)만 있고 블록은 아직 없다. -->
+    <!-- 상시예약 기간 오픈 예정 — 사진·요금 없이 이름만(.region 이 아니라 사진 자리도 안 생긴다) -->
     <h3 class="subh" style="margin-top:32px">상시예약 기간 오픈 예정</h3>
     <p class="soft" style="margin:0 0 12px">아래 네 곳은 <b style="color:var(--ink)">우선예약 기간에는 접수하지 않으며</b>, 상시예약 기간에 상품이 오픈될 예정입니다. 자세한 일정과 요금은 오픈 시 안내드립니다.</p>
     <ul class="later">
@@ -956,7 +908,7 @@
       <li><b>9홀 서비스&nbsp;라운딩</b>은 리조트에서 제공하는 서비스로, <b>기상·코스 상황·예약 혼잡 등 현지 사정에 따라 운영되지 않는 날</b>이 있을 수 있습니다. 서비스로 제공되는 라운딩이므로 별도 환불 대상은 아닙니다.</li>
       <li>골프장은 <b>대회 개최 및 현지 사정에 따라 일정이 예고 없이 변경</b>될 수 있으며, 상기 요금과 운영 내용도 현지 사정에 따라 일부 변경될 수 있습니다.</li>
     </ul>
-    <!-- 2027년 일본 공휴일(内閣府 「国民の祝日」 · 춘분 3/21 · 추분 9/23 은 2026-02 관보 확정). 이용 대상 기간(3~12월)만 적는다. 해마다 표를 갈아 끼운다. -->
+    <!-- 2027년 일본 공휴일 — 이용 대상 기간(3~12월)만 · 해마다 갈아 끼운다 -->
     <table class="mt" id="holidays" style="margin-top:14px">
       <thead><tr><th style="width:42%">2027년 일본 공휴일</th><th>이름</th></tr></thead>
       <tbody>
@@ -1085,9 +1037,7 @@
 </div>
 
 <script>
-/* 오른쪽 섹션 표시줄 — 지금 보고 있는 줄을 짚어 준다.
-   이동 자체는 기본 앵커 동작 + CSS scroll-behavior:smooth 에 맡긴다.
-   (스크립트로 가로채면 뒤로가기와 「접근성 - 애니메이션 줄이기」가 같이 깨진다.) */
+/* 오른쪽 섹션 표시줄 — 지금 보는 곳을 짚어 준다. 이동은 기본 앵커 + scroll-behavior 에 맡긴다(가로채면 뒤로가기·애니메이션 줄이기가 깨진다) */
 (function () {
   'use strict';
   var rail = document.getElementById('rail');
@@ -1101,9 +1051,7 @@
     return document.getElementById(a.getAttribute('data-t'));
   });
 
-  /* 화면 위쪽 38% 선을 지난 마지막 대상이 「지금 보는 곳」이다.
-     맨 아래까지 내린 경우는 마지막 항목으로 — 마지막 절이 짧으면
-     기준선에 영영 닿지 않아 07 이 한 번도 안 짚이게 된다. */
+  /* 화면 위쪽 38% 선을 지난 마지막 대상이 「지금 보는 곳」. 맨 아래까지 내리면 마지막 항목 */
   function current() {
     var line = window.innerHeight * 0.38, best = 0;
     for (var i = 0; i < targets.length; i++) {
@@ -1188,43 +1136,21 @@
   onScroll();
 })();
 
-/* ── 지역 사진·영상 ────────────────────────────────────────────────
-   숙소 카드마다 사진 줄을, 지역마다 골프장 사진 블록(과 영상)을 붙인다.
-
-   파일 자리   ./photos/<지역>/<숙소폴더>/01.webp 부터 번호를 이어서   숙소
-               ./photos/<지역>/golf/01.webp 부터                       골프장
-   올리면 자동으로 붙는다. **없으면 아무것도 보이지 않는다** — 빈 자리(＋ 칸)와
-   「어디에 올리세요」 경로 안내는 회원에게 보내는 공식 안내문에 둘 것이 아니라
-   걷어냈다(2026-09 · Min). 올리는 법은 photos/README.md 에만 적는다.
-
-   ※ 사진은 카드가 화면에 가까워질 때 찾고, 칸이 보일 때 받는다 — 문서를 여는 순간에는
-     한 장도 받지 않는다.
-     사진을 누르면 라이트박스로 크게 본다(사진을 누르면 다음 · 좌우 버튼 · ← → 키 ·
-     바깥 어두운 곳이나 Esc 로 닫기 · 「사진 N장 중 M번째」 안내).
-     영상은 썸네일을 누를 때만 플레이어를 끼운다. */
+/* ── 지역 사진·영상 ── 숙소 카드마다 사진 줄, 지역마다 골프장 사진 블록(과 영상).
+   파일 자리 = ./photos/<지역>/<숙소폴더>|golf/01.webp 부터 번호를 이어서(README 참고). */
 (function () {
   'use strict';
-  /* 장수를 미리 정해 두지 않는다. 01 부터 차례로 찾아 있는 만큼 다 붙이고,
-     없는 번호를 만나면 거기서 멈춘다. 그래서 5장이든 12장이든 파일만 올리면 된다.
-     ※ 번호를 건너뛰면(01·03) 02 에서 멈춰 03 이 안 보인다 — 이어서 붙일 것.
-     SHOT_MAX 는 안전장치 — 잘못된 경로로 끝없이 두드리지 않게 한다.
-     ※ 24 였을 때 야마나미 호텔 26장·시즈노야도 료칸 28장의 뒤가 소리 없이 잘렸다(2026-09).
-       없는 번호에서 멈추므로 값이 커도 헛걸음은 늘지 않는다 — 파일 이름이 두 자리인 99 까지. */
+  /* 01 부터 차례로 찾아 있는 만큼 붙이고 없는 번호에서 멈춘다(번호를 건너뛰면 거기서 끊긴다). SHOT_MAX 는 안전장치 */
   var SHOT_MAX = 99;
-  /* 숙소 사진은 접는 블록이 아니라 **그 숙소 카드 안**, 설명 바로 아래에 붙는다.
-     따로 빼 두면 어느 숙소 이야기인지 눈으로 다시 이어 붙여야 한다.
-     골프장은 지역에 하나뿐이라 예전처럼 접어서 둔다. */
+  /* 숙소 사진은 그 숙소 카드 안, 설명 바로 아래 */
   var KINDS = [
     { dir: 'golf', ico: '⛳', label: '골프장' }
   ];
 
-  /* 영상 — 지역마다 유튜브 주소 하나. 골프장 사진 블록 **위**에 「영상」 블록으로 붙는다.
-     주소는 어떤 형태든 된다(youtu.be/xxxx · watch?v=xxxx · /embed/xxxx). label 은 블록 머리에 적힌다.
-     썸네일(유튜브가 주는 그림)만 두고, 누를 때 플레이어를 끼운다 — 처음부터 iframe 을 박으면
-     지역마다 유튜브 스크립트가 딸려 온다. 영상 파일은 저장소에 넣지 않는다(4K 한 편이 수백 MB). */
+  /* 영상 — 지역마다 유튜브 주소 하나(youtu.be/xxxx · watch?v=xxxx · /embed/xxxx). 골프장 사진 블록 위에 붙고, 누를 때 플레이어를 끼운다 */
   var VIDEO = {
     kumamoto: { url: 'https://www.youtube.com/watch?v=V-CTsKur8xM', label: '아소 야마나미 리조트 영상 · 4K' }
-    // nagoya: { url: '', label: '포틴힐즈CC 영상' }   ← 주소가 오면 채운다 (2026-09 대기)
+    // nagoya: { url: '', label: '포틴힐즈CC 영상' }   ← 주소가 오면 채운다
   };
 
   function lgName(li) {
@@ -1256,9 +1182,7 @@
     lb.setAttribute('aria-label', '사진 크게 보기');
     lbImg = document.createElement('img');
     lbImg.alt = '';
-    /* 사진 위를 누르면 넘어간다 — 왼쪽 반 = 이전, 오른쪽 반 = 다음. 좌우 버튼은 좁아서
-       폰에서 찾기 어렵고, 「누르면 다음」만 두면 이전으로 가는 길이 버튼뿐이었다.
-       한 장뿐이면 그대로 둔다(닫히지도 않는다 — 닫기는 바깥·쓸어내리기·Esc). */
+    /* 사진 위를 누르면 넘어간다 — 왼쪽 반 = 이전, 오른쪽 반 = 다음. 한 장뿐이면 그대로(닫기는 바깥·쓸어내리기·Esc) */
     lbImg.addEventListener('click', function (e) {
       e.stopPropagation();
       if (Date.now() - swipedAt < 400 || lbList.length < 2) return;
@@ -1271,10 +1195,7 @@
       lbImg.style.cursor = e.clientX < r.left + r.width / 2 ? 'w-resize' : 'e-resize';
     });
     lbImg.addEventListener('dragstart', function (e) { e.preventDefault(); });
-    /* 쓸기(터치) — 옆으로 쓸면 넘어가고(왼쪽으로 = 다음), 위아래로 쓸어내리면 닫힌다.
-       폰에서 화살표·X 를 찾지 않아도 되게. 두 손가락(확대)은 건드리지 않는다.
-       마우스는 버튼·키·사진 반쪽 누르기가 있어 쓸기를 두지 않는다.
-       손가락이 40px 넘게 움직였으면 탭이 아니라 쓸기다 — 뒤따를 수 있는 click 은 무시한다. */
+    /* 쓸기(터치) — 옆으로 쓸면 넘어가고, 위아래로 쓸어내리면 닫힌다. 40px 넘게 움직였으면 탭이 아니라 쓸기 — 뒤따르는 click 을 막는다 */
     var t0 = null, swipedAt = 0;
     lb.addEventListener('touchstart', function (e) {
       t0 = e.touches.length === 1 ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
@@ -1315,7 +1236,7 @@
     lbImg.src = it.src;
     lbImg.alt = it.alt || '';
     var many = lbList.length > 1;
-    /* 「3 / 12」는 시니어 회원에게 분수로 읽힌다 — 말로 적는다. 아래 줄은 조작법. */
+    /* 「N장 중 M번째」로 말로 적는다(「3 / 12」는 분수로 읽힌다). 아래 줄은 조작법 */
     lbCap.textContent = '';
     var line = document.createElement('div');
     line.textContent = (it.alt ? it.alt + ' · ' : '') + '사진 ' + lbList.length + '장 중 ' + (lbAt + 1) + '번째';
@@ -1357,11 +1278,7 @@
     else if (e.key === 'ArrowRight') { step(1); }
   });
 
-  /* ── 마우스로 끌어서 옆으로 ──
-     터치는 브라우저가 알아서 밀어 준다. 데스크톱은 휠만으로는 가로로 안 움직여서
-     끌기를 붙인다. 조금 움직인 것은 끌기가 아니라 클릭이므로, 문턱(6px)을 넘긴
-     뒤에야 끌기로 보고 그때 뒤따르는 클릭 한 번을 막는다 — 안 막으면 사진을
-     밀었을 뿐인데 크게 보기가 열린다. */
+  /* ── 마우스로 끌어서 옆으로 — 문턱(6px)을 넘긴 뒤에야 끌기로 보고, 뒤따르는 클릭 한 번을 막는다(안 막으면 크게 보기가 열린다) ── */
   function dragStrip(el) {
     var down = false, moved = false, x0 = 0, left0 = 0, id = null;
     el.addEventListener('pointerdown', function (e) {
@@ -1396,11 +1313,7 @@
     el.addEventListener('pointercancel', end);
     el.addEventListener('dragstart', function (e) { e.preventDefault(); });
 
-    /* 데스크톱 휠 — 줄 위에서 휠을 내리면 오른쪽으로, 올리면 왼쪽으로 한 칸씩 민다.
-       한 눈금에 한 칸(스냅 자리)씩 부드럽게 — 픽셀만큼 밀면 스냅이 되돌려 안 움직인 것처럼 보인다.
-       트랙패드는 눈금이 잘게 오므로 30px 모일 때마다 한 칸, 120ms 안에는 한 번만.
-       끝에 닿아 더 밀 곳이 없으면 손대지 않아 문서가 그대로 스크롤된다 — 안 그러면 줄에 갇힌다.
-       가로 쓸기(트랙패드)는 브라우저가 이미 옆으로 밀므로 건드리지 않는다. */
+    /* 데스크톱 휠 — 한 눈금에 한 칸(스냅 자리)씩. 트랙패드는 30px 모일 때마다 한 칸, 120ms 안에는 한 번만. 끝에 닿으면 손대지 않아 페이지가 내려간다 */
     var acc = 0, lastStep = 0;
     el.addEventListener('wheel', function (e) {
       if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
@@ -1420,9 +1333,7 @@
     }, { passive: false });
   }
 
-  /* ── 사진 한 묶음(숙소 한 곳 또는 골프장) ──
-     onFirst 는 **첫 장을 찾았을 때 한 번** 불린다 — 숨겨 둔 줄·블록을 그때 연다.
-     한 장도 없으면 끝까지 아무것도 부르지 않는다(빈 줄·빈 상자가 생기지 않는다). */
+  /* ── 사진 한 묶음(숙소 한 곳 또는 골프장) — onFirst 는 첫 장을 찾았을 때 한 번 불린다(숨겨 둔 줄·블록을 그때 연다) ── */
   function buildShots(grid, key, dir, alt, onFirst) {
     var shown = [];                      // 라이트박스가 넘길 목록(실제로 있는 것만)
     function pathOf(n) { return './photos/' + key + '/' + dir + '/' + pad(n) + '.webp'; }
@@ -1445,8 +1356,7 @@
       shown.push({ src: path, alt: alt });   // 찾는 순서가 곧 번호 순서다
     }
 
-    /* 01 부터 하나씩 두드린다. 있으면 붙이고 다음 번호로, 없으면 거기서 멈춘다.
-       한꺼번에 상한만큼 두드리면 숙소 16곳이면 수백 번이 되고 대부분 헛걸음이다. */
+    /* 01 부터 하나씩 두드린다 — 있으면 붙이고 다음 번호로, 없으면 멈춘다 */
     function probe(n) {
       if (n > SHOT_MAX) return;
       exists(pathOf(n), function (yes) {
@@ -1454,9 +1364,7 @@
       });
     }
 
-    /* 사진은 **그 칸이 보이게 될 때** 받는다. 스트립을 뿌리로 두고 재므로 옆으로 밀려
-       잘린 칸은 안 받고, 가로 240px(한 칸 남짓) 앞서 받아 밀 때 빈 칸이 비치지 않는다.
-       관찰을 못 쓰는 브라우저는 바로 받는다. */
+    /* 사진은 그 칸이 보이게 될 때 받는다(스트립을 뿌리로 · 가로 240px 앞서). 관찰을 못 쓰는 브라우저는 바로 받는다 */
     var seen = (typeof IntersectionObserver === 'function')
       ? new IntersectionObserver(function (entries, obs) {
           entries.forEach(function (e) {
@@ -1475,12 +1383,7 @@
     probe(1);
   }
 
-  /* ── 있는지 두드리기 ──
-     예전에는 new Image() 로 두드렸는데, 그것이 곧 **내려받기**라 카드가 화면에 가까워지는
-     순간 그 숙소 사진을 전부 받았다(야마나미 호텔 26장 ≈ 10MB · 구마모토 한 지역 ≈ 48MB).
-     HEAD 로 물으면 있는지만 답이 온다(수백 바이트). 파일 미리보기(file:)·fetch 가 없는
-     브라우저·HEAD 를 거절하는 서버(404 이외의 실패)는 예전처럼 이미지로 두드린다 —
-     최악의 경우가 예전 동작이다. */
+  /* ── 있는지 두드리기 — HEAD 로 물어 있는지만 확인한다(new Image() 는 곧 내려받기라 한 지역 수십 MB 를 받게 된다). file:·fetch 없음·HEAD 거절은 이미지로 두드린다 ── */
   function exists(path, cb) {
     function byImage() {
       var img = new Image();
@@ -1496,10 +1399,7 @@
     }, byImage);
   }
 
-  /* 화면에 가까워지면 한 번만 부른다. 관찰을 못 쓰는 브라우저에서는 바로 부른다 —
-     사진이 안 나오는 것보다 조금 더 받는 편이 낫다.
-     ※ 숨긴(hidden) 요소는 렌더되지 않아 관찰에 걸리지 않는다 — 숨겨 둔 블록은 자기가 아니라
-       늘 보이는 이웃(지역 머리)을 지켜본다. 한 요소에 여러 일을 걸 수 있게 목록으로 둔다. */
+  /* 화면에 가까워지면 한 번만 부른다. 숨긴 요소는 관찰에 안 걸리므로 늘 보이는 이웃(지역 머리)을 지켜본다 — 한 요소에 여러 일을 걸 수 있게 목록 */
   var nearWatch = (typeof IntersectionObserver === 'function')
     ? new IntersectionObserver(function (entries, obs) {
         entries.forEach(function (e) {
@@ -1517,11 +1417,7 @@
     nearWatch.observe(el);
   }
 
-  /* ── 골프장 사진 ──
-     숙소 카드와 똑같이 **항상 열려 있다.** 접어 두면 사진이 있는지조차 눌러 봐야
-     알고, 지역마다 하나뿐이라 접어서 아낄 높이도 얼마 없다.
-     사진이 한 장도 없으면 블록째 숨긴다(머리만 있는 빈 상자를 두지 않는다) —
-     그래서 자기가 아니라 `near`(지역 머리)가 가까워질 때 찾고, 첫 장에서 onShow 를 부른다. */
+  /* ── 골프장 사진 — 항상 열려 있다(.media-open) · 화면에 가까워질 때 만든다 ── */
   function buildGolf(key, kind, regionName, near, onShow) {
     var d = document.createElement('div');
     d.className = 'media-open';
@@ -1609,10 +1505,7 @@
     var nameEl = head.querySelector('.r-name');
     var regionName = nameEl ? nameEl.textContent.trim() : '';
 
-    /* 숙소 카드마다 사진 줄을 설명 아래에 붙인다.
-       ※ 사진은 **그 카드가 화면에 가까워질 때** 만든다. 문서를 여는 순간 다
-         만들면 숙소 16곳 × 4장 = 64장을 한꺼번에 받는다(다 채우면 12MB 남짓).
-         카드는 접혀 있지 않으므로 접힘에 기대던 예전 방식이 통하지 않는다. */
+    /* 숙소 카드마다 사진 줄을 설명 아래에 — 그 카드가 화면에 가까워질 때 만든다(문서 열 때 다 만들면 수십 장을 한꺼번에 받는다) */
     Array.prototype.forEach.call(sec.querySelectorAll('li[data-lg]'), function (li) {
       var dir = li.getAttribute('data-lg');
       var g = document.createElement('div');
@@ -1633,8 +1526,7 @@
     KINDS.forEach(function (kind) {
       box.appendChild(buildGolf(key, kind, regionName, head, function () { box.hidden = false; }));
     });
-    /* 골프장 사진은 머리 바로 아래. 머리 다음에 꼭 봐야 하는 안내(.callout)가 있으면 그 아래에 —
-       사진에 밀려 안내가 내려가면 안 된다(포틴힐즈). */
+    /* 골프장 사진은 머리 바로 아래. 꼭 봐야 하는 안내(.callout)가 있으면 그 아래에 */
     var anchor = (head.nextElementSibling && head.nextElementSibling.classList.contains('callout')) ? head.nextElementSibling : head;
     anchor.parentNode.insertBefore(box, anchor.nextSibling);
   });
