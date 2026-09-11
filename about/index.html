@@ -880,6 +880,21 @@
     transform: translateX(-50%) translateY(0);
   }
 
+  /* === 오른쪽 섹션 레일(PC 넓은 화면만) — /2027/ 의 .rail 과 같은 방식 === */
+  .rail { display: none; }
+  @media (min-width: 1160px) {
+    .rail {
+      display: block; position: fixed; top: 50%; transform: translateY(-50%); z-index: 20;
+      right: max(18px, calc((100vw - 600px) / 2 - 200px)); width: 170px;
+    }
+  }
+  .rail a {
+    display: block; text-decoration: none; font-size: 13px; font-weight: 700; color: #6a7a92;
+    padding: 7px 0 7px 14px; border-left: 2px solid #dfe4ec; transition: color .15s, border-color .15s;
+  }
+  .rail a:hover { color: #1a2740; border-left-color: #9aa8bd; }
+  .rail a.on { color: #1a2740; border-left-color: #B8935A; font-weight: 800; }
+
   /* === 상단 이동 버튼 === */
   .back-to-top {
     position: fixed;
@@ -1609,7 +1624,15 @@
 </section>
 
 <!-- ============== ABOUT ============== -->
-<section class="about">
+<nav class="rail" id="rail" aria-label="섹션 바로가기">
+  <a href="#company" data-t="company">회사 소개</a>
+  <a href="#membership" data-t="membership">회원권 안내</a>
+  <a href="#longstay" data-t="longstay">장기숙박 계약</a>
+  <a href="#destinations" data-t="destinations">운영 지역</a>
+  <a href="#contact" data-t="contact">상담 문의</a>
+</nav>
+
+<section class="about" id="company">
   <div class="section-title">ABOUT US</div>
 
   <h2 class="about-slogan">
@@ -2082,7 +2105,7 @@
 </section>
 
 <!-- ============== CTA ============== -->
-<section class="cta">
+<section class="cta" id="contact">
   <div class="section-title">CONTACT</div>
   <h2 class="section-heading">상담 및 문의</h2>
   <div class="btn-list">
@@ -2617,6 +2640,43 @@
 </script>
 
 <!-- 열어 둔 탭이 옛 안내문을 들고 있지 않게 — 돌아올 때 서버에 한 번 물어본다 -->
+<script>
+/* 오른쪽 섹션 레일 — 지금 보는 곳을 짚어 준다(/2027/ 과 같은 판정 · 화면 위 38% 선을 지난 마지막 항목).
+   이동은 기본 앵커 + html{scroll-behavior:smooth} 에 맡긴다 — 가로채면 뒤로가기가 깨진다 */
+(function () {
+  'use strict';
+  var rail = document.getElementById('rail');
+  if (!rail) return;
+  var links = Array.prototype.slice.call(rail.querySelectorAll('a[data-t]'));
+  var targets = links.map(function (a) { return document.getElementById(a.getAttribute('data-t')); });
+  function current() {
+    var line = window.innerHeight * 0.38, best = -1;
+    for (var i = 0; i < targets.length; i++) {
+      if (targets[i] && targets[i].getBoundingClientRect().top - line <= 0) best = i;
+    }
+    var doc = document.documentElement;
+    if (window.innerHeight + window.pageYOffset >= doc.scrollHeight - 4) best = targets.length - 1;
+    return best;   // -1 = 아직 히어로(첫 화면) — 아무 항목도 켜지 않는다
+  }
+  function apply() {
+    var i = current();
+    for (var k = 0; k < links.length; k++) {
+      links[k].classList.toggle('on', k === i);
+      if (k === i) links[k].setAttribute('aria-current', 'true');
+      else links[k].removeAttribute('aria-current');
+    }
+  }
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { ticking = false; apply(); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  apply();
+})();
+</script>
 <script defer src="/assets/fresh.js"></script>
 </body>
 </html>
