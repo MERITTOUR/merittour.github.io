@@ -697,7 +697,7 @@ const CAT = [
       {k:'kanji',       n:'간지호텔',                dep:['서울','부산'], std:true, meta:'쿠쥬코겐CC 18홀 · 아소 야마나미CC 27홀', desc:'표고 1,100m 온천 리조트 · 2색 골프', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (일 출발)']}
     ]},
     { v:'아소 야마나미CC', vsub:'료칸 숙박', items:[
-      {k:'shizunoyado', n:'시즈노야도 료칸',          dep:['서울','부산'], std:true, meta:'아소 야마나미CC · 천연온천 료칸', desc:'만간지 천연온천 일본 전통 료칸 · 다다미 2인 1실', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (일 출발)']}
+      {k:'shizunoyado', n:'시즈노야도 료칸',          dep:['서울','부산'], std:true, meta:'아소 야마나미CC · 천연온천 료칸', desc:'만간지 천연온천 일본 전통 료칸 · 다다미 2인 1실 · 본관 / 개인온천 별채 선택', durs:['3박 4일 (목 출발)','4박 5일 (일 출발)','7박 8일 (일 출발)']}
     ]}
   ]},
   { region:'나고야', sub:'주부 지역 · 챔피언십', venues:[
@@ -1189,15 +1189,16 @@ const RES = {
 };
 
 // 룸타입 — 단일 출처는 사내 리조트 마스터(대시보드 ① 리조트 마스터)의 rooms·roomMeta
-//   n=룸타입 · rm=보유 객실(실/동) · pax=1방 정원(명) · d=부연 · extra=1박·1인 추가요금(엔)
-//   포틴힐즈 호텔만 2종이고 나머지는 1종이라 고를 것이 없다.
+//   n=룸타입 · rm=보유 객실(실/동) · pax=1방 정원(명) · d=부연 · extra=정원 미만 이용 시 1박·1인 추가요금(엔) · add=그 룸타입의 1박·1인 추가 체재비(엔 · 항상)
+//   포틴힐즈 호텔(트윈·패밀리룸)·시즈노야도 료칸(본관·별채)만 2종이고 나머지는 1종이라 고를 것이 없다.
 const ROOMS = {
   // 야마나미는 온라인에서 트윈만 판매한다(소형트윈 미노출 · 2026-07 결정).
   // 판매 재고 100실 — 마스터의 트윈 55 + 소형트윈 50(=105)을 트윈 하나로 묶되 100으로 확정(Min 결정).
   yamanami:        [{n:'트윈',rm:100,pax:2}],
   kuzu:            [{n:'트윈',rm:10,pax:2}],
   kanji:           [{n:'트윈',rm:15,pax:2}],
-  shizunoyado:     [{n:'트윈',rm:7,pax:2}],
+  // 시즈노야도는 본관·별채(개인온천)를 따로 예약받는다(2026-09-11 · Min). 체재비 본관 17,000 · 별채 19,000(=add 2,000). 본관·별채 구성 수는 미정 — 합 7 의 자리값
+  shizunoyado:     [{n:'본관',rm:4,pax:2,d:'개인온천 없음'},{n:'별채',rm:3,pax:2,d:'개인온천',add:2000}],
   // 독채 별장은 동 단위로 빌려 쪼갤 수 없다 → min=그 동의 정원(캐빈·돔은 2인 여러 동이라 2명부터)
   aso_villa:       [{n:'별장',rm:1,pax:8,min:8,d:'8인 대형 1동'}],
   sobo_villa:      [{n:'별장',rm:3,pax:2,d:'편백 2인 · 3동'}],
@@ -1247,7 +1248,7 @@ function bookBlock(k){
 // 상품 태그 (제목 뒤 #표기)
 const TAGS = {
   yamanami:['27홀','체류형','온천','3식포함'], kuzu:['18홀','장기체류','독채형','3식포함'],
-  kanji:['2색골프','온천','3식포함'], shizunoyado:['료칸','온천','3식포함'],
+  kanji:['2색골프','온천','3식포함'], shizunoyado:['료칸','온천','개인온천 별채','3식포함'],
   aso_villa:['별장단독','8인','단체','전기카트무료'], sobo_villa:['별장','가족형'],
   dome_house:['독채','2인'], sobo5:['별장단독','4인'],
   fourteen_hotel:['18+9홀','호텔','패밀리룸'], fourteen_caravan:['18+9홀','카라반'],
@@ -1310,7 +1311,8 @@ const CHECKS = {
          '쿠쥬코겐CC 라운딩은 골프장 사정에 따라 아소 야마나미CC로 바뀔 수 있습니다 (예고 없이 바뀌는 경우도 있음)',
          '호텔 온천 이용 · 근처 아카가와 온천도 이용 가능 (입욕료 별도)',
          '조식은 숙소 · 중식은 그날 라운딩하는 골프장 · 석식은 숙소'],
-  shizunoyado:['조식은 숙소 · 중식은 그날 라운딩하는 골프장 · 석식은 숙소 (메뉴 일부 상이)'],
+  shizunoyado:['객실은 본관 · 별채(개인온천) 두 종류 — 예약을 따로 받습니다 · 체재비 1박 본관 17,000엔 · 별채 19,000엔',
+               '조식은 숙소 · 중식은 그날 라운딩하는 골프장 · 석식은 숙소 (메뉴 일부 상이)'],
   fourteen_hotel:['조식 매일 뷔페식 · 석식 요일 메뉴',
                   '중식 — 도착일 간편식(샌드위치) / 체류일 뷔페식 · 단품메뉴 제공 요일 미정',
                   '우천 시 인근 쇼핑몰(에나역 부근) 차량 안내'],
@@ -1391,7 +1393,7 @@ function pvRemain(k,dateStr){
 }
 // 선택 인원이 그 룸타입으로 몇 실 필요한가 (2인 1실 기준 4명=트윈 2실)
 function roomsNeeded(people,pax){ return Math.max(1, Math.ceil(people/(pax||2))); }
-function pvPricePerson(k,nights,dateStr){
+function pvPricePerson(k,nights,dateStr,room){
   const r=RES[k]||{};
   if(r.pkg){ const v=r.pkg[nights]; return v?{krw:v,air:true}:null; }
   if(r.krwNight) return {krw:r.krwNight*nights, air:false};
@@ -1400,6 +1402,8 @@ function pvPricePerson(k,nights,dateStr){
   if(r.tWe && dateStr){ // 아키바: 주중/주말 분리 → 평균 대신 출발일 기준 표기
     const dw=new Date(dateStr).getDay(); if(dw===5||dw===6) taizai=r.tWe*nights;
   }
+  const rm=room && roomsOf(k).find(x=>x.n===room);   // 룸타입별 추가 체재비(시즈노야도 별채 개인온천 +2,000)
+  if(rm && rm.add) taizai+=rm.add*nights;
   return {krw:Math.round((taizai+(r.s||0))*FX), air:false};
 }
 
@@ -1773,6 +1777,11 @@ function renderPvRooms(){
   // 4인실을 정원 미만으로 쓰면 추가요금 (포틴힐즈 패밀리룸)
   if(cur && cur.extra && pv.people < cur.pax)
     h += (h?'<br>':'')+`※ ${cur.pax}인실을 ${pv.people}명이 이용하시면 <b>1박·1인당 ${cur.extra.toLocaleString()}엔</b>이 추가됩니다.`;
+  // 룸타입 자체의 추가 체재비 (시즈노야도 별채 = 개인온천 · 본관 +2,000)
+  if(cur && cur.add){
+    const base=(RES[pv.key]||{}).t||0;
+    h += (h?'<br>':'')+`※ <b>${cur.n}</b>${cur.d?'('+cur.d+')':''}은 체재비가 <b>1박·1인 ${(base+cur.add).toLocaleString()}엔</b>입니다(1박·1인당 ${cur.add.toLocaleString()}엔 추가).`;
+  }
   hint.innerHTML=h;
 }
 function pvSyncPrice(){
@@ -1804,7 +1813,7 @@ function pvSyncPrice(){
     return;
   }
   if(!pv.date){ box.className='pv-price ph'; box.textContent='출발 날짜를 선택해주세요.'; cta.disabled=true; return; }
-  const p=pvPricePerson(pv.key,nights,pv.date);
+  const p=pvPricePerson(pv.key,nights,pv.date,pv.room);
   const [Y,M,D]=pv.date.split('-').map(Number);
   const dn=['일','월','화','수','목','금','토'][new Date(Y,M-1,D).getDay()];
   cta.disabled=false;
@@ -1930,7 +1939,7 @@ function noQuotaNotice(){
 // 예약 확인 → 확정 (새 화면 내부에서 완결)
 function openConfirm(){
   const it=findResort(pv.key), nights=pvNights(it);
-  const p=pvPricePerson(pv.key,nights,pv.date);
+  const p=pvPricePerson(pv.key,nights,pv.date,pv.room);
   const [Y,M,D]=pv.date.split('-').map(Number);
   const dn=['일','월','화','수','목','금','토'][new Date(Y,M-1,D).getDay()];
   const cur=roomsOf(pv.key).find(r=>r.n===pv.room)||{n:'트윈',pax:2};
@@ -1939,7 +1948,7 @@ function openConfirm(){
   b.innerHTML=`
     <div class="opt stack" style="cursor:default;border-color:var(--navy);background:var(--navy-soft);">
       <span class="nm">${it.n}</span>
-      <span class="desc">${it.durs[pv.durIdx]}<br>${M}월 ${D}일(${dn}) 출발 · 총 ${pv.people}명<br><b>${cur.n}</b> ${rooms}실${(cur.extra&&pv.people<cur.pax)?` · ${cur.pax}인실 ${pv.people}명 이용 (1박·1인 ${cur.extra.toLocaleString()}엔 추가)`:''}</span>
+      <span class="desc">${it.durs[pv.durIdx]}<br>${M}월 ${D}일(${dn}) 출발 · 총 ${pv.people}명<br><b>${cur.n}</b> ${rooms}실${(cur.extra&&pv.people<cur.pax)?` · ${cur.pax}인실 ${pv.people}명 이용 (1박·1인 ${cur.extra.toLocaleString()}엔 추가)`:''}${cur.add?` · ${cur.d||''} (1박·1인 ${cur.add.toLocaleString()}엔 추가)`:''}</span>
     </div>
     <div class="grp-label">예약자</div>
     <div class="opt stack" style="cursor:default;">
