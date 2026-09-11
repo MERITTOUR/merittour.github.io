@@ -223,6 +223,12 @@
   .pat b{font-size:16px;font-weight:800;color:var(--olive-deep);
     font-variant-numeric:tabular-nums;letter-spacing:.01em}
   .pat span{font-size:13px;font-weight:700;color:var(--gold)}
+  /* 상시예약 기간에 여는 일정 — 점선 칩 + 작은 꼬리표(포틴힐즈 3박·4박 · 2026-09-11) */
+  .pat.later{border-style:dashed;background:transparent}
+  .pat.later b{color:var(--muted)}
+  .pat em{font-style:normal;font-size:11.5px;font-weight:700;color:var(--muted);
+    background:var(--band);padding:2px 8px;border-radius:999px;white-space:nowrap}
+  .facts dd .patterns{margin:2px 0 2px}
   .apply-to{margin:16px 0 0;font-size:14px;color:var(--ink-soft)}
   .apply-to b{color:var(--ink)}
   .stay-grp + .stay-grp{margin-top:18px}
@@ -761,7 +767,13 @@
       <dl class="facts">
         <dt>도착 공항</dt><dd>나고야 중부국제공항(NGO) <span class="soft">· 골프장까지 약&nbsp;1시간&nbsp;40분</span></dd>
         <dt>출발지</dt><dd>인천 · 김해</dd>
-        <dt>체류 일정</dt><dd>일&nbsp;→&nbsp;일 7박 <span class="soft">· 7박&nbsp;8일 일정으로 운영</span></dd>
+        <dt>체류 일정</dt><dd>
+          <div class="patterns">
+            <div class="pat"><b>일&nbsp;→&nbsp;일</b><span>7박</span></div>
+            <div class="pat later"><b>목&nbsp;→&nbsp;일</b><span>3박</span><em>상시예약 기간 오픈</em></div>
+            <div class="pat later"><b>일&nbsp;→&nbsp;목</b><span>4박</span><em>상시예약 기간 오픈</em></div>
+          </div>
+          <p class="soft" style="margin:8px 0 0">우선예약 기간에는 일&nbsp;→&nbsp;일 7박 일정만 접수하며, 목&nbsp;→&nbsp;일 3박 · 일&nbsp;→&nbsp;목 4박 일정은 상시예약 기간(11월&nbsp;30일 오픈)에 오픈합니다.</p></dd>
         <dt>라운딩</dt><dd>포틴힐즈CC · 주중 18홀&nbsp;+&nbsp;9홀 서비스&nbsp;라운딩 · 주말·일본 공휴일&nbsp;18홀</dd>
         <dt>식사</dt><dd>
           <table class="mt">
@@ -801,7 +813,11 @@
       <dl class="facts">
         <dt>도착 공항</dt><dd>후쿠오카 공항(FUK) <span class="soft">· 숙소까지 약&nbsp;2시간</span></dd>
         <dt>출발지</dt><dd>인천 · 김해 · 대구</dd>
-        <dt>체류 일정</dt><dd>금&nbsp;→&nbsp;월 3박 · 월&nbsp;→&nbsp;금 4박</dd>
+        <dt>체류 일정</dt><dd>
+          <div class="patterns">
+            <div class="pat"><b>금&nbsp;→&nbsp;월</b><span>3박</span></div>
+            <div class="pat"><b>월&nbsp;→&nbsp;금</b><span>4박</span></div>
+          </div></dd>
         <dt>라운딩</dt><dd>벳푸CC / 오기야마CC · 주중·주말 및 일본 공휴일&nbsp;18홀</dd>
       </dl>
       <h3 class="subh" style="margin-top:20px">숙소</h3>
@@ -824,7 +840,10 @@
       <dl class="facts">
         <dt>도착 공항</dt><dd>나리타 공항(NRT) <span class="soft">· 골프장까지 약&nbsp;1시간&nbsp;30분</span></dd>
         <dt>출발지</dt><dd>인천 · 김해</dd>
-        <dt>체류 일정</dt><dd>일&nbsp;→&nbsp;토 6박</dd>
+        <dt>체류 일정</dt><dd>
+          <div class="patterns">
+            <div class="pat"><b>일&nbsp;→&nbsp;토</b><span>6박</span></div>
+          </div></dd>
         <dt>라운딩</dt><dd>시로사토CC · 주중·주말 및 일본 공휴일&nbsp;18홀 <span class="soft">· 9홀 추가 시 현지에서 추가 비용이 발생합니다</span></dd>
         <dt>식사</dt><dd>조식 뷔페 · 중식 메인+뷔페 · 석식 요일별&nbsp;세트메뉴</dd>
       </dl>
@@ -847,7 +866,10 @@
       <dl class="facts">
         <dt>도착 공항</dt><dd>나리타 공항(NRT) <span class="soft">· 골프장까지 약&nbsp;2시간&nbsp;30분</span></dd>
         <dt>출발지</dt><dd>인천 · 김해</dd>
-        <dt>체류 일정</dt><dd>월&nbsp;→&nbsp;월 7박</dd>
+        <dt>체류 일정</dt><dd>
+          <div class="patterns">
+            <div class="pat"><b>월&nbsp;→&nbsp;월</b><span>7박</span></div>
+          </div></dd>
         <dt>라운딩</dt><dd>후쿠로다노타키CC · 주중·주말 및 일본 공휴일&nbsp;18홀 <span class="soft">· 9홀 추가 시 현지에서 추가 비용이 발생합니다</span></dd>
         <dt>식사</dt><dd>조식 뷔페 · 중식 메인+뷔페 · 석식 요일별&nbsp;세트메뉴</dd>
       </dl>
@@ -870,7 +892,11 @@
       <dl class="facts">
         <dt>도착 공항</dt><dd>미야자키 공항(KMI) <span class="soft">· 국제공항CC까지 약&nbsp;30분 · 아시아나항공 직항</span></dd>
         <dt>출발지</dt><dd>인천</dd>
-        <dt>체류 일정</dt><dd>일&nbsp;→&nbsp;금 5박 <span class="soft">· 국제공항CC 호텔 2박(일&nbsp;·&nbsp;월) +&nbsp;미야자키 시내 호텔 3박(화&nbsp;·&nbsp;수&nbsp;·&nbsp;목)</span></dd>
+        <dt>체류 일정</dt><dd>
+          <div class="patterns">
+            <div class="pat"><b>일&nbsp;→&nbsp;금</b><span>5박</span></div>
+          </div>
+          <p class="soft" style="margin:8px 0 0">국제공항CC 호텔 2박(일&nbsp;·&nbsp;월) +&nbsp;미야자키 시내 호텔 3박(화&nbsp;·&nbsp;수&nbsp;·&nbsp;목)</p></dd>
         <dt>라운딩</dt><dd>국제공항CC 2회 · 레인보우CC 2회 <span class="soft">· 18홀&nbsp;+&nbsp;9홀 서비스&nbsp;라운딩 (숙소를 옮기는 화요일은 18홀) · 주말·일본 공휴일&nbsp;18홀 · 출·귀국일 라운딩&nbsp;없음</span></dd>
         <dt>일정</dt><dd>
           <table class="mt">
