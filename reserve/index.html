@@ -1310,7 +1310,7 @@ const CHECKS = {
     '2인부터 예약 가능'
   ],
   yamanami:['조식 · 중식 매일 뷔페식 + 석식 요일 메뉴',
-            '도착일 점심 — 인천 출발팀 카츠카레(라운딩 직행) / 김해 출발팀은 저녁 식사부터',
+            '도착일 — 인천 출발팀은 리조트 도착 후 단일 메뉴(카츠카레 예정) 점심 식사, 오후 라운딩 / 김해 출발팀은 리조트 도착 후 휴식·저녁 식사',
             '전기카트 유료 사전 신청 가능 (1일 1대 2,000엔)'],
   kuzu:['조식 · 중식 매일 뷔페식 + 석식 요일 메뉴',
         '전기카트 유료 사전 신청 가능 (1일 1대 2,000엔)'],
@@ -1502,7 +1502,7 @@ function renderItin(it,nights){
   const fromSeoul = (sel.origin||it.dep[0])==='서울';
   const airOut = it.dep.includes('서울') && fromSeoul ? '인천국제공항' : ((sel.origin||it.dep[0])==='부산' ? '김해국제공항' : '대구국제공항');
   const lunch1 = sugad ? '기내식 대체' : noLun ? '불포함' : fw14 ? '간편식(샌드위치)'
-               : (yama && fromSeoul ? '카츠카레' : '현지식');
+               : yama ? (fromSeoul ? '단일 메뉴(카츠카레 예정)' : '불포함 · 휴식 후 저녁 식사부터') : '현지식';
   const lunchMid = noLun ? '불포함' : sugad ? '클럽하우스' : golfLun ? '골프장 중식'
                : fw14 ? '뷔페식 · 특정 일자 단품메뉴' : yama ? '뷔페식' : '현지식';
   const brk = sugad ? '클럽하우스' : (yama || fw14) ? '뷔페식' : '호텔식';
@@ -1520,11 +1520,14 @@ function renderItin(it,nights){
       mv=`단체 항공<br>(편명 추후 안내)<br><small>${airOut} 개별 수속</small><br><br>현지 송영 차량`;
       // 도착일 라운딩은 야마나미 계열 서울 출발만 (부산·대구 출발과 타 지역은 체크인 후 석식부터)
       plan=`${airOut} 출발 · 개별 수속<br>현지 공항 도착 · 입국 수속<br>숙소로 이동 (${moveOf(pv.key)})<br><br>`+
+           // 야마나미 도착일(2026-09-14 · Min 문안) — 인천: 단일 메뉴(카츠카레 예정) 점심 후 오후 라운딩 / 김해: 휴식·저녁 식사(라운딩 없음)
            (yama && fromSeoul
-             ? `점심식사 후 <span class="g">라운딩</span> (일몰 전까지 · 최대 18홀)<br><small style="color:var(--muted);">※ 일몰 시간·현지 사정에 따라 라운딩 시간이 짧아질 수 있습니다.</small><br>`
+             ? `단일 메뉴(카츠카레 예정) 점심 식사 후 <span class="g">오후 라운딩</span> (일몰 전까지 · 최대 18홀)<br><small style="color:var(--muted);">※ 일몰 시간·현지 사정에 따라 라운딩 시간이 짧아질 수 있습니다.</small><br>`
+             : yama ? ''
              : `<small style="color:var(--muted);">※ 도착일 라운딩 여부는 항공 시간·현지 일몰에 따라 확정됩니다.</small><br>`)+
-           (yama && !fromSeoul ? `호텔 체크인<br><small style="color:var(--muted);">※ 김해 출발팀은 저녁 식사부터 일정이 시작됩니다.</small><br>` : '')+
-           (noDin ? `호텔 체크인 · 자유시간<br><small style="color:var(--muted);">※ 석식은 벳푸 시내에서 자유롭게 드십니다.</small>` : `호텔 체크인 · 석식 및 자유시간`);
+           (yama && !fromSeoul
+             ? `호텔 체크인 · 휴식<br>석식 및 자유시간<br><small style="color:var(--muted);">※ 김해 출발팀 도착일은 휴식/저녁 식사로 진행됩니다.</small>`
+             : noDin ? `호텔 체크인 · 자유시간<br><small style="color:var(--muted);">※ 석식은 벳푸 시내에서 자유롭게 드십니다.</small>` : `호텔 체크인 · 석식 및 자유시간`);
       meal=`중식 : ${lunch1}<br>석식 : ${din}`;
     } else if(d===days){
       mv='현지 송영 차량<br><br>단체 항공<br>(편명 추후 안내)';
