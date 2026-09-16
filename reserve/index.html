@@ -758,10 +758,11 @@ const ORIGINS = [
 //   ※ 실운영은 서버 인증. 여기는 시연용이며 실제 회원 개인정보는 담지 않는다.
 // ============================================================
 // ============================================================
-// 우선예약 차수 스케줄 — 차수마다 24시간 접수 창이 열리고, 횟수는 누적된다
-//   1차 10/12 10:00 ~ 10/13 10:00  +1회
-//   2차 10/14 10:00 ~ 10/15 10:00  +2회
-//   3차 10/16 10:00 ~ 10/17 10:00  +2회
+// 우선예약 차수 스케줄 — 차수마다 당일 10:00~22:00(12시간) 접수 창이 열리고, 횟수는 누적된다
+//   (2026-09-16 · Min — 종전 「다음 날 10:00 까지 24시간 창」에서 「당일 오후 10시 마감 · 월·수·금」으로)
+//   1차 10/12(월) 10:00 ~ 22:00  +1회
+//   2차 10/14(수) 10:00 ~ 22:00  +2회
+//   3차 10/16(금) 10:00 ~ 22:00  +2회
 //   ※ 특별 회원권은 **우선예약 대상이 아니다** — 차수와 무관하게 상시예약 기간부터
 //     일반 고객과 같은 조건으로 예약한다. (예전에는 3차만 참여였다)
 //     2026-09-11: 실제 판정은 엠클릭 고객관리의 **가입구분 「가입」 하나**로 한다(세 조건 판정은 엠클릭에서 어렵다고 해
@@ -771,9 +772,9 @@ const ORIGINS = [
 //   · 부여된 횟수는 소멸하지 않고 다음 차수로 누적된다(1차 미사용 시 2차에 3회)
 // ============================================================
 const PRIORITY_SCHEDULE = [
-  { no:1, label:'1차 우선예약', opensAt:'2026-10-12T10:00:00', closesAt:'2026-10-13T10:00:00', grants:1 },
-  { no:2, label:'2차 우선예약', opensAt:'2026-10-14T10:00:00', closesAt:'2026-10-15T10:00:00', grants:2 },
-  { no:3, label:'3차 우선예약', opensAt:'2026-10-16T10:00:00', closesAt:'2026-10-17T10:00:00', grants:2 }
+  { no:1, label:'1차 우선예약', opensAt:'2026-10-12T10:00:00', closesAt:'2026-10-12T22:00:00', grants:1 },
+  { no:2, label:'2차 우선예약', opensAt:'2026-10-14T10:00:00', closesAt:'2026-10-14T22:00:00', grants:2 },
+  { no:3, label:'3차 우선예약', opensAt:'2026-10-16T10:00:00', closesAt:'2026-10-16T22:00:00', grants:2 }
 ];
 // 상시예약(잔여 개방) — 3차 종료와 동시가 아니라 우선예약을 다 정리한 뒤 2026-11-30(월) 10:00 오픈(2026-09-11 · Min 확정).
 //   FREE_OPEN_LABEL 은 날짜가 미정일 때만 쓴다('11월 말(예정)' 같은 말). '' 이면 FREE_OPEN_AT 이 「11/30(월) 10:00」으로 그대로 찍힌다.
@@ -897,6 +898,11 @@ function fmtOpen(iso){
   const d=new Date(iso), w=['일','월','화','수','목','금','토'][d.getDay()];
   const hh=String(d.getHours()).padStart(2,'0'), mm=String(d.getMinutes()).padStart(2,'0');
   return `${d.getMonth()+1}/${d.getDate()}(${w}) ${hh}:${mm}`;
+}
+// 접수 창 표시 — 같은 날이면 「10/12(월) 10:00 ~ 22:00」(날짜를 두 번 찍지 않는다 · 2026-09-16 당일 마감으로 바뀌면서)
+function fmtRange(a,b){
+  const A=fmtOpen(a), B=fmtOpen(b);
+  return new Date(a).toDateString()===new Date(b).toDateString() ? `${A} ~ ${B.split(' ')[1]}` : `${A} ~ ${B}`;
 }
 
 const DEMO_ACCOUNTS = {
@@ -1949,7 +1955,7 @@ function betweenRoundsNotice(){
   b.innerHTML=`
     <div class="stp-hint">
       지금은 <b>우선예약 접수 시간이 아닙니다.</b><br>
-      ${nx?`${nx.label} 접수는 <b>${fmtOpen(nx.opensAt)} ~ ${fmtOpen(nx.closesAt)}</b> 입니다.`
+      ${nx?`${nx.label} 접수는 <b>${fmtRange(nx.opensAt, nx.closesAt)}</b> 입니다.`
           :`우선예약 접수가 모두 끝났습니다. 상시예약은 <b>${freeOpenText()}</b>부터입니다.`}<br>
       보유하신 예약 가능 횟수(<b>${quotaLeft(myQuota())}회</b>)는 그대로 유지됩니다.
     </div>
@@ -1963,7 +1969,7 @@ function noQuotaNotice(){
   b.innerHTML=`
     <div class="stp-hint">
       현재 <b>예약 가능 횟수가 없습니다.</b><br>
-      ${nx?`${nx.label}(<b>${fmtOpen(nx.opensAt)} ~ ${fmtOpen(nx.closesAt)}</b>)이 열리면 <b>+${nx.grants}회</b>가 추가됩니다.`
+      ${nx?`${nx.label}(<b>${fmtRange(nx.opensAt, nx.closesAt)}</b>)이 열리면 <b>+${nx.grants}회</b>가 추가됩니다.`
           :'배정된 우선예약 횟수를 모두 사용하셨습니다. 상시예약 기간에 잔여 객실로 예약하실 수 있습니다.'}<br>
       마감 일정은 <b>예약 대기</b> 신청이 가능합니다.
     </div>
@@ -2150,8 +2156,8 @@ function renderQuotaChip(){
       <span style="color:rgba(255,255,255,.82);">${part}</span>
     </div><div style="font-size:13.5px;color:rgba(255,255,255,.8);margin:-8px 0 16px;">${
       act ? `<b>${act.label} 접수 중</b> · ${fmtOpen(act.closesAt)}까지`+
-            (nx?` · 다음 ${nx.label} ${fmtOpen(nx.opensAt)} ~ ${fmtOpen(nx.closesAt)} · +${nx.grants}회`:'')
-      : nx ? `지금은 접수 시간이 아닙니다 · ${nx.label} <b>${fmtOpen(nx.opensAt)} ~ ${fmtOpen(nx.closesAt)}</b> · +${nx.grants}회 추가`
+            (nx?` · 다음 ${nx.label} ${fmtRange(nx.opensAt, nx.closesAt)} · +${nx.grants}회`:'')
+      : nx ? `지금은 접수 시간이 아닙니다 · ${nx.label} <b>${fmtRange(nx.opensAt, nx.closesAt)}</b> · +${nx.grants}회 추가`
       : `우선예약 접수 종료 · 상시예약 <b>${freeOpenText()}</b>부터`}</div>`;
 }
 function onAuthClick(){ AUTH ? logout() : openLogin(); }
@@ -2424,7 +2430,7 @@ function openMyPage(){
       </div>`
       : [q.round1,q.round2,q.round3].map(r=>{
       if(!r.opened) return `<div class="opt stack" style="cursor:default;">
-        <span class="nm" style="font-size:15.5px;">${r.label} — ${fmtOpen(r.opensAt)} ~ ${fmtOpen(r.closesAt)}</span>
+        <span class="nm" style="font-size:15.5px;">${r.label} — ${fmtRange(r.opensAt, r.closesAt)}</span>
         <span class="desc">접수 시작 시 <b>+${r.grants}회</b>가 추가됩니다.</span></div>`;
       const left=Math.max(0,r.total-r.used);
       return `<div class="opt stack" style="cursor:default;${r.active?'border-color:var(--navy);background:var(--navy-soft);':''}">
@@ -2432,7 +2438,7 @@ function openMyPage(){
         <span class="desc">${r.active?`${fmtOpen(r.closesAt)}까지 접수 · `:'접수 종료 (횟수는 유지) · '}${left?`${left}회 남았습니다.`:'배정 횟수를 모두 사용하셨습니다.'}${bar(r.used,r.total)}</span>
       </div>`; }).join('')}
     ${(isFreePeriod()||isSpecialGrade(AUTH.grade)) ? '' : `<div class="stp-hint" style="margin-top:8px;">
-      차수마다 24시간 접수 창이 열리고 횟수가 누적됩니다 — 1차 +1회 · 2차 +2회 · 3차 +2회 (총 5회).<br>
+      차수마다 그날 오전 10시부터 오후 10시까지 접수 창이 열리고 횟수가 누적됩니다 — 1차 +1회 · 2차 +2회 · 3차 +2회 (총 5회).<br>
       차수 사이에는 접수가 닫히지만 <b>남은 횟수는 그대로 유지</b>되어 다음 차수에 사용하실 수 있습니다.<br>
       상시예약은 ${freeOpenText()}부터 잔여 객실에 한해 가능합니다.
     </div>`}
