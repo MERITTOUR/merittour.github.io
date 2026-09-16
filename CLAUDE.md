@@ -141,7 +141,7 @@
     「돔」은 고유명이 아니라 형태라 「돔 스테이」로 띄우면 이름이 아니라 설명(돔에서 머묾)으로 읽힌다.
     영문 DOME STAY 는 HINOKI STAY 와 나란히 두 낱말 그대로.
   - **쿠쥬 프라이빗 타운(2026-09-16 확정 · Min 「쿠쥬 타운하우스 → 쿠쥬 프라이빗 타운으로 전체 이름 변경」).** 2026-08 「쿠주 프라이빗 레지던스」 → 2026-09 초 「쿠주힐즈」 → 2026-09 「쿠쥬 타운하우스」를 거쳐 확정한 이름.
-    「고유명 + 종류」 두 낱말 규칙의 예외(세 낱말 · Min 결정). 영문 KUJU PRIVATE TOWN(한글만 주어져 같은 뜻으로 맞춘 것 · 카드 `lg-jp`). DB 짝은 `26_kuju_hills.sql` → `28_kuju_townhouse.sql` → `29_kuju_spelling.sql` → `30_kuju_private_town.sql`(2026-09-16 실행).
+    「고유명 + 종류」 두 낱말 규칙의 예외(세 낱말 · Min 결정). 영문 KUJU PRIVATE TOWN(2026-09-16 · Min 「영문은 KUJU PRIVATE TOWN 으로 그대로 가」 확정 · 카드 `lg-jp`). DB 짝은 `26_kuju_hills.sql` → `28_kuju_townhouse.sql` → `29_kuju_spelling.sql` → `30_kuju_private_town.sql`(2026-09-16 실행).
     옛 이름 「쿠쥬 타운하우스」는 사내 도구 `aliases` 에 남겼다. 사진 폴더 `kuju` · 내부 키 `kuzu` 그대로.
     **장기숙박 회원권도 `/about/` 에서 숙소와 같은 「쿠쥬 프라이빗 타운」으로 부른다 — 「롱스테이」는 쓰지 않는다**(2026-09 · Min.
     옛 표시 이름 「쿠주힐즈 롱스테이」). `/2027/` 카드는 「장기숙박 이용권 회원님 전용」이라고만 적는다. `tools/library` 의 가입 서류
