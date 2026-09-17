@@ -16,7 +16,8 @@
 - **2027 안내문 사진 올리기** — `2027/photos/<지역>/<숙소폴더>/01.webp` 부터 번호를 이어서. 올리는 법·폴더 이름·규격은
   [`2027/photos/README.md`](2027/photos/README.md). 반드시 `2027/photos/` **아래**에서 Upload 할 것.
 - **예약 프로토타입 숙소 썸네일** — [`reserve/assets/rooms/README.md`](reserve/assets/rooms/README.md).
-- **문안·규칙** — 작업 규칙·이름 규칙·결정 기록은 [`CLAUDE.md`](CLAUDE.md).
+- **문안·규칙** — 작업 규칙·이름 규칙·결정 기록은 [`CLAUDE.md`](CLAUDE.md). 새 페이지에는 `</body>` 앞에
+  `<script defer src="/assets/fresh.js"></script>` 를 넣는다(열어 둔 탭이 옛 안내문을 들고 있지 않게).
 
 ## 작업 흐름
 
