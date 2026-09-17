@@ -9,6 +9,14 @@
    그래서 **다시 돌아왔을 때 서버에 한 번 물어본다.** 바뀌었으면
    띠를 하나 띄우고, 새로 불러올지는 사람이 정한다.
 
+   무엇을 「바뀌었다」로 보는가 = /assets/fresh.json 에 적힌 그 페이지의 값.
+   처음(2026-09-17 오전까지)에는 서버가 주는 ETag 를 비교했다. 그러면 고친
+   사람이 「이번 것은 알리지 않는다」를 고를 수 없다 — 오탈자 하나, 혜택 한 줄
+   삭제에도 띠가 뜬다(2026-09-17 · Min 「업데이트 표시를 이번에는 하지 말고
+   수정」). 그래서 페이지마다 값을 두고, 손님이 다시 읽어야 하는 변경일 때만
+   그 값을 올린다. 값이 그대로면 무엇을 고쳐도 띠가 안 뜬다.
+   fresh.json 에 없는 페이지는 아무것도 하지 않는다.
+
    ⚠ 저절로 새로고침하지 않는다. /reserve/ 는 예약을 넣는 중일 수 있고,
      /2027/ 은 읽던 자리를 잃는다. 알리기만 하고 결정은 넘긴다.
    ⚠ 페이지가 「지금은 곤란하다」고 말할 수 있다 — window.MT_FRESH_BUSY 가
@@ -20,17 +28,23 @@
   // file:// 로 열어 보는 경우엔 물어볼 서버가 없다
   if (!/^https?:$/.test(location.protocol)) return;
 
+  var MANIFEST = '/assets/fresh.json';
+  // /2027/index.html 로 열어도 /2027/ 과 같은 페이지다
+  var key = location.pathname.replace(/index\.html$/, '');
+
   var base = '';          // 이 탭이 열릴 때 서버가 갖고 있던 판
   var last = 0;           // 마지막으로 물어본 시각
   var shown = false;      // 이번 방문에 이미 알렸는가
   var GAP = 5 * 60 * 1000;  // 5분에 한 번만 묻는다 — 창을 오갈 때마다 부르면 성가시다
 
-  /* 지금 서버에 있는 판을 가리키는 값.
-     본문은 안 받는다(HEAD) — 안내문 한 장이 수백 KB라 오갈 때마다 받으면 손해다. */
+  /* 지금 서버에 있는 판을 가리키는 값 = fresh.json 의 이 페이지 항목.
+     본문은 안 받는다 — 안내문 한 장이 수백 KB라 오갈 때마다 받으면 손해다. 목록은 몇백 바이트다. */
   function stamp() {
-    return fetch(location.href, { method: 'HEAD', cache: 'no-store' })
-      .then(function (r) {
-        return r.headers.get('etag') || r.headers.get('last-modified') || '';
+    return fetch(MANIFEST, { cache: 'no-store' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (m) {
+        if (!m || !Object.prototype.hasOwnProperty.call(m, key) || m[key] == null) return '';
+        return String(m[key]);
       })
       .catch(function () { return ''; });   // 오프라인·차단은 조용히 넘긴다
   }
@@ -40,7 +54,7 @@
     if (shown || now - last < GAP) return;
     last = now;
     stamp().then(function (s) {
-      if (!s) return;                 // 서버가 판을 안 알려 주면 판단하지 않는다
+      if (!s) return;                 // 목록에 없는 페이지 · 못 받은 경우는 판단하지 않는다
       if (!base) { base = s; return; }
       if (s !== base) show();
     });

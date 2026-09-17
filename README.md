@@ -17,7 +17,9 @@
   [`2027/photos/README.md`](2027/photos/README.md). 반드시 `2027/photos/` **아래**에서 Upload 할 것.
 - **예약 프로토타입 숙소 썸네일** — [`reserve/assets/rooms/README.md`](reserve/assets/rooms/README.md).
 - **문안·규칙** — 작업 규칙·이름 규칙·결정 기록은 [`CLAUDE.md`](CLAUDE.md). 새 페이지에는 `</body>` 앞에
-  `<script defer src="/assets/fresh.js"></script>` 를 넣는다(열어 둔 탭이 옛 안내문을 들고 있지 않게).
+  `<script defer src="/assets/fresh.js"></script>` 를 넣고 `assets/fresh.json` 에 주소를 더한다(열어 둔 탭이 옛 안내문을 들고 있지 않게).
+- **「새 안내문이 올라왔습니다」 띠** — 손님이 다시 읽어야 하는 변경을 올릴 때만 `assets/fresh.json` 의 그 페이지 값을 오늘 날짜로
+  올린다. 오탈자·문구 다듬기 같은 조용한 수정은 값을 그대로 두면 열어 둔 탭에 띠가 뜨지 않는다.
 
 ## 작업 흐름
 
