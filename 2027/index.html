@@ -286,6 +286,11 @@
       max-height:calc(100vh - 32px);overflow-y:auto;scrollbar-width:none}
     .rail::-webkit-scrollbar{display:none}
   }
+  /* 창이 낮으면(900px 이하) 가운데 정렬한 레일이 오른쪽 아래 떠 있는 버튼 세 개(카카오톡 상담 · 예약 홈페이지 · 맨 위로 = 아래 172px)와
+     겹친다 — 위에 붙이고 버튼 위에서 끝나게 자른다(안에서 굴러간다). 2026-09-18 · 예약 홈페이지 버튼을 더하면서. */
+  @media (min-width:1160px) and (max-height:900px){
+    .rail{top:16px;transform:none;max-height:calc(100vh - 190px)}
+  }
   .rail a{display:block;text-decoration:none;font-size:12.5px;font-weight:700;
     color:var(--muted);padding:6px 0 6px 13px;border-left:2px solid var(--line);
     transition:color .15s,border-color .15s}
@@ -401,7 +406,7 @@
     .grades{grid-template-columns:1fr}
   }
 
-  /* ── 떠 있는 버튼: 카카오톡 상담 · 맨 위로 ── */
+  /* ── 떠 있는 버튼: 카카오톡 상담 · 예약 홈페이지 바로가기 · 맨 위로 ── */
   .fabs{position:fixed;right:16px;bottom:18px;z-index:28;display:flex;flex-direction:column;gap:9px}
   .fab{display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;
     border:1px solid var(--line);background:var(--surface);color:var(--ink-soft);
@@ -410,16 +415,19 @@
   .fab:hover{color:var(--ink);border-color:var(--muted)}
   .fab-kakao{background:#FAE100;border-color:#EBD400;color:#3C1E1E}
   .fab-kakao:hover{background:#F5DC00;color:#3C1E1E}
+  /* 예약 홈페이지(www.merittour.co.kr) 바로가기 — 2026-09-18 · Min. 흰 글자/올리브 바탕 대비 7.9 */
+  .fab-site{background:var(--olive-deep);border-color:var(--olive-deep);color:#fff}
+  .fab-site:hover{background:var(--olive);border-color:var(--olive);color:#fff}
   .fab-top{width:44px;height:44px;padding:0;font-size:16px;align-self:flex-end;
     opacity:0;visibility:hidden;transition:opacity .2s,visibility 0s .2s}
   .fab-top.on{opacity:1;visibility:visible;transition:opacity .2s}
-  .kakao-tip{position:fixed;right:16px;bottom:74px;z-index:28;max-width:min(78vw,270px);
+  .kakao-tip{position:fixed;right:16px;bottom:166px;z-index:28;max-width:min(78vw,270px);
     background:var(--surface);border:1px solid var(--line);border-radius:12px;
     box-shadow:0 6px 20px rgba(0,0,0,.12);padding:13px 15px;font-size:13.5px;line-height:1.65;
     color:var(--ink-soft);opacity:0;visibility:hidden;transition:opacity .18s,visibility 0s .18s}
   .kakao-tip.on{opacity:1;visibility:visible;transition:opacity .18s}
   .kakao-tip b{color:var(--ink)}
-  @media (max-width:560px){ .fabs{right:12px;bottom:14px} .kakao-tip{right:12px;bottom:70px} }
+  @media (max-width:560px){ .fabs{right:12px;bottom:14px} .kakao-tip{right:12px;bottom:162px} }
 
   @media (prefers-reduced-motion:no-preference){
     .reveal{opacity:0;transform:translateY(14px);animation:rise .7s cubic-bezier(.2,.7,.2,1) forwards}
@@ -1100,6 +1108,7 @@
 
 <div class="fabs">
   <button class="fab fab-kakao" id="fabKakao" type="button">카카오톡 상담</button>
+  <a class="fab fab-site" id="fabSite" href="https://www.merittour.co.kr" target="_blank" rel="noopener">예약 홈페이지 바로가기</a>
   <button class="fab fab-top" id="fabTop" type="button" aria-label="맨 위로">↑</button>
 </div>
 <div class="kakao-tip" id="kakaoTip" role="status">
@@ -1179,7 +1188,7 @@
   apply();
 })();
 
-/* 떠 있는 버튼 — 카카오톡 상담 · 맨 위로 */
+/* 떠 있는 버튼 — 카카오톡 상담 · 맨 위로 (예약 홈페이지 바로가기는 그냥 링크라 여기 없다) */
 (function () {
   'use strict';
   /* 채널 주소가 있으면 버튼이 바로 채널 상담으로 연결된다.
