@@ -735,8 +735,10 @@ const CAT = [
   ]},
   { region:'미야자키', sub:'규슈 남부 · 온난', venues:[
     // 2027 확정(2026-09-08 · Min): 골프장 2곳(국제공항CC 2회 · 레인보우CC 2회) · 호텔 2곳(국제공항CC 호텔 2박 → 시내 호텔 3박). 일정표는 renderItin 의 전용 표.
-    { v:'미야자키 국제공항CC · 레인보우CC', vsub:'공항에서 약 30분 · 골프장 2곳 · 호텔 2곳', items:[
-      {k:'miyazaki_kuko', n:'국제공항CC 호텔 · 미야자키 시내 호텔', dep:['서울'], std:true, meta:'국제공항CC 2회 · 레인보우CC 2회 · 트윈 2인 1실', desc:'골프장 안 호텔 2박 + 미야자키 시내 호텔 3박 · 2색 골프', durs:['5박 6일 (일 출발)']}
+    { v:'미야자키 국제공항CC · 레인보우CC', vsub:'공항에서 약 30분 · 일정 2가지 · 2027-03-28 ~ 11-28 출발', items:[
+      // 2027 일정 2가지(2026-09-13 슬라이드 · 2026-09-22 Min): ① 국제공항CC 호텔 5박 1색(중식 불포함) · ② 국제 2박 + 시내 3박 2색(석식 불포함) · 각 20명(10실) · 9/24~10/6 은 ① 만
+      {k:'miyazaki_kuko5', n:'국제공항CC 호텔 5박', dep:['서울'], std:true, meta:'국제공항CC 4회 · 트윈 2인 1실', desc:'골프장 안 호텔 5박 · 국제공항CC 라운딩 · 중식 불포함', durs:['5박 6일 (일 출발)']},
+      {k:'miyazaki_kuko', n:'국제공항CC 호텔 2박 + 미야자키 시내 호텔 3박', dep:['서울'], std:true, meta:'국제공항CC 2회 · 레인보우CC 2회 · 트윈 2인 1실', desc:'골프장 안 호텔 2박 + 미야자키 시내 호텔 3박 · 2색 골프 · 석식 불포함', durs:['5박 6일 (일 출발)']}
     ]}
   ]}
 ];// 평탄화 헬퍼 — 기존 로직(검색·상세)이 쓰던 item 목록
@@ -1200,8 +1202,9 @@ const RES = {
   mercure:{pkg:{4:1660000},rm:10},   // 그랜드 머큐어 = 전단 「1인 166만 원부터」 · 보유 객실 수 미정(자리값 10) · 우선예약 기간 접수 없음(PRIORITY_ONLY)
   shirosato:{t:16000,s:12000,rm:20},
   fukuroda:{t:16000,s:12000,rm:20},  // 2027 재개 · 체재비 16,000 · 왕복 송영비 12,000 확정(2026-09-07 · Min)
-  sugadaira_onsen:{pkg:{7:1900000,14:3100000},rm:35}, // 항공·숙박·골프·식사 포함 1인 금액 「부터」(2026-09-22 · Min) · 보유 객실 수 미확정(자리값 35)
-  miyazaki_kuko:{t:17000,s:5000,rm:10}
+  sugadaira_onsen:{pkg:{7:1900000,14:3100000},rm:35, win:{from:'2027-06-15',to:'2027-09-15',byReturn:true}}, // 항공·숙박·골프·식사 포함 1인 금액 「부터」(2026-09-22 · Min) · 보유 객실 수 미확정(자리값 35) · 여름 시즌 안에서 출발·귀국
+  miyazaki_kuko5:{t:17000,s:5000,rm:10, win:{from:'2027-03-28',to:'2027-11-28'}},   // ① 국제공항CC 호텔 5박 · 20명(10실) · 3/28~11/28 출발
+  miyazaki_kuko:{t:17000,s:5000,rm:10, win:{from:'2027-03-28',to:'2027-11-28'}, block:[{from:'2027-09-24',to:'2027-10-06'}]}   // ② 국제 2박 + 시내 3박 · 20명(10실) · 국민체육대회 기간(9/24~10/6)과 겹치는 출발은 막는다
 };
 
 // 룸타입 — 단일 출처는 사내 리조트 마스터(대시보드 ① 리조트 마스터)의 rooms·roomMeta
@@ -1229,6 +1232,7 @@ const ROOMS = {
   shirosato:       [{n:'트윈',rm:20,pax:2}],
   fukuroda:        [{n:'트윈',rm:20,pax:2}],
   sugadaira_onsen: [{n:'트윈',rm:35,pax:2}],   // 팔콜 츠마고이 리조트 · 룸타입·객실 수 미확정 — 자리값
+  miyazaki_kuko5:  [{n:'트윈',rm:10,pax:2}],
   miyazaki_kuko:   [{n:'트윈',rm:10,pax:2}]
 };
 function roomsOf(k){ return ROOMS[k] || [{n:'트윈',rm:(RES[k]||{}).rm||10,pax:2}]; }
@@ -1273,7 +1277,8 @@ const TAGS = {
   shirosato:['18홀','관동'],
   fukuroda:['18홀','관동','호텔','2027재개'],
   sugadaira_onsen:['고원','여름시즌','18+9홀'],
-  miyazaki_kuko:['2색골프','호텔2곳','남규슈','중식일부불포함']
+  miyazaki_kuko5:['1색골프','골프장안호텔','남규슈','중식불포함'],
+  miyazaki_kuko:['2색골프','호텔2곳','남규슈','석식불포함']
 };
 // 라운딩 규칙 — 2027 가이드 「골프 플레이」 문안 기준
 //   야마나미 계열은 주중 아소 야마나미CC(27홀) 중심 · 주말·일본공휴일 18홀
@@ -1288,6 +1293,7 @@ const ROUND = {
   shirosato:        {main:'시로사토CC 18홀 라운딩',                    note:'주중·주말·일본공휴일 모두 18홀 · 9홀 추가 시 현지에서 추가 비용 발생'},
   fukuroda:         {main:'후쿠로다노타키CC 18홀 라운딩',              note:'주중·주말·일본공휴일 모두 18홀 · 9홀 추가 시 현지에서 추가 비용 발생'},
   sugadaira_onsen:  {main:'스가다이라 그린CC 전 일정 18홀 + 9홀(서비스)', note:'해발 약 1,600m 고원 코스 · 숙소(팔콜 츠마고이 리조트)에서 골프장까지 차로 약 40분'},
+  miyazaki_kuko5:   {main:'국제공항CC 4회 — 18홀 + 9홀(서비스)', note:'월~목 국제공항CC · 주말·일본공휴일 18홀 · 출·귀국일 라운딩 없음'},
   miyazaki_kuko:    {main:'국제공항CC 2회 · 레인보우CC 2회 — 18홀 + 9홀(서비스)', note:'월·화 국제공항CC(숙소를 옮기는 화요일은 18홀) · 수·목 레인보우CC · 주말·일본공휴일 18홀 · 출·귀국일 라운딩 없음'}
 };
 function roundOf(k){ return ROUND[k] || ROUND._yama; }
@@ -1298,7 +1304,7 @@ const MOVE = {
   shirosato:'약 1시간 30분',
   fukuroda:'약 2시간 30분',
   sugadaira_onsen:'약 3시간 30분',   // 니가타공항 → 팔콜 츠마고이 리조트(2026-09-22 · Min)
-  miyazaki_kuko:'약 30분'
+  miyazaki_kuko5:'약 30분', miyazaki_kuko:'약 30분'
 };
 function moveOf(k){ return MOVE[k] || '약 1시간'; }
 
@@ -1360,9 +1366,13 @@ const CHECKS = {
                    '숙소는 팔콜 츠마고이 리조트(군마현 츠마고이 바라기 고원) · 2인 1실 · 스가다이라 그린CC까지 차로 약 40분(라운딩 날마다 이동)',
                    '조식 · 중식 · 석식 포함',
                    '왕복 항공 · 송영 · 숙박 · 골프 · 식사가 포함된 1인 금액 — 7박 8일 1,900,000원부터 · 14박 15일 3,100,000원부터'],
-  miyazaki_kuko:['골프장 안 국제공항CC 호텔 2박(일·월) + 미야자키 시내 호텔 3박(화~목) · 2인 1실',
-                 '조식 매일 호텔식 · 중식은 레인보우CC 라운딩일(수·목) 클럽식, 국제공항CC 라운딩일(월·화)은 불포함 · 석식은 월 호텔식 · 화 특식, 도착일·수·목은 불포함(자유식)',
-                 '도착일 저녁은 크로스몰에서 개별 식사 (1인 1,500엔 식비 지급)',
+  miyazaki_kuko5:['골프장 안 국제공항CC 호텔 5박 · 2인 1실 · 국제공항CC 라운딩 4회(월~목)',
+                  '조식 매일 호텔식 · 중식 불포함 · 석식 월~목 호텔식 (도착일은 크로스몰 개별 식사 · 9월 출발은 석식 불포함)',
+                  '2027년 3월 28일(일) ~ 11월 28일(일) 출발 · 9월 24일 ~ 10월 6일(미야자키 국민체육대회 기간)에도 이 일정은 운영',
+                  '단독 사용 시 1박 25,000원 추가 · 2인 플레이 시 주말·일본공휴일 2백 차지 (국제공항CC 20,000원)'],
+  miyazaki_kuko:['골프장 안 국제공항CC 호텔 2박(일·월) + 미야자키 시내 호텔(선프라자호텔 또는 메인호텔) 3박(화~목) · 2인 1실',
+                 '조식 매일 호텔식 · 중식은 레인보우CC 라운딩일(수·목) 클럽식, 국제공항CC 라운딩일(월·화)은 불포함 · 석식 불포함 (도착일은 크로스몰 개별 식사)',
+                 '2027년 3월 28일(일) ~ 11월 28일(일) 출발 · 9월 24일 ~ 10월 6일(미야자키 국민체육대회 기간)에 걸치는 출발은 운영하지 않음',
                  '단독 사용 시 1박 25,000원 추가 · 2인 플레이 시 주말·일본공휴일 2백 차지 (국제공항CC 20,000원 · 레인보우CC 10,000원)']
 };
 
@@ -1518,7 +1528,7 @@ function renderItin(it,nights){
   const roundLine = `<span class="g">${rd.main}</span>`+
     (rd.note ? `<br><small style="color:var(--muted);">${rd.note}</small>` : '');
   const days=nights+1; let html='';
-  const miya = pv.key==='miyazaki_kuko' ? itinMiyazaki(airOut) : null;
+  const miya = (pv.key==='miyazaki_kuko'||pv.key==='miyazaki_kuko5') ? itinMiyazaki(airOut, pv.key==='miyazaki_kuko5') : null;
   for(let d=1;d<=days;d++){
     let mv='', plan='', meal='';
     if(miya && miya[d-1]){
@@ -1558,25 +1568,34 @@ function renderItin(it,nights){
 }
 // 미야자키 — 골프장 2곳 · 호텔 2곳(2027 확정): 일 도착 → 국제공항CC 호텔 2박 → 화 라운딩 뒤 시내 호텔 3박 → 금 귀국.
 //   날짜별 코스·호텔·식사가 다 달라 일반 규칙으로 못 만든다. [이동, 일정, 식사] 6일치.
-function itinMiyazaki(airOut){
+function itinMiyazaki(airOut, single){
+  // single = ① 국제공항CC 호텔 5박(1색 · 중식 불포함 · 석식 호텔식) / 아니면 ② 국제 2박 + 시내 3박(2색 · 석식 불포함) — 2026-09-22
   const G=s=>`<span class="g">${s}</span>`, S=s=>`<small style="color:var(--muted);">${s}</small>`;
+  const arrive=[`단체 항공<br>(편명 추후 안내)<br><small>${airOut} 개별 수속</small><br><br>현지 송영 차량`,
+     `${airOut} 출발 · 개별 수속<br>미야자키 공항 도착 · 입국 수속<br>크로스몰 경유 — 개별 석식<br>국제공항CC 호텔 체크인 (공항에서 약 30분)`,
+     '중식 : 불포함<br>석식 : 불포함 (크로스몰 개별 식사)'];
+  const leave=['현지 송영 차량<br><br>단체 항공<br>(편명 추후 안내)',
+     `아침식사 후 체크아웃 · 로비 집합<br>니토리몰 경유 (쇼핑 · 자유시간)<br>미야자키 공항 이동 · 출국 수속<br>${G('귀국')}`,
+     '조식 : 호텔식<br>중식 : 불포함'];
+  if(single){
+    const kuko=['현지 송영 차량<br>또는 도보 이동',
+      `아침식사 후 ${G('국제공항CC 18홀 + 9홀(서비스)')}<br>${S('주말·일본공휴일 18홀')}<br>라운딩 후 호텔 휴식 · 석식 및 자유시간`,
+      '조식 : 호텔식<br>중식 : 불포함<br>석식 : 호텔식 (9월 출발은 불포함)'];
+    return [arrive, kuko, kuko, kuko, kuko, leave];
+  }
   const rainbow=['현지 송영 차량',
     `아침식사 후 레인보우CC로 이동<br>${G('레인보우CC 18홀 + 9홀(서비스)')}<br>${S('주말·일본공휴일 18홀')}<br>미야자키 시내에서 개별 석식 후 휴식`,
     '조식 : 호텔식<br>중식 : 클럽식<br>석식 : 불포함 (시내 자유식)'];
   return [
-    [`단체 항공<br>(편명 추후 안내)<br><small>${airOut} 개별 수속</small><br><br>현지 송영 차량`,
-     `${airOut} 출발 · 개별 수속<br>미야자키 공항 도착 · 입국 수속<br>크로스몰 경유 — 개별 석식 (1인 1,500엔 식비 지급)<br>국제공항CC 호텔 체크인 (공항에서 약 30분)`,
-     '중식 : 불포함<br>석식 : 불포함 (크로스몰 개별 식사)'],
+    arrive,
     ['현지 송영 차량<br>또는 도보 이동',
-     `아침식사 후 ${G('국제공항CC 18홀 + 9홀(서비스)')}<br>${S('주말·일본공휴일 18홀')}<br>라운딩 후 호텔 휴식 · 석식 및 자유시간`,
-     '조식 : 호텔식<br>중식 : 불포함<br>석식 : 호텔식'],
+     `아침식사 후 ${G('국제공항CC 18홀 + 9홀(서비스)')}<br>${S('주말·일본공휴일 18홀')}<br>라운딩 후 호텔 휴식 · 개별 석식 및 자유시간`,
+     '조식 : 호텔식<br>중식 : 불포함<br>석식 : 불포함'],
     ['현지 송영 차량',
-     `아침식사 후 ${G('국제공항CC 18홀')}<br>라운딩 후 미야자키 시내 호텔로 이동<br>석식(특식) 후 휴식<br>${S('※ 특식은 현지 사정에 따라 바뀔 수 있습니다.')}`,
-     '조식 : 호텔식<br>중식 : 불포함<br>석식 : 특식'],
+     `아침식사 후 ${G('국제공항CC 18홀')}<br>라운딩 후 미야자키 시내 호텔로 이동<br>개별 석식 후 휴식`,
+     '조식 : 호텔식<br>중식 : 불포함<br>석식 : 불포함'],
     rainbow, rainbow,
-    ['현지 송영 차량<br><br>단체 항공<br>(편명 추후 안내)',
-     `아침식사 후 체크아웃 · 로비 집합<br>니토리몰 경유 (쇼핑 · 자유시간)<br>미야자키 공항 이동 · 출국 수속<br>${G('귀국')}`,
-     '조식 : 호텔식<br>중식 : 불포함']
+    leave
   ];
 }
 // 체류일 펼치기/접기 — 출·귀국일만 보이면 일정을 한눈에 파악하기 쉽다
@@ -1750,8 +1769,16 @@ window.MT_FRESH_BUSY = function(){
   return on('productView') || on('sheetMask') || !!(done && done.innerHTML.trim());
 };
 
+// 상품별 판매 기간·중지 기간(2026-09-22): win = 출발일 창(byReturn 이면 귀국일까지 창 안에) · block = 그 기간과 겹치는 출발을 막는다
+function pvDateOk(k, dt, nights){
+  const r=RES[k]||{}; const day=86400000, t=dt.getTime();
+  const P=v=>{ const [y,m,d]=v.split('-').map(Number); return new Date(y,m-1,d).getTime(); };
+  if(r.win){ const f=P(r.win.from), to=P(r.win.to); if(t<f) return false; if(r.win.byReturn ? t+nights*day>to : t>to) return false; }
+  if(r.block){ for(const b of r.block){ const f=P(b.from), to=P(b.to); if(t<=to && t+nights*day>=f) return false; } }
+  return true;
+}
 function renderPvCal(){
-  const it=findResort(pv.key); const dows=pvDows(it);
+  const it=findResort(pv.key); const dows=pvDows(it); const nightsW=pvNights(it)||0;
   /* 달 이름은 <select> 다 — 누르면 시즌 안 열 달이 펼쳐져 바로 건너뛴다.
      ‹ › 로 여섯 번 누르는 대신 한 번에 간다. 선택지는 처음 한 번만 만든다. */
   const ym=document.getElementById('pvYm');
@@ -1766,7 +1793,7 @@ function renderPvCal(){
     const dt=new Date(pv.y,pv.m-1,d);
     const ds=`${pv.y}-${String(pv.m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     const okDow = !dows || dows.includes(dt.getDay());
-    if(dt<SEASON_START || !okDow){ html+=`<div class="cal-day">${d}</div>`; continue; }
+    if(dt<SEASON_START || !okDow || !pvDateOk(pv.key,dt,nightsW)){ html+=`<div class="cal-day">${d}</div>`; continue; }
     const rm=pvRemain(pv.key,ds);
     const isSel=pv.date===ds?' sel':'';
     // 마감일도 클릭 가능 → 예약 대기 신청
