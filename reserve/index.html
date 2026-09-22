@@ -728,8 +728,9 @@ const CAT = [
     ]}
   ]},
   { region:'나가노', sub:'고원 리조트 · 패키지', venues:[
-    { v:'스가다이라 그린CC', vsub:'해발 약 1,600m 고원 · 니가타공항 약 3시간 30분~4시간', items:[
-      {k:'sugadaira_onsen', n:'스가다이라 고원 온천호텔', dep:['서울'], std:true, meta:'스가다이라 그린CC 18홀 · 고원 리조트', desc:'여름에도 시원한 고원 라운딩 · 골프장에서 약 15분', durs:['5박 6일 (목 출발)','7박 8일 (화 출발)','7박 8일 (목 출발)','14박 15일 (화 출발)','14박 15일 (목 출발)']}
+    { v:'스가다이라 그린CC', vsub:'해발 약 1,600m 고원 · 2027 여름 시즌(6/15~9/15) · 니가타공항', items:[
+      // 2027 여름 시즌(6/15~9/15) · 2026-09-22 Min — 숙소를 스가다이라 고원 온천호텔에서 팔콜 츠마고이 리조트(군마 · 골프장까지 차로 약 50분)로 바꾸고 우선예약 상품으로 · 5박 없음 · 내부 키 sugadaira_onsen 은 그대로
+      {k:'sugadaira_onsen', n:'팔콜 츠마고이 리조트', dep:['서울'], std:true, meta:'스가다이라 그린CC 18홀 · 군마 츠마고이 고원 리조트 호텔', desc:'2027 여름 시즌(6월 15일 ~ 9월 15일) · 시원한 고원 라운딩 · 골프장까지 차로 약 50분', durs:['7박 8일 (화 출발)','7박 8일 (목 출발)','14박 15일 (화 출발)','14박 15일 (목 출발)']}
     ]}
   ]},
   { region:'미야자키', sub:'규슈 남부 · 온난', venues:[
@@ -797,11 +798,9 @@ function isSpecialGrade(grade){ return /특별/.test(String(grade||'')); }
 const PRIORITY_ONLY = {
   fourteen_hotel:   { grades:['EWRC이용권','EWRCⅡ'], badge:'우선예약 EWRC 전용' },
   fourteen_caravan: { grades:['EWRC이용권','EWRCⅡ'], badge:'우선예약 EWRC 전용' },
-  // 허용 회원권이 없는 상품 = 우선예약 기간에는 아무도 못 잡는다. 스가다이라·무츠키 료칸은 2027 우선예약 때
+  // 허용 회원권이 없는 상품 = 우선예약 기간에는 아무도 못 잡는다. 무츠키 료칸·그랜드 머큐어는 2027 우선예약 때
   // 열지 않고 상시예약 기간에 오픈한다(2026-09 확정 · 무츠키는 2026-09-07 · 닐라이스프링스도 같지만 /reserve/ 에는 없다).
-  sugadaira_onsen:  { grades:[], badge:'상시예약 오픈 예정',
-    block:'이 상품은 상시예약 기간에 오픈될 예정입니다. ',
-    note:'우선예약 기간에는 접수하지 않습니다 · 상시예약 ' },
+  // 스가다이라(sugadaira_onsen)는 2026-09-22 부터 우선예약 상품이라 여기서 뺐다(전 회원권).
   mutsuki:          { grades:[], badge:'상시예약 오픈 예정',
     block:'이 상품은 상시예약 기간에 오픈될 예정입니다. ',
     note:'우선예약 기간에는 접수하지 않습니다 · 상시예약 ' },
@@ -1191,7 +1190,7 @@ const SEASON_START = new Date(2027, 2, 10); // 2027-03-10 시즌 시작 (2027년
 // 리조트별 요금·객실 (book/ RESORTS와 동일)
 const RES = {
   // 통합 안내문 체재비(1인 1박)·왕복 송영비 기준 · rm=보유 객실(리조트 마스터)
-  //   tWe=주말 단가(아키바) · pkg=박수별 확정 패키지가(무츠키) · 미확정(스가다이라)은 단가 없음
+  //   tWe=주말 단가(아키바) · pkg=박수별 패키지가(무츠키 · 그랜드 머큐어 · 스가다이라 — 「부터」 금액이라 화면에는 안 찍고 체크 항목에만)
   yamanami:{t:15000,s:6000,rm:100},  kuzu:{t:15000,s:6000,rm:10},
   kanji:{t:17000,s:6000,rm:15},      shizunoyado:{t:17000,s:6000,rm:7},
   aso_villa:{t:18000,s:6000,rm:1},   sobo_villa:{t:15000,s:6000,rm:3},
@@ -1201,7 +1200,7 @@ const RES = {
   mercure:{pkg:{4:1660000},rm:10},   // 그랜드 머큐어 = 전단 「1인 166만 원부터」 · 보유 객실 수 미정(자리값 10) · 우선예약 기간 접수 없음(PRIORITY_ONLY)
   shirosato:{t:16000,s:12000,rm:20},
   fukuroda:{t:16000,s:12000,rm:20},  // 2027 재개 · 체재비 16,000 · 왕복 송영비 12,000 확정(2026-09-07 · Min)
-  sugadaira_onsen:{s:0,rm:35},       // 골프·숙박 포함 패키지 · 2027 요금 확정 예정 · 우선예약 기간 접수 없음(PRIORITY_ONLY)
+  sugadaira_onsen:{pkg:{7:1900000,14:3100000},rm:35}, // 항공·숙박·골프·식사 포함 1인 금액 「부터」(2026-09-22 · Min) · 보유 객실 수 미확정(자리값 35)
   miyazaki_kuko:{t:17000,s:5000,rm:10}
 };
 
@@ -1229,7 +1228,7 @@ const ROOMS = {
   mercure:         [{n:'트윈',rm:10,pax:2}],   // 보유 객실 수 미정 — 자리값
   shirosato:       [{n:'트윈',rm:20,pax:2}],
   fukuroda:        [{n:'트윈',rm:20,pax:2}],
-  sugadaira_onsen: [{n:'온천호텔',rm:35,pax:2}],
+  sugadaira_onsen: [{n:'트윈',rm:35,pax:2}],   // 팔콜 츠마고이 리조트 · 룸타입·객실 수 미확정 — 자리값
   miyazaki_kuko:   [{n:'트윈',rm:10,pax:2}]
 };
 function roomsOf(k){ return ROOMS[k] || [{n:'트윈',rm:(RES[k]||{}).rm||10,pax:2}]; }
@@ -1273,7 +1272,7 @@ const TAGS = {
   mercure:['5성급호텔','오션뷰온천','2색골프','중식불포함'],
   shirosato:['18홀','관동'],
   fukuroda:['18홀','관동','호텔','2027재개'],
-  sugadaira_onsen:['고원','온천','18+9홀'],
+  sugadaira_onsen:['고원','여름시즌','18+9홀'],
   miyazaki_kuko:['2색골프','호텔2곳','남규슈','중식일부불포함']
 };
 // 라운딩 규칙 — 2027 가이드 「골프 플레이」 문안 기준
@@ -1288,7 +1287,7 @@ const ROUND = {
   mercure:          {main:'벳푸CC · 오기야마CC 18홀 라운딩',          note:'18홀 × 4회 — 벳푸CC 3회(유후 2회 · 츠루미 1회) · 오기야마CC 1회 · 카트비 포함'},
   shirosato:        {main:'시로사토CC 18홀 라운딩',                    note:'주중·주말·일본공휴일 모두 18홀 · 9홀 추가 시 현지에서 추가 비용 발생'},
   fukuroda:         {main:'후쿠로다노타키CC 18홀 라운딩',              note:'주중·주말·일본공휴일 모두 18홀 · 9홀 추가 시 현지에서 추가 비용 발생'},
-  sugadaira_onsen:  {main:'스가다이라 그린CC 전 일정 18홀 + 9홀(서비스)', note:'해발 약 1,600m 고원 코스'},
+  sugadaira_onsen:  {main:'스가다이라 그린CC 전 일정 18홀 + 9홀(서비스)', note:'해발 약 1,600m 고원 코스 · 숙소(팔콜 츠마고이 리조트)에서 골프장까지 차로 약 50분'},
   miyazaki_kuko:    {main:'국제공항CC 2회 · 레인보우CC 2회 — 18홀 + 9홀(서비스)', note:'월·화 국제공항CC(숙소를 옮기는 화요일은 18홀) · 수·목 레인보우CC · 주말·일본공휴일 18홀 · 출·귀국일 라운딩 없음'}
 };
 function roundOf(k){ return ROUND[k] || ROUND._yama; }
@@ -1298,7 +1297,7 @@ const MOVE = {
   akiba:'약 2시간', mutsuki:'약 2시간', mercure:'약 2시간',
   shirosato:'약 1시간 30분',
   fukuroda:'약 2시간 30분',
-  sugadaira_onsen:'약 3시간 30분~4시간',
+  sugadaira_onsen:'이동 시간 확정 예정',   // 2027 숙소(팔콜 츠마고이 리조트)까지 — 확정되면 적는다
   miyazaki_kuko:'약 30분'
 };
 function moveOf(k){ return MOVE[k] || '약 1시간'; }
@@ -1357,8 +1356,10 @@ const CHECKS = {
             '조식 뷔페 · 중식 메인+뷔페 · 석식 요일별 세트메뉴',
             '2027 시즌 재개 상품',
             '골프장 안 호텔 · 2인 1실'],
-  sugadaira_onsen:['조식 · 중식 · 석식 클럽하우스 · 도착일 중식은 기내식 대체',
-                   '골프 · 숙박이 포함된 1인 금액 · 2027 요금 확정 예정'],
+  sugadaira_onsen:['2027 여름 시즌 6월 15일 ~ 9월 15일 · 화 · 목 출발 7박 · 14박',
+                   '숙소는 팔콜 츠마고이 리조트(군마현 츠마고이 바라기 고원) · 2인 1실 · 스가다이라 그린CC까지 차로 약 50분(라운딩 날마다 이동)',
+                   '조식 · 중식 · 석식 포함',
+                   '왕복 항공 · 송영 · 숙박 · 골프 · 식사가 포함된 1인 금액 — 7박 8일 1,900,000원부터 · 14박 15일 3,100,000원부터 (출발일에 따라 다름 · 예약 시 안내)'],
   miyazaki_kuko:['골프장 안 국제공항CC 호텔 2박(일·월) + 미야자키 시내 호텔 3박(화~목) · 2인 1실',
                  '조식 매일 호텔식 · 중식은 레인보우CC 라운딩일(수·목) 클럽식, 국제공항CC 라운딩일(월·화)은 불포함 · 석식은 월 호텔식 · 화 특식, 도착일·수·목은 불포함(자유식)',
                  '도착일 저녁은 크로스몰에서 개별 식사 (1인 1,500엔 식비 지급)',
@@ -1502,17 +1503,17 @@ function renderItin(it,nights){
   const yama  = /야마나미|쿠쥬|간지|시즈|히노키|소보|돔스테이|프레스티지/.test(it.n); // 야마나미 계열(뷔페식·셔틀·도착일 안내) — 독채 4곳 포함(2026-09-14 · Min)
   const noDin  = pv.key==='akiba';            // 아키바: 체재일 석식 미포함 (벳푸 시내 자유식)
   const noLun  = pv.key==='miyazaki_kuko'||pv.key==='mercure'; // 미야자키·그랜드 머큐어: 체재일 중식 미포함
-  const sugad  = pv.key==='sugadaira_onsen';  // 스가다이라: 도착일 중식 기내식 대체 · 조·중·석식 클럽하우스
+  const sugad  = pv.key==='sugadaira_onsen';  // 스가다이라(팔콜 츠마고이 리조트): 조·중·석식 포함 — 식사 장소는 미확정이라 「포함」으로만(2026-09-22)
   const golfLun = pv.key==='kanji'||pv.key==='shizunoyado'; // 중식은 그날 라운딩하는 골프장에서
   const fw14   = pv.key==='fourteen_hotel'||pv.key==='fourteen_caravan';
   const fromSeoul = (sel.origin||it.dep[0])==='서울';
   const airOut = it.dep.includes('서울') && fromSeoul ? '인천국제공항' : ((sel.origin||it.dep[0])==='부산' ? '김해국제공항' : '대구국제공항');
-  const lunch1 = sugad ? '기내식 대체' : noLun ? '불포함' : fw14 ? '간편식(샌드위치)'
+  const lunch1 = sugad ? '포함' : noLun ? '불포함' : fw14 ? '간편식(샌드위치)'
                : yama ? (fromSeoul ? '단일 메뉴(카츠카레 예정)' : '불포함 · 휴식 후 저녁 식사부터') : '현지식';
-  const lunchMid = noLun ? '불포함' : sugad ? '클럽하우스' : golfLun ? '골프장 중식'
+  const lunchMid = noLun ? '불포함' : sugad ? '포함' : golfLun ? '골프장 중식'
                : fw14 ? '뷔페식 · 특정 일자 단품메뉴' : yama ? '뷔페식' : '현지식';
-  const brk = sugad ? '클럽하우스' : (yama || fw14) ? '뷔페식' : '호텔식';
-  const din = noDin ? '불포함 (벳푸 시내 자유식)' : sugad ? '클럽하우스' : '호텔식';
+  const brk = sugad ? '포함' : (yama || fw14) ? '뷔페식' : '호텔식';
+  const din = noDin ? '불포함 (벳푸 시내 자유식)' : sugad ? '포함' : '호텔식';
   const rd = roundOf(pv.key);
   const roundLine = `<span class="g">${rd.main}</span>`+
     (rd.note ? `<br><small style="color:var(--muted);">${rd.note}</small>` : '');
