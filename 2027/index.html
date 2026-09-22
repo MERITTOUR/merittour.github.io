@@ -274,7 +274,8 @@
   footer .sig .jp{color:var(--muted);font-weight:600}
 
   /* ── 오른쪽 섹션 표시줄 ── */
-  /* 앵커 이동은 기본 동작 + 아래 scroll-behavior 에 맡긴다(따로 스크립트 없음). */
+  /* 앵커 이동은 기본 동작 + 아래 scroll-behavior 에 맡긴다(클릭을 가로채지 않는다). 멈춘 뒤 목적지가 어긋나 있으면 사진 스크립트의 realign 이 다시 맞춘다 —
+     부드럽게 내려가는 동안 지나가는 지역의 사진 줄이 열려 목적지가 아래로 도망가기 때문(2026-09-22 · #r-nagano 가 나고야에서 멈췄다). */
   section{scroll-margin-top:18px}
   @media (prefers-reduced-motion:no-preference){ html{scroll-behavior:smooth} }
 
@@ -319,7 +320,8 @@
     .tocbar a.sub{border-style:dashed}
     .tocbar a.on{color:#fff;background:var(--olive);border-color:var(--olive)}
     .tocbar a.on b{opacity:.85}
-    section{scroll-margin-top:56px}
+    /* 위에 붙는 칩 줄(약 49px) 밑으로 머리가 들어가지 않게 — 지역(.region)도 같이(2026-09-22 · 14px 이던 때는 #r-nagano 머리가 칩 줄 밑에 숨었다) */
+    section,.region{scroll-margin-top:56px}
   }
 
   /* ── 골프장 사진 — 항상 열려 있다(.media-open) · 화면에 가까워질 때 만든다 ── */
@@ -1494,11 +1496,13 @@
     }
 
     /* 사진은 그 칸이 보이게 될 때 받는다(스트립을 뿌리로 · 가로 240px 앞서). 관찰을 못 쓰는 브라우저는 바로 받는다 */
+    var pending = [];                    // 아직 안 받은 칸 — 줄이 숨긴 채(reveal 이 미뤄 둔 동안) 관찰을 시작했으면 열릴 때 다시 관찰시킨다(__wake)
     var seen = (typeof IntersectionObserver === 'function')
       ? new IntersectionObserver(function (entries, obs) {
           entries.forEach(function (e) {
             if (!e.isIntersecting) return;
             obs.unobserve(e.target);
+            var i = pending.indexOf(e.target); if (i > -1) pending.splice(i, 1);
             e.target.src = e.target.getAttribute('data-src');
           });
         }, { root: grid, rootMargin: '0px 240px 0px 240px', threshold: 0 })
@@ -1506,8 +1510,13 @@
     function whenSeen(im, path) {
       if (!seen) { im.src = path; return; }
       im.setAttribute('data-src', path);
+      pending.push(im);
       seen.observe(im);
     }
+    grid.__wake = function () {          // unobserve → observe 라야 처음 알림이 다시 온다(이미 관찰 중이면 observe 는 아무것도 안 한다)
+      if (!seen) return;
+      pending.slice().forEach(function (im) { seen.unobserve(im); seen.observe(im); });
+    };
 
     probe(1);
   }
@@ -1546,8 +1555,90 @@
     nearWatch.observe(el);
   }
 
+  /* ── 열리는 상자가 자리를 밀어내지 않게 ──
+     사진 줄(.shots)·골프장 사진 상자(.media)는 화면에 가까워질 때 첫 장을 찾고 나서 열린다. 상자가 화면 위쪽에 있으면 열리는 높이만큼
+     본문이 내려가 읽던 곳이 밀린다 — #r-nagano 로 들어오면 위 지역의 상자들이 열리며 나가노 머리가 아래로 밀려 나고야 카드에서 멈췄다(2026-09-22 · Min).
+     크롬·파이어폭스는 scroll anchoring 이 잡아 주지만 iOS Safari 는 없고, 부드러운 앵커 이동(scroll-behavior:smooth) 중에는 지나가는
+     지역의 상자가 줄줄이 열려 목적지가 그만큼 아래로 도망간다(크롬도 같다 — 이동을 시작할 때 계산한 자리로만 간다 · 1,300px 넘게 어긋났다).
+     ① 굴러가는 중(손가락이 닿아 있는 동안 포함)에는 화면 위쪽 상자를 열지 않고 멈춘 뒤에 연다 — 굴러가는 중에 scrollTo 를 하면 부드러운 이동이 끊긴다.
+     ② 화면 위쪽에서 열리는 상자는 아래 본문이 밀린 만큼 따라 내려간다 — 재서 되돌리므로 브라우저가 이미 잡아 준 곳(크롬)은 0 이라 두 번 가지 않는다.
+     ③ 앵커로 온 이동은 멈춘 뒤 목적지가 어긋나 있으면 다시 맞춘다(최대 3번 · 휠·터치·키로 사용자가 움직였으면 그만둔다). 앵커 클릭 자체는 가로채지 않는다. */
+  var rolling = false, rollTimer = 0, touching = false, held = [];
+  var want = null;                                   // 앵커 목적지 {el, tries, until} — until 은 브라우저가 움직이기 시작할 때 5초로
+
+  function jump(y) {                                 // 부드러운 이동 설정과 상관없이 바로 옮긴다
+    var h = document.documentElement, was = h.style.scrollBehavior;
+    h.style.scrollBehavior = 'auto';
+    window.scrollTo(0, y);
+    h.style.scrollBehavior = was;
+  }
+  function below(el) {                               // 상자 바로 아래 지점의 화면 위치 — 상자가 열리면 이만큼 내려간다
+    var n = el.nextElementSibling;
+    return n ? n.getBoundingClientRect().top : el.parentNode.getBoundingClientRect().bottom;
+  }
+  function wake(el) {                                // 숨긴 채 관찰을 시작한 사진 칸을 다시 관찰시킨다(열린 뒤에 받게)
+    var strips = el.classList.contains('shots') ? [el] : Array.prototype.slice.call(el.querySelectorAll('.shots'));
+    strips.forEach(function (g) { if (g.__wake) g.__wake(); });
+  }
+  function reveal(el, open, done) {
+    var before = below(el);
+    if (before > 0) { open(); wake(el); if (done) done(); return; }      // 화면 안(또는 아래)에서 열리면 그대로 보이게 둔다
+    if (rolling || touching) { held.push({ el: el, open: open }); if (done) done(); return; }
+    open();
+    /* 첫 칸은 onFirst(=open) 뒤에 붙는다(addPhoto) — 그것까지 놓인 뒤에 잰다. 마이크로태스크라 그리기 전이다.
+       열자마자 재면 빈 줄의 여백(13px)만 나와 첫 칸 높이만큼 덜 따라간다(2026-09-22 검사에서 잡힘). */
+    Promise.resolve().then(function () {
+      var d = below(el) - before;
+      if (Math.abs(d) > 0.5) jump(window.pageYOffset + d);
+      wake(el);
+      if (done) done();
+    });
+  }
+  function settled() {                               // 굴러가기가 멈췄다 — 미뤄 둔 상자를 하나씩 열고(서로 잰 값이 섞이지 않게) 앵커 목적지를 다시 맞춘다
+    rolling = false;
+    if (touching) return;
+    var q = held; held = [];
+    (function next() {
+      var h = q.shift();
+      if (!h) { realign(); return; }
+      reveal(h.el, h.open, next);
+    })();
+  }
+  function realign() {
+    if (!want || !want.until || Date.now() > want.until || want.tries >= 3) return;
+    var el = want.el, top = el.getBoundingClientRect().top - (parseFloat(getComputedStyle(el).scrollMarginTop) || 0);
+    var y = Math.min(window.pageYOffset + top, document.documentElement.scrollHeight - window.innerHeight);
+    if (Math.abs(y - window.pageYOffset) <= 3) return;
+    want.tries++;
+    el.scrollIntoView();                             // scroll-margin 을 지키고 부드러운 이동 설정도 그대로 따른다
+  }
+  function aim() {
+    var el = null;
+    try { el = location.hash.length > 1 ? document.getElementById(decodeURIComponent(location.hash.slice(1))) : null; } catch (e) { el = null; }
+    want = el ? { el: el, tries: 0, until: 0 } : null;
+  }
+  window.addEventListener('scroll', function () {
+    if (want && !want.until) want.until = Date.now() + 5000;
+    rolling = true;
+    clearTimeout(rollTimer);
+    rollTimer = setTimeout(settled, 160);
+  }, { passive: true });
+  window.addEventListener('scrollend', function () { clearTimeout(rollTimer); settled(); });
+  ['wheel', 'keydown', 'pointerdown'].forEach(function (t) {
+    window.addEventListener(t, function () { want = null; }, { passive: true, capture: true });
+  });
+  window.addEventListener('touchstart', function () { want = null; touching = true; }, { passive: true, capture: true });
+  ['touchend', 'touchcancel'].forEach(function (t) {
+    window.addEventListener(t, function () {
+      touching = false;
+      setTimeout(function () { if (!rolling && !touching) settled(); }, 200);
+    }, { passive: true, capture: true });
+  });
+  window.addEventListener('hashchange', aim);
+  aim();
+
   /* ── 골프장 사진 — 항상 열려 있다(.media-open) · 화면에 가까워질 때 만든다 ── */
-  function buildGolf(key, kind, regionName, near, onShow) {
+  function buildGolf(key, kind, regionName, near, box) {
     var d = document.createElement('div');
     d.className = 'media-open';
     d.hidden = true;
@@ -1567,11 +1658,10 @@
     body.appendChild(g);
     dragStrip(g);
 
-    /* 숙소 카드와 같은 규칙 — 화면에 가까워질 때 만든다. */
+    /* 숙소 카드와 같은 규칙 — 화면에 가까워질 때 만든다. 여는 것은 reveal 을 거친다(상자 = 바깥 .media 째). */
     whenNear(near, function () {
       buildShots(g, key, kind.dir, regionName + ' 골프장', function () {
-        d.hidden = false;
-        if (onShow) onShow();
+        reveal(box, function () { d.hidden = false; box.hidden = false; });
       });
     });
     return d;
@@ -1642,7 +1732,7 @@
       g.hidden = true;                     // 첫 장을 찾을 때 연다 — 없으면 카드는 이름·설명만
       li.appendChild(g);
       dragStrip(g);
-      whenNear(li, function () { buildShots(g, key, dir, lgName(li), function () { g.hidden = false; }); });
+      whenNear(li, function () { buildShots(g, key, dir, lgName(li), function () { reveal(g, function () { g.hidden = false; }); }); });
     });
 
     /* 영상 + 골프장 사진 상자. 영상도 없고 골프장 사진도 없으면 상자째 숨긴다 —
@@ -1653,7 +1743,7 @@
     if (vid) box.appendChild(vid);                                  // 영상은 골프장 사진 위
     box.hidden = !vid;
     KINDS.forEach(function (kind) {
-      box.appendChild(buildGolf(key, kind, regionName, head, function () { box.hidden = false; }));
+      box.appendChild(buildGolf(key, kind, regionName, head, box));
     });
     /* 골프장 사진은 머리 바로 아래. 꼭 봐야 하는 안내(.callout)가 있으면 그 아래에 —
        안내가 여러 개면(구마모토: 시설 안내 + 객실 배정 안내) 전부 지나서. 첫 것 뒤에만 끼우면 안내 사이에 사진이 들어간다. */
