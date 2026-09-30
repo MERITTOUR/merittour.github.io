@@ -52,6 +52,9 @@
   confirm/index.html       모바일 확정서 예시 (섹션 자동 접힘·동일 일정 병합·결제 현황)
 /assets/fresh.js           열어 둔 탭이 옛 안내문을 들고 있는 것을 막는 검사(손님 페이지 전부에 삽입)
 /assets/fresh.json         그 검사의 기준 — 페이지별 「판」 값. 손님이 다시 읽어야 하는 변경일 때만 올린다
+/favicon.ico               탭 아이콘(로고 마크 흰색 · 바탕 #373F4A 둥근 사각 · 16/32/48) — 브라우저가 자동으로 찾는 자리라 루트에 둔다
+/assets/icons/             favicon.svg(같은 그림 · 선명한 판) · apple-touch-icon.png(180 · 홈 화면용 · 모서리는 iOS 가 깎는다)
+/assets/og-logo.jpg        카카오톡·문자 링크 미리보기 공통 그림(1200×630 · #373F4A 바탕 흰 가로 로고) — /2027/ 만 사진(og.jpg)을 따로 쓴다
 ```
 - **새 페이지를 만들면 `</body>` 앞에 `<script defer src="/assets/fresh.js"></script>` 를 넣고, `assets/fresh.json` 에 그 페이지 주소를 한 줄 더한다.**
   탭을 며칠 열어 두면 문서를 다시 요청하는 일이 없어 캐시 설정으로는 못 고친다(실제로 `/2027/`
@@ -67,6 +70,14 @@
     정의한다(예: `/reserve/` 는 상품·시트·완료 화면, `/2027/` 은 사진 크게 보기 중).
   - `/reserve/spec/`·`/reserve/book/`·루트 리다이렉트에는 넣지 않는다.
   - 2026-09-17 에 「전체 공지 나가니까 변경 알림 없애줘」로 한 번 걷어냈다가(#237) 같은 날 「안내문 업데이트 내용도 그대로 둬 · 있으면 좋지 뭐」로 되살렸다. **다시 없애지 말 것.**
+- **새 페이지의 `<head>` 에는 탭 아이콘 3줄 + `theme-color` + og 블록을 넣는다(2026-09-30 · Min 「또 어디 색깔 바꿀 곳 있나?」 → 「진행해줘」).**
+  아이콘 = `/favicon.ico` · `/assets/icons/favicon.svg` · `/assets/icons/apple-touch-icon.png`(로고 색 `#373F4A` 바탕에 흰 마크 · 카카오톡 채널 프로필과 같은 그림 · 원본은 도구함 `assets/logo-merittour-mark.svg` · 만드는 스크립트는 scratchpad `icons/`).
+  `theme-color` 는 그 페이지 **맨 위에 보이는 색**(폰 주소창이 그 색으로 이어진다) — `/2027/` 베이지 `#F6F2E8` · `/about/`·`/reserve/`·`/reserve/spec/` 흰색 · `/about/docs/` 네이비 바 `#1a2740` · `/guide/` `#fffdf8` ·
+  야마나미·포틴힐즈 `#060d09`(14hills dining 은 빵부스러기 띠 `#16301f`) · `/reserve/confirm/` `#e9e7e0`. 다크모드 분기는 여기도 없다.
+  og 는 `/2027/` 과 같은 꼴(type · site_name · title · description · url · image 1200×630 · locale) — 그림은 공통 `/assets/og-logo.jpg`, `/2027/` 만 사진 `og.jpg`. **og:description 은 meta description 과 같은 문장**
+  (14hills dining 의 옛 설명 「아소 야마나미 리조트호텔 & EWRC 회원예약센터 …」는 이때 「나고야 포틴힐즈 컨트리클럽 — 식사 메뉴 안내(조식·중식·석식)」로 고쳤다). `/about/` 의 옛 og:title(「Membership Golf Reservation Center」)도 `<title>` 과 같은 말로 바꿨다.
+  `/reserve/spec/`(개발 문서)에는 아이콘·theme-color 만, 루트 리다이렉트에는 아이콘만, `/reserve/book/`(레거시)에는 넣지 않는다. 검사 `head-check.mjs`(아이콘 3줄 · theme-color = 실제 맨 위 색 · og 블록 · 파일 존재 · JS 오류).
+  **페이지 팔레트(네이비·올리브·다크 그린)는 로고색으로 바꾸지 않는다**(2026-09-30 · Min 확인) — 로고를 페이지 잉크색으로 찍는 것은 의도된 것. 도구함 `--mt-brand:#353C48` 는 로고와 2~3단계 차이지만 눈으로 구분되지 않아 그대로.
 - **`/reserve/`는 별도 디자인 축**: 회원 예약 프로토타입이라 야마나미 다크 골드 테마가 아니라 프로토타입 고유 팔레트(시니어 친화 고대비)를 그대로 유지한다. Supabase 연결 시 목 데이터를 실데이터로 교체 예정.
 - **`/reserve/`에 실제 회원 개인정보(이름·휴대폰·생년월일·고객ID)를 넣지 않는다.** public 저장소이므로 시연은 `DEMO_ACCOUNTS`(HONG/KIM/CHOI + 가상 번호)로만 한다.
 - **상품 구성을 바꿀 때는 `index.html`(CAT·RES·TAGS·CHECKS·ROUND)과 `spec/index.html`(§2 상품 표)을 함께 고친다.** 2027 시즌 미진행 상품(후쿠로다노타키CC·닐라이스프링스CC 호텔·스가다이라 맨션)은 제외된 상태다.
