@@ -50,6 +50,11 @@
   spec/index.html          요구사항 정의서 (개발 위탁사 전달용 · A4 인쇄 CSS · noindex)
   book/index.html          구 다단계 예약 플로우 (레거시 · 어디에서도 링크하지 않음)
   confirm/index.html       모바일 확정서 예시 (섹션 자동 접힘·동일 일정 병합·결제 현황)
+/doc/                      손님 열람 페이지 — 사내 도구 「닐라이 견적·확정서」(merittour-tools `tools/nilai/`)가 올린 열람 조각의 서명 링크를 `?d=` 로 받아
+                           접고 펼 수 있는 화면으로 보여 준다(모두 펼치기 · 모두 접기 · 인쇄는 전부 펼쳐서 · 만료·잘못된 주소는 한국어 안내 · noindex · fresh.js 없음)
+                           ※ 우리 Supabase 프로젝트의 confirm-docs 서명 주소(.html)만 연다 — 다른 주소를 넣어 이 도메인에 남의 HTML(가짜 입금 계좌 등)을 띄우지 못하게.
+                             script·on* 속성·http(s)/tel/mailto 밖의 주소는 떼고 넣는다. 손님 개인정보가 담긴 문서는 저장소에 없고 서명 링크(90일)로만 온다(2026-10-02).
+                             문서의 모양·접는 구조는 조각 쪽(`nilai-logic.js` `buildHtml(d,{view:true})`)이 정한다 — 이 페이지는 머리·버튼·만료 안내만.
 /assets/fresh.js           열어 둔 탭이 옛 안내문을 들고 있는 것을 막는 검사(손님 페이지 전부에 삽입)
 /assets/fresh.json         그 검사의 기준 — 페이지별 「판」 값. 손님이 다시 읽어야 하는 변경일 때만 올린다
 /favicon.ico               탭 아이콘(로고 마크 흰색 · 바탕 #373F4A 둥근 사각 · 16/32/48) — 브라우저가 자동으로 찾는 자리라 루트에 둔다
@@ -68,11 +73,11 @@
     검사는 scratchpad `fresh-manifest.mjs`(값 그대로 → 없음 · 값 올림 → 띠 · 목록에 없음 → 없음 · `MT_FRESH_BUSY` → 미룸 · `HEAD` 0회).
   - 새로고침하면 손해인 화면이 있으면 그 페이지에서 `window.MT_FRESH_BUSY = () => boolean` 을
     정의한다(예: `/reserve/` 는 상품·시트·완료 화면, `/2027/` 은 사진 크게 보기 중).
-  - `/reserve/spec/`·`/reserve/book/`·루트 리다이렉트에는 넣지 않는다.
+  - `/reserve/spec/`·`/reserve/book/`·루트 리다이렉트·`/doc/`(열 때마다 새로 받는 문서 뷰어)에는 넣지 않는다.
   - 2026-09-17 에 「전체 공지 나가니까 변경 알림 없애줘」로 한 번 걷어냈다가(#237) 같은 날 「안내문 업데이트 내용도 그대로 둬 · 있으면 좋지 뭐」로 되살렸다. **다시 없애지 말 것.**
 - **새 페이지의 `<head>` 에는 탭 아이콘 3줄 + `theme-color` + og 블록을 넣는다(2026-09-30 · Min 「또 어디 색깔 바꿀 곳 있나?」 → 「진행해줘」).**
   아이콘 = `/favicon.ico` · `/assets/icons/favicon.svg` · `/assets/icons/apple-touch-icon.png`(로고 색 `#373F4A` 바탕에 흰 마크 · 카카오톡 채널 프로필과 같은 그림 · 원본은 도구함 `assets/logo-merittour-mark.svg` · 만드는 스크립트는 scratchpad `icons/`).
-  `theme-color` 는 그 페이지 **맨 위에 보이는 색**(폰 주소창이 그 색으로 이어진다) — `/2027/` 베이지 `#F6F2E8` · `/about/`·`/reserve/`·`/reserve/spec/` 흰색 · `/about/docs/` 네이비 바 `#1a2740` · `/guide/` `#fffdf8` ·
+  `theme-color` 는 그 페이지 **맨 위에 보이는 색**(폰 주소창이 그 색으로 이어진다) — `/2027/` 베이지 `#F6F2E8` · `/about/`·`/reserve/`·`/reserve/spec/` 흰색 · `/about/docs/`·`/doc/` 네이비 바 `#1a2740` · `/guide/` `#fffdf8` ·
   야마나미·포틴힐즈 `#060d09`(14hills dining 은 빵부스러기 띠 `#16301f`) · `/reserve/confirm/` `#e9e7e0`. 다크모드 분기는 여기도 없다.
   og 는 `/2027/` 과 같은 꼴(type · site_name · title · description · url · image 1200×630 · locale) — 그림은 공통 `/assets/og-logo.jpg`, `/2027/` 만 사진 `og.jpg`. **og:description 은 meta description 과 같은 문장**
   (14hills dining 의 옛 설명 「아소 야마나미 리조트호텔 & EWRC 회원예약센터 …」는 이때 「나고야 포틴힐즈 컨트리클럽 — 식사 메뉴 안내(조식·중식·석식)」로 고쳤다). `/about/` 의 옛 og:title(「Membership Golf Reservation Center」)도 `<title>` 과 같은 말로 바꿨다.
