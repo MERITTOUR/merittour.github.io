@@ -396,6 +396,12 @@
   .media-vid:hover .v-play{color:var(--ink);border-color:var(--muted)}
   .media-vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
   .media-vid.playing{cursor:default;background:#000}   /* 누른 뒤 — 같은 틀 안에 플레이어 */
+  /* 숙소 카드 안 영상(2026-10-06 · Min 「야마나미 숙소별 사진과 영상도 유튜브로」) — 설명 바로 아래 · 사진 줄 위.
+     썸네일은 작게(카드 폭의 절반쯤 · 폰은 가로 가득), 누르면 카드 폭 전체로 플레이어를 끼운다 */
+  .lg-vid{margin-top:11px;max-width:440px}
+  .lg-vid.playing{max-width:none}
+  .lg-vid-cap{display:flex;align-items:center;gap:6px;margin:0 0 6px;font-size:12.5px;font-weight:800;color:var(--olive-deep)}
+  .lg-vid .media-vid{margin:0}
 
   /* ── 크게 보기(라이트박스) ── */
   .lb{position:fixed;inset:0;z-index:60;background:rgba(20,26,16,.96);
@@ -1311,6 +1317,14 @@
     kumamoto: { url: 'https://www.youtube.com/watch?v=V-CTsKur8xM', label: '아소 야마나미 리조트 영상 · 4K' },
     nagoya:   { url: 'https://youtu.be/utuVMUTlnjE', label: '포틴힐즈CC 영상' }   // 2026-09-22 등록 · 2026-10-02 · Min 「2027 가이드에 포틴힐즈 영상 링크 변경했음」(fhcyN_VGSNo → utuVMUTlnjE)
   };
+  /* 숙소 카드 안 영상 — 열쇠는 「지역/카드의 data-lg」(2026-10-06 · Min 「2027 가이드에 야마나미 숙소별 사진과 영상도 유튜브로 넣을꺼야」).
+     주소를 적으면 그 카드의 설명 바로 아래(사진 줄 위)에 「🎬 숙소 이름 영상」 작은 썸네일이 생기고, 누르면 카드 폭 전체로 플레이어가 열린다.
+     라벨을 비우면 「<카드 이름> 영상」. 주소의 ?si= 꼬리는 떼고 적는다. 영상 추가는 조용한 수정 — fresh.json 값을 올리지 않는다.
+     구마모토 카드 열쇠: kumamoto/hotel(야마나미 호텔) · kumamoto/prestige(아소 프레스티지) · kumamoto/hinoki-stay(히노키 스테이) ·
+     kumamoto/sobo-terrace(소보 테라스) · kumamoto/dome(돔스테이) · kumamoto/kuju(쿠쥬 프라이빗 타운) · kumamoto/guernsey(간지호텔) · kumamoto/shizunoyado(시즈노야도 료칸) */
+  var LODGING_VIDEO = {
+    // 'kumamoto/hotel': { url: 'https://youtu.be/…', label: '야마나미 호텔 영상' }
+  };
 
   function lgName(li) {
     var nm = li.querySelector('.lg-name');
@@ -1713,7 +1727,11 @@
     var body = document.createElement('div');
     body.className = 'media-body';
     d.appendChild(body);
-
+    body.appendChild(videoButton(id, label));
+    return d;
+  }
+  /* 썸네일 버튼 — 누를 때만 같은 16:9 틀 안에 플레이어(youtube-nocookie)를 끼운다. onPlay 는 틀을 바꾼 뒤 부른다(숙소 카드는 이때 폭을 넓힌다) */
+  function videoButton(id, label, onPlay) {
     var v = document.createElement('button');
     v.type = 'button';
     v.className = 'media-vid';
@@ -1739,9 +1757,25 @@
       f.allowFullscreen = true;
       wrap.appendChild(f);
       v.replaceWith(wrap);
+      if (onPlay) onPlay(wrap);
     });
-    body.appendChild(v);
-    return d;
+    return v;
+  }
+  /* 숙소 카드 안 영상 — LODGING_VIDEO['지역/폴더'] 가 있을 때만. 문서를 열 때 바로 끼우고(처음 그릴 때 들어가므로 자리가 밀리지 않는다) 썸네일은 loading=lazy 로 받는다 */
+  function buildLodgingVideo(li, key, dir) {
+    var vd = LODGING_VIDEO[key + '/' + dir];
+    var id = vd && ytId(vd.url);
+    if (!id) return null;
+    var label = (vd.label || '').trim() || (lgName(li) + ' 영상');
+    var w = document.createElement('div');
+    w.className = 'lg-vid';
+    var cap = document.createElement('div');
+    cap.className = 'lg-vid-cap';
+    cap.innerHTML = '<span aria-hidden="true">🎬</span><span></span>';
+    cap.lastChild.textContent = label;
+    w.appendChild(cap);
+    w.appendChild(videoButton(id, label, function () { w.classList.add('playing'); }));
+    return w;
   }
 
   /* ── 지역마다 붙이기 ── */
@@ -1755,6 +1789,8 @@
     /* 숙소 카드마다 사진 줄을 설명 아래에 — 그 카드가 화면에 가까워질 때 만든다(문서 열 때 다 만들면 수십 장을 한꺼번에 받는다) */
     Array.prototype.forEach.call(sec.querySelectorAll('li[data-lg]'), function (li) {
       var dir = li.getAttribute('data-lg');
+      var lv = buildLodgingVideo(li, key, dir);   // 영상은 설명 바로 아래 · 사진 줄 위
+      if (lv) li.appendChild(lv);
       var g = document.createElement('div');
       g.className = 'shots';
       g.hidden = true;                     // 첫 장을 찾을 때 연다 — 없으면 카드는 이름·설명만
