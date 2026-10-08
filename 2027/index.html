@@ -296,6 +296,11 @@
   .contact .val{font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
   .contact a{color:var(--olive-deep);text-decoration:none;font-weight:800}
   .contact a:hover{text-decoration:underline}
+  /* 07 문의 아래 「홈페이지 예약 방법 안내 보기」 — 예약 방법 안내 페이지 맨 아래의 「2027 시즌 예약 안내 보기」와 짝(2026-10-08 · Min 「2027 예약 안내 쪽에도 하단에 예약방법 바로가기 버튼」). 올리브/흰 대비 7.9 */
+  .more{display:inline-flex;align-items:center;justify-content:center;gap:6px;margin:16px 0 0;padding:12px 18px;border-radius:12px;
+    background:var(--olive-deep);color:#fff;font-weight:800;font-size:16px;line-height:1.3;text-decoration:none}
+  @media (hover:hover){ .more:hover{background:var(--olive);color:#fff} }
+  @media (max-width:560px){ .more{display:flex;width:100%} }
   footer{padding:34px 0 60px;text-align:center;color:var(--muted);font-size:13px}
   footer .sig{font-weight:800;color:var(--ink-soft);letter-spacing:.01em}
   footer .sig .jp{color:var(--muted);font-weight:600}
@@ -1204,6 +1209,7 @@
       <span class="citem"><span class="lbl">전화</span><span class="val"><a href="tel:0223659800">02-365-9800</a></span></span>
       <span class="citem"><span class="lbl">카카오톡</span><span class="val"><a href="https://pf.kakao.com/_dxhWus/chat" target="_blank" rel="noopener">메리트투어 채널 상담</a></span></span>
     </div>
+    <a class="more" href="/2027/booking/">홈페이지 예약 방법 안내 보기 →</a>
   </section>
 
   <footer>
