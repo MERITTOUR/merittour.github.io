@@ -727,7 +727,7 @@ const CAT = [
     { v:'스가다이라 그린CC', vsub:'해발 약 1,600m 고원 · 2027 여름 시즌(6/15~9/15) · 니가타공항 약 3시간 30분~4시간', items:[
       // 2027 여름 시즌(6/15~9/15) · 2026-09-22 Min — 우선예약 상품 · 화·목 7박·14박(5박 없음). 2026-10-07 Min 「팔콜 츠마고이 리조트 삭제 · 2026년과 동일한 온천호텔과 맨션 숙박」 — 숙소 2개(온천호텔 · 맨션 · 사내 리조트 마스터 키와 같다) · 요금은 2027 확정 예정(단가·pkg 없음)
       {k:'sugadaira_onsen',   n:'스가다이라 고원 온천호텔', dep:['서울'], std:true, meta:'스가다이라 그린CC 18홀 · 고원 온천호텔', desc:'2026년과 같은 숙소 · 여름에도 시원한 고원 라운딩 · 온천 시설 이용 · 골프장까지 차로 약 15분', durs:['7박 8일 (화 출발)','7박 8일 (목 출발)','14박 15일 (화 출발)','14박 15일 (목 출발)']},
-      {k:'sugadaira_mansion', n:'스가다이라 맨션',          dep:['서울'], std:true, meta:'스가다이라 그린CC 18홀 · 레지던스형 맨션', desc:'2026년과 같은 숙소 · 취사 가능한 맨션형 숙소 · 2인 1실', durs:['7박 8일 (화 출발)','7박 8일 (목 출발)','14박 15일 (화 출발)','14박 15일 (목 출발)']}
+      {k:'sugadaira_mansion', n:'스가다이라 맨션',          dep:['서울'], std:true, meta:'스가다이라 그린CC 18홀 · 레지던스형 맨션', desc:'2026년과 같은 숙소 · 레지던스형 맨션 · 2인 1실', durs:['7박 8일 (화 출발)','7박 8일 (목 출발)','14박 15일 (화 출발)','14박 15일 (목 출발)']}
     ]}
   ]},
   { region:'벳푸', sub:'규슈 온천 휴양지', venues:[
@@ -819,6 +819,11 @@ const PRIORITY_ONLY = {
   // 열지 않고 상시예약 기간에 오픈한다(2026-09 확정 · 무츠키는 2026-09-07 · 닐라이스프링스도 같지만 /reserve/ 에는 없다).
   // 스가다이라(sugadaira_onsen)는 2026-09-22 부터 우선예약 상품이라 여기서 뺐다(전 회원권).
   mutsuki:          { grades:[], badge:'상시예약 오픈 예정',
+    block:'이 상품은 상시예약 기간에 오픈될 예정입니다. ',
+    note:'우선예약 기간에는 접수하지 않습니다 · 상시예약 ' },
+  // 아소 프레스티지(기획전 · 회원권 무관 · 8인)는 2027 우선예약 기간에 접수하지 않고 상시예약 기간에 오픈한다(2026-10-08 · Min 「아소 프레스티지 숙소도 상시예약 때 오픈하는 것으로 변경」).
+  // PROMO 에는 그대로 두고(회원권 한도 예외 유지) 여기서 우선예약 기간만 막는다 — 기획전 시트에 배지·안내, 상세는 priorityBlock.
+  aso_villa:        { grades:[], badge:'상시예약 오픈 예정',
     block:'이 상품은 상시예약 기간에 오픈될 예정입니다. ',
     note:'우선예약 기간에는 접수하지 않습니다 · 상시예약 ' },
   mercure:          { grades:[], badge:'상시예약 오픈 예정',
@@ -1249,7 +1254,7 @@ const ROOMS = {
   shirosato:       [{n:'트윈',rm:20,pax:2}],
   fukuroda:        [{n:'트윈',rm:20,pax:2}],
   sugadaira_onsen: [{n:'온천호텔',rm:35,pax:2,d:'온천 시설 이용'}],   // 2026 과 같은 숙소(2026-10-07)
-  sugadaira_mansion: [{n:'맨션',rm:10,pax:2,d:'레지던스형 · 취사 가능'}],
+  sugadaira_mansion: [{n:'맨션',rm:10,pax:2,d:'레지던스형'}],
   miyazaki_kuko5:  [{n:'트윈',rm:10,pax:2}],
   miyazaki_kuko:   [{n:'트윈',rm:10,pax:2}]
 };
@@ -1261,6 +1266,7 @@ function selMinPax(){ return sel.resortKey ? minPaxOf(sel.resortKey) : MIN_PEOPL
 function selMaxPax(){ return sel.resortKey ? maxPaxOf(sel.resortKey) : MEMBER.maxPeople; }
 // 기획전 — 일반 목록·검색에서 뺀 상품. 두 종류:
 //   open:true  = 회원권 구분과 관계없이 예약(아소 프레스티지 — 8인 전용이라 8명까지 예약 가능한 회원권 보유자가 많지 않다 · 시스템사 협의 완료).
+//                아소 프레스티지는 2026-10-08 부터 상시예약 기간 오픈 — PRIORITY_ONLY.aso_villa(grades:[])가 우선예약 기간을 막는다.
 //   untilFree  = 우선예약 기간에만 기획전에 두는 전용 예약 공간(포틴힐즈CC 호텔·카라반 — EWRC이용권·EWRCⅡ만 · 회원권은 PRIORITY_ONLY 가 가른다 ·
 //                2026-10-07 · Min 「포틴힐즈는 EWRC이용권, EWRCⅡ 전용 예약 공간으로 기획전 넣어야돼」). 상시예약이 시작되면 일반 목록(나고야)으로 돌아간다.
 // 쿠쥬 프라이빗 타운(kuzu · 장기숙박계약 회원 전용 · 문의 전용)은 2026-10-07 온라인 예약에서 뺐다(Min 「예약에서 빼고 · 오프라인으로 받을거임」) — 상품 데이터째 없다.
@@ -1295,7 +1301,7 @@ const TAGS = {
   mercure:['5성급호텔','오션뷰온천','2색골프','중식불포함'],
   shirosato:['18홀','관동'],
   fukuroda:['18홀','관동','호텔','2027재개'],
-  sugadaira_onsen:['고원','온천','여름시즌','18+9홀'], sugadaira_mansion:['고원','맨션','취사가능','여름시즌','18+9홀'],
+  sugadaira_onsen:['고원','온천','여름시즌','18+9홀'], sugadaira_mansion:['고원','맨션','여름시즌','18+9홀'],
   miyazaki_kuko5:['1색골프','골프장안호텔','남규슈','중식불포함'],
   miyazaki_kuko:['2색골프','호텔2곳','남규슈','석식불포함']
 };
@@ -1385,7 +1391,7 @@ const CHECKS = {
                    '조식 · 중식 · 석식 클럽하우스 · 도착일 중식은 기내식 대체',
                    '왕복 항공 · 송영 · 숙박 · 골프 · 식사가 포함된 1인 금액 — 2027 요금 확정 예정'],
   sugadaira_mansion:['2027 여름 시즌 6월 15일 ~ 9월 15일 · 화 · 목 출발 7박 · 14박',
-                   '숙소는 2026년과 같은 스가다이라 맨션(레지던스형 · 취사 가능) · 2인 1실',
+                   '숙소는 2026년과 같은 스가다이라 맨션(레지던스형) · 2인 1실',
                    '조식 · 중식 · 석식 클럽하우스 · 도착일 중식은 기내식 대체',
                    '왕복 항공 · 송영 · 숙박 · 골프 · 식사가 포함된 1인 금액 — 2027 요금 확정 예정'],
   miyazaki_kuko5:['골프장 안 국제공항CC 호텔 5박 · 2인 1실 · 국제공항CC 라운딩 4회(월~목)',
@@ -2207,17 +2213,17 @@ function openPromo(){
   const list=promoItems();
   const b=sheetOpen('기획전');
   b.innerHTML = list.length ? list.map(it=>{
-    const P=PROMO[it.k]||{}, lo=minPaxOf(it.k);
-    const tail = P.open ? `${lo}인 전용 · ${P.note||''}` : (P.note||'');
+    const P=PROMO[it.k]||{}, lo=minPaxOf(it.k), pri=priorityOnly(it.k);   // pri = 우선예약 기간 제한(아소 프레스티지 = 상시예약 오픈 예정)
+    const tail = (P.open ? `${lo}인 전용 · ${P.note||''}` : (P.note||'')) + (pri && !pri.grades.length ? ` · 우선예약 기간에는 접수하지 않습니다 · 상시예약 ${freeOpenText()}부터` : '');
     return `<button class="opt stack" onclick="closeSheet();openProduct('${it.k}');" style="border-color:#8B3A2F;">
-      <span class="nm">${it.n}<span class="rbadge promo" style="margin-left:7px">${P.label||'기획전'}</span></span>
+      <span class="nm">${it.n}<span class="rbadge promo" style="margin-left:7px">${P.label||'기획전'}</span>${pri && !pri.grades.length ? `<span class="rbadge pri" style="margin-left:6px">${pri.badge}</span>` : ''}</span>
       <span class="desc">${it.desc || it.meta}<br><b style="color:#8B3A2F">${tail}</b></span></button>`;
   }).join('') : '<div class="stp-hint">진행 중인 기획전이 없습니다.</div>';
   // 아래 안내 — 회원권 무관 상품과 전용 공간 상품을 나눠 적는다(전용 공간은 PRIORITY_ONLY 의 회원권 · 상시예약부터 일반 목록)
   const opens=list.filter(it=>PROMO[it.k].open), only=list.filter(it=>!PROMO[it.k].open);
   const grades=only.length && PRIORITY_ONLY[only[0].k] ? PRIORITY_ONLY[only[0].k].grades.join(' · ') : '';
   b.innerHTML += `<div class="stp-hint" style="margin-top:14px;">`+
-    (opens.length ? `<b>${opens.map(it=>it.n).join(' · ')}</b> — 회원권 구분과 관계없이 예약하실 수 있습니다. ` : '')+
+    (opens.length ? `<b>${opens.map(it=>it.n).join(' · ')}</b> — 회원권 구분과 관계없이 예약하실 수 있습니다.${opens.some(it=>priorityOnly(it.k)) ? ` 우선예약 기간에는 접수하지 않으며 상시예약 ${freeOpenText()}부터 오픈합니다.` : ''} ` : '')+
     (only.length ? `<b>${only.map(it=>it.n).join(' · ')}</b> — 우선예약 기간에는 <b>${grades}</b> 회원님만 예약하실 수 있고, 상시예약 ${freeOpenText()}부터는 전 회원이 일반 목록에서 예약하실 수 있습니다. ` : '')+
     `기획전 상품은 일반 상품 목록·검색에는 나오지 않습니다.</div>`;
 }
