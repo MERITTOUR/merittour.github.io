@@ -8,6 +8,7 @@
 | `/about/` | 회사소개 (루트 고정 주소) |
 | `/guide/` | 리조트 안내 허브 → `/guide/yamanami/` · `/guide/14hills/` (랜딩 + `dining/` 식사 안내) |
 | `/2027/` | 2027 시즌 골프 예약 안내 (손님 공지 · 사진은 `2027/photos/`) |
+| `/2027/booking/` | 홈페이지 예약 방법 안내 (휴대폰 · PC 화면 캡처에 「누를 곳」 표시) — **조립된 파일이라 손으로 고치지 않는다.** 원본·조립 스크립트는 `merittour-tools` `site-src/booking-guide/` |
 | `/reserve/` | 회원 간편 예약 **프로토타입** (목 데이터 · 엠클릭 이식용) · `spec/` 요구사항 정의서 · `confirm/` 확정서 예시 |
 | `/` | (임시) 회사소개로 리다이렉트 |
 
@@ -16,6 +17,7 @@
 - **2027 안내문 사진 올리기** — `2027/photos/<지역>/<숙소폴더>/01.webp` 부터 번호를 이어서. 올리는 법·폴더 이름·규격은
   [`2027/photos/README.md`](2027/photos/README.md). 반드시 `2027/photos/` **아래**에서 Upload 할 것.
 - **예약 프로토타입 숙소 썸네일** — [`reserve/assets/rooms/README.md`](reserve/assets/rooms/README.md).
+- **예약 방법 안내(`/2027/booking/`) 화면 바꾸기** — 캡처를 바꾸거나 문구를 고칠 때는 `merittour-tools` `site-src/booking-guide/README.md` 대로 다시 조립해서 `2027/booking/index.html` 을 통째로 바꾼다.
 - **문안·규칙** — 작업 규칙·이름 규칙·결정 기록은 [`CLAUDE.md`](CLAUDE.md). 새 페이지에는 `</body>` 앞에
   `<script defer src="/assets/fresh.js"></script>` 를 넣고 `assets/fresh.json` 에 주소를 더한다(열어 둔 탭이 옛 안내문을 들고 있지 않게).
 - **「새 안내문이 올라왔습니다」 띠** — 손님이 다시 읽어야 하는 변경을 올릴 때만 `assets/fresh.json` 의 그 페이지 값을 오늘 날짜로
