@@ -470,6 +470,14 @@
   .pop-rounds li.next .pr-st{color:var(--gold);background:#FFF9EC;border-color:var(--member-line)}
   .pop-note{margin:12px 0 0;font-size:13.5px;line-height:1.65;color:var(--ink-soft)}
   .pop-note a{color:var(--olive-deep);font-weight:800}
+  .pop-check{display:flex;align-items:center;gap:12px;margin:12px 0 0;padding:12px 14px;border-radius:12px;background:#FFF6F4;border:1.5px solid #D7263D;
+    text-decoration:none;color:var(--ink)}   /* 빨강은 /2027/booking/ 의 .callout.warn 과 같은 값 */
+  .pop-check .pc-tag{flex:none;padding:4px 10px;border-radius:999px;background:#D7263D;color:#fff;font-size:12.5px;font-weight:800;letter-spacing:.04em;white-space:nowrap}
+  .pop-check .pc-body{display:flex;flex-direction:column;gap:2px;line-height:1.45;min-width:0}
+  .pop-check b{font-size:16px;font-weight:800;color:var(--ink)}
+  .pop-check small{font-size:13px;color:var(--ink-soft)}
+  @media (hover:hover){ .pop-check:hover{background:#FFEDE9} }
+  .pop-check:focus-visible{outline:3px solid var(--gold-soft);outline-offset:2px}
   .pop-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0 0}
   .pop-btn{display:flex;align-items:center;justify-content:center;min-height:50px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);
     background:var(--surface);color:var(--ink);font-family:inherit;font-size:16px;font-weight:800;text-decoration:none;cursor:pointer}
@@ -480,7 +488,8 @@
   /* 폰(390×740)에서 카드 안을 스크롤하지 않고 「오늘 하루 보지 않기」까지 한 화면에 들어가게 조금 촘촘히 */
   @media (max-width:560px){ .pop{padding:12px} .pop-card{padding:20px 18px 12px} .pop-title{font-size:20px} .pop-lead{font-size:14.5px;margin-top:8px}
     .pop-rounds{margin-top:12px} .pop-rounds li{padding:8px 12px} .pr-when{font-size:14.5px} .pr-cap{font-size:12.5px}
-    .pop-note{font-size:13px;margin-top:10px} .pop-actions{grid-template-columns:1fr;gap:6px;margin-top:12px} .pop-btn{min-height:46px} .pop-today{margin-top:4px} }
+    .pop-note{display:none} .pop-check{margin-top:12px;padding:11px 12px;gap:10px} .pop-check b{font-size:15.5px} .pop-check small{display:none}   /* 폰: ※ 줄(s-02 에 같은 말)과 상자의 작은 줄을 숨겨 390×740 에 카드가 다 들어가게 */
+    .pop-actions{grid-template-columns:1fr;gap:6px;margin-top:12px} .pop-btn{min-height:46px} .pop-today{margin-top:4px} }
   /* 키 작은 폰(iPhone SE 급 · 세로 720px 이하)에서는 카드 안이 스크롤되므로 「닫기」 줄을 카드 아래에 붙여 늘 보이게 */
   @media (max-height:720px){ .pop-actions{position:sticky;bottom:0;margin-top:10px;padding:10px 0 12px;background:var(--surface);box-shadow:0 -12px 12px -8px rgba(0,0,0,.10)} }
   @media print{ .pop{display:none} }
@@ -1932,7 +1941,12 @@
       <li><span class="pr-no">2차</span><span class="pr-when">10월&nbsp;14일(수) 오전&nbsp;10시 ~ 15일(목) 오전&nbsp;10시</span><span class="pr-cap">2회 예약 가능</span><span class="pr-st"></span></li>
       <li><span class="pr-no">3차</span><span class="pr-when">10월&nbsp;16일(금) 오전&nbsp;10시 ~ 17일(토) 오전&nbsp;10시</span><span class="pr-cap">2회 예약 가능</span><span class="pr-st"></span></li>
     </ol>
-    <p class="pop-note">※ 회차가 닫히면 다음 회차가 열릴 때까지 예약 화면에 「예약 마감」으로 표시됩니다. 예약 전에 <a href="/2027/booking/#check">꼭 확인하실 점(1차 때 헷갈리기 쉬웠던 부분) →</a> 을 한 번 읽어 주십시오.</p>
+    <p class="pop-note">※ 회차가 닫히면 다음 회차가 열릴 때까지 예약 화면에 「예약 마감」으로 표시됩니다.</p>
+    <!-- 꼭 확인하실 점 — 2026-10-13 Min 「꼭 확인할 점 여기 좀 더 강조 표시해줘」: ※ 줄 안의 글자 링크를 빨간 상자(통째로 링크)로 키웠다 -->
+    <a class="pop-check" href="/2027/booking/#check">
+      <span class="pc-tag">꼭 확인</span>
+      <span class="pc-body"><b>예약 전에 꼭 확인하실 점 보기 →</b><small>1차 때 헷갈리기 쉬웠던 부분 — 체류 날짜마다 객실이 남아 있는지 · − + 는 인원 수</small></span>
+    </a>
     <div class="pop-actions">
       <a class="pop-btn primary" href="https://www.merittour.co.kr" target="_blank" rel="noopener">예약 홈페이지 바로가기</a>
       <button type="button" class="pop-btn" data-pop-close>닫기</button>
