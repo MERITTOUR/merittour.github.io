@@ -477,7 +477,10 @@
   .pop-btn:focus-visible,.pop-today:focus-visible,.pop-x:focus-visible{outline:3px solid var(--gold-soft);outline-offset:2px}
   .pop-today{display:block;margin:10px auto 0;background:none;border:0;padding:6px 10px;font-family:inherit;font-size:13.5px;color:var(--muted);text-decoration:underline;cursor:pointer}
   .pop-x{position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;border:0;background:var(--band);color:var(--ink);font-size:22px;font-weight:800;line-height:1;cursor:pointer}
-  @media (max-width:560px){ .pop{padding:12px} .pop-card{padding:22px 18px 14px} .pop-actions{grid-template-columns:1fr} .pop-rounds li{padding:10px 12px} }
+  /* 폰(390×740)에서 카드 안을 스크롤하지 않고 「오늘 하루 보지 않기」까지 한 화면에 들어가게 조금 촘촘히 */
+  @media (max-width:560px){ .pop{padding:12px} .pop-card{padding:20px 18px 12px} .pop-title{font-size:20px} .pop-lead{font-size:14.5px;margin-top:8px}
+    .pop-rounds{margin-top:12px} .pop-rounds li{padding:8px 12px} .pr-when{font-size:14.5px} .pr-cap{font-size:12.5px}
+    .pop-note{font-size:13px;margin-top:10px} .pop-actions{grid-template-columns:1fr;gap:6px;margin-top:12px} .pop-btn{min-height:46px} .pop-today{margin-top:4px} }
   @media print{ .pop{display:none} }
 
   /* ── 떠 있는 버튼: 카카오톡 상담 · 예약 홈페이지 바로가기 · 맨 위로 ── */
