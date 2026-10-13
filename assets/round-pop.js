@@ -3,7 +3,7 @@
    회차 시각은 /2027/ s-02 와 같은 값(KST). 1차가 닫힌 뒤부터 3차가 닫힐 때(10월 17일 10시)까지만 뜨고, 그 뒤에는 저절로 안 뜬다.
    「오늘 하루 보지 않기」는 localStorage(mt2027pop · KST 날짜) — 두 페이지가 같은 주소(origin)라 한쪽에서 누르면 그날은 둘 다 안 뜬다.
    「꼭 확인」 상자는 /2027/ 에서는 /2027/booking/#check 로, 예약 방법 페이지 안에서는 #check 로(팝업을 닫고 그 절로 내려간다).
-   예약 방법 페이지에 #check·#s-check 로 들어오면(팝업 링크 · 문자 링크) 팝업을 띄우지 않는다 — 04 절을 보러 온 사람이다.
+   예약 방법 페이지에 주소의 #위치(#check · #tip-pwfind 등 · 팝업 링크 · 문자 링크 · /2027/ 의 링크)가 붙어 들어오면 팝업을 띄우지 않는다 — 그 절을 보러 온 사람이다.
    검사용 ?now=2026-10-14T11:00(시간대가 없으면 KST). 색 토큰은 두 페이지가 같은 이름을 쓰지만 없을 때를 대비해 기본값을 함께 적었다. */
 (function () {
   'use strict';
@@ -46,7 +46,7 @@
   }
   var onBooking = location.pathname.indexOf('/2027/booking/') !== -1;   /* file:// 검사에서도 맞게 — 앞머리 고정 안 함 */
   var checkHref = onBooking ? '#check' : '/2027/booking/#check';
-  if (onBooking && /^#(s-)?check$/.test(location.hash)) return;   /* 팝업의 「꼭 확인」 링크·문자 링크로 04 절에 바로 온 사람에게는 또 띄우지 않는다 */
+  if (onBooking && location.hash) return;   /* #check(팝업의 「꼭 확인」 링크) · #tip-pwfind(비밀번호 찾기) 처럼 주소에 위치가 붙어 있으면 그 절을 보러 온 사람이라 또 띄우지 않는다 */
 
   var css = [
     '.pop{position:fixed;inset:0;z-index:70;background:rgba(20,26,16,.55);display:flex;align-items:center;justify-content:center;padding:18px}',
