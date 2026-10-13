@@ -1924,7 +1924,7 @@
   <div class="pop-card">
     <p class="pop-tag">2027 시즌 우선예약</p>
     <h2 class="pop-title" id="popTitle">1차 우선예약 접수가 마감되었습니다</h2>
-    <p class="pop-lead" id="popLead">다음 2차 접수는 <b>10월&nbsp;14일(수) 오전&nbsp;10시</b>에 열립니다. 각 회차는 오전&nbsp;10시에 열려 다음 날 오전&nbsp;10시에 닫힙니다.</p>
+    <p class="pop-lead" id="popLead">다음 2차 접수는 <b>10월&nbsp;14일(수) 오전&nbsp;10시</b>에 열립니다. 각 회차는 다음 날 오전&nbsp;10시에 닫힙니다.</p>
     <ol class="pop-rounds" aria-label="예약 회차">
       <li><span class="pr-no">1차</span><span class="pr-when">10월&nbsp;12일(월) 오전&nbsp;10시 ~ 13일(화) 오전&nbsp;10시</span><span class="pr-cap">1회 예약 가능</span><span class="pr-st"></span></li>
       <li><span class="pr-no">2차</span><span class="pr-when">10월&nbsp;14일(수) 오전&nbsp;10시 ~ 15일(목) 오전&nbsp;10시</span><span class="pr-cap">2회 예약 가능</span><span class="pr-st"></span></li>
@@ -1969,7 +1969,7 @@
     lead.innerHTML = '<b>' + ROUNDS[openAt].closeAt + '</b>에 닫힙니다. 회차마다 예약 가능 횟수를 확인해 주십시오.';
   } else {
     title.textContent = (closed === 1 ? '1차' : '1·2차') + ' 우선예약 접수가 마감되었습니다';
-    lead.innerHTML = '다음 ' + ROUNDS[closed].no + ' 접수는 <b>' + ROUNDS[closed].openAt + '</b>에 열립니다. 각 회차는 오전\u00a010시에 열려 다음 날 오전\u00a010시에 닫힙니다.';
+    lead.innerHTML = '다음 ' + ROUNDS[closed].no + ' 접수는 <b>' + ROUNDS[closed].openAt + '</b>에 열립니다. 각 회차는 다음 날 오전\u00a010시에 닫힙니다.';
   }
   function pad(n) { return (n < 10 ? '0' : '') + n; }
   var d = new Date(now + 9 * 3600 * 1000), today = d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()), KEY = 'mt2027pop';
