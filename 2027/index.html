@@ -447,6 +447,39 @@
     .grades{grid-template-columns:1fr}
   }
 
+  /* ── 예약 회차 팝업(2026-10-13 · Min 「팝업창으로 1차 예약 마감된거 올리고 2차, 3차 내용 나오게 하는 팝업창 하나」) ── */
+  .pop{position:fixed;inset:0;z-index:70;background:rgba(20,26,16,.55);display:flex;align-items:center;justify-content:center;padding:18px}
+  .pop[hidden]{display:none}
+  .pop-card{position:relative;width:min(100%,520px);max-height:calc(100vh - 36px);overflow:auto;background:var(--surface);border:1px solid var(--line);
+    border-top:6px solid var(--olive-deep);border-radius:16px;padding:26px 24px 18px;box-shadow:0 18px 50px rgba(0,0,0,.28)}
+  .pop-tag{margin:0 0 6px;font-size:12.5px;font-weight:800;letter-spacing:.08em;color:var(--gold)}
+  .pop-title{margin:0 40px 0 0;font-size:22px;font-weight:800;letter-spacing:-.015em;line-height:1.35;color:var(--ink);text-wrap:balance}
+  .pop-lead{margin:10px 0 0;font-size:15.5px;line-height:1.65;color:var(--ink-soft)}
+  .pop-lead b{color:var(--ink)}
+  .pop-rounds{list-style:none;margin:16px 0 0;padding:0;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .pop-rounds li{display:grid;grid-template-columns:auto 1fr auto;gap:2px 10px;align-items:center;padding:11px 14px;border-top:1px solid var(--line-soft);background:var(--surface)}
+  .pop-rounds li:first-child{border-top:0}
+  .pr-no{font-size:15px;font-weight:800;color:var(--olive-deep)}
+  .pr-when{font-size:15px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+  .pr-cap{grid-column:2;font-size:13px;color:var(--ink-soft)}
+  .pr-st{grid-column:3;grid-row:1 / span 2;font-size:12.5px;font-weight:800;padding:3px 10px;border-radius:999px;border:1px solid var(--line);color:var(--ink-soft);background:var(--band);white-space:nowrap}
+  .pop-rounds li.done{background:var(--surface-warm)}
+  .pop-rounds li.done .pr-no,.pop-rounds li.done .pr-when{color:var(--muted)}
+  .pop-rounds li.done .pr-st{color:#fff;background:#D7263D;border-color:#D7263D}   /* 빨강은 /2027/booking/ 의 --tap 과 같은 값(이 페이지에는 토큰이 없다 · 흰 글자 대비 4.96) */
+  .pop-rounds li.now .pr-st{color:#fff;background:var(--olive-deep);border-color:var(--olive-deep)}
+  .pop-rounds li.next .pr-st{color:var(--gold);background:#FFF9EC;border-color:var(--member-line)}
+  .pop-note{margin:12px 0 0;font-size:13.5px;line-height:1.65;color:var(--ink-soft)}
+  .pop-note a{color:var(--olive-deep);font-weight:800}
+  .pop-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0 0}
+  .pop-btn{display:flex;align-items:center;justify-content:center;min-height:50px;padding:10px 12px;border-radius:12px;border:1.5px solid var(--line);
+    background:var(--surface);color:var(--ink);font-family:inherit;font-size:16px;font-weight:800;text-decoration:none;cursor:pointer}
+  .pop-btn.primary{background:var(--olive-deep);border-color:var(--olive-deep);color:#fff}
+  .pop-btn:focus-visible,.pop-today:focus-visible,.pop-x:focus-visible{outline:3px solid var(--gold-soft);outline-offset:2px}
+  .pop-today{display:block;margin:10px auto 0;background:none;border:0;padding:6px 10px;font-family:inherit;font-size:13.5px;color:var(--muted);text-decoration:underline;cursor:pointer}
+  .pop-x{position:absolute;top:10px;right:10px;width:40px;height:40px;border-radius:50%;border:0;background:var(--band);color:var(--ink);font-size:22px;font-weight:800;line-height:1;cursor:pointer}
+  @media (max-width:560px){ .pop{padding:12px} .pop-card{padding:22px 18px 14px} .pop-actions{grid-template-columns:1fr} .pop-rounds li{padding:10px 12px} }
+  @media print{ .pop{display:none} }
+
   /* ── 떠 있는 버튼: 카카오톡 상담 · 예약 홈페이지 바로가기 · 맨 위로 ── */
   .fabs{position:fixed;right:16px;bottom:18px;z-index:28;display:flex;flex-direction:column;gap:9px}
   .fab{display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;
@@ -1881,6 +1914,78 @@
 </script>
 
 <!-- 열어 둔 탭이 옛 안내문을 들고 있지 않게 — 돌아올 때 서버에 한 번 물어본다 -->
+<!-- 예약 회차 팝업(2026-10-13 · Min 「팝업창으로 1차 예약 마감된거 올리고 2차, 3차 내용 나오게 하는 팝업창 하나」).
+     회차 시각은 s-02 와 같은 값(KST). 1차가 닫힌 뒤부터 3차가 닫힐 때(10월 17일 10시)까지만 뜨고, 그 뒤에는 저절로 안 뜬다.
+     제목·배지는 지금 시각으로 정한다(마감 · 접수 중 · 예정). 「오늘 하루 보지 않기」는 localStorage(mt2027pop · KST 날짜). 검사용 ?now=2026-10-14T11:00(KST). -->
+<div class="pop" id="pop" hidden role="dialog" aria-modal="true" aria-labelledby="popTitle">
+  <div class="pop-card">
+    <p class="pop-tag">2027 시즌 우선예약</p>
+    <h2 class="pop-title" id="popTitle">1차 우선예약 접수가 마감되었습니다</h2>
+    <p class="pop-lead" id="popLead">다음 2차 접수는 <b>10월&nbsp;14일(수) 오전&nbsp;10시</b>에 열립니다. 각 회차는 오전&nbsp;10시에 열려 다음 날 오전&nbsp;10시에 닫힙니다.</p>
+    <ol class="pop-rounds" aria-label="예약 회차">
+      <li><span class="pr-no">1차</span><span class="pr-when">10월&nbsp;12일(월) 오전&nbsp;10시 ~ 13일(화) 오전&nbsp;10시</span><span class="pr-cap">1회 예약 가능</span><span class="pr-st"></span></li>
+      <li><span class="pr-no">2차</span><span class="pr-when">10월&nbsp;14일(수) 오전&nbsp;10시 ~ 15일(목) 오전&nbsp;10시</span><span class="pr-cap">2회 예약 가능</span><span class="pr-st"></span></li>
+      <li><span class="pr-no">3차</span><span class="pr-when">10월&nbsp;16일(금) 오전&nbsp;10시 ~ 17일(토) 오전&nbsp;10시</span><span class="pr-cap">2회 예약 가능</span><span class="pr-st"></span></li>
+    </ol>
+    <p class="pop-note">※ 회차가 닫히면 다음 회차가 열릴 때까지 예약 화면에 「예약 마감」으로 표시됩니다. 예약 전에 <a href="/2027/booking/#check">꼭 확인하실 점(1차 때 자주 있었던 실수) →</a> 을 한 번 읽어 주십시오.</p>
+    <div class="pop-actions">
+      <a class="pop-btn primary" href="https://www.merittour.co.kr" target="_blank" rel="noopener">예약 홈페이지 바로가기</a>
+      <button type="button" class="pop-btn" data-pop-close>닫기</button>
+    </div>
+    <button type="button" class="pop-today" data-pop-today>오늘 하루 보지 않기</button>
+    <button type="button" class="pop-x" data-pop-close aria-label="닫기">×</button>
+  </div>
+</div>
+<script>
+(function () {
+  'use strict';
+  var pop = document.getElementById('pop'); if (!pop) return;
+  var ROUNDS = [
+    { open: '2026-10-12T10:00:00+09:00', close: '2026-10-13T10:00:00+09:00', no: '1차', openAt: '10월\u00a012일(월) 오전\u00a010시', closeAt: '10월\u00a013일(화) 오전\u00a010시' },
+    { open: '2026-10-14T10:00:00+09:00', close: '2026-10-15T10:00:00+09:00', no: '2차', openAt: '10월\u00a014일(수) 오전\u00a010시', closeAt: '10월\u00a015일(목) 오전\u00a010시' },
+    { open: '2026-10-16T10:00:00+09:00', close: '2026-10-17T10:00:00+09:00', no: '3차', openAt: '10월\u00a016일(금) 오전\u00a010시', closeAt: '10월\u00a017일(토) 오전\u00a010시' }
+  ];
+  var now = Date.now();
+  try {                                                   /* 검사용 — ?now=2026-10-14T11:00 (시간대가 없으면 KST 로 읽는다) */
+    var q = new URLSearchParams(location.search).get('now');
+    if (q) { var t = Date.parse(/[+Z]/.test(q.slice(10)) ? q : q + '+09:00'); if (!isNaN(t)) now = t; }
+  } catch (e) {}
+  var items = pop.querySelectorAll('.pop-rounds li'), openAt = -1, closed = 0;
+  for (var i = 0; i < ROUNDS.length; i++) {
+    var st = now < Date.parse(ROUNDS[i].open) ? 'next' : now < Date.parse(ROUNDS[i].close) ? 'now' : 'done';
+    if (st === 'now') openAt = i;
+    if (st === 'done') closed++;
+    items[i].classList.add(st);
+    items[i].querySelector('.pr-st').textContent = st === 'done' ? '마감' : st === 'now' ? '접수 중' : '예정';
+  }
+  if (closed === 0 && openAt < 0) return;                 /* 1차가 열리기 전 — 뜰 일이 없다 */
+  if (closed === ROUNDS.length) return;                   /* 3차까지 닫혔다 — 더는 띄우지 않는다(상시예약 안내는 따로) */
+  var title = document.getElementById('popTitle'), lead = document.getElementById('popLead');
+  if (openAt >= 0) {
+    title.textContent = ROUNDS[openAt].no + ' 우선예약 접수 중입니다';
+    lead.innerHTML = '<b>' + ROUNDS[openAt].closeAt + '</b>에 닫힙니다. 회차마다 예약 가능 횟수를 확인해 주십시오.';
+  } else {
+    title.textContent = (closed === 1 ? '1차' : '1·2차') + ' 우선예약 접수가 마감되었습니다';
+    lead.innerHTML = '다음 ' + ROUNDS[closed].no + ' 접수는 <b>' + ROUNDS[closed].openAt + '</b>에 열립니다. 각 회차는 오전\u00a010시에 열려 다음 날 오전\u00a010시에 닫힙니다.';
+  }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  var d = new Date(now + 9 * 3600 * 1000), today = d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()), KEY = 'mt2027pop';
+  try { if (localStorage.getItem(KEY) === today) return; } catch (e) {}
+  function close(skipToday) {
+    pop.hidden = true; document.body.style.overflow = '';
+    if (skipToday) { try { localStorage.setItem(KEY, today); } catch (e) {} }
+  }
+  pop.hidden = false; document.body.style.overflow = 'hidden';
+  var first = pop.querySelector('.pop-btn[data-pop-close]'); if (first) first.focus();
+  pop.addEventListener('click', function (e) {
+    if (e.target.closest('[data-pop-close]')) { close(false); return; }
+    if (e.target.closest('[data-pop-today]')) { close(true); return; }
+    if (e.target === pop) close(false);                   /* 바깥 어두운 곳 */
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !pop.hidden) close(false); });
+})();
+</script>
+
 <script defer src="/assets/fresh.js"></script>
 </body>
 </html>
