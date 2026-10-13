@@ -481,6 +481,8 @@
   @media (max-width:560px){ .pop{padding:12px} .pop-card{padding:20px 18px 12px} .pop-title{font-size:20px} .pop-lead{font-size:14.5px;margin-top:8px}
     .pop-rounds{margin-top:12px} .pop-rounds li{padding:8px 12px} .pr-when{font-size:14.5px} .pr-cap{font-size:12.5px}
     .pop-note{font-size:13px;margin-top:10px} .pop-actions{grid-template-columns:1fr;gap:6px;margin-top:12px} .pop-btn{min-height:46px} .pop-today{margin-top:4px} }
+  /* 키 작은 폰(iPhone SE 급 · 세로 720px 이하)에서는 카드 안이 스크롤되므로 「닫기」 줄을 카드 아래에 붙여 늘 보이게 */
+  @media (max-height:720px){ .pop-actions{position:sticky;bottom:0;margin-top:10px;padding:10px 0 12px;background:var(--surface);box-shadow:0 -12px 12px -8px rgba(0,0,0,.10)} }
   @media print{ .pop{display:none} }
 
   /* ── 떠 있는 버튼: 카카오톡 상담 · 예약 홈페이지 바로가기 · 맨 위로 ── */
