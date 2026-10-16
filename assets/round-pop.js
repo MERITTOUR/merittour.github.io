@@ -102,7 +102,7 @@
     '    <h2 class="pop-title" id="popTitle">' + title + '</h2>',
     '    <p class="pop-lead" id="popLead">' + lead + '</p>',
     '    <ol class="pop-rounds" aria-label="예약 회차">' + rows + '</ol>',
-    '    <p class="pop-note">※ 회차가 닫히면 다음 회차가 열릴 때까지 예약 화면에 「예약 마감」으로 표시됩니다.</p>',
+    '    <p class="pop-note">※ 회차가 닫히면 다음 회차가 열릴 때까지 예약 화면에 「예약 마감」으로 표시됩니다. 지난 회차의 남은 횟수는 소멸되어 다음 회차로 이월되지 않습니다.</p>',
     '    <a class="pop-check" href="' + checkHref + '" data-pop-check>',
     '      <span class="pc-tag">꼭 확인</span>',
     '      <span class="pc-body"><b>예약 전에 꼭 확인하실 점 보기 →</b><small>1차 때 헷갈리기 쉬웠던 부분 — 체류 날짜마다 객실이 남아 있는지 · − + 는 인원 수</small></span>',
