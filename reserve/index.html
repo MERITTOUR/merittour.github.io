@@ -775,7 +775,7 @@ const ORIGINS = [
 //   ※ 실운영은 서버 인증. 여기는 시연용이며 실제 회원 개인정보는 담지 않는다.
 // ============================================================
 // ============================================================
-// 우선예약 차수 스케줄 — 차수마다 24시간 접수 창이 열리고, 횟수는 누적된다
+// 우선예약 차수 스케줄 — 차수마다 24시간 접수 창이 열리고, 예약 가능 횟수는 차수별로 정해진다(그 차수 안에서만)
 //   1차 10/12 10:00 ~ 10/13 10:00  +1회
 //   2차 10/14 10:00 ~ 10/15 10:00  +2회
 //   3차 10/16 10:00 ~ 10/17 10:00  +2회
@@ -785,7 +785,8 @@ const ORIGINS = [
 //     회원구분·회원권구분은 조건에서 뺐다). 그래서 특별 회원권은 회원권구분 「특별」 전체의 가입구분을 「탈퇴」로
 //     일괄 변경해 예약을 막고, 이용을 계속 도와드릴 회원만 「가입」으로 되돌린다 → 이 화면의 isSpecialGrade 분기는 되돌린 회원용.
 //   · 차수 사이(13~14일·15~16일)와 3차 종료 뒤 상시예약 전까지는 접수 휴지 기간 — 예약 진행 불가, 다음 차수 안내
-//   · 부여된 횟수는 소멸하지 않고 다음 차수로 누적된다(1차 미사용 시 2차에 3회)
+//   · 차수가 닫히면 그 차수의 남은 횟수는 소멸된다 — 다음 차수로 이월되지 않는다(1차를 안 썼어도 2차에는 2회뿐 ·
+//     2026-10-17 Min 「reserve 랑 spec 도 소멸로 맞춰줘」 · 종전 「누적」 규칙(2026-08)은 폐기 · 안내문 02 회차 표와 같은 규칙)
 // ============================================================
 const PRIORITY_SCHEDULE = [
   { no:1, label:'1차 우선예약', opensAt:'2026-10-12T10:00:00', closesAt:'2026-10-13T10:00:00', grants:1 },
@@ -855,7 +856,7 @@ function priorityNotes(k){
                  : `우선예약 기간에는 <b>${p.grades.join('·')}</b> 회원님께서 예약하실 수 있습니다 (골프장 계약 조건) · 상시예약 ${freeOpenText()}부터 전 회원`];
 }
 function originName(id){ const o=ORIGINS.find(x=>x.id===id); return o ? o.name : '—'; }
-// 횟수 부여 = 오픈 시각을 지나면 이후로도 유지(누적) / 접수 가능 = 그 차수의 시간대 안
+// 횟수 부여 = 그 차수의 접수 시간 안에서만(닫히면 소멸) / 접수 가능 = 그 차수의 시간대 안
 function roundOpen(r, now){ return now >= new Date(r.opensAt); }
 function roundActive(r, now){ return now >= new Date(r.opensAt) && now < new Date(r.closesAt); }
 // 지금 접수 중인 차수 (휴지 기간이면 null)
@@ -893,19 +894,19 @@ function quotaFor(acc, now){
   });
   return q;
 }
-function quotaLeft(q){ return Object.values(q).reduce((n,r)=> n + Math.max(0, r.total - r.used), 0); }
-/* 차수는 **하나의 주머니를 채워 간다**. 1차에서 안 쓴 횟수는 사라지지 않고 2차에서
-   그대로 쓰인다(submitReserve 가 열린 차수 중 남은 것을 앞에서부터 꺼내 쓴다).
-
-   그런데 화면은 차수마다 따로 「1/2회 사용」으로 끊어 보여 줬다. 1차를 안 썼는데도
-   2차가 2회로 보여 「1차 안 썼으면 3회여야 하는데?」가 됐다 — 실제 남은 횟수는 2회로
-   맞았는데 표시가 그렇게 안 읽혔다.
-   그래서 그 차수까지의 **누적** 배정·사용으로 적는다. 마지막으로 열린 차수 줄의
-   남은 값이 위에 적힌 「남은 예약 가능 횟수」와 저절로 맞는다. */
-function quotaCum(q, no){
-  let total=0, used=0;
-  Object.values(q).forEach(r=>{ if(r.no<=no && r.eligible && r.opened){ total+=r.total; used+=r.used; } });
-  return { total, used };
+// 지금 쓸 수 있는 횟수 = 접수 중인 차수의 남은 횟수뿐. 닫힌 차수의 남은 횟수는 소멸이라 세지 않는다.
+function quotaLeft(q){ return Object.values(q).reduce((n,r)=> n + (r.active ? Math.max(0, r.total - r.used) : 0), 0); }
+// 닫힌 차수에서 쓰지 않아 소멸한 횟수
+function quotaLost(r){ return (r.opened && !r.active) ? Math.max(0, r.total - r.used) : 0; }
+/* 차수는 **각자 주머니**다. 1차에서 안 쓴 횟수는 1차가 닫히면 소멸하고, 2차에는 2차의 2회만 있다
+   (2026-10-17 · Min — 종전 「하나의 주머니를 채워 간다(누적)」 규칙 폐기 · 실제 엠클릭 운영·안내문 02 와 같다).
+   화면도 차수마다 따로 적는다 — 접수 중인 차수는 남은 횟수, 닫힌 차수는 종료·소멸, 안 열린 차수는 오픈 시각. */
+function roundSummary(r){
+  if(!r.eligible) return `${r.no}차 해당없음`;
+  if(!r.opened)   return `${r.no}차 ${fmtOpen(r.opensAt)} 오픈`;
+  if(r.active)    return `${r.no}차 남은 ${Math.max(0, r.total - r.used)}회`;
+  const lost = quotaLost(r);
+  return `${r.no}차 종료` + (lost ? ` · ${lost}회 소멸` : ' · 모두 사용');
 }
 // 상시예약 기간 — 우선예약이 끝나면 차수·횟수 제한이 모두 풀린다(잔여 객실만 보고 예약)
 function isFreePeriod(now){ return (now||simNow()) >= new Date(FREE_OPEN_AT); }
@@ -2003,7 +2004,7 @@ function betweenRoundsNotice(){
       지금은 <b>우선예약 접수 시간이 아닙니다.</b><br>
       ${nx?`${nx.label} 접수는 <b>${fmtOpen(nx.opensAt)} ~ ${fmtOpen(nx.closesAt)}</b> 입니다.`
           :`우선예약 접수가 모두 끝났습니다. 상시예약은 <b>${freeOpenText()}</b>부터입니다.`}<br>
-      보유하신 예약 가능 횟수(<b>${quotaLeft(myQuota())}회</b>)는 그대로 유지됩니다.
+      앞 차수에서 남은 횟수는 소멸되어 이월되지 않습니다.${nx?` ${nx.label}에서는 <b>${nx.grants}회</b> 예약하실 수 있습니다.`:''}
     </div>
     <button class="opt" onclick="closeSheet();openMyPage();" style="margin-top:14px;justify-content:center;font-weight:800;">마이페이지에서 확인</button>`;
 }
@@ -2015,7 +2016,7 @@ function noQuotaNotice(){
   b.innerHTML=`
     <div class="stp-hint">
       현재 <b>예약 가능 횟수가 없습니다.</b><br>
-      ${nx?`${nx.label}(<b>${fmtOpen(nx.opensAt)} ~ ${fmtOpen(nx.closesAt)}</b>)이 열리면 <b>+${nx.grants}회</b>가 추가됩니다.`
+      ${nx?`${nx.label}(<b>${fmtOpen(nx.opensAt)} ~ ${fmtOpen(nx.closesAt)}</b>)이 열리면 그 차수의 <b>${nx.grants}회</b>로 예약하실 수 있습니다.`
           :'배정된 우선예약 횟수를 모두 사용하셨습니다. 상시예약 기간에 잔여 객실로 예약하실 수 있습니다.'}<br>
       마감 일정은 <b>예약 대기</b> 신청이 가능합니다.
     </div>
@@ -2061,10 +2062,10 @@ function submitReserve(){
   const [Y,M,D]=pv.date.split('-').map(Number);
   const no='MT-'+String(Y).slice(2)+String(M).padStart(2,'0')+String(D).padStart(2,'0')+'-'+
     String(Math.floor(1000+ (Y+M+D+pv.people+pv.key.length)*7 % 9000));
-  // 우선예약 1회 사용 (상시예약 기간에는 차감하지 않는다)
+  // 우선예약 1회 사용 — 접수 중인 차수에서만 (상시예약 기간에는 차감하지 않는다 · 닫힌 차수의 횟수는 소멸)
   const free=isFreePeriod();
   const q=myQuota();
-  const target=free?null:[q.round1,q.round2,q.round3].find(r=>r.opened&&r.eligible&&r.total-r.used>0);
+  const target=free?null:[q.round1,q.round2,q.round3].find(r=>r.active&&r.eligible&&r.total-r.used>0);
   if(target){
     AUTH.used=AUTH.used||{}; AUTH.used['round'+target.no]=(AUTH.used['round'+target.no]||0)+1;
     try{ sessionStorage.setItem(AUTH_KEY, JSON.stringify(AUTH)); }catch(e){}
@@ -2164,6 +2165,13 @@ function renderAuthUI(){
 }
 // 남은 예약 가능 횟수 (우선예약 차수 합계)
 function myQuota(){ return AUTH ? quotaFor({grade:AUTH.grade, used:AUTH.used||{}}) : null; }
+// 로그인 완료 화면의 한 줄 — 접수 중이면 남은 횟수, 휴지 기간이면 다음 차수(닫힌 차수의 남은 횟수는 소멸이라 적지 않는다)
+function quotaLine(){
+  const act=activeRound(AUTH.grade), nx=nextRound(AUTH.grade);
+  if(act) return `${act.label} 접수 중 · 남은 예약 가능 횟수 <b>${quotaLeft(myQuota())}회</b>`;
+  if(nx)  return `지금은 접수 시간이 아닙니다 · ${nx.label} <b>${fmtOpen(nx.opensAt)}</b>부터 ${nx.grants}회`;
+  return `우선예약 접수 종료 · 상시예약 <b>${freeOpenText()}</b>부터`;
+}
 function renderQuotaChip(){
   const el=document.getElementById('quotaChip'); if(!el) return;
   if(!AUTH){ el.style.display='none'; return; }
@@ -2188,12 +2196,8 @@ function renderQuotaChip(){
     return;
   }
   const q=myQuota(), left=quotaLeft(q);
-  /* 칩도 차수마다 잔여를 따로 적으면 「1차 잔여 1 · 2차 잔여 1」처럼 읽혀
-     합쳐서 몇 회인지가 안 보인다. 열린 차수는 누적으로 적는다. */
-  const part=[q.round1,q.round2,q.round3].map(r=>
-    !r.eligible ? `${r.no}차 해당없음`
-    : !r.opened  ? `${r.no}차 ${fmtOpen(r.opensAt)} 오픈`
-    : `${r.no}차까지 ${Math.max(0, quotaCum(q,r.no).total - quotaCum(q,r.no).used)}회`).join(' · ');
+  // 차수마다 따로 적는다 — 접수 중 「남은 N회」 · 닫힘 「종료 · N회 소멸」 · 안 열림 「오픈 시각」(roundSummary)
+  const part=[q.round1,q.round2,q.round3].map(roundSummary).join(' · ');
   const act=activeRound(AUTH.grade), nx=nextRound(AUTH.grade);
   el.style.display='block';
   el.innerHTML=`<div style="display:inline-flex;flex-wrap:wrap;align-items:center;gap:8px;background:rgba(15,27,51,.42);
@@ -2202,8 +2206,8 @@ function renderQuotaChip(){
       <span style="color:rgba(255,255,255,.82);">${part}</span>
     </div><div style="font-size:13.5px;color:rgba(255,255,255,.8);margin:-8px 0 16px;">${
       act ? `<b>${act.label} 접수 중</b> · ${fmtOpen(act.closesAt)}까지`+
-            (nx?` · 다음 ${nx.label} ${fmtOpen(nx.opensAt)} ~ ${fmtOpen(nx.closesAt)} · +${nx.grants}회`:'')
-      : nx ? `지금은 접수 시간이 아닙니다 · ${nx.label} <b>${fmtOpen(nx.opensAt)} ~ ${fmtOpen(nx.closesAt)}</b> · +${nx.grants}회 추가`
+            (nx?` · 다음 ${nx.label} ${fmtOpen(nx.opensAt)} ~ ${fmtOpen(nx.closesAt)} · ${nx.grants}회`:'')
+      : nx ? `지금은 접수 시간이 아닙니다 · ${nx.label} <b>${fmtOpen(nx.opensAt)} ~ ${fmtOpen(nx.closesAt)}</b> · 그 차수 ${nx.grants}회`
       : `우선예약 접수 종료 · 상시예약 <b>${freeOpenText()}</b>부터`}</div>`;
 }
 function onAuthClick(){ AUTH ? logout() : openLogin(); }
@@ -2264,26 +2268,20 @@ function demoRoundNotice(){
   if(!AUTH) return;
   const q=myQuota(), left=quotaLeft(q), free=isFreePeriod(), act=activeRound(AUTH.grade);
   const rows=PRIORITY_SCHEDULE.map(r=>{
-    const s=q['round'+r.no];
-    const c = quotaCum(q, r.no), prev = quotaCum(q, r.no - 1);
-    /* 「이월」은 앞 차수에서 **안 쓰고 남은** 양이다. 배정량(prev.total)을 그대로
-       쓰면 1차를 다 썼는데도 「이월 1」로 떠서 없는 횟수를 있는 것처럼 읽힌다. */
-    const carry = Math.max(0, prev.total - prev.used);
+    const s=q['round'+r.no], lost=quotaLost(s);
     const st = !s.eligible ? '<b style="color:var(--muted)">자격 없음</b>'
              : !s.opened   ? '<span style="color:var(--muted)">아직 안 열림</span>'
-             : `${c.used}/${c.total}회 사용`
-               + (carry>0 ? `<span style="color:var(--muted)"> (이번 차수 +${s.total} · 이월 ${carry})</span>` : '')
-               + (s.active?' <b style="color:#1f7a4d">· 접수 중</b>':'');
+             : `${s.used}/${s.total}회 사용`
+               + (s.active ? ' <b style="color:#1f7a4d">· 접수 중</b>'
+                           : `<span style="color:var(--muted)"> · 종료${lost?` · 남은 ${lost}회 소멸`:''}</span>`);
     return `<tr><td style="padding:3px 10px 3px 0;font-weight:700">${r.label}</td><td style="padding:3px 0">${st}</td></tr>`;
   }).join('');
   const head = free ? '<b>상시예약 기간</b> — 횟수 제한 없이 잔여 객실로 예약하실 수 있습니다.'
              : act  ? `<b>${act.label} 접수 중</b> — 남은 예약 가능 횟수 <b>${left}회</b>`
-                    : `<b>접수 휴지 기간</b> — 다음 차수를 기다려 주세요. (보유 횟수 ${left}회)`;
-  const carryNote = (!free && PRIORITY_SCHEDULE.some(r=>{
-    const s=q['round'+r.no]; return s.eligible && s.opened && s.total-s.used>0 && !s.active;
-  })) ? '<div style="margin-top:7px;font-size:13px;color:#5f6b7d">앞 차수에서 안 쓰신 횟수는 <b>다음 차수로 이어집니다.</b></div>' : '';
+                    : '<b>접수 휴지 기간</b> — 다음 차수를 기다려 주세요. 닫힌 차수의 남은 횟수는 소멸되었습니다.';
+  const lostNote = free ? '' : '<div style="margin-top:7px;font-size:13px;color:#5f6b7d">차수가 닫히면 그 차수의 남은 횟수는 <b>소멸</b>되어 다음 차수로 이월되지 않습니다.</div>';
   showNotice(`<b>${AUTH.name} 회원님</b> · ${AUTH.grade} · ${AUTH.memberType}<br>${head}
-    <table style="margin-top:8px;font-size:13.5px">${rows}</table>${carryNote}`);
+    <table style="margin-top:8px;font-size:13.5px">${rows}</table>${lostNote}`);
 }
 // 시연 계정 자동 입력 — 프로토타입이라 아이디를 외우고 있을 이유가 없다
 let demoSel=null;
@@ -2318,7 +2316,7 @@ function openLogin(msg){
       }).join('')}
       <div class="demo-t" style="margin:12px 0 7px;"><b>②</b> 차수 선택 <span id="demoStep" style="font-weight:600;color:#8B3A2F"></span></div>
       <div class="demo-rounds">
-        ${PRIORITY_SCHEDULE.map(r=>`<button type="button" class="demo-rd" onclick="demoJump('${r.opensAt}')">${r.no}차<small>+${r.grants}회</small></button>`).join('')}
+        ${PRIORITY_SCHEDULE.map(r=>`<button type="button" class="demo-rd" onclick="demoJump('${r.opensAt}')">${r.no}차<small>${r.grants}회</small></button>`).join('')}
         <button type="button" class="demo-rd" onclick="demoJump('${FREE_OPEN_AT}')">상시예약<small>제한 없음</small></button>
         <button type="button" class="demo-rd" onclick="demoJump('')">현재<small>시각 되돌림</small></button>
       </div>
@@ -2365,7 +2363,7 @@ function doLogin(rawId, pw){
         ${isFreePeriod() ? '<b>상시예약 기간</b> — 잔여 객실에 한해 횟수 제한 없이 예약하실 수 있습니다.'
           : isSpecialGrade(AUTH.grade)
             ? `<b>우선예약 대상이 아닙니다.</b> 상시예약 ${freeOpenText()}부터 예약하실 수 있습니다.`
-            : `남은 예약 가능 횟수 <b>${quotaLeft(myQuota())}회</b>`}</span>
+            : quotaLine()}</span>
     </div>
     <div class="stp-hint" style="margin-top:12px;">보안을 위해 로그인 후 비밀번호 변경을 권장드립니다.</div>
     <button class="opt" onclick="closeSheet()" style="margin-top:14px;justify-content:center;font-weight:800;">예약 시작하기</button>`;
@@ -2409,15 +2407,20 @@ function cancelBooking(no){
   const r=rows[i];
   if(!confirm(`${r.resort}\n${r.period}\n예약번호 ${no}\n\n이 예약을 취소하시겠습니까?`)) return;
   rows.splice(i,1);
-  // 우선예약으로 잡은 건이면 그 차수 횟수를 돌려준다
+  // 우선예약으로 잡은 건이면 그 차수 횟수를 돌려준다 — 단, 그 차수가 아직 접수 중일 때만 쓸 수 있다(닫힌 차수의 횟수는 소멸)
+  let restored=false;
   if(r.usedRound && AUTH.used && AUTH.used['round'+r.usedRound]>0){
     AUTH.used['round'+r.usedRound]--;
     try{ sessionStorage.setItem(AUTH_KEY, JSON.stringify(AUTH)); }catch(e){}
+    const rr=myQuota()['round'+r.usedRound];
+    restored=!!(rr && rr.active);
   }
   renderAuthUI();
   openMyBookings();
   showNotice(`<b>예약이 취소되었습니다.</b> (예약번호 ${no})`+
-    (r.usedRound?`<br>${r.usedRound}차 우선예약 1회가 복구되었습니다. 남은 횟수 <b>${quotaLeft(myQuota())}회</b>`:''));
+    ((!r.usedRound || isFreePeriod()) ? ''
+      : restored ? `<br>${r.usedRound}차 우선예약 1회가 복구되었습니다. 남은 횟수 <b>${quotaLeft(myQuota())}회</b>`
+                 : `<br>${r.usedRound}차 접수가 이미 닫혀 사용하신 횟수는 복구되지 않습니다. (닫힌 차수의 횟수는 소멸)`));
 }
 function openMyBookings(){
   if(!AUTH){ openLogin('예약 확인은 로그인 후 이용하실 수 있습니다.'); return; }
@@ -2481,15 +2484,16 @@ function openMyPage(){
       : [q.round1,q.round2,q.round3].map(r=>{
       if(!r.opened) return `<div class="opt stack" style="cursor:default;">
         <span class="nm" style="font-size:15.5px;">${r.label} — ${fmtOpen(r.opensAt)} ~ ${fmtOpen(r.closesAt)}</span>
-        <span class="desc">접수 시작 시 <b>+${r.grants}회</b>가 추가됩니다.</span></div>`;
+        <span class="desc">접수 시작 시 그 차수에서 <b>${r.grants}회</b> 예약하실 수 있습니다.</span></div>`;
       const left=Math.max(0,r.total-r.used);
       return `<div class="opt stack" style="cursor:default;${r.active?'border-color:var(--navy);background:var(--navy-soft);':''}">
         <span class="nm" style="font-size:15.5px;">${r.label} ${r.used} / ${r.total}회 사용${r.active?' · 접수 중':''}</span>
-        <span class="desc">${r.active?`${fmtOpen(r.closesAt)}까지 접수 · `:'접수 종료 (횟수는 유지) · '}${left?`${left}회 남았습니다.`:'배정 횟수를 모두 사용하셨습니다.'}${bar(r.used,r.total)}</span>
+        <span class="desc">${r.active ? `${fmtOpen(r.closesAt)}까지 접수 · ${left?`${left}회 남았습니다.`:'배정 횟수를 모두 사용하셨습니다.'}`
+                                   : `접수 종료 · ${left?`남은 ${left}회는 소멸되었습니다.`:'배정 횟수를 모두 사용하셨습니다.'}`}${bar(r.used,r.total)}</span>
       </div>`; }).join('')}
     ${(isFreePeriod()||isSpecialGrade(AUTH.grade)) ? '' : `<div class="stp-hint" style="margin-top:8px;">
-      차수마다 24시간 접수 창이 열리고 횟수가 누적됩니다 — 1차 +1회 · 2차 +2회 · 3차 +2회 (총 5회).<br>
-      차수 사이에는 접수가 닫히지만 <b>남은 횟수는 그대로 유지</b>되어 다음 차수에 사용하실 수 있습니다.<br>
+      차수마다 24시간 접수 창이 열리고, 예약 가능 횟수는 차수별로 정해집니다 — 1차 1회 · 2차 2회 · 3차 2회 (모두 쓰시면 총 5회).<br>
+      차수가 닫히면 그 차수의 남은 횟수는 <b>소멸</b>되어 다음 차수로 이월되지 않습니다.<br>
       상시예약은 ${freeOpenText()}부터 잔여 객실에 한해 가능합니다.
     </div>`}
 
@@ -2543,9 +2547,9 @@ function showNotice(html){
 function consumeReserveEvent(){
   let ev=null; try{ const raw=sessionStorage.getItem(EVENT_KEY); if(raw) ev=JSON.parse(raw); sessionStorage.removeItem(EVENT_KEY); }catch(e){}
   if(!ev || !AUTH) return;
-  // 사용분 반영 (현재 열린 차수 중 남은 것 하나 소진)
+  // 사용분 반영 (접수 중인 차수에서 1회 소진 — 닫힌 차수의 횟수는 소멸이라 쓰지 않는다)
   const q=myQuota();
-  const target=[q.round1,q.round2,q.round3].find(r=>r.opened && r.eligible && r.total-r.used>0);
+  const target=[q.round1,q.round2,q.round3].find(r=>r.active && r.eligible && r.total-r.used>0);
   if(target){
     AUTH.used=AUTH.used||{}; AUTH.used['round'+target.no]=(AUTH.used['round'+target.no]||0)+1;
     try{ sessionStorage.setItem(AUTH_KEY, JSON.stringify(AUTH)); }catch(e){}
