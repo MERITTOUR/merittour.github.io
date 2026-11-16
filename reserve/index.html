@@ -1246,8 +1246,8 @@ const ROOMS = {
   sobo_villa:      [{n:'별장',rm:3,pax:2,d:'편백 2인 · 3동'}],
   dome_house:      [{n:'돔하우스',rm:4,pax:2}],
   sobo5:           [{n:'별장',rm:1,pax:4,min:4,d:'4인 독채'}],
-  // 포틴힐즈 패밀리룸은 4인실 — 2인이 쓰면 1박·1인당 2,200엔 추가(2027 안내문)
-  fourteen_hotel:  [{n:'트윈',rm:13,pax:2},{n:'패밀리룸',rm:19,pax:4,extra:2200}],
+  // 포틴힐즈 패밀리룸은 4인실 — 3명이 쓰면 부족한 1명분 1박 2,200엔 추가 · 2명은 예약 불가(minPax · 트윈으로 · 2026-11-16 Min)
+  fourteen_hotel:  [{n:'트윈',rm:13,pax:2},{n:'패밀리룸',rm:19,pax:4,extra:2200,minPax:3}],
   fourteen_caravan:[{n:'트윈',rm:6,pax:2}],
   akiba:           [{n:'트윈',rm:15,pax:2}],
   mutsuki:         [{n:'트윈',rm:4,pax:2}],
@@ -1369,7 +1369,7 @@ const CHECKS = {
                   '중식 — 도착일 간편식(샌드위치) / 체류일 뷔페식 · 특정 일자에는 단품메뉴로 제공될 수 있음',
                   '우천 시 인근 쇼핑몰(에나역 부근) 차량 안내',
                   '4명 1팀 단위 예약은 그대로 · 추가 요금 없음 (2027 골프장 안내)',
-                  '2명 이용 시 — 다른 2인 팀과 한 조로 라운딩하는 조인 플레이 원칙 · 카트는 2팀 4명 혼합 운영 원칙 · 2인 단독 카트 희망 시 1인당 1일 2,200엔(부가세 포함) 추가(운영 상황에 따라 배정이 어려울 수 있음) · 패밀리룸(4인실) 2명 이용은 부족한 2명분 객실 요금 1박·1인당 2,200엔 추가',
+                  '2명 이용 시 — 다른 2인 팀과 한 조로 라운딩하는 조인 플레이 원칙 · 카트는 2팀 4명 혼합 운영 원칙 · 2인 단독 카트 희망 시 1인당 1일 2,200엔(부가세 포함) 추가(운영 상황에 따라 배정이 어려울 수 있음) · 2명은 패밀리룸(4인실) 예약 불가 — 트윈룸으로 예약',
                   '3명 이용 시 — 패밀리룸(4인실)을 3명이 이용하면 부족한 1명분 객실 요금 1박 2,200엔 추가 · 카트 3명 탑승은 2027년부터 부족한 1명분 1일 1,320엔(부가세 포함) 추가'],
   fourteen_caravan:['우선예약 기간은 7박 8일(일 출발)만 · 3박 4일(목 출발) · 4박 5일(일 출발) 일정은 상시예약 기간부터 예약',
                     '조식 매일 뷔페식 · 석식 요일 메뉴',
@@ -1858,13 +1858,16 @@ function renderPvRooms(){
   const rs=roomsOf(pv.key);
   if(rs.length===1) pv.room=rs[0].n;                              // 한 종류면 자동 선택
   if(pv.room && !rs.some(r=>r.n===pv.room)) pv.room=null;         // 상품이 바뀌었을 때
+  const fewFor=r=>r.minPax && pv.people<r.minPax;                 // 인원이 적어 못 고르는 룸타입(포틴힐즈 패밀리룸 2명)
+  if(pv.room && fewFor(rs.find(r=>r.n===pv.room)||{})) pv.room=null;
   box.innerHTML=rs.map(r=>{
-    const left=pvRemainRoom(pv.key,r.n,pv.date), need=roomsNeeded(pv.people,r.pax);
-    const cls='pv-room'+(pv.room===r.n?' on':'')+(left<=0?' full':'');
-    const rr = left<=0 ? '<b>마감</b>'
+    const left=pvRemainRoom(pv.key,r.n,pv.date), need=roomsNeeded(pv.people,r.pax), few=fewFor(r);
+    const cls='pv-room'+(pv.room===r.n?' on':'')+(left<=0||few?' full':'');
+    const rr = few ? `<b>${r.minPax}명부터</b>`
+             : left<=0 ? '<b>마감</b>'
              : left<need ? `<b>${left}실</b><span class="warn">${need}실 필요</span>`
              : `<b>${left}실</b> 남음`;
-    return `<button type="button" class="${cls}" ${left<=0?'disabled':''} onclick="pvSetRoom('${r.n}')">`+
+    return `<button type="button" class="${cls}" ${left<=0||few?'disabled':''} onclick="pvSetRoom('${r.n}')">`+
       `<span class="rl"><b>${r.n}</b><small>${r.pax}인 1실${r.d?' · '+r.d:''}`+
       `${left>0?` · ${pv.people}명이면 ${need}실`:''}</small></span>`+
       `<span class="rr">${rr}</span></button>`;
@@ -1874,7 +1877,9 @@ function renderPvRooms(){
         : !pv.room ? '객실을 선택해주세요.' : '';
   // 4인실을 정원 미만으로 쓰면 추가요금 (포틴힐즈 패밀리룸)
   if(cur && cur.extra && pv.people < cur.pax)
-    h += (h?'<br>':'')+`※ ${cur.pax}인실을 ${pv.people}명이 이용하시면 <b>1박·1인당 ${cur.extra.toLocaleString()}엔</b>이 추가됩니다.`;
+    h += (h?'<br>':'')+`※ ${cur.pax}인실을 ${pv.people}명이 이용하시면 부족한 ${cur.pax-pv.people}명분 객실 요금 <b>1박 ${(cur.extra*(cur.pax-pv.people)).toLocaleString()}엔</b>이 추가됩니다.`;
+  const fw=rs.find(fewFor);
+  if(fw) h += (h?'<br>':'')+`※ ${pv.people}명은 <b>${fw.n}</b>(${fw.pax}인실)을 예약하실 수 없습니다. ${rs.filter(r=>!fewFor(r)).map(r=>r.n).join('·')}으로 예약해 주세요.`;
   // 룸타입 자체의 추가 체재비 (시즈노야도 별채 = 개인온천 · 본관 +2,000)
   if(cur && cur.add){
     const base=(RES[pv.key]||{}).t||0;
@@ -2035,7 +2040,7 @@ function openConfirm(){
   b.innerHTML=`
     <div class="opt stack" style="cursor:default;border-color:var(--navy);background:var(--navy-soft);">
       <span class="nm">${it.n}</span>
-      <span class="desc">${it.durs[pv.durIdx]}<br>${M}월 ${D}일(${dn}) 출발 · 총 ${pv.people}명<br><b>${cur.n}</b> ${rooms}실${(cur.extra&&pv.people<cur.pax)?` · ${cur.pax}인실 ${pv.people}명 이용 (1박·1인 ${cur.extra.toLocaleString()}엔 추가)`:''}${cur.add?` · ${cur.d||''} (1박·1인 ${cur.add.toLocaleString()}엔 추가)`:''}</span>
+      <span class="desc">${it.durs[pv.durIdx]}<br>${M}월 ${D}일(${dn}) 출발 · 총 ${pv.people}명<br><b>${cur.n}</b> ${rooms}실${(cur.extra&&pv.people<cur.pax)?` · ${cur.pax}인실 ${pv.people}명 이용 (부족한 ${cur.pax-pv.people}명분 1박 ${(cur.extra*(cur.pax-pv.people)).toLocaleString()}엔 추가)`:''}${cur.add?` · ${cur.d||''} (1박·1인 ${cur.add.toLocaleString()}엔 추가)`:''}</span>
     </div>
     <div class="grp-label">예약자</div>
     <div class="opt stack" style="cursor:default;">
