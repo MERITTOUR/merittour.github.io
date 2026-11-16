@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>2027 시즌 골프 패키지 예약 안내 · 메리트투어</title>
-<meta name="description" content="우선예약 기간 2026년 10월 12일(월) 오전 10시 오픈 · 상시예약 기간 11월 30일(월) · 전 지역 골프 상품 · 요금 · 환율 · 예약 절차 안내">
+<meta name="description" content="상시예약 기간 2026년 11월 30일(월) 오전 10시 오픈 · 전 지역 골프 상품 · 요금 · 환율 · 예약 절차 안내">
 <!-- 링크 미리보기(카카오톡·문자) — og.jpg 는 1200×630 JPEG -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="메리트투어 · MERITTOUR">
 <meta property="og:title" content="2027 시즌 골프 패키지 예약 안내">
-<meta property="og:description" content="우선예약 기간 2026년 10월 12일(월) 오전 10시 오픈 · 상시예약 기간 11월 30일(월) · 전 지역 골프 상품 · 요금 · 환율 · 예약 절차 안내">
+<meta property="og:description" content="상시예약 기간 2026년 11월 30일(월) 오전 10시 오픈 · 전 지역 골프 상품 · 요금 · 환율 · 예약 절차 안내">
 <meta property="og:url" content="https://merittour.github.io/2027/">
 <meta property="og:image" content="https://merittour.github.io/2027/og.jpg">
 <meta property="og:image:width" content="1200">
@@ -87,6 +87,30 @@
   .kakao-notice .kn-sub{margin:10px 0 0;font-size:13.5px;color:var(--ink-soft)}
   @media (hover:hover){ .kakao-notice .kn-btn:hover{background:#F5DC00;color:#3C1E1E} }
   @media (max-width:560px){ .kakao-notice{padding:16px 16px 18px} .kakao-notice .kn-btn{display:flex;width:100%} }
+
+  /* ── 상시예약 기간 오픈 안내(2026-11-16 · Min 「상시 예약 내용을 위로 올리는 게 낫지 않을까」) — 히어로 리드 바로 아래, 카카오톡 안내 위.
+     우선예약 회차(10-12 ~ 10-17)가 끝나 첫 화면을 상시예약 안내로. [data-before]/[data-after] 는 11-30 10:00(KST) 기준으로 스크립트가 바꾼다(?now= 로 검사) ── */
+  .open-notice{margin:24px 0 0;padding:20px;border-radius:14px;background:var(--surface);
+    border:2px solid var(--olive-deep);box-shadow:0 0 0 5px color-mix(in srgb,var(--olive-deep) 14%,transparent)}
+  .open-notice [hidden][hidden]{display:none}   /* .on-contact 의 display:flex 보다 세게 */
+  .open-notice .on-tag{display:flex;align-items:center;flex-wrap:wrap;gap:8px 10px;margin:0 0 10px;
+    font-family:var(--serif);font-size:22px;font-weight:800;letter-spacing:-.01em;color:var(--ink);line-height:1.35}
+  .open-notice .on-badge{display:inline-block;padding:3px 11px;border-radius:999px;background:var(--olive-deep);
+    color:#FFFFFF;font-family:var(--sans);font-size:13px;font-weight:800;letter-spacing:.03em;line-height:1.5}
+  .open-notice p{margin:0;font-size:15.5px;line-height:1.7;color:var(--ink)}
+  .open-notice p b{font-weight:800}
+  .open-notice .on-wait{margin:12px 0 0;padding:12px 14px;border-radius:10px;background:var(--band)}
+  .open-notice .on-contact{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 0}
+  .open-notice .on-contact a{display:inline-flex;align-items:center;gap:6px;padding:11px 16px;border-radius:12px;
+    font-size:16px;font-weight:800;text-decoration:none;line-height:1.3}
+  .open-notice .on-tel,.open-notice .on-site{background:var(--olive-deep);color:#fff}
+  .open-notice .on-kko{background:#FAE100;color:#3C1E1E;border:1.5px solid #EBD400}
+  .open-notice .on-sub{margin:8px 0 0;font-size:13.5px;color:var(--ink-soft)}
+  .open-notice .on-more{display:inline-block;margin:12px 0 0;font-size:15px;font-weight:800;color:var(--olive-deep);text-decoration:none}
+  @media (hover:hover){ .open-notice .on-more:hover{text-decoration:underline} }
+  @media (max-width:560px){ .open-notice{padding:16px 16px 18px} .open-notice .on-tag{font-size:20px} .open-notice .on-contact a{flex:1 1 100%;justify-content:center} }
+  .done-chip{display:inline-block;margin:0 0 0 8px;padding:1px 9px;border-radius:999px;background:var(--band);color:var(--ink-soft);
+    font-family:var(--sans);font-size:12.5px;font-weight:800;vertical-align:middle}
 
   /* ── 섹션 공통 ── */
   section{padding:38px 0;border-bottom:1px solid var(--line)}
@@ -540,6 +564,21 @@
       리조트와 골프장을 늘 소중하고 깨끗하게 이용해 주신 덕분에, 모든 분들이 기분 좋게 머무르실 수 있었습니다.<br>
       앞으로도 가족·친지분들과 편안하고 즐거운 시간을 이어 가실 수 있도록 정성을 다하겠습니다.<br>
       2027년 시즌을 앞두고 예약 방법과 배정 기준, <b>전 지역 골프 상품</b>을 안내드립니다.</p>
+    <div class="open-notice" id="open" role="region" aria-labelledby="openTitle">
+      <p class="on-tag" id="openTitle"><span class="on-badge">상시예약 기간</span><span data-before>11월&nbsp;30일(월) 오전&nbsp;10시 오픈</span><span data-after hidden>예약 접수 중</span></p>
+      <p>우선예약 접수가 모두 끝났습니다. <b>11월&nbsp;30일(월) 오전&nbsp;10시</b>부터 상시예약 기간이 열려, 남은 일정을 <b>횟수 제한 없이</b> 예약하실 수 있습니다.
+        예약은 회원님 성함으로, 회원권 구좌당 예약 가능 인원까지입니다.</p>
+      <p class="on-wait" data-before>오픈 전까지는 예약 홈페이지 점검으로, <b>신규 예약과 상품 문의는 메리트투어로 연락 부탁드립니다.</b></p>
+      <div class="on-contact" data-before>
+        <a class="on-tel" href="tel:02-365-9800">☎ 02-365-9800</a>
+        <a class="on-kko" href="https://pf.kakao.com/_dxhWus/chat" target="_blank" rel="noopener">💬 카카오톡 채널 「메리트투어」</a>
+      </div>
+      <p class="on-sub" data-before>전화 상담 평일 09:00 ~ 18:00</p>
+      <div class="on-contact" data-after hidden>
+        <a class="on-site" href="https://www.merittour.co.kr" target="_blank" rel="noopener">예약 홈페이지 바로가기</a>
+      </div>
+      <a class="on-more" href="#s-02">상시예약 기간 자세히 보기 →</a>
+    </div>
     <div class="kakao-notice" id="kakao" role="region" aria-labelledby="kakaoTitle">
       <p class="kn-tag" id="kakaoTitle"><span class="kn-badge">꼭 확인해 주세요</span>카카오톡 채널 안내</p>
       <p>예약 접수 확인 · 확정서 · 예약 화면 이용 방법 재공지는 메리트투어 <b>카카오톡 채널</b>로 안내드립니다.
@@ -583,17 +622,23 @@
 
   <section class="reveal" id="s-02">
     <div class="kicker"><span class="no">02</span><h2>예약 오픈 일정</h2></div>
-    <h3 class="subh" style="margin-top:4px">예약 회차</h3>
-    <p class="soft" style="margin:0 0 14px">각 회차는 <b style="color:var(--ink)">오전&nbsp;10시에 열려 다음 날 오전&nbsp;10시에 닫힙니다.</b> 회차별 예약 가능 횟수는 <b style="color:var(--ink)">그 회차 안에서만</b> 쓰실 수 있습니다.</p>
+    <h3 class="subh" style="margin-top:4px">상시예약 기간</h3>
+    <dl class="facts">
+      <dt>오픈</dt><dd><b>11월&nbsp;30일(월) 오전&nbsp;10시</b></dd>
+      <dt>예약 횟수</dt><dd>남은 일정을 <b>횟수 제한 없이</b> 예약하실 수 있습니다.</dd>
+      <dt>예약 인원</dt><dd>예약은 <b>회원님 성함으로 진행</b>되며, 이 기간에도 <b>회원권 구좌당 예약 가능 인원까지</b>입니다.</dd>
+    </dl>
+    <p class="soft" style="margin:14px 0 0;font-size:14px" data-before>※ 오픈 전까지는 예약 홈페이지 점검으로, 신규 예약과 상품 문의는 메리트투어(☎&nbsp;02-365-9800 · 카카오톡 채널 「메리트투어」)로 연락 부탁드립니다.</p>
+    <p class="soft" style="margin:8px 0 0;font-size:14px">※ 같은 기간에 함께 가시는 경우, 각자 로그인하신 뒤 동일 기간으로 예약하여 주시기 바랍니다.</p>
+
+    <h3 class="subh" style="margin-top:30px">우선예약 회차<span class="done-chip">마감</span></h3>
+    <p class="soft" style="margin:0 0 14px">우선예약 1~3차 접수는 <b style="color:var(--ink)">10월&nbsp;17일(토) 오전&nbsp;10시에 모두 마감</b>되었습니다.</p>
     <dl class="facts">
       <dt>1차</dt><dd>10월 12일(월) 오전&nbsp;10시 ~ 13일(화) 오전&nbsp;10시 · <b>1회 예약 가능</b></dd>
       <dt>2차</dt><dd>10월 14일(수) 오전&nbsp;10시 ~ 15일(목) 오전&nbsp;10시 · <b>2회 예약 가능</b></dd>
       <dt>3차</dt><dd>10월 16일(금) 오전&nbsp;10시 ~ 17일(토) 오전&nbsp;10시 · <b>2회 예약 가능</b></dd>
       <dt>합계</dt><dd><b>총 5회 예약 가능</b> <span class="soft">(회차가 지나면 그 회차의 남은 횟수는 소멸)</span></dd>
     </dl>
-    <p class="soft" style="margin:14px 0 0;font-size:14px">※ 회차가 닫히면 다음 회차가 열릴 때까지 화면에 <b style="color:var(--ink)">예약 마감</b>으로 표시됩니다. <b style="color:var(--ink)">앞 회차 예약을 정리하는 시간</b>이며, 다음 회차는 오전&nbsp;10시에 다시 열립니다. 닫힌 회차에서 쓰지 않으신 예약 가능 횟수는 <b style="color:var(--ink)">소멸되며 다음 회차로 이월되지 않습니다.</b></p>
-    <p class="soft" style="margin:8px 0 0;font-size:14px">※ 같은 기간에 함께 가시는 경우, 각자 로그인하신 뒤 동일 기간으로 예약하여 주시기 바랍니다.</p>
-    <p class="soft" style="margin:8px 0 0;font-size:14px">※ 우선예약 접수가 모두 끝나 정리된 뒤, <b style="color:var(--ink)">11월 30일(월) 오전&nbsp;10시</b>에 <b style="color:var(--ink)">상시예약 기간</b>이 열립니다. 3차가 닫힌 뒤 상시예약이 열릴 때까지는 예약 마감으로 표시됩니다. 상시예약 기간에는 잔여 일정을 횟수 제한 없이 예약하실 수 있으며, 예약은 <b style="color:var(--ink)">회원님 성함으로 진행</b>되며, 예약 인원은 이 기간에도 <b style="color:var(--ink)">회원권 구좌당 예약 가능 인원까지</b>입니다.</p>
 
     <dl class="facts" style="margin-top:24px">
       <dt>접수 방법</dt><dd>메리트투어 예약 홈페이지 <a href="https://www.merittour.co.kr" style="color:var(--olive-deep);font-weight:800;text-decoration:none">www.merittour.co.kr</a>
@@ -1252,6 +1297,16 @@
 </div>
 
 <script>
+/* 상시예약 오픈 전후 문구(2026-11-16) — 2026-11-30 10:00(KST) 전에는 [data-before], 뒤에는 [data-after]. ?now=2026-11-30T10:00 (시간대 없으면 KST) 로 검사 */
+(function () {
+  var OPEN = Date.parse('2026-11-30T10:00:00+09:00'), now = Date.now();
+  var q = /[?&]now=([^&#]+)/.exec(location.search);
+  if (q) { var v = decodeURIComponent(q[1]); var t = Date.parse(/[zZ]$|[+-]\d\d:?\d\d$/.test(v) ? v : v + '+09:00'); if (!isNaN(t)) now = t; }
+  var after = now >= OPEN;
+  Array.prototype.forEach.call(document.querySelectorAll('[data-before]'), function (el) { el.hidden = after; });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-after]'), function (el) { el.hidden = !after; });
+})();
+
 /* 오른쪽 섹션 표시줄 — 지금 보는 곳을 짚어 준다. 이동은 기본 앵커 + scroll-behavior 에 맡긴다(가로채면 뒤로가기·애니메이션 줄이기가 깨진다) */
 (function () {
   'use strict';
