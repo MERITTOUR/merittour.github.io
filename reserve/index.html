@@ -718,9 +718,9 @@ const CAT = [
   ]},
   { region:'나고야', sub:'주부 지역 · 챔피언십', venues:[
     { v:'포틴힐즈CC', vsub:'호텔 윈저 · 나고야 중부국제공항 약 1시간 40분', items:[
-      // 포틴힐즈 3박·4박은 우선예약 기간에 열지 않고 상시예약 기간부터(2026-09-11 · Min) — laterDurs 의 인덱스는 durLater() 로 잠근다
-      {k:'fourteen_hotel',   n:'포틴힐즈CC 호텔',   dep:['서울','부산'], std:true, meta:'포틴힐즈CC 18홀 · 트윈 2인실 / 패밀리룸 4인실', desc:'호텔 트윈 2인 1실 · 4인 패밀리룸 선택 가능', durs:['7박 8일 (일 출발)','3박 4일 (목 출발)','4박 5일 (일 출발)'], laterDurs:[1,2]},
-      {k:'fourteen_caravan', n:'포틴힐즈CC 카라반', dep:['서울','부산'], std:true, meta:'포틴힐즈CC 18홀 · 카라반 2인실', desc:'카라반형 트윈 2인 1실', durs:['7박 8일 (일 출발)','3박 4일 (목 출발)','4박 5일 (일 출발)'], laterDurs:[1,2]}
+      // 포틴힐즈 3박·4박은 2026-11-20 에 뺐다(Min · 미확정) — 다시 열면 durs 에 넣고, 상시예약부터만 열 기간은 laterDurs(인덱스)로 durLater() 가 잠근다
+      {k:'fourteen_hotel',   n:'포틴힐즈CC 호텔',   dep:['서울','부산'], std:true, meta:'포틴힐즈CC 18홀 · 트윈 2인실 / 패밀리룸 4인실', desc:'호텔 트윈 2인 1실 · 4인 패밀리룸 선택 가능', durs:['7박 8일 (일 출발)']},
+      {k:'fourteen_caravan', n:'포틴힐즈CC 카라반', dep:['서울','부산'], std:true, meta:'포틴힐즈CC 18홀 · 카라반 2인실', desc:'카라반형 트윈 2인 1실', durs:['7박 8일 (일 출발)']}
     ]}
   ]},
   { region:'나가노', sub:'고원 리조트 · 패키지', venues:[
