@@ -51,6 +51,8 @@ body {
   font-size: 17px;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
+  word-break: keep-all;
+  overflow-wrap: break-word;
   background-image:
     radial-gradient(circle at 12% 0%, rgba(216,185,129,0.06) 0%, transparent 42%),
     radial-gradient(circle at 88% 100%, rgba(160,68,56,0.06) 0%, transparent 42%);
