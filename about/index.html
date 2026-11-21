@@ -68,7 +68,7 @@
   .hero-tagline {
     font-size: 13px;
     font-weight: 500;
-    color: rgba(255,255,255,0.75);
+    color: rgba(255,255,255,0.88);
     letter-spacing: 2px;
     margin-bottom: 28px;
     position: relative;
@@ -86,7 +86,7 @@
   }
   .hero-sub {
     font-size: 15px;
-    color: rgba(255,255,255,0.75);
+    color: rgba(255,255,255,0.88);
     line-height: 1.7;
     margin-bottom: 32px;
     position: relative;
@@ -1479,8 +1479,12 @@
   .confirm-ok:active { background: #0f1b33; transform: scale(0.98); }
 
   /* ===== 디자인 보강: 골드 그라데이션 포인트 (2026.06) ===== */
+  /* 히어로 · 상담 문의 배경 = 아소 야마나미CC 코스 사진(흐리게 · 2026-11-21 · Min 「야마나미의 사진을 흐리게 넣어서 골프장 전문 사이트의 느낌」) — 위에 네이비를 덮어 글자 대비는 그대로 */
   .hero {
-    background: linear-gradient(135deg, #22334f 0%, #14223d 50%, #0c1730 100%);
+    background:
+      linear-gradient(135deg, rgba(34,51,79,0.70) 0%, rgba(20,34,61,0.78) 50%, rgba(12,23,48,0.88) 100%),
+      url("assets/yamanami-bg.webp") center 40% / cover no-repeat,
+      #14223d;
     border-bottom: 1px solid rgba(199,154,78,0.28);
   }
   .hero::after {
@@ -1561,7 +1565,7 @@
   .facility-card:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(26,39,64,0.10); }
 
   /* CTA / 멤버십 카드: 깊은 그라데이션 + 골드 테두리 */
-  .cta { background: linear-gradient(135deg, #22334f 0%, #122039 55%, #0a1426 100%); }
+  .cta { background: linear-gradient(135deg, rgba(34,51,79,0.74) 0%, rgba(18,32,57,0.82) 55%, rgba(10,20,38,0.90) 100%), url("assets/yamanami-bg.webp") center 60% / cover no-repeat, #122039; }
   .membership-card {
     background:
       linear-gradient(135deg, #1a2740 0%, #0f1b33 100%) padding-box,
